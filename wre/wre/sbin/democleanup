@@ -1,0 +1,28 @@
+#!/data/wre/prereqs/perl/bin/perl -w
+use strict;
+use DBI;
+use Parse::PlainConfig;
+use File::Path;
+
+my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/demo.conf', 'PURGE' => 1);
+opendir(DIR,"/data/domains/demo");
+my @files = readdir(DIR);
+closedir(DIR);
+
+my $dbh = DBI->connect("DBI:mysql:test",$config->get("adminuser"),$config->get("adminpass"));
+foreach my $file (@files) {
+	next if (!($file =~ /\.pl$/) || $file eq "index.pl");
+	my $demoId = $file;
+	$demoId =~ s/^(.*)\.pl$/$1/;
+	next unless ($demoId); # prevent empty strings from wreaking havoc
+	my @createTime = split("_",$demoId);
+	$createTime[0] = substr($createTime[0],4);
+	next unless (time() - $createTime[0] > $config->get("duration") * 60 * 60 * 24);
+	$dbh->do("drop database ".$demoId);
+	$dbh->do("revoke all privileges on ".$demoId.".* from demo\@localhost");
+	unlink("/data/domains/demo/".$file);
+	rmtree("/data/domains/demo/".$demoId);	
+	unlink("/data/WebGUI/etc/".$demoId.".conf");
+}
+$dbh->disconnect;
+

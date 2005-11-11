@@ -1,0 +1,4 @@
+<VirtualHost *:81>
+	ServerName __sitename__
+	DocumentRoot __domain-home__/__domain__/__hostname__/public
+</VirtualHost>

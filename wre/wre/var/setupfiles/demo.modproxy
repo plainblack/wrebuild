@@ -1,0 +1,5 @@
+<VirtualHost *:80>
+	ServerName demo.example.com
+	DocumentRoot /data/domains/demo
+	ProxyPass / http://demo.example.com:81/
+</VirtualHost>

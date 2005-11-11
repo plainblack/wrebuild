@@ -1,0 +1,21 @@
+W E B G U I   R U N T I M E   E N V I R O N M E N T   U P G R A D E
+-------------------------------------------------------------------
+
+To upgrade the WRE follow these simple steps:
+
+1. Download the new version.
+
+2. Shutdown your existing WRE.
+
+3. Extract the new WRE over the top of the old one.
+
+4. Run /data/wre/sbin/setup.
+
+5. Read /data/wre/docs/install.txt to make sure there aren't any new
+instructions.
+
+6. Start the WRE.
+
+
+
+

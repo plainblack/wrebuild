@@ -1,0 +1,181 @@
+#!/data/wre/prereqs/perl/bin/perl
+
+$| = 1;
+
+use strict;
+use Net::SMTP;
+use Parse::PlainConfig;
+use DBI;
+use HTTP::Request;
+use HTTP::Headers;
+use LWP::UserAgent;
+use FileHandle;
+
+my $config = getConfig();
+unless ($config->{skipdb}) {
+	unless (checkDb($config)) {
+		logEntry("Database server reported down. Starting the critical monitor.");
+		startCriticalDbMonitor($config);
+	} else {
+		logEntry("All is well with the database server.");
+	}
+}
+unless ($config->{skipweb}) {
+	unless (checkWeb($config)) {
+		logEntry("Web server reported down. Starting the critical monitor.");
+		startCriticalWebMonitor($config);
+	} else {
+		logEntry("All is well with the web server.");
+	}
+}
+exit;
+
+#-------------------------------------------------------------------
+sub getConfig {
+        my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/wremonitor.conf', 'PURGE' => 1);
+        my %data;
+        foreach my $key ($config->directives) {
+                $data{$key} = $config->get($key);
+        }
+        return \%data;
+}
+
+#-------------------------------------------------------------------
+sub redAlertDb {
+	my $config = shift;
+        logEntry ("Database server down!");
+        if (doDbRestart($config)) {
+                sendEmail("The database server was down; wremonitor issued a restart and everything seems OK, but you should probably check it just the same.",$config);
+                logEntry ("Database restart succeeded.");
+        } else {
+                sendEmail("The database server is down; wremonitor issued a restart, but the restart failed.",$config);
+                logEntry ("Database restart failed.");
+        }
+}
+
+#-------------------------------------------------------------------
+sub checkDb {
+	my $config = shift;
+        my $dbh;
+        if (eval { $dbh = DBI->connect($config->{dsn},$config->{dbuser},$config->{dbpass})} ) {
+                $dbh->disconnect;
+                return 1;
+        } else {
+                logEntry($@);
+                return 0;
+        }
+}
+
+#-------------------------------------------------------------------
+sub startCriticalDbMonitor {
+        my $config = shift;
+        fork and exit;
+        sleep(10);
+        for(1..4) {
+                unless (checkDb($config)) {
+                        redAlertDb($config);
+                } else {
+                        logEntry("Database server is well once again.");
+                        exit;
+                }
+                sleep($config->{secondsBetweenChecks});
+        }
+}
+
+#-------------------------------------------------------------------
+sub startCriticalWebMonitor {
+	my $config = shift;
+	fork and exit;
+	sleep(10);
+	for(1..4) {
+        	unless (checkWeb($config)) {
+			redAlertWeb($config);
+        	} else {
+                	logEntry("Web server is well once again.");
+			exit;
+        	}
+        	sleep($config->{secondsBetweenChecks});
+	}
+}
+
+#-------------------------------------------------------------------
+sub redAlertWeb {
+        logEntry("Web server down!");
+        if (doWebRestart($config)) {
+                sendEmail("The web server was down; wremonitor issued a restart and everything seems OK, but you should probably check it just the same.",$config);
+                logEntry ("Web server restart succeeded.");
+        } else {
+                sendEmail("The web server is down; wremonitor issued a restart, but the restart failed.",$config);
+                logEntry ("Web server restart failed.");
+        }
+}
+
+#-------------------------------------------------------------------
+sub checkWeb {
+	my $config = shift;
+        my $userAgent = new LWP::UserAgent;
+        $userAgent->agent("wremonitor/1.0");
+        $userAgent->timeout($config->{connectionTimeOut});
+        my $header = new HTTP::Headers;
+        my $request = new HTTP::Request (GET => "http://localhost/", $header);
+        my $response = $userAgent->request($request);
+        if ($response->is_success) {
+                return 1;
+        } else {
+		logEntry($response->code);
+                logEntry($response->error_as_HTML);
+                return 0;
+        }
+}
+
+#-------------------------------------------------------------------
+sub doWebRestart {
+	my $config = shift;
+	my $restartCommand = $config->{ipcs}.' -s | '.$config->{'grep'}.' apache | /data/wre/prereqs/perl/bin/perl -e \'while (<STDIN>) { @a=split(/\s+/); print `ipcrm sem $a[1]`}\';/data/wre/sbin/rc.webgui restartweb';
+        if (system($restartCommand)) {
+                return 0;
+        } else {
+                return 1;
+        }
+}
+
+#-------------------------------------------------------------------
+sub doDbRestart {
+        if (system("/data/wre/sbin/rc.webgui restartmysql")) {
+                return 0;
+        } else {
+                return 1;
+        }
+}
+
+#-------------------------------------------------------------------
+sub logEntry {
+	my $message = shift;
+        my $log = FileHandle->new(">>/data/wre/var/wremonitor.log") or die "Can't open log file.";
+        print $log localtime()." - ".$message."\n";
+        $log->close;
+}
+
+#-------------------------------------------------------------------
+sub sendEmail {
+	my $message = shift;
+	my $config = shift;
+        my $smtp = Net::SMTP->new($config->{smtpServer});
+        if (defined $smtp) {
+                $smtp->mail($config->{adminEmail});
+                $smtp->to($config->{adminEmail});
+                $smtp->data();
+                $smtp->datasend("To: ".$config->{adminEmail}."\n");
+                $smtp->datasend("From: WRE Monitor <".$config->{adminEmail}.">\n");
+                $smtp->datasend("Subject: WRE Service DOWN!\n");
+                $smtp->datasend("\n");
+                $smtp->datasend($message);
+		$smtp->datasend("\n");
+                $smtp->dataend(`hostname`);
+                $smtp->quit;
+        } else {
+                logEntry("Error: Cannot connect to mail server.");
+        }
+}
+
+

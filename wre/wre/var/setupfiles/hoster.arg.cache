@@ -1,0 +1,18 @@
+wre-restart:/data/wre/sbin/rc.webgui restartweb
+domain-home:/data/domains
+mysql-client:/data/wre/prereqs/mysql/bin/mysql
+mysqldump:/data/wre/prereqs/mysql/bin/mysqldump
+vh-home:/data/wre/etc
+vh-modperl-template:vh.modperl.template
+vh-modproxy-template:vh.modproxy.template
+awstats-configs:/data/wre/etc
+webgui-home:/data/WebGUI
+admin-db-user:root
+apache-user:nobody
+awstats-template:awstats.template.conf
+gateway-template:index.pl
+webgui-conf-template:webgui.conf.override
+chown:/bin/chown
+tar:/usr/bin/tar
+gzip:/usr/bin/gzip
+gunzip:/usr/bin/gunzip

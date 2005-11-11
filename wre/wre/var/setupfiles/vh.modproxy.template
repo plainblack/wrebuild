@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+	ServerName __sitename__
+	ServerAlias __domain__
+	CustomLog __domain-home__/__domain__/__hostname__/logs/access.log combined
+	DocumentRoot __domain-home__/__domain__/__hostname__/public
+	RewriteEngine On
+	RewriteLog "/data/wre/prereqs/apache/logs/modrewrite.log"
+	RewriteLogLevel 1
+	# block nimda attacks from getting to WebGUI
+	RewriteRule ^/scripts/ - [L]
+	RewriteRule ^/default.ida - [L]
+	RewriteRule ^/_vti_bin - [L]
+	RewriteRule ^/_mem_bin - [L] 
+	# leave static stuff to be served directly by modproxy
+    	RewriteRule ^/favicon.ico - [L]
+    	RewriteRule ^/extras/ - [L]
+    	RewriteRule ^/uploads/ - [L]
+	# proxy webgui pages
+    	RewriteRule ^/index.pl/(.*) http://__sitename__:81/index.pl/$1 [P]
+    	RewriteRule ^/(.*) http://__sitename__:81/index.pl/$1 [P]
+</VirtualHost>

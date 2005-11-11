@@ -1,0 +1,77 @@
+W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
+-----------------------------------------------------------------------
+
+0.5.1
+ - Added many of the new perl modules that will be required for WebGUI 6.8.
+
+0.5.0
+ - Added an upgrade system to the setup script, so that it is used both 
+   for initial installs and for upgrades
+ - Added the wremonitor script that checks to make sure the WRE services are
+   still responding and restarts them if they are not
+ - Various template tweaks
+ - Fixed a syntax error in logrotate
+ - Added support for compiling under Solaris
+ - fix [ 1274359 ] WRE: install.txt
+ - Upgraded to MySQL 4.1.14
+ - Upgraded to zlib 1.2.3
+ - Upgraded to Perl 5.8.7. This means that if you're upgrading an existing WRE
+   and you've installed custom Perl modules, you'll need to re-install them
+ - Upgraded to mod_perl 2.0.1
+ - Upgraded to FreeType 2.1.10
+ - Upgraded to Image Magick 6.2.4-6
+ - Fixed a bug in the webguiupdate script that wouldn't allow it to run
+   upgrades using the WRE version of MySQL
+ - Added start and stop web options to the service controller
+ - Added a backup utility.
+ - Added lftp 3.3.0 to support FTP based backups.
+ - Added a demo system so that anyone can set up a demo of WebGUI just like we
+   do on demo.plainblack.com
+
+0.4.1
+ - Added missing directive to enable mod_ssl to apache build.
+ - Bugfix - Apache won't run with SSL enabled
+ - rc.webgui now uses mysql rc script to start/stop database server  
+ - Fixed a few bugs in the setup script.
+ - Fixed a log rotation bug.
+ - Fixed an awstats config bug.
+ - Upgraded mod_perl to 2.0.0.
+ - Upgraded MySQL to 4.1.12.
+ - Upgraded Image Magick to 6.2.3-0.
+
+0.4.0
+ - Added support to build.sh for command line switches
+ - Moved clean.sh script into a function in build.sh
+ - Updated Apache to 2.0.54
+ - Updated OpenSSL to 0.9.7g
+ - Updated Image Magick to 6.2.2-3
+ - Added a webguiupdate script which is capable of downloading WebGUI from a mirror, installing it, and running upgrades on it.
+ - Added a setup script which initializes the WRE.
+ - Moved apache, awstats, mysql, perl, and image magick into /data/wre/prereqs to get them out of the way.
+ - Moved the awstats config files and apache virtual host config files into /data/wre/etc so they're easy to find if users need to edit them.
+ - Added a backup script.
+
+0.3.0
+ - Tuned some of the Apache directives for better efficiency.
+ - Added more perl modules to the build script to make the compile process ask less questions.
+ - Changed Apache to compile with the prefork MPM so that people who want to use mod_php can, and so we could use Apache2::SizeLimit
+ - Now using Apache2::SizeLimit rather than MaxRequestsPerChild to control process growth.
+ - Added mod_deflate to Apache to handle content compression.
+ - Removed a few modules from Apache for better security and performance.
+ - Added error checking to build.sh
+ - Added a CPAN shell script so users can install new Perl modules easily.
+ - Added a custom version of Compress::Zlib that uses the zlib library we use for everything else.
+ - Updated MySQL to 4.1.11.
+
+0.2.0
+ - First public beta release. Not for production use.
+ - Added built-in mod_proxy virtual hosts for speedier sites.
+ - Added log rotation.
+ - Changed rc.webgui to allow stopping and starting of individual services.
+ - Merged build scripts into a unified build script for all unices.
+ - Added AWStats.
+ - Added built in zlib and expat for better cross-platform compatibility.
+
+0.1.0
+ - First public alpha release. Not for production use.
+

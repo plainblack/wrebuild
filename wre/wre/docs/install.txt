@@ -1,0 +1,96 @@
+W E B G U I   R U N T I M E   E N V I R O N M E N T   I N S T A L L
+-------------------------------------------------------------------
+
+The instructions below should allow an experienced WRE admin to
+get WRE up and running quickly. For more online instructions visit
+http://www.plainblack.com/rwg/wre_install
+
+
+PRIOR TO INSTALLING
+
+The WRE  requires a Unix-style operating system, such as Linux.
+therefore you cannot use Windows. We recommend RHEL 3 or Mac OS X, 
+but it is not required.
+
+
+INSTALLING
+
+1. Unpack the archive.
+
+	tar xvfz wre-x.x.x-osname.tar.gz
+
+
+2. Move the resulting data folder to the root of your filesystem. 
+
+	mv data /
+
+
+3. Add a "mysql" user to the system. On most systems you run a 
+command similar to the following as the root user:
+
+	adduser -s /sbin/nologin mysql
+
+		or
+
+	useradd -s /sbin/nologin mysql
+
+
+4. If you have an existing Apache or MySQL running please shut them
+down now.
+
+
+5. If you have a MySQL config file at /etc/my.cnf please remove or
+rename it so that it doesn't interfere with the WRE MySQL.
+
+
+6. Run the setup program which will initialize the WRE for your
+system and download and install WebGUI.
+
+	cd /data/wre/sbin
+	./setup
+
+
+7. Start the WRE
+
+	cd /data/wre/sbin
+	./rc.webgui start
+
+
+8. Add the following cron jobs to your server's cron tab.
+
+	0 1 * * * /data/wre/sbin/logrotate
+	*/3 * * * * /data/wre/sbin/wremonitor
+	0 3 * * * /data/wre/sbin/backup
+
+If you want AWStats to be compiled nightly add this:
+
+	0 2 * * * /data/wre/prereqs/awstats/tools/awstats_updateall.pl now -awstatsprog=/data/wre/prereqs/awstats/wwwroot/awstats.pl -configdir=/data/wre/etc
+
+If you are using the demo system then add this:
+
+	0 0 * * * /data/wre/sbin/democleanup
+
+
+9. Add a site.
+
+	cd /data/wre/sbin
+	./addsite --admin-db-pass=YOURPASSWORD --sitename=www.example.com
+
+
+
+
+PLATFORM SPECIFIC NOTES
+-----------------------
+
+Red Hat Linux
+
+This note applies to all linux' that use chkconfig to setup services. These
+include RHEL, Fedora, Mandrake, SuSE, CentOS, and others. You can set up the
+WRE to start automatically at system boot by running the following commands
+after the WRE is installed:
+
+ln -s /data/wre/sbin/rc.webgui /etc/init.d/webgui
+chkconfig --add webgui
+chkconfig webgui on
+
+

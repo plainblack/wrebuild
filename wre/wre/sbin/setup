@@ -1,0 +1,312 @@
+#!/data/wre/prereqs/perl/bin/perl
+
+use lib '/data/wre/lib';
+use strict;
+use warnings;
+use DBI;
+use Parse::PlainConfig;
+use File::Path;
+
+our $mysqlRootPassword;
+my $setupType = startup();
+setupWre($setupType);
+setupApache($setupType);
+setupAwstats($setupType);
+setupMysql($setupType);
+setupMonitors($setupType);
+setupBackups($setupType);
+setupWebgui($setupType);
+setupDemo($setupType);
+printMessage("Setup Complete!");
+
+#----------------------------------------
+sub setupApache {
+	printMessage("Configuring Apache...");
+	copyFile("/data/wre/var/setupfiles/httpd.modperl.conf", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");
+	copyFile("/data/wre/var/setupfiles/startup.pl", "/data/wre/prereqs/apache/conf/startup.pl");
+	copyFile("/data/wre/var/setupfiles/httpd.modproxy.conf", "/data/wre/prereqs/apache/conf/httpd.modproxy.conf");
+	copyFile("/data/wre/var/setupfiles/vh.modperl.template", "/data/wre/var/vh.modperl.template");
+	copyFile("/data/wre/var/setupfiles/vh.modproxy.template", "/data/wre/var/vh.modproxy.template");
+}
+
+#----------------------------------------
+sub getMysqlRootPassword {
+	unless ($mysqlRootPassword) {
+		$mysqlRootPassword = prompt("Please specifiy your MySQL root password:");
+	}
+	return $mysqlRootPassword;
+}
+
+#----------------------------------------
+sub setupDemo {
+        my $setupType = shift;
+        if (-f "/data/domains/demo/public/index.pl") {
+                printMessage("Updating WRE Demo...");
+                copyDemoFiles();
+        } elsif (prompt("Do you want to configure the WRE demo system?","n","y","n") eq "y") {
+                copyDemoFiles();
+		my $pw = prompt("What would you like the demo admin password to be?");
+       		system("/data/wre/sbin/rc.webgui startmysql");
+       		sleep 4;         #wait for mysql to start up
+		my $dbh = DBI->connect("DBI:mysql:mysql","root",getMysqlRootPassword());
+		$dbh->do("grant all privileges on *.* to demoadmin\@localhost identified by '".$pw."' with grant option");
+		$dbh->disconnect;
+       		system("/data/wre/sbin/rc.webgui stopmysql");
+		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/demo.conf', 'PURGE' => 1);
+		$config->set(adminpass=> $pw);
+		$config->write;
+		my $sudo = "sudo " unless ($< == 0);
+		system("mkdir -p /data/domains/demo");
+		printMessage("Enter your sudo password:") if ($sudo);
+		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo") {
+			system($sudo.$_);
+		}
+                my $site = prompt("What sitename will you use for the demo (like demo.example.com)?");
+                open(FILE,"</data/wre/var/setupfiles/demo.modproxy");
+                my $fileContents;
+                while(my $line = <FILE>) {
+                        if ($line =~ /ServerName/) {
+                                $line = "\tServerName ".$site."\n";
+			} elsif ($line =~ /ProxyPass/) {
+				$line = "\tProxyPass / http://".$site.":81/\n";
+                        }
+                        $fileContents .= $line;
+                }
+                close(FILE);
+                open(FILE,">/data/wre/etc/demo.modproxy");
+                print FILE $fileContents;
+                close(FILE);
+                open(FILE,"</data/wre/var/setupfiles/demo.modperl");
+                $fileContents = "";
+                while(my $line = <FILE>) {
+                        if ($line =~ /ServerName/) {
+                                $line = "\tServerName ".$site."\n";
+                        }
+                        $fileContents .= $line;
+                }
+                close(FILE);
+                open(FILE,">/data/wre/etc/demo.modperl");
+                print FILE $fileContents;
+                close(FILE);
+                printMessage("Add the following line to your cronjobs:\n\n0 0 * * * /data/wre/sbin/democleanup\n\n");
+        }
+}
+
+#----------------------------------------
+sub copyDemoFiles {
+        copyFile("/data/wre/var/setupfiles/demo.conf", "/data/wre/etc/demo.conf");
+	mkpath("/data/domains/demo");
+        copyFile("/data/wre/var/setupfiles/demo.index.pl", "/data/domains/demo/index.pl");
+}
+
+#----------------------------------------
+sub setupAwstats {
+	my $setupType = shift;
+	if (-f "/data/wre/var/awstats.template.conf") {
+		printMessage("Updating AWStats...");
+		copyAwstatsFiles();
+	} elsif (prompt("Do you want to configure the WRE web stats system?","y","y","n") eq "y") {
+		copyAwstatsFiles();
+		my $site = prompt("What sitename will you use for web stats (like stats.example.com)?");
+		open(FILE,"</data/wre/var/setupfiles/stats.modproxy");
+		my $fileContents;
+		while(my $line = <FILE>) {
+			if ($line =~ /ServerName/) {
+				$line = "\tServerName ".$site."\n";
+			}
+			$fileContents .= $line;
+		}
+		close(FILE);
+		open(FILE,">/data/wre/etc/stats.modproxy");
+		print FILE $fileContents;
+		close(FILE);
+		printMessage("Add the following line to your cronjobs:\n\n0 2 * * * /data/wre/prereqs/awstats/tools/awstats_updateall.pl now -awstatsprog=/data/wre/prereqs/awstats/wwwroot/awstats.pl -configdir=/data/wre/etc\n\n");
+	}
+}
+
+#----------------------------------------
+sub copyAwstatsFiles {
+	copyFile("/data/wre/var/setupfiles/awstats.template.conf", "/data/wre/var/awstats.template.conf");
+}
+
+#----------------------------------------
+sub setupMysql {
+	my $setupType = shift;
+	printMessage("Configuring MySQL...");
+	copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
+	if ($setupType eq "install") {
+		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
+        	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db");
+		system("chown -R mysql /data/wre/prereqs/mysql/var");
+        	system("/data/wre/sbin/rc.webgui startmysql");
+        	sleep 4;         #wait for mysql to start up
+		my $dbh = DBI->connect("DBI:mysql:mysql","root");
+		$dbh->do("delete from user where user=''");
+		my $rootpw = prompt("What would you like the MySQL root password to be?");
+		$mysqlRootPassword = $rootpw;
+		$dbh->do("update user set password=password('".$rootpw."') where user='root'");
+		$dbh->do("flush privileges");
+		$dbh->disconnect;
+        	system("/data/wre/sbin/rc.webgui stopmysql");
+	}
+}
+
+#----------------------------------------
+sub setupWre {
+	my $setupType = shift;
+	printMessage("Configuring the WRE...");
+	copyFile("/data/wre/var/setupfiles/hoster.arg.cache", "/data/wre/var/hoster.arg.cache");
+	copyFile("/data/wre/var/setupfiles/logrotate.conf", "/data/wre/etc/logrotate.conf");
+}
+
+#----------------------------------------
+sub setupMonitors {
+	my $setupType = shift;
+	printMessage("Configuring monitors...");
+	unless (-f "/data/wre/etc/wremonitor.conf") {
+       		system("/data/wre/sbin/rc.webgui startmysql");
+       		sleep 4;         #wait for mysql to start up
+		my $dbh = DBI->connect("DBI:mysql:mysql","root",getMysqlRootPassword());
+		$dbh->do("grant all privileges on test.* to test\@localhost identified by 'test'");
+		$dbh->disconnect;
+       		system("/data/wre/sbin/rc.webgui stopmysql");
+	}
+	copyFile("/data/wre/var/setupfiles/wremonitor.conf", "/data/wre/etc/wremonitor.conf");
+}
+
+#----------------------------------------
+sub setupBackups {
+	my $setupType = shift;
+	printMessage("Configuring backups...");
+	copyFile("/data/wre/var/setupfiles/backup.exclude", "/data/wre/etc/backup.exclude");
+	if (-f "/data/wre/etc/backup.conf") {
+		copyFile("/data/wre/var/setupfiles/backup.conf", "/data/wre/etc/backup.conf");
+	} else {
+		copyFile("/data/wre/var/setupfiles/backup.conf", "/data/wre/etc/backup.conf");
+		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/backup.conf', 'PURGE' => 1);
+		my $backuppw = prompt("What would you like the database backup password to be?");
+       		system("/data/wre/sbin/rc.webgui startmysql");
+       		sleep 4;         #wait for mysql to start up
+		my $dbh = DBI->connect("DBI:mysql:mysql","root",getMysqlRootPassword());
+		$dbh->do("grant select, lock tables, show databases on *.* to backup\@localhost identified by '".$backuppw."'");
+		$dbh->disconnect;
+       		system("/data/wre/sbin/rc.webgui stopmysql");
+		$config->set(mysqlpass=> $backuppw);
+		$config->set(backupDir => prompt("Specify the path to backup the WRE and WebGUI data files to:","/backup"));
+		if (prompt("Do you want to copy your backups to an FTP server?","n","y","n") eq "y") {
+			$config->set(backupToFtp => 1);
+			$config->set(ftphost => prompt("Specify the name of the server you want to copy to:"));
+			$config->set(ftpuser => prompt("Specify the FTP user:"));
+			$config->set(ftppass => prompt("Specify the FTP password:"));
+			$config->set(ftppath => prompt("Specify the path on the FTP server to copy to:", "/backup"));
+			$config->set(ftpCopiesToKeep => prompt("How many days worth of backups should be kept on the FTP server?", "3"));
+		}
+		$config->write;
+	}
+}
+
+#----------------------------------------
+sub setupWebgui {
+	printMessage("Configuring WebGUI...");
+	copyFile("/data/wre/var/setupfiles/index.pl", "/data/wre/var/index.pl");
+	copyFile("/data/wre/var/setupfiles/webgui.conf.override", "/data/wre/var/webgui.conf.override");
+	if ($setupType eq "install") {
+		system("/data/wre/sbin/webguiupdate");
+		copyFile("/data/WebGUI/etc/log.conf.original", "/data/WebGUI/etc/log.conf");
+	}
+}
+
+
+#----------------------------------------
+sub startup {
+	printTest("Checking for existing install...");
+	my ($old, $new);
+	if (open(FILE,"</data/wre/var/version.txt")) {
+		$old = <FILE>;
+		close(FILE);
+	}
+	if (open(FILE,"</data/wre/var/setupfiles/version.txt")) {
+		$new = <FILE>;
+		close(FILE);
+	}
+	my $type;
+        if ($old eq $new) {
+                $type = "done"; # already upgraded
+		if (prompt("You've already run setup for this WRE version! Would you like to run setup again?","n","y","n") eq "y") {
+			$type = "upgrade";
+		} else {
+			exit;
+		}
+        } elsif (-f "/data/wre/var/hoster.arg.cache" || $old ne "") {
+                $type = "upgrade"; # must upgrade
+		printResult("Looks like we need to upgrade.");
+        } else {
+                $type = "install"; # new install
+		printResult("Looks like a new install.");
+        }
+	system("cp -f /data/wre/var/setupfiles/version.txt /data/wre/var/version.txt");
+	return $type;
+}
+
+#----------------------------------------
+sub failAndExit {
+        my $exitmessage = shift;
+        print $exitmessage."\n\n";
+        exit;
+}
+
+#----------------------------------------
+sub isIn {
+        my $key = shift;
+        $_ eq $key and return 1 for @_;
+        return 0;
+}
+
+#----------------------------------------
+sub printTest {
+        my $test = shift;
+        print sprintf("%-45s", $test.": ");
+}
+
+#----------------------------------------
+sub printMessage {
+        my $message = shift;
+        print "$message\n";
+}
+
+#----------------------------------------
+sub printResult {
+        my $result = shift || "OK";
+        print "$result\n";
+}
+
+#----------------------------------------
+sub prompt {
+        my $question = shift;
+        my $default = shift;
+        my @answers = @_; # the rest are answers
+        print "\n".$question." ";
+        print "{".join("|",@answers)."} " if ($#answers > 0);
+        print "[".$default."] " if (defined $default);
+        my $answer = <STDIN>;
+        chomp $answer;
+        $answer = $default if ($answer eq "");
+        $answer = prompt($question,$default,@answers) if (($#answers > 0 && !(isIn($answer,@answers))) || $answer eq "");
+        return $answer;
+}
+
+#----------------------------------------
+sub copyFile {
+	my $from = shift;
+	my $to = shift;
+	if ( -f $to) {
+		my @tomd5 = split(" ",`/data/wre/sbin/md5sum $to`);
+		my @frommd5 = split(" ",`/data/wre/sbin/md5sum $from`);
+		unless ($tomd5[0] eq $frommd5[0]) {
+			print "$to is different than the original version $from, you may want to compare them and make the appropriate changes to $to.\n";
+		}
+	} else {
+		system("cp $from $to");
+	}	
+}
+

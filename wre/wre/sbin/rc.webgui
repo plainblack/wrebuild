@@ -1,0 +1,215 @@
+#!/bin/bash
+# chkconfig: 2345 90 60
+# description: Start and stop WebGUI (WRE) related services
+# processname: wre
+
+mysqlhome="/data/wre/prereqs/mysql"
+apachehome="/data/wre/prereqs/apache"
+. /data/wre/sbin/setenvironment
+
+startmysql(){
+	$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
+	ret=$?
+	if [ $ret -eq 0 ]; then
+	    	echo MySQL Started
+	else
+    	    	echo MySQL failed to start!
+	fi
+	return $ret
+}
+
+stopmysql(){
+	echo Stopping MySQL
+	if [ $EUID -eq 0 ]; then
+		 $mysqlhome/share/mysql/mysql.server stop
+	else
+		echo Enter your sudo password
+		sudo $mysqlhome/share/mysql/mysql.server stop
+	fi
+	ret=$?
+	if [ $ret -eq 0 ]; then
+		echo MySQL Stopped
+	else
+		echo MySQL failed to stop!
+	fi
+	return $ret
+}
+
+startmodperl(){
+	if [ $EUID -eq 0 ]; then
+		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start >/dev/null 2>&1
+	else
+		echo Enter your sudo password
+		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start >/dev/null 2>&1
+	fi
+	ret=$?
+	if [ $ret -eq 0 ]; then
+	    	echo mod_perl Started
+	else
+    	    	echo mod_perl failed to start!
+	fi
+	return $ret
+}
+
+stopmodperl(){
+	if [ $EUID -eq 0 ]; then
+		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
+	else
+		echo Enter your sudo password
+		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
+	fi
+	ret=$?
+	if [ $ret -eq 0 ]; then
+		echo mod_perl Stopped
+	else
+		echo mod_perl failed to stop!
+	fi
+	return $ret
+}
+
+startmodproxy(){
+	if [ $EUID -eq 0 ]; then
+		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start >/dev/null 2>&1
+	else
+		echo Enter your sudo password
+		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start >/dev/null 2>&1
+	fi
+	ret=$?
+	if [ $ret -eq 0 ]; then
+	    	echo mod_proxy Started
+	else
+    	    	echo mod_proxy failed to start!
+	fi
+	return $ret
+}
+
+stopmodproxy(){
+	if [ $EUID -eq 0 ]; then
+		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
+	else
+		echo Enter your sudo password
+		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
+	fi
+	ret=$?
+	if [ $ret -eq 0 ]; then
+		echo mod_proxy Stopped
+	else
+		echo mod_proxy failed to stop!
+	fi
+	return $ret
+}
+
+start(){
+	startmysql
+	startmodperl
+	sleep 2
+	startmodproxy
+}
+
+stop(){
+	stopmodproxy
+	stopmodperl
+	stopmysql
+}
+
+restart(){
+	stop
+	sleep 3
+	start
+}
+
+stopweb(){
+	stopmodproxy
+    	stopmodperl
+}
+
+startweb(){
+    	startmodperl
+ 	sleep 1
+	startmodproxy
+}
+
+restartweb(){
+	stopweb
+    	sleep 3
+	startweb
+}
+
+restartmodperl(){
+    	stopmodperl
+    	sleep 3
+    	startmodperl
+}
+
+restartmodproxy(){
+    	stopmodproxy
+    	sleep 3
+    	startmodproxy
+}
+
+restartmysql(){
+    	stopmysql
+	sleep 3
+    	startmysql
+}
+
+
+# See how we were called.
+case "$1" in
+  	start)
+    		start
+    	;;
+  	stop)
+    		stop
+    	;;
+  	restart)
+    		restart
+    	;;
+  	startmysql)
+    		startmysql
+    	;;
+  	stopmysql)
+    		stopmysql
+    	;;
+  	restartmysql)
+    		restartmysql
+    	;;
+  	startweb)
+    		startweb
+    	;;
+  	stopweb)
+    		stopweb
+    	;;
+  	restartweb)
+    		restartweb
+    	;;
+  	startmodperl)
+    		startmodperl
+    	;;
+  	stopmodperl)
+    		stopmodperl
+    	;;
+  	restartmodperl)
+    		restartmodperl
+    	;;
+  	startmodproxy)
+    		startmodproxy
+    	;;
+  	stopmodproxy)
+    		stopmodproxy
+    	;;
+  	restartmodproxy)
+    		restartmodproxy
+    	;;
+  	*)
+		echo $"WRE Service Controller"
+    		echo $"Usage:"
+		echo $"	$0 { start | stop | restart }"
+		echo $"	$0 { startweb | stopweb | restartweb }"
+    		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
+    		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
+    		echo $"	$0 { startmysql | stopmysql | restartmysql }"
+    		exit 1
+esac
+
+exit $?

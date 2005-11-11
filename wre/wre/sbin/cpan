@@ -1,0 +1,4 @@
+#!/bin/sh
+. /data/wre/sbin/setenvironment
+echo $PATH
+perl -MCPAN -e shell
