@@ -3,5 +3,5 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C R E D I T S
 
 WRE Core.............................JT Smith / Plain Black
 
-Contributing Developers..............Roy Johnson / Sparton
+Contributing Developers..............Roy Johnson / Ocean View Web Creations
 

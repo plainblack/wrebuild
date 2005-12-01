@@ -222,6 +222,7 @@ installPerlModules(){
 	perl -MCPAN -e 'install("DateTime::TimeZone")'
 	perl -MCPAN -e 'install("Time::Local")'
 	perl -MCPAN -e 'install("Test::More")'
+	perl -MCPAN -e 'install("Pod::Coverage")'
 	perl -MCPAN -e 'install("Pod::Man")'
 	perl -MCPAN -e 'install("Module::Build")'
 	perl -MCPAN -e 'install("Params::Validate")'
@@ -242,6 +243,7 @@ installPerlModules(){
 	perl -MCPAN -e 'install("HTML::Highlight")'
 	perl -MCPAN -e 'install("HTML::TagFilter")'
 	perl -MCPAN -e 'install("IO::String")'
+	perl -MCPAN -e 'install("Archive::Zip")'
 	perl -MCPAN -e 'install("Archive::Tar")'
 	perl -MCPAN -e 'install("XML::NamespaceSupport")'
 	perl -MCPAN -e 'install("XML::SAX")'
@@ -252,6 +254,8 @@ installPerlModules(){
 	perl -MCPAN -e 'force("install","DBD::mysql")'
 	perl -MCPAN -e 'install("Convert::ASN1")'
 	perl -MCPAN -e 'install("Authen::SASL")'
+	perl -MCPAN -e 'install("Finance::Quote")'
+	perl -MCPAN -e 'install("JSON")'
 	cd ../netssleay
 	perl Makefile.PL /data/wre/prereqs/utils; checkError $? "Net::SSLeay Makefile.PL"
 	make; checkError $? "Net:::SSLeay make"
@@ -261,6 +265,7 @@ installPerlModules(){
 	perl -MCPAN -e 'install("Log::Log4perl")'
 	perl -MCPAN -e 'install("POE")'
 	perl -MCPAN -e 'install("POE::Component::IKC::Server")'
+	perl -MCPAN -e 'install("POE::Component::JobQueue")'
 	perl -MCPAN -e 'install("Parse::RecDescent")'
 	perl -MCPAN -e 'force("install","DBIx::FullTextSearch")'
 	cd $BUILDDIR
