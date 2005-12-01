@@ -56,7 +56,7 @@ sub setupDemo {
 		$config->set(adminpass=> $pw);
 		$config->write;
 		my $sudo = "sudo " unless ($< == 0);
-		system("mkdir -p /data/domains/demo");
+		system($sudo."mkdir -p /data/domains/demo");
 		printMessage("Enter your sudo password:") if ($sudo);
 		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo") {
 			system($sudo.$_);
@@ -95,8 +95,6 @@ sub setupDemo {
 #----------------------------------------
 sub copyDemoFiles {
         copyFile("/data/wre/var/setupfiles/demo.conf", "/data/wre/etc/demo.conf");
-	mkpath("/data/domains/demo");
-        copyFile("/data/wre/var/setupfiles/demo.index.pl", "/data/domains/demo/index.pl");
 }
 
 #----------------------------------------
