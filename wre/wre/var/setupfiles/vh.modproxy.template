@@ -16,6 +16,5 @@
     	RewriteRule ^/extras/ - [L]
     	RewriteRule ^/uploads/ - [L]
 	# proxy webgui pages
-    	RewriteRule ^/index.pl/(.*) http://__sitename__:81/index.pl/$1 [P]
-    	RewriteRule ^/(.*) http://__sitename__:81/index.pl/$1 [P]
+    	RewriteRule ^/(.*) http://__sitename__:81/$1 [P]
 </VirtualHost>
