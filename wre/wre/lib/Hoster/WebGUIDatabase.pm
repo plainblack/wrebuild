@@ -12,10 +12,10 @@ sub create {
 	if ($opts->{'admin-db-pass'}) {
 		$cmd .= ' -p'.$opts->{'admin-db-pass'};
 	}
-	$cmd .= ' -e "create database '.$opts->{'db-name'}.'; grant all privileges on '.$opts->{'db-name'}
+	$cmd .= ' --host='.$opts->{'db-host'}.' -e "create database '.$opts->{'db-name'}.'; grant all privileges on '.$opts->{'db-name'}
 		.'.* to '.$opts->{'site-db-user'}.'@localhost identified by \''.$opts->{'site-db-pass'}.'\'"';
 	system($cmd);
-	$cmd = $opts->{'mysql-client'}.' -D '.$opts->{'db-name'};
+	$cmd = $opts->{'mysql-client'}.' --host='.$opts->{'db-host'}.' -D '.$opts->{'db-name'};
 	if ($opts->{'site-db-user'}) {
 		$cmd .= ' -u'.$opts->{'site-db-user'};
 	}
@@ -36,7 +36,7 @@ sub destroy {
 	if ($opts->{'admin-db-pass'}) {
 		$cmd .= ' -p'.$opts->{'admin-db-pass'};
 	}
-	$cmd .= ' -e "drop database '.$opts->{'db-name'}.'; use mysql; delete from user where user=\''.$opts->{'site-db-user'}
+	$cmd .= ' --host='.$opts->{'db-host'}.' -e "drop database '.$opts->{'db-name'}.'; use mysql; delete from user where user=\''.$opts->{'site-db-user'}
 		.'\'; delete from db where user=\''.$opts->{'site-db-user'}.'\'"';
 	system($cmd);
 }

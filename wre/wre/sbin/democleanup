@@ -9,7 +9,7 @@ opendir(DIR,"/data/domains/demo");
 my @files = readdir(DIR);
 closedir(DIR);
 
-my $dbh = DBI->connect("DBI:mysql:test",$config->get("adminuser"),$config->get("adminpass"));
+my $dbh = DBI->connect("DBI:mysql:test;host=".$config->get("mysqlhost"),$config->get("adminuser"),$config->get("adminpass"));
 foreach my $file (@files) {
 	next if (!($file =~ /\.pl$/) || $file eq "index.pl");
 	my $demoId = $file;

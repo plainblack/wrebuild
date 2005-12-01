@@ -16,9 +16,6 @@ sub handler {
 	my $id = $r->uri;
 	$id =~ s/^\/(demo[0-9\_]+).*$/$1/;
 	if ($sites->{$id}) {
-	#if ($id ne "") {
-               # $r->set_handlers(PerlResponseHandler => \&gotHere);
-               # $r->set_handlers(PerlTransHandler => sub { return Apache2::Const::OK });
 		return WebGUI::handler($r,$id.".conf");
 	} elsif ($r->uri =~ /^\/extras/) {
 		# just pass it on thru
@@ -84,7 +81,7 @@ sub createConfig {
                 'FILE' => '/data/WebGUI/etc/WebGUI.conf.original',
                 'PURGE' => 1);
         $config->set(
-                dsn => "DBI:mysql:".$demoId,
+                dsn => "DBI:mysql:".$demoId.";host=".$config->get("mysqlhost"),
                 dbuser => "demo",
                 dbpass => "demo",
                 sitename => "demo",
@@ -106,12 +103,12 @@ sub createDatabase {
 	my $r = shift;
         my $demoId = shift;
 	my $config = $r->pnotes('masterDemoConfig');
-        my $dbh = DBI->connect("DBI:mysql:test",$config->get("adminuser"),$config->get("adminpass"));
+        my $dbh = DBI->connect("DBI:mysql:test;host=".$config->get("mysqlhost"),$config->get("adminuser"),$config->get("adminpass"));
         $dbh->do("create database ".$demoId);
         $dbh->do("grant all privileges on ".$demoId.".* to demo\@localhost identified by 'demo'");
         $dbh->do("flush privileges");
         $dbh->disconnect;
-        system("/data/wre/prereqs/mysql/bin/mysql -udemo -pdemo ".$demoId." < ".$config->get("createScript"));
+        system("/data/wre/prereqs/mysql/bin/mysql --host=".$config->get("mysqlhost")." -udemo -pdemo ".$demoId." < ".$config->get("createScript"));
 }
 
 

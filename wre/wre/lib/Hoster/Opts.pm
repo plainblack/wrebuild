@@ -30,6 +30,7 @@ sub get {
 		'vh-modperl-template=s'=>\$arg{'vh-modperl-template'},
 		'vh-modproxy-template=s'=>\$arg{'vh-modproxy-template'},
 		'webgui-conf-template=s'=>\$arg{'webgui-conf-template'},
+		'db-host=s'=>\$arg{'db-host'},
 		'webgui-home=s'=>\$arg{'webgui-home'},
 		'admin-db-pass=s'=>\$flag{'admin-db-pass'},
 		'help'=>\$flag{help},

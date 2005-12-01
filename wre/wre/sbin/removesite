@@ -41,6 +41,8 @@ Options:
 	--admin-db-user		The database user that has rights to drop 
 				databases and revoke privileges. Defaults to "$opts->{'admin-db-user'}".
 
+	--db-host		Your database host. Defaults to "$opts->{'db-host'}".
+
 	--help			Displays this message.
 
 	--no-cache		Do not write configuration options to the cache.

@@ -12,7 +12,7 @@ my $tar = $config->get("tar");
 my $rotate = $config->get("rotateBackups");
 
 rotateBackupFiles($rotate,$backupDir) if ($rotate);
-backupMysql($config->get("mysqluser"),$config->get("mysqlpass"),$backupDir) if ($config->get("backupMysql"));
+backupMysql($config->get("mysqluser"),$config->get("mysqlpass"),$backupDir,$config->get("mysqlhost")) if ($config->get("backupMysql"));
 backupDomains($tar,$backupDir) if ($config->get("backupDomains"));
 backupWebgui($tar,$backupDir) if ($config->get("backupWebgui"));
 backupWre($tar,$backupDir) if ($config->get("backupWre"));
@@ -121,13 +121,14 @@ sub backupMysql {
 	my $user = shift;
 	my $pass = shift;
 	my $backupDir = shift;
-	my $dbh = DBI->connect("DBI:mysql:mysql",$user,$pass);
+	my $host = shift;
+	my $dbh = DBI->connect("DBI:mysql:mysql;host=".$host,$user,$pass);
 	my $sth = $dbh->prepare("show databases");
 	$sth->execute;
 	while (my ($name) = $sth->fetchrow_array) {
 		next if ($name =~ /^demo\d/);
 		next if ($name =~ /^test$/);
-		system("/data/wre/prereqs/mysql/bin/mysqldump -u".$user." -p".$pass." ".$name." > $backupDir/".$name.".sql");
+		system("/data/wre/prereqs/mysql/bin/mysqldump --host=".$host." -u".$user." -p".$pass." ".$name." > $backupDir/".$name.".sql");
 	}
 	$sth->finish;
 	$dbh->disconnect;

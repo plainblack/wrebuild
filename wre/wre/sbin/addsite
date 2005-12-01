@@ -58,6 +58,8 @@ Options:
 	--chown			The path to your system's chown script. Defaults to
 				"$opts->{'chown'}".
 
+	--db-host		Your database host. Defaults to "$opts->{'db-host'}".
+
 	--gateway-template	The name of the file to use as a template for the WebGUI
 				gateway application. Defaults to "$opts->{'gateway-template'}".
 

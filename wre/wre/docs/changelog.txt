@@ -5,6 +5,13 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added a bunch of perl modules that are required for WebGUI 6.8.
  - Made the WRE compatible with WebGUI 6.8 (Note, you CANNOT use WRE 0.6.0
    above with any version of WebGUI below 6.8.0.
+ - Upgraded to MySQL 5.0.16.
+ - Upgraded ImageMagick to 6.2.5-5.
+ - Upgraded libungif to 4.1.4.
+ - Upgraded lftp to 3.3.4.
+ - Upgraded openssl to 0.9.7i.
+ - Upgraded Apache to 2.0.55.
+ - Upgraded mod_perl to 2.0.2.
 
 0.5.0
  - Added an upgrade system to the setup script, so that it is used both 

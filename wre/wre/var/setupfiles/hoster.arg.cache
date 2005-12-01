@@ -6,6 +6,7 @@ vh-home:/data/wre/etc
 vh-modperl-template:vh.modperl.template
 vh-modproxy-template:vh.modproxy.template
 awstats-configs:/data/wre/etc
+db-host:localhost
 webgui-home:/data/WebGUI
 admin-db-user:root
 apache-user:nobody
