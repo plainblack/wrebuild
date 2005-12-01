@@ -6,13 +6,6 @@ use Parse::PlainConfig;
 use String::Random qw(random_string);
 
 #------------------------------
-sub backup {
-	my ($opts) = @_;
-	system("cp ".$opts->{'webgui-home'}.'/etc/'.$opts->{sitename}.'.conf '.$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/backups/'.$opts->{sitename}.'.conf');
-	system($opts->{gzip}.' '.$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/backups/'.$opts->{sitename}.'.conf');
-}
-
-#------------------------------
 sub create {
 	my ($opts) = @_;
 	my $tempFile = $opts->{'hoster-home'}.'/var/'.random_string("ccccnnncccnnncccnncnccc").".tmp";

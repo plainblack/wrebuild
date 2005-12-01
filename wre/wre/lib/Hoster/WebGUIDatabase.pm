@@ -3,21 +3,6 @@ package Hoster::WebGUIDatabase;
 use strict;
 
 #------------------------------
-sub backup {
-	my ($opts) = @_;
-	my $cmd = $opts->{'mysql-client'};
-	if ($opts->{'admin-db-user'}) {
-		$cmd .= ' -u'.$opts->{'admin-db-user'};
-	}
-	if ($opts->{'admin-db-pass'}) {
-		$cmd .= ' -p'.$opts->{'admin-db-pass'};
-	}
-	$cmd .= ' -D '.$opts->{'db-name'}.' > '.$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/backups/db.sql';
-	system($cmd);
-	system($opts->{gzip}.' '.$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/backups/db.sql');
-}
-
-#------------------------------
 sub create {
 	my ($opts) = @_;
 	my $cmd = $opts->{'mysql-client'};
