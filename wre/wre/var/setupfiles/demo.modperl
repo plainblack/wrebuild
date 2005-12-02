@@ -1,7 +1,7 @@
 <VirtualHost *:81>
 	ServerName demo.example.com
 	DocumentRoot /data/domains/demo
-        PerlRequire /data/wre/lib/WebGUI/Demo.pm
+        PerlRequire /data/wre/lib/Hoster/WebGUIDemo.pm
         SetHandler perl-script
-        PerlInitHandler WebGUI::Demo
+        PerlInitHandler Hoster::WebGUIDemo
 </VirtualHost>

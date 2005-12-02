@@ -73,7 +73,7 @@ sub getMysqlRootPassword {
 #----------------------------------------
 sub setupDemo {
         my $setupType = shift;
-        if (-f "/data/domains/demo/public/index.pl") {
+        if (-f "/data/wre/etc/demo.conf") {
                 printMessage("Updating WRE Demo...");
                 copyDemoFiles();
         } elsif (prompt("Do you want to configure the WRE demo system?","n","y","n") eq "y") {
@@ -92,7 +92,7 @@ sub setupDemo {
 		my $sudo = "sudo " unless ($< == 0);
 		printMessage("Enter your sudo password:") if ($sudo);
 		system($sudo."mkdir -p /data/domains/demo");
-		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo") {
+		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo", "chown nobody /data/wre/demo.conf") {
 			system($sudo.$_);
 		}
                 my $site = prompt("What sitename will you use for the demo (like demo.example.com)?");
@@ -249,7 +249,6 @@ sub setupBackups {
 #----------------------------------------
 sub setupWebgui {
 	printMessage("Configuring WebGUI...");
-	copyFile("/data/wre/var/setupfiles/index.pl", "/data/wre/var/index.pl");
 	copyFile("/data/wre/var/setupfiles/webgui.conf.override", "/data/wre/var/webgui.conf.override");
 	if ($setupType eq "install") {
 		system("/data/wre/sbin/webguiupdate");

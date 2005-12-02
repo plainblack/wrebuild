@@ -66,6 +66,7 @@ my @modules = (
 	{ module=>"String::CRC32" },
 	{ module=>"Cache::Memcached" },
 	{ module=>"ExtUtils::XSBuilder::ParseSource" },
+	{ module=>"trace" },
 	);
 
 for $module (@modules) {
