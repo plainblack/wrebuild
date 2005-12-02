@@ -8,6 +8,8 @@ use Parse::PlainConfig;
 use File::Path;
 
 our $mysqlRootPassword;
+our $mysqlRootUser;
+our $mysqlHost;
 my $setupType = startup();
 setupWre($setupType);
 setupApache($setupType);
@@ -17,7 +19,7 @@ setupMonitors($setupType);
 setupBackups($setupType);
 setupWebgui($setupType);
 setupDemo($setupType);
-printMessage("Setup Complete!");
+printMessage("Setup Complete! Now you need to start the WRE and add your first site.");
 
 #----------------------------------------
 sub setupApache {
@@ -30,9 +32,40 @@ sub setupApache {
 }
 
 #----------------------------------------
+sub startMysql {
+	if (getMysqlHost() eq "localhost") {
+       		system("/data/wre/sbin/rc.webgui startmysql");
+       		sleep 4;         #wait for mysql to start up
+	}
+}
+
+#----------------------------------------
+sub stopMysql {
+	if (getMysqlHost() eq "localhost") {
+       		system("/data/wre/sbin/rc.webgui stopmysql");
+	}
+}
+
+#----------------------------------------
+sub getMysqlHost {
+	unless ($mysqlHost) {
+		$mysqlHost = prompt("Please specifiy the host where MySQL resides:","localhost");
+	}
+	return $mysqlHost;
+}
+
+#----------------------------------------
+sub getMysqlRootUser {
+	unless ($mysqlRootUser) {
+		$mysqlRootUser = prompt("Please specifiy your MySQL administratrative username:","root");
+	}
+	return $mysqlRootUser;
+}
+
+#----------------------------------------
 sub getMysqlRootPassword {
 	unless ($mysqlRootPassword) {
-		$mysqlRootPassword = prompt("Please specifiy your MySQL root password:");
+		$mysqlRootPassword = prompt("Please specifiy the MySQL password for the ".getMysqlRootUser()." user:");
 	}
 	return $mysqlRootPassword;
 }
@@ -46,14 +79,15 @@ sub setupDemo {
         } elsif (prompt("Do you want to configure the WRE demo system?","n","y","n") eq "y") {
                 copyDemoFiles();
 		my $pw = prompt("What would you like the demo admin password to be?");
-       		system("/data/wre/sbin/rc.webgui startmysql");
-       		sleep 4;         #wait for mysql to start up
-		my $dbh = DBI->connect("DBI:mysql:mysql","root",getMysqlRootPassword());
-		$dbh->do("grant all privileges on *.* to demoadmin\@localhost identified by '".$pw."' with grant option");
+		startMysql();
+		my $dbh = DBI->connect("DBI:mysql:mysql;host=".getMysqlHost(),getMysqlRootUser(),getMysqlRootPassword());
+		my $from = getMysqlHost() eq "localhost" ? "localhost" : "%";
+		$dbh->do("grant all privileges on *.* to demoadmin\@'".$from."' identified by '".$pw."' with grant option");
 		$dbh->disconnect;
-       		system("/data/wre/sbin/rc.webgui stopmysql");
+		stopMysql();
 		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/demo.conf', 'PURGE' => 1);
 		$config->set(adminpass=> $pw);
+		$config->set(mysqlhost=>getMysqlHost());
 		$config->write;
 		my $sudo = "sudo " unless ($< == 0);
 		printMessage("Enter your sudo password:") if ($sudo);
@@ -132,20 +166,20 @@ sub setupMysql {
 	my $setupType = shift;
 	printMessage("Configuring MySQL...");
 	copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
-	if ($setupType eq "install") {
+	if ($setupType eq "install" && getMysqlHost() eq "localhost") {
 		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
         	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db");
 		system("chown -R mysql /data/wre/prereqs/mysql/var");
-        	system("/data/wre/sbin/rc.webgui startmysql");
-        	sleep 4;         #wait for mysql to start up
+		startMysql();
 		my $dbh = DBI->connect("DBI:mysql:mysql","root");
 		$dbh->do("delete from user where user=''");
-		my $rootpw = prompt("What would you like the MySQL root password to be?");
-		$mysqlRootPassword = $rootpw;
-		$dbh->do("update user set password=password('".$rootpw."') where user='root'");
+		$mysqlRootUser = prompt("What would you like the MySQL administrative user to be called:", "root");
+		$mysqlRootPassword = prompt("What would you like the MySQL ".$mysqlRootUser." password to be?");
+		$dbh->do("delete from user where user='root'");
+		$dbh->do("grant all privileges on *.* to ".getMysqlRootUser()."\@'localhost' identified by '".getMysqlRootPassword()."' with grant option");
 		$dbh->do("flush privileges");
 		$dbh->disconnect;
-        	system("/data/wre/sbin/rc.webgui stopmysql");
+		stopMysql();
 	}
 }
 
@@ -154,6 +188,10 @@ sub setupWre {
 	my $setupType = shift;
 	printMessage("Configuring the WRE...");
 	copyFile("/data/wre/var/setupfiles/hoster.arg.cache", "/data/wre/var/hoster.arg.cache");
+	my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+	$config->set('db-host'=>getMysqlHost());
+	$config->set('admin-db-user'=>getMysqlRootUser());
+	$config->write;
 	copyFile("/data/wre/var/setupfiles/logrotate.conf", "/data/wre/etc/logrotate.conf");
 }
 
@@ -161,15 +199,19 @@ sub setupWre {
 sub setupMonitors {
 	my $setupType = shift;
 	printMessage("Configuring monitors...");
-	unless (-f "/data/wre/etc/wremonitor.conf") {
-       		system("/data/wre/sbin/rc.webgui startmysql");
-       		sleep 4;         #wait for mysql to start up
-		my $dbh = DBI->connect("DBI:mysql:mysql","root",getMysqlRootPassword());
+	if (!(-f "/data/wre/etc/wremonitor.conf") && getMysqlHost() eq "localhost") {
+		startMysql();
+		my $dbh = DBI->connect("DBI:mysql:mysql",getMysqlRootUser(),getMysqlRootPassword());
 		$dbh->do("grant all privileges on test.* to test\@localhost identified by 'test'");
 		$dbh->disconnect;
-       		system("/data/wre/sbin/rc.webgui stopmysql");
+		stopMysql();
 	}
 	copyFile("/data/wre/var/setupfiles/wremonitor.conf", "/data/wre/etc/wremonitor.conf");
+	if (getMysqlHost() ne "localhost") {
+		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/wremonitor.conf', 'PURGE' => 1);
+		$config->set('skipdb'=>1);
+		$config->write;
+	}
 }
 
 #----------------------------------------
@@ -183,13 +225,14 @@ sub setupBackups {
 		copyFile("/data/wre/var/setupfiles/backup.conf", "/data/wre/etc/backup.conf");
 		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/backup.conf', 'PURGE' => 1);
 		my $backuppw = prompt("What would you like the database backup password to be?");
-       		system("/data/wre/sbin/rc.webgui startmysql");
-       		sleep 4;         #wait for mysql to start up
-		my $dbh = DBI->connect("DBI:mysql:mysql","root",getMysqlRootPassword());
-		$dbh->do("grant select, lock tables, show databases on *.* to backup\@localhost identified by '".$backuppw."'");
+		startMysql();
+		my $dbh = DBI->connect("DBI:mysql:mysql;host=".getMysqlHost(),getMysqlRootUser(),getMysqlRootPassword());
+		my $from = getMysqlHost() eq "localhost" ? "localhost" : "%";
+		$dbh->do("grant select, lock tables, show databases on *.* to backup\@'".$from."' identified by '".$backuppw."'");
 		$dbh->disconnect;
-       		system("/data/wre/sbin/rc.webgui stopmysql");
+		stopMysql();
 		$config->set(mysqlpass=> $backuppw);
+		$config->set(mysqlhost=> getMysqlHost());
 		$config->set(backupDir => prompt("Specify the path to backup the WRE and WebGUI data files to:","/backup"));
 		if (prompt("Do you want to copy your backups to an FTP server?","n","y","n") eq "y") {
 			$config->set(backupToFtp => 1);

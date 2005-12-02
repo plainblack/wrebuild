@@ -119,8 +119,6 @@ buildPerl(){
 	make; checkError $? "Perl make"
 	#make test; checkError $? "Perl make test"
 	make install; checkError $? "Perl make install"
-	echo Configuring CPAN
-	perl -MCPAN -e 'install("CPAN")'
 	cd $BUILDDIR
 }
 
