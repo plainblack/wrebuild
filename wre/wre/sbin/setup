@@ -56,8 +56,8 @@ sub setupDemo {
 		$config->set(adminpass=> $pw);
 		$config->write;
 		my $sudo = "sudo " unless ($< == 0);
-		system($sudo."mkdir -p /data/domains/demo");
 		printMessage("Enter your sudo password:") if ($sudo);
+		system($sudo."mkdir -p /data/domains/demo");
 		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo") {
 			system($sudo.$_);
 		}
@@ -210,7 +210,20 @@ sub setupWebgui {
 	copyFile("/data/wre/var/setupfiles/webgui.conf.override", "/data/wre/var/webgui.conf.override");
 	if ($setupType eq "install") {
 		system("/data/wre/sbin/webguiupdate");
-		copyFile("/data/WebGUI/etc/log.conf.original", "/data/WebGUI/etc/log.conf");
+		my $logConf = "";
+		open(FILE,"</data/WebGUI/etc/log.conf.original");
+		while (my $line = <FILE>) {
+			$line =~ s/\/var\/log\/webgui.log/\/data\/wre\/var\/webgui.log/;
+			$logConf .= $line;	
+		}
+		close(FILE);
+		open(FILE,">/data/WebGUI/etc/log.conf");
+		print FILE $logConf;
+		close(FILE);
+		my $sudo = "sudo " unless ($< == 0);
+		printMessage("Enter your sudo password:") if ($sudo);
+		system($sudo."touch /data/wre/var/webgui.log");
+		system($sudo."chown nobody /data/wre/var/webgui.log");
 	}
 }
 

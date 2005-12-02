@@ -91,6 +91,22 @@ buildUtils(){
 	cd $BUILDDIR
 }
 
+# memcached
+buildMemcached(){
+        echo Building memcached
+        mkdir -p /data/wre/prereqs/memcached/bin
+        mkdir -p /data/wre/prereqs/memcached/lib
+        cd source/memcached/libevent
+        ./configure --prefix=/data/wre/prereqs/memcached; checkError $? "libevent Configure"
+        make; checkError $? "libevent make"
+        make install; checkError $? "libevent make install"
+        cd ../memcached
+        ./configure --prefix=/data/wre/prereqs/memcached; checkError $? "memcached Configure"
+        make; checkError $? "memcached make"
+        make install; checkError $? "memcached make install"
+        cd $BUILDDIR
+}
+
 # perl
 buildPerl(){
 	echo Building Perl
@@ -103,6 +119,8 @@ buildPerl(){
 	make; checkError $? "Perl make"
 	#make test; checkError $? "Perl make test"
 	make install; checkError $? "Perl make install"
+	echo Configuring CPAN
+	perl -MCPAN -e 'install("CPAN")'
 	cd $BUILDDIR
 }
 
@@ -192,7 +210,7 @@ buildImageMagick(){
 	make; checkError $? "Image Magick libpng make"
 	make install; checkError $? "Image Magick libpng make install"
 	cd ../imagemagick
-	./configure --prefix=/data/wre/prereqs/imagemagick --enable-delegate-build LDFLAGS='-L/data/wre/prereqs/imagemagick/lib' CPPFLAGS='-I/data/wre/prereqs/imagemagick/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes 
+	./configure --prefix=/data/wre/prereqs/imagemagick --enable-delegate-build LDFLAGS='-L/data/wre/prereqs/imagemagick/lib' CPPFLAGS='-I/data/wre/prereqs/imagemagick/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no
 	checkError $? "Image Magick Configure"
 	make; checkError $? "Image Magick make"
 	make install; checkError $? "Image Magick make test"
@@ -207,67 +225,16 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Compress::Zlib Makefile.PL"
 	make; checkError $? "Compress::Zlib make"
 	make install; checkError $? "Compress::Zlib make install"
-	if [ $OSNAME == "Darwin" ]; then # Need this perl module on OSX for Apache::SizeLimit 
-		perl -MCPAN -e 'force("install","BSD::Resource")'
-	fi
-	perl -MCPAN -e 'install("URI")'
-	perl -MCPAN -e 'install("IO::Zlib")'
-	perl -MCPAN -e 'install("HTML::Tagset")'
-	perl -MCPAN -e 'install("HTML::Parser")'
-	perl -MCPAN -e 'install("LWP")'
-	perl -MCPAN -e 'install("CGI")'
-	perl -MCPAN -e 'install("Digest::MD5")'
-	perl -MCPAN -e 'install("Digest::SHA1")'
-	perl -MCPAN -e 'install("DateTime::Locale")'
-	perl -MCPAN -e 'install("DateTime::TimeZone")'
-	perl -MCPAN -e 'install("Time::Local")'
-	perl -MCPAN -e 'install("Test::More")'
-	perl -MCPAN -e 'install("Pod::Coverage")'
-	perl -MCPAN -e 'install("Pod::Man")'
-	perl -MCPAN -e 'install("Module::Build")'
-	perl -MCPAN -e 'install("Params::Validate")'
-	perl -MCPAN -e 'install("DateTime")'
-	perl -MCPAN -e 'install("DateTime::Format::Strptime")'
-	perl -MCPAN -e 'install("DateTime::Cron::Simple")'
-	perl -MCPAN -e 'install("Date::Manip")'
-	perl -MCPAN -e 'install("HTML::Template")'
-	perl -MCPAN -e 'install("Crypt::SSLeay")'
-	perl -MCPAN -e 'install("Parse::PlainConfig")'
-	perl -MCPAN -e 'install("String::Random")'
-	perl -MCPAN -e 'install("Time::HiRes")'
-	perl -MCPAN -e 'install("Text::Balanced")'
-	perl -MCPAN -e 'install("Tie::IxHash")'
-	perl -MCPAN -e 'install("Tie::CPHash")'
-	perl -MCPAN -e 'install("Error")'
-	perl -MCPAN -e 'install("Cache::Cache")'
-	perl -MCPAN -e 'install("HTML::Highlight")'
-	perl -MCPAN -e 'install("HTML::TagFilter")'
-	perl -MCPAN -e 'install("IO::String")'
-	perl -MCPAN -e 'install("Archive::Zip")'
-	perl -MCPAN -e 'install("Archive::Tar")'
-	perl -MCPAN -e 'install("XML::NamespaceSupport")'
-	perl -MCPAN -e 'install("XML::SAX")'
-	perl -MCPAN -e 'install("XML::Simple")'
-	perl -MCPAN -e 'install("XML::RSSLite")'
-	perl -MCPAN -e 'install("SOAP::Lite")'
-	perl -MCPAN -e 'install("DBI")'
-	perl -MCPAN -e 'force("install","DBD::mysql")'
-	perl -MCPAN -e 'install("Convert::ASN1")'
-	perl -MCPAN -e 'install("Authen::SASL")'
-	perl -MCPAN -e 'install("Finance::Quote")'
-	perl -MCPAN -e 'install("JSON")'
 	cd ../netssleay
 	perl Makefile.PL /data/wre/prereqs/utils; checkError $? "Net::SSLeay Makefile.PL"
 	make; checkError $? "Net:::SSLeay make"
 	make install; checkError $? "Net::SSLeay make install"
-	perl -MCPAN -e 'install("IO::Socket::SSL")'
-	perl -MCPAN -e 'install("Net::LDAP")'
-	perl -MCPAN -e 'install("Log::Log4perl")'
-	perl -MCPAN -e 'install("POE")'
-	perl -MCPAN -e 'install("POE::Component::IKC::Server")'
-	perl -MCPAN -e 'install("POE::Component::JobQueue")'
-	perl -MCPAN -e 'install("Parse::RecDescent")'
-	perl -MCPAN -e 'force("install","DBIx::FullTextSearch")'
+	cd $BUILDDIR
+	./installPerlModules.pl
+	cd source/apache/libapreq2
+	./configure --with-apache2-apxs=/data/wre/prereqs/apache/bin/apxs --enable-perl-glue; checkError $? "libapreq2 configure"
+	make; checkError $? "libapreq2 make"
+	make install; checkError $? "libapreq2 make install"
 	cd $BUILDDIR
 }
 
@@ -312,6 +279,7 @@ cat <<_WREHELP
 
   --clean        cleans all pre-req folders for a new build
   --utilities	 compiles and installs shared utilities
+  --memcached	 compiles and installs memcached
   --perl         compiles and installs perl
   --apache       compiles and installs apache
   --mysql	 compiles and installs mysql
@@ -345,6 +313,10 @@ do
  
     --utils | --utilities)
       buildUtils
+    ;;
+    
+    --memcached)
+      buildMemcached
     ;;
     
     --perl)
@@ -408,6 +380,7 @@ then
 if [ -d /data ]; then
  clean
  buildUtils
+ buildMemcached
  buildPerl
  buildApache
  buildMysql

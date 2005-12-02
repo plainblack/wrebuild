@@ -12,6 +12,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Upgraded openssl to 0.9.7i.
  - Upgraded Apache to 2.0.55.
  - Upgraded mod_perl to 2.0.2.
+ - All WRE scripts are now capable of handling a remote database.
+ - WRE now includes memcached for high-speed cache between loadbalanced nodes.
 
 0.5.0
  - Added an upgrade system to the setup script, so that it is used both 

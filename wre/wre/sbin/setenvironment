@@ -1,4 +1,4 @@
-export PATH=/data/wre/prereqs/utils/bin:/data/wre/prereqs/perl/bin:/data/wre/prereqs/apache/bin:/data/wre/prereqs/mysql/bin:/data/wre/prereqs/imagemagick/bin:/data/wre/sbin:$PATH
-export LD_LIBRARY_PATH=/data/wre/prereqs/utils/lib:/data/wre/prereqs/perl/lib:/data/wre/prereqs/apache/lib:/data/wre/prereqs/mysql/lib:/data/wre/prereqs/imagemagick/lib:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=/data/wre/prereqs/utils/lib:/data/wre/prereqs/perl/lib:/data/wre/prereqs/apache/lib:/data/wre/prereqs/mysql/lib:/data/wre/prereqs/imagemagick/lib:$DYLD_LIBRARY_PATH
+export PATH=/data/wre/prereqs/utils/bin:/data/wre/prereqs/memcached/bin:/data/wre/prereqs/perl/bin:/data/wre/prereqs/apache/bin:/data/wre/prereqs/mysql/bin:/data/wre/prereqs/imagemagick/bin:/data/wre/sbin:$PATH
+export LD_LIBRARY_PATH=/data/wre/prereqs/utils/lib:/data/wre/prereqs/memcached/lib:/data/wre/prereqs/perl/lib:/data/wre/prereqs/apache/lib:/data/wre/prereqs/mysql/lib:/data/wre/prereqs/imagemagick/lib:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=/data/wre/prereqs/utils/lib:/data/wre/prereqs/memcached/lib:/data/wre/prereqs/perl/lib:/data/wre/prereqs/apache/lib:/data/wre/prereqs/mysql/lib:/data/wre/prereqs/imagemagick/lib:$DYLD_LIBRARY_PATH
 export LD_RUN_PATH=/data/wre/prereqs/imagemagick/lib:$LD_RUN_PATH
