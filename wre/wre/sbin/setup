@@ -11,20 +11,33 @@ our $mysqlRootPassword;
 our $mysqlRootUser;
 our $mysqlHost;
 my $setupType = startup();
+my $isDev = ($setupType eq "install" && prompt("Will this WRE be a dev only environment?","n","y","n") eq "y");
 setupWre($setupType);
-setupApache($setupType);
-setupAwstats($setupType);
+setupApache($isDev);
+setupAwstats($setupType) unless ($isDev);
 setupMysql($setupType);
-setupMonitors($setupType);
-setupBackups($setupType);
+setupMonitors($setupType) unless ($isDev);
+setupBackups($setupType) unless ($isDev);
 setupWebgui($setupType);
-setupDemo($setupType);
-printMessage("Setup Complete! Now you need to start the WRE and add your first site.");
+setupDemo($setupType) unless ($isDev);
+setupAsDev($setupType) if ($isDev);;
+if ($isDev) {
+	printMessage("Setup Complete! Now you need to start the WRE and visit http://localhost/");
+} elsif ($setupType eq "install") {
+	printMessage("Setup Complete! Now you need to start the WRE and add your first site.");
+} else {
+	printMessage("Setup Complete!");
+}
 
 #----------------------------------------
 sub setupApache {
+	my $isDev = shift;
 	printMessage("Configuring Apache...");
-	copyFile("/data/wre/var/setupfiles/httpd.modperl.conf", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");
+	if ($isDev) {
+		copyFile("/data/wre/var/setupfiles/httpd.modperl.conf.dev", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");
+	} else {
+		copyFile("/data/wre/var/setupfiles/httpd.modperl.conf", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");
+	}
 	copyFile("/data/wre/var/setupfiles/startup.pl", "/data/wre/prereqs/apache/conf/startup.pl");
 	copyFile("/data/wre/var/setupfiles/httpd.modproxy.conf", "/data/wre/prereqs/apache/conf/httpd.modproxy.conf");
 	copyFile("/data/wre/var/setupfiles/vh.modperl.template", "/data/wre/var/vh.modperl.template");
@@ -193,6 +206,34 @@ sub setupWre {
 	$config->set('admin-db-user'=>getMysqlRootUser());
 	$config->write;
 	copyFile("/data/wre/var/setupfiles/logrotate.conf", "/data/wre/etc/logrotate.conf");
+}
+
+#----------------------------------------
+sub setupAsDev {
+	printMessage("Configuring as a Development Environment...");
+	startMysql();
+	system("/data/wre/sbin/addsite --no-wre-restart --sitename=dev.localhost.localdomain --admin-db-pass=".getMysqlRootPassword());
+	stopMysql();
+	my $content = "";
+	open(FILE,"</data/wre/etc/dev.localhost.localdomain.modproxy");
+	while (my $line = <FILE>) {
+		$line =~ s/http\:\/\/dev\.localhost\.localdomain\:81/http\:\/\/127\.0\.0\.1\:81/;
+		$content .= $line;
+	}
+	close(FILE);
+	open(FILE,">/data/wre/etc/dev.localhost.localdomain.modproxy");
+	print FILE $content;
+	close(FILE);
+	$content = "";
+	open(FILE,"</data/wre/etc/dev.localhost.localdomain.modperl");
+	while (my $line = <FILE>) {
+		$line =~ s/PerlInitHandler WebGUI/PerlModule Apache2\:\:Reload\nPerlInitHandler Apache2\:\:Reload WebGUI/;
+		$content .= $line;
+	}
+	close(FILE);
+	open(FILE,">/data/wre/etc/dev.localhost.localdomain.modperl");
+	print FILE $content;
+	close(FILE);
 }
 
 #----------------------------------------
