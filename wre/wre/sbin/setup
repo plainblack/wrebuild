@@ -308,7 +308,8 @@ sub setupWebgui {
 		open(FILE,">/data/WebGUI/etc/log.conf");
 		print FILE $logConf;
 		close(FILE);
-		my $sudo = "sudo " unless ($< == 0);
+		my $sudo = "";
+		$sudo = "sudo " unless ($< == 0);
 		printMessage("Enter your sudo password:") if ($sudo);
 		system($sudo."touch /data/wre/var/webgui.log");
 		system($sudo."chown nobody /data/wre/var/webgui.log");
@@ -319,7 +320,7 @@ sub setupWebgui {
 #----------------------------------------
 sub startup {
 	printTest("Checking for existing install...");
-	my ($old, $new);
+	my ($old, $new) = "";
 	if (open(FILE,"</data/wre/var/version.txt")) {
 		$old = <FILE>;
 		close(FILE);
@@ -328,7 +329,7 @@ sub startup {
 		$new = <FILE>;
 		close(FILE);
 	}
-	my $type;
+	my $type = "";
         if ($old eq $new) {
                 $type = "done"; # already upgraded
 		if (prompt("You've already run setup for this WRE version! Would you like to run setup again?","n","y","n") eq "y") {

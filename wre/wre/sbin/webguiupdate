@@ -155,7 +155,7 @@ sub getMirrors {
 	my $html = $mirrorListResponse->content;
 	my @mirrors;
 	my $legend;
-	while ($html =~ /\<TD\s+align=center\>(\w+,\s+\w+)\<\/TD\>\<TD\s+align=center\>.+?\<\/TD\>\<TD\s+align=center\>\<A\s+HREF=\/pbwebgui\/webgui\-\d+\.\d+\.\d+-\w+\.tar\.gz\?use_mirror=(\w+)\>/igs) {
+	while ($html =~ /\<td\>(\w+,\s+\w+)\<\/td\>\n\s+\<td\>.*?\<\/td\>\n\s+\<td\>\<a href\=\"\/pbwebgui\/webgui\-\d+\.\d+\.\d+-\w+\.tar\.gz\?use_mirror=(\w+)/igs) {
 		push(@mirrors,$2);
 		$legend .= $2." = ".$1."\n";
 	}
