@@ -62,7 +62,10 @@ sub stopMysql {
 #----------------------------------------
 sub getMysqlHost {
 	unless ($mysqlHost) {
-		$mysqlHost = prompt("Please specifiy the host where MySQL resides:","localhost");
+		$mysqlHost = prompt("Please specifiy the host where MySQL resides (if this is a single server install, leave the default):","localhost");
+		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+		$config->set('db-host'=>$mysqlHost);
+		$config->write;
 	}
 	return $mysqlHost;
 }
@@ -71,6 +74,9 @@ sub getMysqlHost {
 sub getMysqlRootUser {
 	unless ($mysqlRootUser) {
 		$mysqlRootUser = prompt("Please specifiy your MySQL administratrative username:","root");
+		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+		$config->set('admin-db-user'=>$mysqlRootUser);
+		$config->write;
 	}
 	return $mysqlRootUser;
 }
@@ -188,6 +194,9 @@ sub setupMysql {
 		$dbh->do("delete from user where user=''");
 		$mysqlRootUser = prompt("What would you like the MySQL administrative user to be called:", "root");
 		$mysqlRootPassword = prompt("What would you like the MySQL ".$mysqlRootUser." password to be?");
+		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+		$config->set('admin-db-user'=>$mysqlRootUser);
+		$config->write;
 		$dbh->do("delete from user where user='root'");
 		$dbh->do("grant all privileges on *.* to ".getMysqlRootUser()."\@'localhost' identified by '".getMysqlRootPassword()."' with grant option");
 		$dbh->do("flush privileges");
@@ -201,10 +210,6 @@ sub setupWre {
 	my $setupType = shift;
 	printMessage("Configuring the WRE...");
 	copyFile("/data/wre/var/setupfiles/hoster.arg.cache", "/data/wre/var/hoster.arg.cache");
-	my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
-	$config->set('db-host'=>getMysqlHost());
-	$config->set('admin-db-user'=>getMysqlRootUser());
-	$config->write;
 	copyFile("/data/wre/var/setupfiles/logrotate.conf", "/data/wre/etc/logrotate.conf");
 }
 

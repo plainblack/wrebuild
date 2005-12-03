@@ -9,8 +9,9 @@ sub create {
 	mkpath($opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/awstats');
 	mkpath($opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/logs');
 	mkpath($opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/public/uploads');
-	system($opts->{'chown'}." ".$opts->{'apache-user'}." ".$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/public/uploads');
-	system("cp -R ".$opts->{'webgui-home'}.'/www/uploads/* '.$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/public/uploads/');
+	# note we pipe to /dev/null because there's not always files in /www/uploads and we don't want user's to get scared that some error has occured
+	system("cp -R ".$opts->{'webgui-home'}.'/www/uploads/* '.$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/public/uploads/ >/dev/null 2> /dev/null');
+	system($opts->{'chown'}." -R ".$opts->{'apache-user'}." ".$opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname}.'/public/uploads');
 }
 
 #------------------------------
