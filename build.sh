@@ -26,11 +26,22 @@ clean(){
   make distclean
   make clean
   cd $BUILDDIR
+ #memcached
+  cd source/memcached/libevent
+  make distclean
+  make clean
+  cd ../memcached
+  make distclean
+  make clean
+  cd $BUILDDIR
  #perl
   cd source/perl/perl
   make distclean
   make clean
   cd ../compresszlib
+  make distclean
+  make clean
+  cd ../netssleay
   make distclean
   make clean
   cd $BUILDDIR
@@ -41,6 +52,9 @@ clean(){
   rm -Rf server/exports.c 
   rm -Rf server/export_files
   cd ../modperl
+  make distclean
+  make clean
+  cd ../libapreq2
   make distclean
   make clean
   cd $BUILDDIR
