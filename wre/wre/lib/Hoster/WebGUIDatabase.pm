@@ -14,7 +14,7 @@ sub create {
 	}
 	my $from = ($opts->{'db-host'} eq "localhost") ? "localhost" : "%";
 	$cmd .= ' --host='.$opts->{'db-host'}.' -e "create database '.$opts->{'db-name'}.'; grant all privileges on '.$opts->{'db-name'}
-		.'.* to '.$opts->{'site-db-user'}.'@'".$from."' identified by \''.$opts->{'site-db-pass'}.'\'"';
+		.'.* to '.$opts->{'site-db-user'}."\@'".$from."' identified by '".$opts->{'site-db-pass'}.'\'"';
 	system($cmd);
 	$cmd = $opts->{'mysql-client'}.' --host='.$opts->{'db-host'}.' -D '.$opts->{'db-name'};
 	if ($opts->{'site-db-user'}) {
