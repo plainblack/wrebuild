@@ -101,7 +101,7 @@ buildMemcached(){
         make; checkError $? "libevent make"
         make install; checkError $? "libevent make install"
         cd ../memcached
-        ./configure --prefix=/data/wre/prereqs/memcached; checkError $? "memcached Configure"
+        ./configure --with-libevent=/data/wre/prereqs/memcached --prefix=/data/wre/prereqs/memcached; checkError $? "memcached Configure"
         make; checkError $? "memcached make"
         make install; checkError $? "memcached make install"
         cd $BUILDDIR
@@ -132,9 +132,20 @@ buildApache(){
 	mkdir -p /data/wre/prereqs/apache/include
 	mkdir -p /data/wre/prereqs/apache/conf
 	cd source/apache/apache
+	case $OSNAME in
+		Linux)
+			# insists upon using it's own zlib and ours, which won't work, so temporarily hiding ours
+			mv /data/wre/prereqs/utils/include/zlib.h /data/wre/prereqs/utils/include/zlib.h.ignore
+			;;
+	esac
 	./configure --prefix=/data/wre/prereqs/apache --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=/data/wre/prereqs/utils --enable-proxy=shared --with-mpm=prefork --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
 	make; checkError $? "Apache make"
 	make install; checkError $? "Apache make install"
+	case $OSNAME in
+		Linux)
+		mv /data/wre/prereqs/utils/include/zlib.h.ignore /data/wre/prereqs/utils/include/zlib.h
+			;;
+	esac
 	cd ../modperl
 	perl Makefile.PL MP_APXS=/data/wre/prereqs/apache/bin/apxs; checkError $? "mod_perl Configure"
 	make; checkError $? "mod_perl make"
