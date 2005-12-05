@@ -67,6 +67,11 @@ my @modules = (
 	{ module=>"Cache::Memcached" },
 	{ module=>"ExtUtils::XSBuilder::ParseSource" },
 	{ module=>"trace" },
+	{ module=>"Pod::Simple" },
+	{ module=>"Test::Builder::Tester" },
+	{ module=>"Clone" },
+	{ module=>"Test::Pod" },
+	{ module=>"Data::Structure::Util" },
 	);
 
 for $module (@modules) {

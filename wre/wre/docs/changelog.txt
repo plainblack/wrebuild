@@ -1,6 +1,9 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.6.1
+ - Added some more perl modules required by WebGUI.
+
 0.6.0
  - Added a dev mode option that will autoconfigure the WRE to run
    as a development environment for WebGUI.
