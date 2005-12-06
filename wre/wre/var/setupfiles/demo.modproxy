@@ -1,5 +1,17 @@
 <VirtualHost *:80>
 	ServerName demo.example.com
 	DocumentRoot /data/domains/demo
-	ProxyPass / http://demo.example.com:81/
+	RewriteEngine On
+        RewriteLog "/data/wre/prereqs/apache/logs/modrewrite.log"
+        RewriteLogLevel 1
+        # block nimda attacks from getting to WebGUI
+        RewriteRule ^/scripts/ - [L]
+        RewriteRule ^/default.ida - [L]
+        RewriteRule ^/_vti_bin - [L]
+        RewriteRule ^/_mem_bin - [L]
+        # leave static stuff to be served directly by modproxy
+        RewriteRule ^/favicon.ico - [L]
+        RewriteRule ^/extras/ - [L]
+        # proxy webgui pages
+        RewriteRule ^/(.*) http://demo.example.com:81/$1 [P]
 </VirtualHost>
