@@ -3,4 +3,3 @@ dsn = DBI:mysql:__db-name__;host=__db-host__
 dbuser = __site-db-user__
 dbpass = __site-db-pass__
 uploadsPath = __domain-home__/__domain__/__hostname__/public/uploads
-scripturl = /
