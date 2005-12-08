@@ -3,6 +3,13 @@ use strict;
 use DBI;
 use Parse::PlainConfig;
 use File::Path;
+use Getopt::Long;
+
+my $all;
+
+GetOptions(
+	'all'=>\$all
+);
 
 my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/demo.conf', 'PURGE' => 1);
 my $dbh = DBI->connect("DBI:mysql:test;host=".$config->get("mysqlhost"),$config->get("adminuser"),$config->get("adminpass"));
@@ -10,9 +17,12 @@ my $demos = $config->get('sites');
 my %newDemos = ();
 foreach my $demoId (keys %{$demos}) {
 	next unless ($demoId); # prevent empty strings from wreaking havoc
-	if (time() - $demos->{$demoId} > $config->get("duration") * 60 * 60 * 24) {
+	if ($all || time() - $demos->{$demoId} > $config->get("duration") * 60 * 60 * 24) {
 		$dbh->do("drop database ".$demoId);
 		$dbh->do("revoke all privileges on ".$demoId.".* from demo\@localhost");
+		my $siteConfig = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/WebGUI/etc/'.$demoId.'.conf', 'PURGE' => 1);
+		my $cachePath = $siteConfig->get('fileCacheRoot') || "/tmp/WebGUICache";
+		rmtree($cachePath."/".$demoId.".conf");	
 		rmtree("/data/domains/demo/".$demoId);	
 		unlink("/data/WebGUI/etc/".$demoId.".conf");
 	} else {
