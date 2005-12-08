@@ -121,7 +121,7 @@ sub checkWeb {
         my $requestperl = new HTTP::Request (GET => "http://localhost:81/", $header);
         my $responseproxy = $userAgent->request($requestproxy);
         my $responseperl = $userAgent->request($requestperl);
-        if ($responseproxy->is_success && $responseperl->is_success) {
+        if (($responseproxy->is_success || $responseproxy->code eq "401") && ($responseperl->is_success || $responseperl->code eq "401")) {
                 return 1;
 	} elsif ($responseproxy->is_success) {
 		logEntry($responseperl->code);
