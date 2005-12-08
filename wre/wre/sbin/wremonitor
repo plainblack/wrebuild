@@ -117,13 +117,19 @@ sub checkWeb {
         $userAgent->agent("wremonitor/1.0");
         $userAgent->timeout($config->{connectionTimeOut});
         my $header = new HTTP::Headers;
-        my $request = new HTTP::Request (GET => "http://localhost/", $header);
-        my $response = $userAgent->request($request);
-        if ($response->is_success) {
+        my $requestproxy = new HTTP::Request (GET => "http://localhost/", $header);
+        my $requestperl = new HTTP::Request (GET => "http://localhost:81/", $header);
+        my $responseproxy = $userAgent->request($requestproxy);
+        my $responseperl = $userAgent->request($requestperl);
+        if ($responseproxy->is_success && $responseperl->is_success) {
                 return 1;
+	} elsif ($responseproxy->is_success) {
+		logEntry($responseperl->code);
+		logEntry($responseperl->error_as_HTML);
+                return 0;
         } else {
-		logEntry($response->code);
-                logEntry($response->error_as_HTML);
+		logEntry($responseproxy->code);
+                logEntry($responseproxy->error_as_HTML);
                 return 0;
         }
 }
