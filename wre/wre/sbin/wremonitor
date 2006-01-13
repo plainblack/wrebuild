@@ -74,12 +74,13 @@ sub checkDb {
 #-------------------------------------------------------------------
 sub checkWebProcesses {
   my $config = shift;
-
+  my $allIsWell = 1;
   my $processTable = new Proc::ProcessTable;
   foreach my $process (@{$processTable->table}) {
     next unless ($process->cmndline =~ /httpd/);
-    
-    if ($process->size > $config->{httpdMaxMemory}) {
+
+    #for some reason the pctmem method reports x.4% as x.0%... FYI
+    if ($process->pctmem >= $config->{httpdMaxMemory}) {
        my $numKilled = $process->kill(9);
 
        #note num killed can exceed one process if its the parent, but that shouldn't happen
@@ -89,9 +90,12 @@ sub checkWebProcesses {
        else {
          logEntry("Failed to kill runaway httpd processes!");
        }
-    } 
+       $allIsWell = 0;
+    }
   } 
-  logentry("All is well with httpd resource consumption.");
+
+  logEntry("All is well with httpd memory usage.") if ($allIsWell);
+
 }
 
 #-------------------------------------------------------------------
