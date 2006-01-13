@@ -3,6 +3,7 @@ $|=1; # disable buffering
 use CPAN;
 
 my @modules = (
+	( module=>"Proc::ProcessTable" },
 	{ module=>"BSD::Resource", force=>1 },
 	{ module=>"URI" },
 	{ module=>"IO::Zlib" },

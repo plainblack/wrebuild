@@ -80,15 +80,15 @@ sub checkWebProcesses {
     next unless ($process->cmndline =~ /httpd/);
 
     #for some reason the pctmem method reports x.4% as x.0%... FYI
-    if ($process->pctmem >= $config->{httpdMaxMemory}) {
+    if (my $mem = $process->pctmem >= $config->{httpdMaxMemory}) {
        my $numKilled = $process->kill(9);
 
        #note num killed can exceed one process if its the parent, but that shouldn't happen
        if ($numKilled > 0) {
-         logEntry("$numKilled runaway httpd processes killed.");
+         logEntry("$numKilled runaway httpd processes killed for using $mem percent of shared memory.");
        }
        else {
-         logEntry("Failed to kill runaway httpd processes!");
+         logEntry("Failed to kill runaway httpd processes using $mem percent of shared memory!");
        }
        $allIsWell = 0;
     }
