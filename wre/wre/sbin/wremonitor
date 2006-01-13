@@ -5,6 +5,7 @@ $| = 1;
 use strict;
 use Net::SMTP;
 use Parse::PlainConfig;
+use Proc::ProcessTable;
 use DBI;
 use HTTP::Request;
 use HTTP::Headers;
@@ -28,6 +29,10 @@ unless ($config->{skipweb}) {
 		logEntry("All is well with the web server.");
 	}
 }
+unless ($config->{skiphttpdrunaway}) {
+        checkWebProcesses($config);
+}
+        
 exit;
 
 #-------------------------------------------------------------------
@@ -64,6 +69,29 @@ sub checkDb {
                 logEntry($@);
                 return 0;
         }
+}
+
+#-------------------------------------------------------------------
+sub checkWebProcesses {
+  my $config = shift;
+
+  my $processTable = new Proc::ProcessTable;
+  foreach my $process (@{$processTable->table}) {
+    next unless ($process->cmndline =~ /httpd/);
+    
+    if ($process->size > $config->{httpdMaxMemory}) {
+       my $numKilled = $process->kill(9);
+
+       #note num killed can exceed one process if its the parent, but that shouldn't happen
+       if ($numKilled > 0) {
+         logEntry("$numKilled runaway httpd processes killed.");
+       }
+       else {
+         logEntry("Failed to kill runaway httpd processes!");
+       }
+    } 
+  } 
+  logentry("All is well with httpd resource consumption.");
 }
 
 #-------------------------------------------------------------------
