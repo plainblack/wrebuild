@@ -1,12 +1,15 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
-0.6.1
+0.7.0
  - Added some more perl modules required by WebGUI.
  - Fixed the privileges on the backup script.
  - Added a --all option to democleanup.
  - democleanup now deletes demo cache as well
  - WRE monitor now explicitly checks modperl as well as modproxy
+ - WRE monitor now looks for runaway modperl processes.
+ - Added a fix to the build script to make lftp build properly on some
+   operating systems like FreeBSD.
 
 0.6.0
  - Added a dev mode option that will autoconfigure the WRE to run

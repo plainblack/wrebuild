@@ -88,7 +88,7 @@ buildUtils(){
 	cd source/utils/lftp
 	./configure --prefix=/data/wre/prereqs/utils; checkError $? "lftp Configure"
 	make; checkError $? "lftp make"
-	make install; checkError $? "lftp make install"
+	make install exec_prefix=/data/wre/prereqs/utils; checkError $? "lftp make install"
 	cd ../zlib
 	./configure --prefix=/data/wre/prereqs/utils --shared; checkError $? "zlib Configure"
 	make; checkError $? "zlib make"
