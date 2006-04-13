@@ -173,6 +173,7 @@ buildApache(){
 	esac
 	make install; checkError $? "mod_perl make install"
 	cd $BUILDDIR
+	echo "webgui/package   wgpkg" >> /data/wre/prereqs/apache/conf/mime.types
 }
 
 
