@@ -10,6 +10,15 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - WRE monitor now looks for runaway modperl processes.
  - Added a fix to the build script to make lftp build properly on some
    operating systems like FreeBSD.
+ - Upgraded to MySQL 5.0.21.
+ - Upgraded to Apache 2.0.58.
+ - Upgraded to libapreq2 2.07.
+ - Upgraded to Perl 5.8.8.
+ - Upgraded to libtool 1.5.22.
+ - Upgraded to Image Magick 6.2.7-2.
+ - Upgraded to libpng 1.2.10.
+ - Perl modules included in source instead of downloading from CPAN
+   during build.
 
 0.6.0
  - Added a dev mode option that will autoconfigure the WRE to run
