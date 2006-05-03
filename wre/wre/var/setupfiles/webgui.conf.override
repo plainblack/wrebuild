@@ -1,5 +1,17 @@
-sitename = __sitename__
-dsn = DBI:mysql:__db-name__;host=__db-host__
-dbuser = __site-db-user__
-dbpass = __site-db-pass__
-uploadsPath = __domain-home__/__domain__/__hostname__/public/uploads
+{
+"sitename" : "__sitename__",
+"dsn" : "DBI:mysql:__db-name__;host=__db-host__",
+"dbuser" : "__site-db-user__",
+"dbpass" : "__site-db-pass__",
+"uploadsPath" : "__domain-home__/__sitename__/public/uploads",
+"searchIndexerPlugins" : {
+        "txt" : "/bin/cat",
+        "readme" : "/bin/cat",
+        "html" : "/bin/cat",
+        "htm" : "/bin/cat",
+	"pdf" : "/data/wre/prereqs/utils/bin/pdf2txt",
+	"doc" : "/data/wre/prereqs/utils/bin/catdoc"
+	"xls" : "/data/wre/prereqs/utils/bin/catdoc"
+	"ppt" : "/data/wre/prereqs/utils/bin/catdoc"
+        }
+}

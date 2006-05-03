@@ -21,32 +21,24 @@ QUICK BUILD INSTRUCTIONS
 
 To build the WRE for your platform follow these simple steps.
 
-1) Download wrebuild-x.x.x-core.tar.gz (this distribution)
+1) Download wrebuild-x.x.x-source.tar.gz (this distribution)
 
-2) Download wrebuild-x.x.x-prereqs.tar.gz
+2) Extract the source.
 
-3) Extract the core
+	tar xvfz wrebuild-x.x.x-source.tar.gz
 
-	tar xvfz wrebuild-x.x.x-core.tar.gz
-
-4) Extract the prereqs into the source folder of the core
-
-	cd wrebuild
-	tar xvfz /path/to/wrebuild-x.x.x-prereqs.tar.gz
-
-5) Make a /data folder and make it writable by you. Note that you should not
+3) Make a /data folder and make it writable by you. Note that you should not
    install or run the WRE as root.
 
 	sudo mkdir /data
 	sudo chown you /data
 
-6) Run build.sh
+4) Run build.sh
 
 	./build.sh
 
-That's it. You'll probably have to answer a few questions toward the end of
-the build process, but this will create a working WRE in the /data folder
-of your system.
+That's it. This will create a working WRE in the /data/wre folder of your 
+system.
 
 NOTE: The build process can take a really long time. Depending upon the
 speed of your system it can take anywhere from 2 to 6 hours.
@@ -80,8 +72,7 @@ export LD_LIBRARY_PATH=/opt/csw/lib:/usr/sfw/lib:/opt/sfw/lib:/usr/local/lib:/op
 export TERM=vt100
 mkdir -p /data/downloads
 cd /data/downloads
-wget http://easynews.dl.sourceforge.net/sourceforge/pbwebgui/wrebuild-0.4.2-core.tar.gz
-wget http://easynews.dl.sourceforge.net/sourceforge/pbwebgui/wrebuild-0.4.2-prereqs.tar.gz
+wget http://easynews.dl.sourceforge.net/sourceforge/pbwebgui/wrebuild-0.7.0-source.tar.gz
 wget http://www.blastwave.org/pkg_get.pkg
 pkgadd -d pkg_get.pkg
 pkg-get -U install textutils
@@ -96,9 +87,7 @@ ln -s /opt/csw/bin/granlib /opt/csw/bin/ranlib
 ln -s /opt/csw/bin/gld  /opt/csw/bin/ld
 pkg-get install ggrep
 ln -s /opt/csw/bin/gegrep /opt/csw/bin/egrep
-tar xvfz wrebuild-0.4.2-core.tar.gz
-cd wrebuild
-tar xvfz ../wrebuild-0.4.2-prereqs.tar.gz
+tar xvfz wrebuild-0.7.0-source.tar.gz
 ./build.sh
 
 

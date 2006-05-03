@@ -2,6 +2,10 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.7.0
+ - NOTE: The WRE now creates domains folders as /data/domains/www.example.com
+   rather than /data/domains/example.com/www. You don't need to change any
+   of your existing sites. Just know that the removesite script won't
+   remove the old folders.
  - Added some more perl modules required by WebGUI.
  - Fixed the privileges on the backup script.
  - Added a --all option to democleanup.

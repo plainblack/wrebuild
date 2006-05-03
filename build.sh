@@ -109,13 +109,17 @@ buildUtils(){
 	make; checkError $? "libtool make"
 	make install; checkError $? "libtool make install"
 	cd ../catdoc-0.94
-	./configure --prefix=/data/wre/prereqs/utils; checkError $? "catdoc Configure"
+	./configure --prefix=/data/wre/prereqs/utils --disable-wordview --without-wish --with-input=utf-8 --with-output=utf-8 --disable-charset-check --disable-langinfo; checkError $? "catdoc Configure"
 	make; checkError $? "catdoc make"
 	make install; checkError $? "catdoc make install"
 	cd ../xpdf-3.01
 	./configure --without-x --prefix=/data/wre/prereqs/utils; checkError $? "pdftotext Configure"
 	make; checkError $? "pdftotext make"
 	make install; checkError $? "pdftotext make install"
+	echo /data/wre/prereqs/utils/pdftotext \$@ \$@.txt > /data/wre/prereqs/utils/bin/pdf2txt
+	echo /bin/cat \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
+	echo /bin/rm -f \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
+	chmod 755 /data/wre/prereqs/utils/bin/pdf2txt
 	cd $BUILDDIR
 }
 
@@ -178,7 +182,7 @@ buildApache(){
 	perl Makefile.PL MP_APXS=/data/wre/prereqs/apache/bin/apxs; checkError $? "mod_perl Configure"
 	make; checkError $? "mod_perl make"
 	case $OSNAME in
-		SunOS)
+		Darwin | SunOS)
 			#tests fail for some reason even after a good build
 			;;
 		*)
@@ -260,11 +264,7 @@ buildImageMagick(){
 installPerlModules(){
 	echo Installing Perl Modules
 	cd source/perl/modules
-	cd libnet-1.19
-	perl Makefile.PL; checkError $? "libnet Makefile.PL"
-	make; checkError $? "libnet make"
-	make install; checkError $? "libnet make install"
-	cd ../Net_SSLeay.pm-1.25
+	cd Net_SSLeay.pm-1.25
 	perl Makefile.PL /data/wre/prereqs/utils; checkError $? "Net::SSLeay Makefile.PL"
 	make; checkError $? "Net:::SSLeay make"
 	make install; checkError $? "Net::SSLeay make install"
@@ -297,13 +297,21 @@ installPerlModules(){
 	make; checkError $? "HTML::Parser make"
 	make install; checkError $? "HTML::Parser make install"
 	cd ../libwww-perl-5.805
-	perl Makefile.PL; checkError $? "LWP Makefile.PL"
+	perl Makefile.PL -n; checkError $? "LWP Makefile.PL"
 	make; checkError $? "LWP make"
 	make install; checkError $? "LWP make install"
 	cd ../CGI.pm-3.20
 	perl Makefile.PL; checkError $? "CGI Makefile.PL"
 	make; checkError $? "CGI make"
 	make install; checkError $? "CGI make install"
+	cd ../Digest-HMAC-1.01
+	perl Makefile.PL; checkError $? "Digest::HMAC Makefile.PL"
+	make; checkError $? "Digest::HMAC make"
+	make install; checkError $? "Digest::HMAC make install"
+	cd ../GSSAPI-0.21
+	perl Makefile.PL; checkError $? "GSSAPI Makefile.PL"
+	make; checkError $? "GSSAPI make"
+	make install; checkError $? "GSSAPI make install"
 	cd ../Digest-MD5-2.36
 	perl Makefile.PL; checkError $? "Digest::MD5 Makefile.PL"
 	make; checkError $? "Digest::MD5 make"
@@ -348,10 +356,18 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Pod::Escapes Makefile.PL"
 	make; checkError $? "Pod::Escapes make"
 	make install; checkError $? "Pod::Escapes make install"
+	cd ../ExtUtils-CBuilder-0.18
+	perl Makefile.PL; checkError $? "ExtUtils::CBuilder Makefile.PL"
+	make; checkError $? "ExtUtils::CBuilder make"
+	make install; checkError $? "ExtUtils::CBuilder make install"
 	cd ../Pod-Coverage-0.17
 	perl Makefile.PL; checkError $? "Pod::Coverage Makefile.PL"
 	make; checkError $? "Pod::Coverage make"
 	make install; checkError $? "Pod::Coverage make install"
+	cd ../Pod-Simple-3.04
+	perl Makefile.PL; checkError $? "Pod::Simple Makefile.PL"
+	make; checkError $? "Pod::Simple make"
+	make install; checkError $? "Pod::Simple make install"
 	cd ../podlators-2.0.4
 	perl Makefile.PL; checkError $? "Pod::Man Makefile.PL"
 	make; checkError $? "Pod::Man make"
@@ -385,10 +401,10 @@ installPerlModules(){
 	make; checkError $? "Parse::PlainConfig make"
 	make install; checkError $? "Parse::PlainConfig make install"
 	cd ../String-Random-0.21
-	perl Makefile.PL; checkError $? "String::Random Makefile.PL"
-	make; checkError $? "String::Random make"
-	make install; checkError $? "String::Random make install"
-	cd ../Time::HiRes-1.87
+	perl Build.PL; checkError $? "String::Random Makefile.PL"
+	perl Build; checkError $? "String::Random make"
+	perl Build install; checkError $? "String::Random make install"
+	cd ../Time-HiRes-1.87
 	perl Makefile.PL; checkError $? "Time::HiRes Makefile.PL"
 	make; checkError $? "Time::HiRes make"
 	make install; checkError $? "Time::HiRes make install"
@@ -449,7 +465,7 @@ installPerlModules(){
 	make; checkError $? "XML::RSSLite make"
 	make install; checkError $? "XML::RSSLite make install"
 	cd ../SOAP-Lite-0.67
-	perl Makefile.PL; checkError $? "SOAP::Lite Makefile.PL"
+	perl Makefile.PL --noprompt; checkError $? "SOAP::Lite Makefile.PL"
 	make; checkError $? "SOAP::Lite make"
 	make install; checkError $? "SOAP::Lite make install"
 	cd ../DBI-1.50
@@ -493,7 +509,7 @@ installPerlModules(){
 	make; checkError $? "Log::Log4perl make"
 	make install; checkError $? "Log::Log4perl make install"
 	cd ../POE-0.3401
-	perl Makefile.PL; checkError $? "POE Makefile.PL"
+	perl Makefile.PL --default; checkError $? "POE Makefile.PL"
 	make; checkError $? "POE make"
 	make install; checkError $? "POE make install"
 	cd ../POE-Component-IKC-0.1802
@@ -516,10 +532,6 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "trace Makefile.PL"
 	make; checkError $? "trace make"
 	make install; checkError $? "trace make install"
-	cd ../Pod-Simple-3.04
-	perl Makefile.PL; checkError $? "Pod::Simple Makefile.PL"
-	make; checkError $? "Pod::Simple make"
-	make install; checkError $? "Pod::Simple make install"
 	cd ../Clone-0.20
 	perl Makefile.PL; checkError $? "Clone Makefile.PL"
 	make; checkError $? "Clone make"
@@ -532,6 +544,10 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Data::Structure::Util Makefile.PL"
 	make; checkError $? "Data::Structure::Util make"
 	make install; checkError $? "Data::Structure::Util make install"
+	cd ../Parse-RecDescent-1.94
+	perl Makefile.PL; checkError $? "Parse::RecDescent Makefile.PL"
+	make; checkError $? "Parse::RecDescent make"
+	make install; checkError $? "Parse::RecDescent make install"
 	cd ../libapreq2-2.07
 	./configure --with-apache2-apxs=/data/wre/prereqs/apache/bin/apxs --enable-perl-glue; checkError $? "libapreq2 configure"
 	make; checkError $? "libapreq2 make"
@@ -549,7 +565,7 @@ installPerlModules(){
 	make; checkError $? "HTML::Template::Expr make"
 	make install; checkError $? "HTML::Template::Expr make install"
 	cd ../Template-Toolkit-2.14
-	perl Makefile.PL; checkError $? "Template Toolkit Makefile.PL"
+	perl Makefile.PL TT_DOCS=n TT_SPLASH=n TT_THEME=n TT_EAMPLES=n TT_EXTRAS=n TT_XS_STASH=y TT_XS_DEFAULT=n TT_DBI=n TT_LATEX=n; checkError $? "Template Toolkit Makefile.PL"
 	make; checkError $? "Template Toolkit make"
 	make install; checkError $? "Template Toolkit make install"
 	cd ../Scalar-List-Utils-1.18
@@ -584,6 +600,16 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Test::MockObject Makefile.PL"
 	make; checkError $? "Test::MockObject make"
 	make install; checkError $? "Test::MockObject make install"
+	cd ../Class-MakeMethods-1.01
+	perl Makefile.PL; checkError $? "Class::MakeMethods Makefile.PL"
+	make; checkError $? "Class::MakeMethods make"
+	make install; checkError $? "Class::MakeMethods make install"
+	cd ../MySQL-Diff-0.33
+	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
+	make; checkError $? "MySQL::Diff make"
+	make install; checkError $? "MySQL::Diff make install"
+	cp -f mysqldiff /data/wre/sbin/
+	perl -i -p -e's[/usr/bin/perl][/data/wre/prereqs/perl/bin/perl]g' /data/wre/sbin/mysqldiff
 	cd $BUILDDIR
 }
 
