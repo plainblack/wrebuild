@@ -176,7 +176,7 @@ buildApache(){
 			mv /data/wre/prereqs/utils/include/zlib.h /data/wre/prereqs/utils/include/zlib.h.ignore
 			;;
 	esac
-	./configure --prefix=/data/wre/prereqs/apache --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=/data/wre/prereqs/utils --enable-proxy=shared --with-mpm=prefork --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
+	./configure --prefix=/data/wre/prereqs/apache --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=/data/wre/prereqs/utils --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
 	make; checkError $? "Apache make"
 	make install; checkError $? "Apache make install"
 	case $OSNAME in
