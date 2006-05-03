@@ -3,7 +3,7 @@
 	DocumentRoot /data/domains/demo
 	RewriteEngine On
         RewriteLog "/data/wre/prereqs/apache/logs/modrewrite.log"
-        RewriteLogLevel 1
+        RewriteLogLevel 0
         # block nimda attacks from getting to WebGUI
         RewriteRule ^/scripts/ - [L]
         RewriteRule ^/default.ida - [L]

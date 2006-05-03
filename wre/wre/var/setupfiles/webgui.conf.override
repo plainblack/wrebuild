@@ -11,7 +11,8 @@
         "htm" : "/bin/cat",
 	"pdf" : "/data/wre/prereqs/utils/bin/pdf2txt",
 	"doc" : "/data/wre/prereqs/utils/bin/catdoc"
-	"xls" : "/data/wre/prereqs/utils/bin/catdoc"
-	"ppt" : "/data/wre/prereqs/utils/bin/catdoc"
+	"rtf" : "/data/wre/prereqs/utils/bin/catdoc"
+	"xls" : "/data/wre/prereqs/utils/bin/xls2csv"
+	"ppt" : "/data/wre/prereqs/utils/bin/catppt"
         }
 }

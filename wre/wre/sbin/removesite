@@ -31,7 +31,7 @@ sub help {
 	my $opts = $_[0];
 	print <<STOP;
 
-WRE: Remove A Site - Copyright 2003-2005 Plain Black Corporation
+WRE: Remove A Site - Copyright 2003-2006 Plain Black Corporation
 
 Usage: $0 --sitename=www.example.com --admin-db-pass=PASSWORD
 

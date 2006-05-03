@@ -1,11 +1,11 @@
 <VirtualHost *:80>
 	ServerName __sitename__
 	ServerAlias __domain__
-	CustomLog __domain-home__/__domain__/__hostname__/logs/access.log combined
-	DocumentRoot __domain-home__/__domain__/__hostname__/public
+	CustomLog __domain-home__/__sitename__/logs/access.log combined
+	DocumentRoot __domain-home__/__sitename__/public
 	RewriteEngine On
 	RewriteLog "/data/wre/prereqs/apache/logs/modrewrite.log"
-	RewriteLogLevel 1
+	RewriteLogLevel 0
 	# block nimda attacks from getting to WebGUI
 	RewriteRule ^/scripts/ - [L]
 	RewriteRule ^/default.ida - [L]

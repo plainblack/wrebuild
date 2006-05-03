@@ -1,34 +1,26 @@
 package Hoster::WebGUIConfig;
 
+use lib '/data/WebGUI/lib';
 use strict;
 use Hoster::Template;
-use Parse::PlainConfig;
-use String::Random qw(random_string);
+use WebGUI::Config;
+use JSON;
 
 #------------------------------
 sub create {
 	my ($opts) = @_;
-	my $tempFile = $opts->{'hoster-home'}.'/var/'.random_string("ccccnnncccnnncccnncnccc").".tmp";
-	open(FILE,">$tempFile");
-	print FILE Hoster::Template::process($opts->{'webgui-conf-template'},$opts);
-	close(FILE);
-	my $override = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => $tempFile, 'PURGE' => 1);
-	my $default = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => $opts->{'webgui-home'}.'/etc/WebGUI.conf.original', 'PURGE' => 1);
-	my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => $opts->{'webgui-home'}.'/etc/'.$opts->{'sitename'}.".conf", 'PURGE' => 1);
-        foreach ($default->directives) {
-                $config->set($_=>$default->get($_));
+	my $overrides = jsonToObj(Hoster::Template::process($opts->{'webgui-conf-template'},$opts));
+	system("cp -f /data/WebGUI/etc/WebGUI.conf.original ".$opts->{'webgui-home'}.'/etc/'.$opts->{'sitename'}.".conf");
+	my $config = WebGUI::Config->new("/data/WebGUI",$opts->{'sitename'}.".conf");
+        foreach (keys %{$overrides}) {
+                $config->set($_, $overrides->{$_});
         }
-        foreach ($override->directives) {
-                $config->set($_=>$override->get($_));
-        }
-	$config->write;
-	unlink($tempFile);
 }
 
 #------------------------------
 sub destroy {
 	my ($opts) = @_;
-	my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => $opts->{'webgui-home'}.'/etc/'.$opts->{'sitename'}.".conf", 'PURGE' => 1);
+	my $config = WebGUI::Config->new("/data/WebGUI", $opts->{'sitename'}.".conf");
 	$opts->{'db-name'} = $config->get("dsn");
 	$opts->{'db-name'} =~ s/^DBI:mysql:(.*?);host=.*$/$1/;
 	$opts->{'db-host'} = $config->get("dsn");

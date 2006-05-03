@@ -1,6 +1,6 @@
 <VirtualHost *:81>
 	ServerName __sitename__
-	DocumentRoot __domain-home__/__domain__/__hostname__/public
+	DocumentRoot __domain-home__/__sitename__/public
         SetHandler perl-script
         PerlInitHandler WebGUI
         PerlSetVar WebguiConfig __sitename__.conf

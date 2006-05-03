@@ -149,8 +149,8 @@ sub checkWeb {
         $userAgent->agent("wremonitor/1.0");
         $userAgent->timeout($config->{connectionTimeOut});
         my $header = new HTTP::Headers;
-        my $requestproxy = new HTTP::Request (GET => "http://localhost/", $header);
-        my $requestperl = new HTTP::Request (GET => "http://localhost:81/", $header);
+        my $requestproxy = new HTTP::Request (GET => "http://".$config->{hostname}."/", $header);
+        my $requestperl = new HTTP::Request (GET => "http://".$config->{hostname}.":81/", $header);
         my $responseproxy = $userAgent->request($requestproxy);
         my $responseperl = $userAgent->request($requestperl);
         if (($responseproxy->is_success || $responseproxy->code eq "401") && ($responseperl->is_success || $responseperl->code eq "401")) {
@@ -205,11 +205,13 @@ sub sendEmail {
                 $smtp->data();
                 $smtp->datasend("To: ".$config->{adminEmail}."\n");
                 $smtp->datasend("From: WRE Monitor <".$config->{adminEmail}.">\n");
-                $smtp->datasend("Subject: WRE Service DOWN!\n");
+                $smtp->datasend("Subject: ".$config->{hostname}." WRE Service DOWN!\n");
                 $smtp->datasend("\n");
                 $smtp->datasend($message);
 		$smtp->datasend("\n");
-                $smtp->dataend(`hostname`);
+		$smtp->datasend($config->{hostname});
+		$smtp->datasend("\n");
+                $smtp->dataend();
                 $smtp->quit;
         } else {
                 logEntry("Error: Cannot connect to mail server.");

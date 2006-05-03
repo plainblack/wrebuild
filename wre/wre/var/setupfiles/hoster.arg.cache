@@ -11,7 +11,6 @@ webgui-home:/data/WebGUI
 admin-db-user:root
 apache-user:nobody
 awstats-template:awstats.template.conf
-gateway-template:index.pl
 webgui-conf-template:webgui.conf.override
 chown:/bin/chown
 tar:/usr/bin/tar

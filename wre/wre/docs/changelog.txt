@@ -6,6 +6,10 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
    rather than /data/domains/example.com/www. You don't need to change any
    of your existing sites. Just know that the removesite script won't
    remove the old folders.
+ - Updated the WRE to work with WebGUI 7.
+ - NOTE: This version of the WRE is for WebGUI 6.99.0 and above, it cannot be
+   used with older versions. Likewise older versions of the WRE will not work
+   properly for WebGUI 6.99.0 and above.
  - Added some more perl modules required by WebGUI.
  - Fixed the privileges on the backup script.
  - Added a --all option to democleanup.

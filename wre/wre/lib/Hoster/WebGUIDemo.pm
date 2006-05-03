@@ -6,6 +6,7 @@ use Apache2::Const;
 use DBI;
 use Parse::PlainConfig;
 use WebGUI;
+use WebGUI::Config;
 
 #-------------------------------------------------------------------
 sub handler {   
@@ -53,8 +54,8 @@ sub createDemo {
 	srand;
 	my $now = time();
 	my $demoId = "demo".$now."_".int(rand(999));
-	createConfig($demoId);
-	createFilesystem($demoId);
+	createConfig($r, $demoId);
+	createFilesystem($r,$demoId);
 	createDatabase($r,$demoId);
 	updateDemoConfig($r,$demoId,$now);
 	$r->headers_out->set(Location => "/".$demoId."/");
@@ -76,26 +77,29 @@ sub updateDemoConfig {
 
 #-------------------------------------------------------------------
 sub createConfig {
+	my $r = shift;
         my $demoId = shift;
-        my $config = Parse::PlainConfig->new('DELIM' => '=',
-                'FILE' => '/data/WebGUI/etc/WebGUI.conf.original',
-                'PURGE' => 1);
-        $config->set(
-                dsn => "DBI:mysql:".$demoId.";host=".$config->get("mysqlhost"),
-                dbuser => "demo",
-                dbpass => "demo",
-                sitename => "demo",
-		gateway => "/".$demoId,
-                uploadsURL => "/".$demoId."/uploads",
-                uploadsPath => "/data/domains/demo/".$demoId."/uploads"
-                );
-        $config->write("/data/WebGUI/etc/".$demoId.".conf");
+	my $masterConfig = $r->pnotes('masterDemoConfig');
+	my $file = $masterConfig->get("createConfig") || "/data/WebGUI/etc/WebGUI.conf.original";
+	system("cp -f $file /data/WebGUI/etc/".$demoId.".conf");
+        my $config = WebGUI::Config->new("/data/WebGUI", $demoId.".conf");
+        $config->set("dsn", "DBI:mysql:".$demoId.";host=".$masterConfig->get("mysqlhost"));
+	$config->set("dbuser", "demo");
+	$config->set("dbpass","demo");
+	$config->set("sitename", $masterConfig->get("sitename") || "demo");
+	$config->set("gateway", "/".$demoId);
+	$config->set("uploadsURL", "/".$demoId."/uploads");
+	$config->set("uploadsPath", "/data/domains/demo/".$demoId."/uploads");
 }
 
 #-------------------------------------------------------------------
 sub createFilesystem {
+	my $r = shift;
         my $demoId = shift;
+	my $config = $r->pnotes('masterDemoConfig');
         system("mkdir -p /data/domains/demo/".$demoId."/uploads");
+	my $folder = $config->get("createUploadsFolder") || "/data/WebGUI/www/uploads";
+	system("cp -Rf ".$folder."/* /data/domains/demo/".$demoId."/uploads/");
 }
 
 #-------------------------------------------------------------------

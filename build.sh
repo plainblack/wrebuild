@@ -111,7 +111,13 @@ buildUtils(){
 	cd ../catdoc-0.94
 	./configure --prefix=/data/wre/prereqs/utils --disable-wordview --without-wish --with-input=utf-8 --with-output=utf-8 --disable-charset-check --disable-langinfo; checkError $? "catdoc Configure"
 	make; checkError $? "catdoc make"
-	make install; checkError $? "catdoc make install"
+	cd src
+	make install; checkError $? "catdoc make install src"
+	cd ../docs
+	make install; checkError $? "catdoc make install docs"
+	cd ../charsets
+	make install; checkError $? "catdoc make install charsets"
+	cd ..
 	cd ../xpdf-3.01
 	./configure --without-x --prefix=/data/wre/prereqs/utils; checkError $? "pdftotext Configure"
 	make; checkError $? "pdftotext make"

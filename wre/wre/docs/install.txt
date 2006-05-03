@@ -3,14 +3,14 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   I N S T A L L
 
 The instructions below should allow an experienced WRE admin to
 get WRE up and running quickly. For more online instructions visit
-http://www.plainblack.com/rwg/wre_install
+http://www.plainblack.com/docs
 
 
 PRIOR TO INSTALLING
 
-The WRE  requires a Unix-style operating system, such as Linux.
-therefore you cannot use Windows. We recommend RHEL 3 or Mac OS X, 
-but it is not required.
+The WRE requires a Unix-style operating system, such as Linux,
+therefore you cannot use Windows. We recommend Red Hat Enterprise
+Linux or Mac OS X, but it is not required.
 
 
 INSTALLING
@@ -92,5 +92,16 @@ after the WRE is installed:
 ln -s /data/wre/sbin/rc.webgui /etc/init.d/webgui
 chkconfig --add webgui
 chkconfig webgui on
+
+
+Mac OSX
+
+There is no command line user add script on Mac OSX. This means you have to
+use the really horrible netinfo interface to add a user. Instead, we recommend
+downloading the user utilities from this site:
+
+http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
+
+
 
 
