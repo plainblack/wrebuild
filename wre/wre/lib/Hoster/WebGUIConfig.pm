@@ -24,7 +24,7 @@ sub destroy {
 	$opts->{'db-name'} = $config->get("dsn");
 	$opts->{'db-name'} =~ s/^DBI:mysql:(.*?);host=.*$/$1/;
 	$opts->{'db-host'} = $config->get("dsn");
-	$opts->{'db-host'} =~ s/^DBI:mysql:.*?;host=(.*)$/$1/;
+	$opts->{'db-host'} =~ s/^DBI:mysql:.*?;host=([^;]*).*$/$1/;
 	$opts->{'site-db-user'} = $config->get("dbuser");
 	$opts->{'site-db-pass'} = $config->get("dbpass");
 	unlink($opts->{'webgui-home'}.'/etc/'.$opts->{'sitename'}.".conf");

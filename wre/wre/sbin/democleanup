@@ -12,7 +12,14 @@ GetOptions(
 );
 
 my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/demo.conf', 'PURGE' => 1);
-my $dbh = DBI->connect("DBI:mysql:test;host=".$config->get("mysqlhost"),$config->get("adminuser"),$config->get("adminpass"));
+my $dsn = "DBI:mysql:test;host=" . $config->get('mysqlhost') ;
+if ($config->get('db-port')) {
+	$dsn .= ";port=" . $config->get('db-port') ;
+}
+if ($config->get('db-socket')) {
+	$dsn .= ";mysql_socket=" . $config->get('db-socket') ;
+}
+my $dbh = DBI->connect($dsn,$config->get("adminuser"),$config->get("adminpass"));
 my $demos = $config->get('sites');
 my %newDemos = ();
 foreach my $demoId (keys %{$demos}) {

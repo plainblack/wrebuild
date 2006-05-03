@@ -96,7 +96,15 @@ sub doUpgrade {
 	my $answer = prompt("Do you want me to start the upgrade script?","n","y","n");
 	if ($answer eq "y") {
 		chdir($prefs->{webguiHome}."/sbin");
-		system("perl upgrade.pl --doit --mysql=/data/wre/prereqs/mysql/bin/mysql --mysqldump=/data/wre/prereqs/mysql/bin/mysqldump --override");
+		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+		my $mysql_args = "--host=" . $config->get('db-host') ;
+		if ($config->get('db-port')) {
+			$mysql_args .= " --port=" . $config->get('db-port') ;
+		}
+		if ($config->get('db-socket')) {
+			$mysql_args .= " --socket=" . $config->get('db-socket') ;
+		}
+		system("perl upgrade.pl --doit --mysql='/data/wre/prereqs/mysql/bin/mysql $mysql_args' --mysqldump='/data/wre/prereqs/mysql/bin/mysqldump $mysql_args' --override");
 	}
 }
 

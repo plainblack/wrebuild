@@ -1,4 +1,4 @@
-<VirtualHost *:80>
+<VirtualHost *:__apache-modproxy-port__>
 ServerName stats
 DocumentRoot /data/wre/prereqs/awstats/wwwroot
 DirectoryIndex awstats.pl

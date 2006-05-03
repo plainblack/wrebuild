@@ -6,6 +6,12 @@ use strict;
 sub create {
 	my ($opts) = @_;
 	my $cmd = $opts->{'mysql-client'};
+	if ($opts->{'db-port'}) {
+		$cmd .= ' --port='.$opts->{'db-port'};
+	}
+	if ($opts->{'db-socket'}) {
+		$cmd .= ' --socket='.$opts->{'db-socket'};
+	}
 	if ($opts->{'admin-db-user'}) {
 		$cmd .= ' -u'.$opts->{'admin-db-user'};
 	}
@@ -17,6 +23,12 @@ sub create {
 		.'.* to '.$opts->{'site-db-user'}."\@'".$from."' identified by '".$opts->{'site-db-pass'}.'\'"';
 	system($cmd);
 	$cmd = $opts->{'mysql-client'}.' --host='.$opts->{'db-host'}.' -D '.$opts->{'db-name'};
+	if ($opts->{'db-port'}) {
+		$cmd .= ' --port='.$opts->{'db-port'};
+	}
+	if ($opts->{'db-socket'}) {
+		$cmd .= ' --socket='.$opts->{'db-socket'};
+	}
 	if ($opts->{'site-db-user'}) {
 		$cmd .= ' -u'.$opts->{'site-db-user'};
 	}
@@ -31,6 +43,12 @@ sub create {
 sub destroy {
 	my ($opts) = @_;
 	my $cmd = $opts->{'mysql-client'};
+	if ($opts->{'db-port'}) {
+		$cmd .= ' --port='.$opts->{'db-port'};
+	}
+	if ($opts->{'db-socket'}) {
+		$cmd .= ' --socket='.$opts->{'db-socket'};
+	}
 	if ($opts->{'admin-db-user'}) {
 		$cmd .= ' -u'.$opts->{'admin-db-user'};
 	}

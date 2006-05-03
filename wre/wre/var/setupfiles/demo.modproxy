@@ -1,5 +1,5 @@
-<VirtualHost *:80>
-	ServerName demo.example.com
+<VirtualHost *:__apache-modproxy-port__>
+	ServerName __demo-sitename__
 	DocumentRoot /data/domains/demo
 	RewriteEngine On
         RewriteLog "/data/wre/prereqs/apache/logs/modrewrite.log"
@@ -13,5 +13,5 @@
         RewriteRule ^/favicon.ico - [L]
         RewriteRule ^/extras/ - [L]
         # proxy webgui pages
-        RewriteRule ^/(.*) http://demo.example.com:81/$1 [P]
+	RewriteRule ^/(.*) http://__demo-sitename__:__apache-modperl-port__/$1 [P]
 </VirtualHost>
