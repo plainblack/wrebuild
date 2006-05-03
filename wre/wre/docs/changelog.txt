@@ -27,6 +27,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Upgraded to libpng 1.2.10.
  - Perl modules included in source instead of downloading from CPAN
    during build.
+ - Improved the install docs thanks to Jason Howell and Susan Bauer.
+ - Added support for overriding MySQL and Apache ports thanks to 
+   Eric Kennedy.
 
 0.6.0
  - Added a dev mode option that will autoconfigure the WRE to run

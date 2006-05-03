@@ -17,15 +17,12 @@ INSTALLING
 
 1. Unpack the archive.
 
-	tar xvfz wre-x.x.x-osname.tar.gz
+	mkdir /data
+	cd /data
+	tar xvfz /path/to/wre-x.x.x-osname.tar.gz
 
 
-2. Move the resulting data folder to the root of your filesystem. 
-
-	mv data /
-
-
-3. Add a "mysql" user to the system. On most systems you run a 
+2. Add a "mysql" user to the system. On most systems you run a 
 command similar to the following as the root user:
 
 	adduser -s /sbin/nologin mysql
@@ -35,12 +32,22 @@ command similar to the following as the root user:
 	useradd -s /sbin/nologin mysql
 
 
-4. If you have an existing Apache or MySQL running please shut them
-down now.
+3. If you have an existing Apache or MySQL running please shut them
+down now. On most systems you can shut them down hard by running
+commands like this:
+
+	killall mysqld
+	killall httpd
 
 
-5. If you have a MySQL config file at /etc/my.cnf please remove or
+4. If you have a MySQL config file at /etc/my.cnf please remove or
 rename it so that it doesn't interfere with the WRE MySQL.
+
+	mv /etc/my.cnf /etc/my.cnf.old
+
+
+5. Create your DNS entries (or add to /etc/hosts) for the sites you
+will be using, including the AWStats site.
 
 
 6. Run the setup program which will initialize the WRE for your
@@ -62,11 +69,11 @@ system and download and install WebGUI.
 	*/3 * * * * /data/wre/sbin/wremonitor
 	0 3 * * * /data/wre/sbin/backup
 
-If you want AWStats to be compiled nightly add this:
+	If you want AWStats to be compiled nightly add this:
 
 	0 2 * * * /data/wre/prereqs/awstats/tools/awstats_updateall.pl now -awstatsprog=/data/wre/prereqs/awstats/wwwroot/awstats.pl -configdir=/data/wre/etc
 
-If you are using the demo system then add this:
+	If you are using the demo system then add this:
 
 	0 0 * * * /data/wre/sbin/democleanup
 
