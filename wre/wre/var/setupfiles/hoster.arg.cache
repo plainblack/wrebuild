@@ -4,8 +4,6 @@ mysql-client:/data/wre/prereqs/mysql/bin/mysql
 mysqldump:/data/wre/prereqs/mysql/bin/mysqldump
 mysql-cnf:/data/wre/prereqs/mysql/my.cnf
 mysql-cnf-template:my.cnf
-mysql-config:/data/wre/prereqs/mysql/bin/mysql_config
-mysql-config-template:mysql_config
 vh-home:/data/wre/etc
 vh-modperl-template:vh.modperl.template
 vh-modproxy-template:vh.modproxy.template
@@ -17,6 +15,8 @@ apache-user:nobody
 apache-modperl-template:httpd.modperl.conf
 apache-modperl-dev-template:httpd.modperl.conf.dev
 apache-modproxy-template:httpd.modproxy.conf
+apache-modperl-conf:/data/wre/prereqs/apache/conf/httpd.modperl.conf
+apache-modproxy-conf:/data/wre/prereqs/apache/conf/httpd.modproxy.conf
 awstats-template:awstats.template.conf
 webgui-conf-template:webgui.conf.override
 hoster-home:/data/wre

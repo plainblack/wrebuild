@@ -6,7 +6,7 @@ use warnings;
 use DBI;
 use Parse::PlainConfig;
 use File::Path;
-use Hoster::Template
+use Hoster::Template;
 
 our $mysqlRootPassword;
 our $mysqlRootUser;
@@ -166,7 +166,7 @@ sub setupDemo {
                         $fileContents .= $line;
                 }
                 close(FILE);
-                open(FILE,"</data/wre/etc/demo.modproxy");
+                open(FILE,">/data/wre/etc/demo.modproxy");
                 print FILE $fileContents;
                 close(FILE);
                 open(FILE,"</data/wre/etc/demo.modperl");
@@ -238,8 +238,6 @@ sub setupMysql {
 		$config->write;
 		# create my.cnf file from template
 		createFileFromTemplate("setupfiles/" . $config->get('mysql-cnf-template'), $config->get('mysql-cnf'), "/data/wre/var/hoster.arg.cache");
-		# create mysql_config file from template
-		createFileFromTemplate("setupfiles/" . $config->get('mysql-config-template'), $config->get('mysql-config'), "/data/wre/var/hoster.arg.cache");
 		system("ln -s " . $config->get('mysql-cnf') . " /data/wre/prereqs/mysql/var/my.cnf");
         	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port') . " --socket=" . $config->get("db-socket"));
 		system("sudo chown -R mysql /data/wre/prereqs/mysql/var");
