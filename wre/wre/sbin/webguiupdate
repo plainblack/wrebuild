@@ -7,7 +7,7 @@ use LWP::UserAgent;
 use File::Path;
 use Archive::Tar;
 use HTTP::Request;
-
+use JSON;
 
 startUp();
 our $prefs = getPrefs();
@@ -117,26 +117,15 @@ sub failAndExit {
 
 #----------------------------------------
 sub getFromMirror {
-	my $mirrorNumber = shift;
+	my $mirrorUrl = shift;
 	my $webguiVersion = shift;
-	printTest("Getting mirror URL");
-	my $mirrorUserAgent = LWP::UserAgent->new;
- 	my $mirrorRequest = HTTP::Request->new(GET => 'http://prdownloads.sourceforge.net/pbwebgui/webgui-'.$webguiVersion.'.tar.gz?use_mirror='.$mirrorNumber);
- 	my $mirrorResponse = $mirrorUserAgent->request($mirrorRequest);
-	my $html = $mirrorResponse->content;
-	$html =~ /\<meta\s+HTTP\-EQUIV=\"refresh\"\s+content=\"\d+\;\s+URL=(http\:.*?\.gz)\"\>/igs;
-	my $url = $1;
-	if ($mirrorResponse->is_error) {
-		failAndExit("Failed! Couldn't get URL.");
-	} else {
-		printResult("OK");
-	}
 	printTest("Downloading from mirror");
 	my $downloadUserAgent = LWP::UserAgent->new;
-        my $downloadRequest = HTTP::Request->new(GET => $url);
+        my $downloadRequest = HTTP::Request->new(GET => $mirrorUrl);
         my $downloadResponse = $downloadUserAgent->request($downloadRequest);
 	if ($downloadResponse->is_error) {
-		failAndExit("Failed! Couldn't get file.");
+		printResult("Failed! Couldn't get file.");
+		return "";
 	} else {
 		printResult("OK");
 	}
@@ -158,21 +147,14 @@ sub getMirrors {
 	my $webguiVersion = shift;
 	printTest("Getting mirrors list");
 	my $mirrorListUserAgent = LWP::UserAgent->new;
- 	my $mirrorListRequest = HTTP::Request->new(GET => 'http://prdownloads.sourceforge.net/pbwebgui/webgui-'.$webguiVersion.'.tar.gz?download');
+ 	my $mirrorListRequest = HTTP::Request->new(GET => 'http://update.webgui.org/getmirrors.pl?version='.$webguiVersion);
  	my $mirrorListResponse = $mirrorListUserAgent->request($mirrorListRequest);
-	my $html = $mirrorListResponse->content;
-	my @mirrors;
-	my $legend;
-	while ($html =~ /\<td\>(\w+,\s+\w+)\<\/td\>\n\s+\<td\>.*?\<\/td\>\n\s+\<td\>\<a href\=\"\/pbwebgui\/webgui\-\d+\.\d+\.\d+-\w+\.tar\.gz\?use_mirror=(\w+)/igs) {
-		push(@mirrors,$2);
-		$legend .= $2." = ".$1."\n";
-	}
 	if ($mirrorListResponse->is_error) {
 		failAndExit("Failed!");
-	} else {
-		printResult("OK");
 	}
-	return \@mirrors,$legend;
+	printResult("OK");
+	my $mirrors = $mirrorListResponse->content;
+	return jsonToObj($mirrors);
 }
 
 #----------------------------------------
@@ -198,7 +180,7 @@ sub getVersion {
 	my $referer = "http://webgui.install.getversion/".`hostname`;
 	chomp $referer;
 	$header->referer($referer);
-	my $currentversionRequest = new HTTP::Request (GET => "http://www.plainblack.com/downloads/latest-version.txt", $header);
+	my $currentversionRequest = new HTTP::Request (GET => "http://update.webgui.org/latest-version.txt", $header);
 	my $currentversionResponse = $currentversionUserAgent->request($currentversionRequest);
 	my $version = $currentversionResponse->content;
 	chomp $version;
@@ -286,8 +268,11 @@ sub whereFrom {
 		return whereIsIt();
 	} else {
 		my $version = whichVersion();
-		$prefs->{whichMirror} = whichMirror($prefs->{whichMirror},$version);
-		return getFromMirror($prefs->{whichMirror},$version);
+		my $file = "";
+		while ($file eq "") {
+			$file = getFromMirror(whichMirror($version),$version);
+		}
+		return $file;
 	}
 }
 
@@ -304,8 +289,16 @@ sub whereIsIt {
 
 #----------------------------------------
 sub whichMirror {
-	my ($mirrors, $legend) = getMirrors($_[1]);
-	return prompt($legend."Which mirror would you like to download from?",$_[0],@$mirrors);
+	my ($mirrors) = getMirrors(shift);
+	my $legend = "";
+	my @mirrorsList = ();
+	foreach my $key (keys %{$mirrors}) {
+		$legend .= $key ." = ".$mirrors->{$key}{location}."\n";
+		push(@mirrorsList, $key);
+	}
+	my $mirror = prompt($legend."\nWhich mirror would you like to download from?",$prefs->{whichMirror},@mirrorsList);
+	$prefs->{whichMirror} = $mirror;
+	return $mirrors->{$mirror}{url};
 }
 
 #----------------------------------------

@@ -31,6 +31,10 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added support for overriding MySQL and Apache ports thanks to 
    Eric Kennedy.
  - Enabled mod_headers in apache for improved performance and control.
+ - fix [ 1463632 ] WRE 0.6 - use of uninitialized value
+ - fix [ 1414228 ] WRE - https causes problems with uploading
+ - Changed webguiupdate program to use the update.webgui.org.
+ - fix [ 1450469 ] WRE 0.6 - doesn't download wG from mirrors anymore
 
 0.6.0
  - Added a dev mode option that will autoconfigure the WRE to run
