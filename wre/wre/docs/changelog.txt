@@ -18,6 +18,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - WRE monitor now looks for runaway modperl processes.
  - Added a fix to the build script to make lftp build properly on some
    operating systems like FreeBSD.
+ - Better handling of cron and diff printouts when running setup.
+ - webguiupdate now allows you to choose another mirror if the first choice
+   fails.
  - Upgraded to MySQL 5.0.21.
  - Upgraded to Apache 2.0.58.
  - Upgraded to libapreq2 2.07.

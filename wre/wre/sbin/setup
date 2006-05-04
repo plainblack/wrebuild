@@ -8,6 +8,7 @@ use Parse::PlainConfig;
 use File::Path;
 use Hoster::Template;
 
+our (@crons, @diffs);
 our $mysqlRootPassword;
 our $mysqlRootUser;
 our $mysqlHost;
@@ -25,6 +26,7 @@ setupBackups($setupType) unless ($isDev);
 setupWebgui($setupType);
 setupDemo($setupType) unless ($isDev);
 setupAsDev($setupType) if ($isDev);;
+displayMessages();
 if ($isDev) {
 	printMessage("Setup Complete! Now you need to start the WRE and visit http://localhost/");
 } elsif ($setupType eq "install") {
@@ -32,6 +34,18 @@ if ($isDev) {
 } else {
 	printMessage("Setup Complete!");
 }
+
+#----------------------------------------
+
+sub displayMessages {
+	if (scalar(@diffs)) {
+		print "Some of your configs don't match the defaults. Run these diff commands to find out what's different:\n\t".join("\n\t",@diffs)."\n\n";
+	}
+	if (scalar(@crons)) {
+		print "You need to add the following scripts to your cron tab:\n\t".join("\n\t",@crons)."\n\n";
+	}
+}
+
 
 #----------------------------------------
 sub setupApache {
@@ -181,7 +195,7 @@ sub setupDemo {
                 open(FILE,">/data/wre/etc/demo.modperl");
                 print FILE $fileContents;
                 close(FILE);
-                printMessage("Add the following line to your cronjobs:\n\n0 0 * * * /data/wre/sbin/democleanup\n\n");
+		push(@crons, "0 0 * * * /data/wre/sbin/democleanup");
         }
 }
 
@@ -213,7 +227,7 @@ sub setupAwstats {
 		open(FILE,">/data/wre/etc/stats.modproxy");
 		print FILE $fileContents;
 		close(FILE);
-		printMessage("Add the following line to your cronjobs:\n\n0 2 * * * /data/wre/prereqs/awstats/tools/awstats_updateall.pl now -awstatsprog=/data/wre/prereqs/awstats/wwwroot/awstats.pl -configdir=/data/wre/etc\n\n");
+		push(@crons, "0 2 * * * /data/wre/prereqs/awstats/tools/awstats_updateall.pl now -awstatsprog=/data/wre/prereqs/awstats/wwwroot/awstats.pl -configdir=/data/wre/etc");
 	}
 }
 
@@ -406,6 +420,9 @@ sub startup {
                 $type = "upgrade"; # must upgrade
 		printResult("Looks like we need to upgrade.");
         } else {
+		push(@crons, "0 1 * * * /data/wre/sbin/logrotate");
+		push(@crons, "*/3 * * * * /data/wre/sbin/wremonitor");
+		push(@crons, "0 3 * * * /data/wre/sbin/backup");
                 $type = "install"; # new install
 		printResult("Looks like a new install.");
         }
@@ -468,7 +485,7 @@ sub copyFile {
 		my @tomd5 = split(" ",`/data/wre/sbin/md5sum $to`);
 		my @frommd5 = split(" ",`/data/wre/sbin/md5sum $from`);
 		unless ($tomd5[0] eq $frommd5[0]) {
-			print "$to is different than the original version $from, you may want to compare them and make the appropriate changes to $to.\n";
+			push(@diffs, "diff $from $to");
 		}
 	} else {
 		system("cp $from $to");
