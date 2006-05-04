@@ -1,0 +1,70 @@
+#!/bin/bash
+# chkconfig: 2345 90 60
+# description: Start and stop WebGUI (WRE) MySQL
+# processname: wremysql
+
+mysqlhome="/data/wre/prereqs/mysql"
+. /data/wre/sbin/setenvironment
+
+startmysql(){
+	$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
+	ret=$?
+	if [ $ret -eq 0 ]; then
+	    	echo MySQL Started
+	else
+    	    	echo MySQL failed to start!
+	fi
+	return $ret
+}
+
+stopmysql(){
+	echo Stopping MySQL
+	if [ $EUID -eq 0 ]; then
+		 $mysqlhome/share/mysql/mysql.server stop
+	else
+		echo Enter your sudo password
+		sudo $mysqlhome/share/mysql/mysql.server stop
+	fi
+	ret=$?
+	if [ $ret -eq 0 ]; then
+		echo MySQL Stopped
+	else
+		echo MySQL failed to stop!
+	fi
+	return $ret
+}
+
+start(){
+	startmysql
+}
+
+stop(){
+	stopmysql
+}
+
+restart(){
+	stop
+	sleep 3
+	start
+}
+
+
+# See how we were called.
+case "$1" in
+  	start)
+    		start
+    	;;
+  	stop)
+    		stop
+    	;;
+  	restart)
+    		restart
+    	;;
+  	*)
+		echo $"WRE MySQL Service Controller"
+    		echo $"Usage:"
+		echo $"	$0 { start | stop | restart }"
+    		exit 1
+esac
+
+exit $?

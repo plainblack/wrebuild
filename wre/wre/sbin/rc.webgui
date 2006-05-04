@@ -3,203 +3,73 @@
 # description: Start and stop WebGUI (WRE) related services
 # processname: wre
 
-mysqlhome="/data/wre/prereqs/mysql"
-apachehome="/data/wre/prereqs/apache"
 . /data/wre/sbin/setenvironment
-
-startmysql(){
-	$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo MySQL Started
-	else
-    	    	echo MySQL failed to start!
-	fi
-	return $ret
-}
-
-stopmysql(){
-	echo Stopping MySQL
-	if [ $EUID -eq 0 ]; then
-		 $mysqlhome/share/mysql/mysql.server stop
-	else
-		echo Enter your sudo password
-		sudo $mysqlhome/share/mysql/mysql.server stop
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo MySQL Stopped
-	else
-		echo MySQL failed to stop!
-	fi
-	return $ret
-}
-
-startmodperl(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start >/dev/null 2>&1
-	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start >/dev/null 2>&1
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo mod_perl Started
-	else
-    	    	echo mod_perl failed to start!
-	fi
-	return $ret
-}
-
-stopmodperl(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
-	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo mod_perl Stopped
-	else
-		echo mod_perl failed to stop!
-	fi
-	return $ret
-}
-
-startmodproxy(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start >/dev/null 2>&1
-	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start >/dev/null 2>&1
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo mod_proxy Started
-	else
-    	    	echo mod_proxy failed to start!
-	fi
-	return $ret
-}
-
-stopmodproxy(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
-	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo mod_proxy Stopped
-	else
-		echo mod_proxy failed to stop!
-	fi
-	return $ret
-}
-
-start(){
-	startmysql
-	startmodperl
-	sleep 2
-	startmodproxy
-}
-
-stop(){
-	stopmodproxy
-	stopmodperl
-	stopmysql
-}
-
-restart(){
-	stop
-	sleep 3
-	start
-}
-
-stopweb(){
-	stopmodproxy
-    	stopmodperl
-}
-
-startweb(){
-    	startmodperl
- 	sleep 1
-	startmodproxy
-}
-
-restartweb(){
-	stopweb
-    	sleep 3
-	startweb
-}
-
-restartmodperl(){
-    	stopmodperl
-    	sleep 3
-    	startmodperl
-}
-
-restartmodproxy(){
-    	stopmodproxy
-    	sleep 3
-    	startmodproxy
-}
-
-restartmysql(){
-    	stopmysql
-	sleep 3
-    	startmysql
-}
-
 
 # See how we were called.
 case "$1" in
   	start)
-    		start
+    		/data/wre/sbin/rc.mysql start
+    		/data/wre/sbin/rc.apache start
+    		/data/wre/sbin/rc.spectre start
     	;;
   	stop)
-    		stop
+    		/data/wre/sbin/rc.spectre stop
+    		/data/wre/sbin/rc.apache stop
+		/data/wre/sbin/rc.mysql stop
     	;;
   	restart)
-    		restart
+    		/data/wre/sbin/rc.spectre stop
+    		/data/wre/sbin/rc.apache stop
+    		/data/wre/sbin/rc.mysql stop
+		sleep 1
+    		/data/wre/sbin/rc.mysql start
+    		/data/wre/sbin/rc.apache start
+    		/data/wre/sbin/rc.spectre start
     	;;
   	startmysql)
-    		startmysql
+    		/data/wre/sbin/rc.mysql start
     	;;
   	stopmysql)
-    		stopmysql
+		/data/wre/sbin/rc.mysql stop
     	;;
   	restartmysql)
-    		restartmysql
+    		/data/wre/sbin/rc.mysql restart
     	;;
   	startweb)
-    		startweb
+    		/data/wre/sbin/rc.apache start
     	;;
   	stopweb)
-    		stopweb
+    		/data/wre/sbin/rc.apache stop
     	;;
   	restartweb)
-    		restartweb
+    		/data/wre/sbin/rc.apache restart
     	;;
   	startmodperl)
-    		startmodperl
+    		/data/wre/sbin/rc.apache startmodperl
     	;;
   	stopmodperl)
-    		stopmodperl
+    		/data/wre/sbin/rc.apache stopmodperl
     	;;
   	restartmodperl)
-    		restartmodperl
+    		/data/wre/sbin/rc.apache restartmodperl
     	;;
   	startmodproxy)
-    		startmodproxy
+    		/data/wre/sbin/rc.apache startmodproxy
     	;;
   	stopmodproxy)
-    		stopmodproxy
+    		/data/wre/sbin/rc.apache stopmodproxy
     	;;
   	restartmodproxy)
-    		restartmodproxy
+    		/data/wre/sbin/rc.apache restartmodproxy
+    	;;
+  	startspectre)
+    		/data/wre/sbin/rc.spectre start
+    	;;
+  	stopspectre)
+    		/data/wre/sbin/rc.spectre stop
+    	;;
+  	restartspectre)
+    		/data/wre/sbin/rc.spectre restart
     	;;
   	*)
 		echo $"WRE Service Controller"
@@ -209,6 +79,7 @@ case "$1" in
     		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
     		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
     		echo $"	$0 { startmysql | stopmysql | restartmysql }"
+    		echo $"	$0 { startspectre | stopspectre | restartspectre }"
     		exit 1
 esac
 
