@@ -562,6 +562,14 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Net::Subnets Makefile.PL"
 	make; checkError $? "Net::Subnets make"
 	make install; checkError $? "Net::Subnets make install"
+	cd ../MailTools-1.74
+	perl Makefile.PL; checkError $? "MIME tools Makefile.PL"
+	make; checkError $? "MIME tools make"
+	make install; checkError $? "MIME tools make install"
+	cd ../IO-stringy-2.110
+	perl Makefile.PL; checkError $? "MIME tools Makefile.PL"
+	make; checkError $? "MIME tools make"
+	make install; checkError $? "MIME tools make install"
 	cd ../MIME-tools-5.420
 	perl Makefile.PL; checkError $? "MIME tools Makefile.PL"
 	make; checkError $? "MIME tools make"
