@@ -7,7 +7,14 @@ mysqlhome="/data/wre/prereqs/mysql"
 . /data/wre/sbin/setenvironment
 
 startmysql(){
-	$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
+	echo Starting MySQL
+	if [ $EUID -eq 0 ]; then
+		$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
+	else
+		echo Enter your sudo password
+		sudo echo
+		sudo $mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
+	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then
 	    	echo MySQL Started
