@@ -571,7 +571,7 @@ installPerlModules(){
 	make; checkError $? "HTML::Template::Expr make"
 	make install; checkError $? "HTML::Template::Expr make install"
 	cd ../Template-Toolkit-2.14
-	perl Makefile.PL TT_DOCS=n TT_SPLASH=n TT_THEME=n TT_EAMPLES=n TT_EXTRAS=n TT_XS_STASH=y TT_XS_DEFAULT=n TT_DBI=n TT_LATEX=n; checkError $? "Template Toolkit Makefile.PL"
+	perl Makefile.PL TT_ACCEPT=y TT_DOCS=n TT_SPLASH=n TT_THEME=n TT_EAMPLES=n TT_EXTRAS=n TT_XS_STASH=y TT_XS_DEFAULT=n TT_DBI=n TT_LATEX=n; checkError $? "Template Toolkit Makefile.PL"
 	make; checkError $? "Template Toolkit make"
 	make install; checkError $? "Template Toolkit make install"
 	cd ../Scalar-List-Utils-1.18
