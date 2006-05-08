@@ -84,9 +84,6 @@ sub createConfig {
 	if ($masterConfig->get("db-port")) {
 		$dsn .= ";port=".$masterConfig->get("db-port") ;
 	}
-	if ($demo_config->get("db-socket")) {
-		$dsn .= ";mysql_socket=".$masterConfig->get("db-socket") ;
-	}
 	my $file = $masterConfig->get("createConfig") || "/data/WebGUI/etc/WebGUI.conf.original";
 	system("cp -f $file /data/WebGUI/etc/".$demoId.".conf");
         my $config = WebGUI::Config->new("/data/WebGUI", $demoId.".conf");
@@ -118,9 +115,6 @@ sub createDatabase {
 	if ($config->get("db-port")) {
 		$dsn .= ";port=".$config->get("db-port") ;
 	}
-	if ($config->get("db-socket")) {
-		$dsn .= ";mysql_socket=".$config->get("db-socket") ;
-	}
         my $dbh = DBI->connect($dsn,$config->get("adminuser"),$config->get("adminpass"));
         $dbh->do("create database ".$demoId);
         $dbh->do("grant all privileges on ".$demoId.".* to demo\@localhost identified by 'demo'");
@@ -129,9 +123,6 @@ sub createDatabase {
 	my $cmd = "/data/wre/prereqs/mysql/bin/mysql --host=".$config->get("mysqlhost");
 	if ($config->get('db-port')) {
 		$cmd .= ' --port='.$config->get('db-port');
-	}
-	if ($config->get('db-socket')) {
-		$cmd .= ' --socket='.$config->get('db-socket');
 	}
 	$cmd .= " -udemo -pdemo ".$demoId." < ".$config->get("createScript");
 	system($cmd);

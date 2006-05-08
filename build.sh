@@ -218,7 +218,7 @@ buildMysql(){
 	mkdir -p /data/wre/prereqs/mysql/include
 	mkdir -p /data/wre/prereqs/mysql/var
 	cd source/mysql/mysql-5.0.21
-	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=/data/wre/prereqs/mysql --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes $staticflags; checkError $? "MySQL Configure"
+	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=/data/wre/prereqs/mysql --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=/data/wre/prereqs/utils --with-zlib-dir=/data/wre/prereqs/utils --with-unix-socket-path=/data/wre/prereqs/mysql/var/mysql.sock $staticflags; checkError $? "MySQL Configure"
 	make; checkError $? "MySQL make"
 	make install; checkError $? "MySQL make install"
 	cd $BUILDDIR

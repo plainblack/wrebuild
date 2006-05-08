@@ -12,7 +12,7 @@ my $tar = $config->get("tar");
 my $rotate = $config->get("rotateBackups");
 
 rotateBackupFiles($rotate,$backupDir) if ($rotate);
-backupMysql($config->get("mysqluser"),$config->get("mysqlpass"),$backupDir,$config->get("mysqlhost"),$config->get("db-port"),$config->get("db-socket")) if ($config->get("backupMysql"));
+backupMysql($config->get("mysqluser"),$config->get("mysqlpass"),$backupDir,$config->get("mysqlhost"),$config->get("db-port")) if ($config->get("backupMysql"));
 backupDomains($tar,$backupDir) if ($config->get("backupDomains"));
 backupWebgui($tar,$backupDir) if ($config->get("backupWebgui"));
 backupWre($tar,$backupDir) if ($config->get("backupWre"));
@@ -123,13 +123,9 @@ sub backupMysql {
 	my $backupDir = shift;
 	my $host = shift;
 	my $db_port = shift ;
-	my $db_socket = shift ;
 	my $dsn = "DBI:mysql:mysql;host=$host" ;
 	if ($db_port) {
 		$dsn .= ";port=$db_port" ;
-	}
-	if ($db_socket) {
-		$dsn .= ";mysql_socket=$db_socket" ;
 	}
 	my $dbh = DBI->connect($dsn,$user,$pass);
 	my $sth = $dbh->prepare("show databases");
@@ -137,9 +133,6 @@ sub backupMysql {
 	my $cmd = "/data/wre/prereqs/mysql/bin/mysqldump --host=$host" ;
 	if ($db_port) {
 		$cmd .= " --port=$db_port" ;
-	}
-	if ($db_socket) {
-		$cmd .= " --socket=$db_socket" ;
 	}
 	while (my ($name) = $sth->fetchrow_array) {
 		next if ($name =~ /^demo\d/);

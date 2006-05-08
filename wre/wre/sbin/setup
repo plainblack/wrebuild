@@ -147,9 +147,6 @@ sub setupDemo {
 		if ($hoster_config->get("db-port")) {
 			$dsn .= ";port=".$hoster_config->get("db-port") ;
 		}
-		if ($hoster_config->get("db-socket")) {
-			$dsn .= ";mysql_socket=".$hoster_config->get("db-socket") ;
-		}
 		my $dbh = DBI->connect($dsn,getMysqlRootUser(),getMysqlRootPassword());
 		my $from = getMysqlHost() eq "localhost" ? "localhost" : "%";
 		$dbh->do("grant all privileges on *.* to demoadmin\@'".$from."' identified by '".$pw."' with grant option");
@@ -159,7 +156,6 @@ sub setupDemo {
 		$config->set(adminpass=> $pw);
 		$config->set(mysqlhost=>getMysqlHost());
 		$config->set('db-port' => $hoster_config->get("db-port")) ;
-		$config->set('db-socket' => $hoster_config->get("db-socket")) ;
                 my $site = prompt("What sitename will you use for the demo (like demo.example.com)?");
 		$config->set('sitename' => $site);
 		$config->write;
@@ -248,15 +244,14 @@ sub setupMysql {
 		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 		$config->set('admin-db-user'=>$mysqlRootUser);
 		$config->set('db-port'=>$mysqlPort);
-		$config->set('db-socket'=>"/data/wre/prereqs/mysql/var/mysql.sock");
 		$config->write;
 		# create my.cnf file from template
 		createFileFromTemplate("setupfiles/" . $config->get('mysql-cnf-template'), $config->get('mysql-cnf'), "/data/wre/var/hoster.arg.cache");
 		system("ln -s " . $config->get('mysql-cnf') . " /data/wre/prereqs/mysql/var/my.cnf");
-        	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port') . " --socket=" . $config->get("db-socket"));
+        	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port'));
 		system("sudo chown -R mysql /data/wre/prereqs/mysql/var");
 		startMysql();
-		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" . $config->get('db-port') . ";mysql_socket=" . $config->get('db-socket'),"root");
+		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" . $config->get('db-port'),"root");
 		$dbh->do("delete from user where user=''");
 		$dbh->do("delete from user where user='root'");
 		$dbh->do("grant all privileges on *.* to ".getMysqlRootUser()."\@'localhost' identified by '".getMysqlRootPassword()."' with grant option");
@@ -309,7 +304,7 @@ sub setupMonitors {
 	my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 	if (!(-f "/data/wre/etc/wremonitor.conf") && getMysqlHost() eq "localhost") {
 		startMysql();
-		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" . $config->get('db-port') . ";mysql_socket=" . $config->get('db-socket'),getMysqlRootUser(),getMysqlRootPassword());
+		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" . $config->get('db-port'),getMysqlRootUser(),getMysqlRootPassword());
 		$dbh->do("grant all privileges on test.* to test\@localhost identified by 'test'");
 		$dbh->disconnect;
 		stopMysql();
@@ -336,7 +331,7 @@ sub setupBackups {
 		my $hoster_config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 		my $backuppw = prompt("What would you like the database backup password to be?");
 		startMysql();
-		my $dbh = DBI->connect("DBI:mysql:mysql;host=".getMysqlHost().";port=" . $hoster_config->get('db-port') . ";mysql_socket=" . $hoster_config->get('db-socket'),getMysqlRootUser(),getMysqlRootPassword());
+		my $dbh = DBI->connect("DBI:mysql:mysql;host=".getMysqlHost().";port=" . $hoster_config->get('db-port'),getMysqlRootUser(),getMysqlRootPassword());
 		my $from = getMysqlHost() eq "localhost" ? "localhost" : "%";
 		$dbh->do("grant select, lock tables, show databases on *.* to backup\@'".$from."' identified by '".$backuppw."'");
 		$dbh->disconnect;
@@ -344,7 +339,6 @@ sub setupBackups {
 		$config->set(mysqlpass=> $backuppw);
 		$config->set(mysqlhost=> getMysqlHost());
 		$config->set('db-port'=>$hoster_config->get('db-port')) ;
-		$config->set('db-socket'=>$hoster_config->get('db-socket')) ;
 		$config->set(backupDir => prompt("Specify the path to backup the WRE and WebGUI data files to:","/backup"));
 		if (prompt("Do you want to copy your backups to an FTP server?","n","y","n") eq "y") {
 			$config->set(backupToFtp => 1);

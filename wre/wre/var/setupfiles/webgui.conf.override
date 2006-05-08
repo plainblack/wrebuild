@@ -1,6 +1,6 @@
 {
 "sitename" : "__sitename__",
-"dsn" : "DBI:mysql:__db-name__;host=__db-host__;port=__db-port__;mysql_socket=__db-socket__",
+"dsn" : "DBI:mysql:__db-name__;host=__db-host__;port=__db-port__",
 "dbuser" : "__site-db-user__",
 "dbpass" : "__site-db-pass__",
 "uploadsPath" : "__domain-home__/__sitename__/public/uploads",
