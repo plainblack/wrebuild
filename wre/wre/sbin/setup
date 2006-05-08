@@ -28,7 +28,7 @@ setupDemo($setupType) unless ($isDev);
 setupAsDev($setupType) if ($isDev);;
 displayMessages();
 if ($isDev) {
-	printMessage("Setup Complete! Now you need to start the WRE and visit http://localhost/");
+	printMessage("Setup Complete! Now you need to start the WRE and visit http://dev.localhost.localdomain/");
 } elsif ($setupType eq "install") {
 	printMessage("Setup Complete! Now you need to start the WRE and add your first site.");
 } else {
@@ -276,6 +276,7 @@ sub setupAsDev {
 	startMysql();
 	system("/data/wre/sbin/addsite --no-wre-restart --sitename=dev.localhost.localdomain --admin-db-pass=".getMysqlRootPassword());
 	stopMysql();
+	printMessage("Please add the following line to your /etc/hosts file\n\n127.0.0.1 dev dev.localhost.localdomain\n\n");
 	my $content = "";
 	open(FILE,"</data/wre/etc/dev.localhost.localdomain.modproxy");
 	while (my $line = <FILE>) {
