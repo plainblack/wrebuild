@@ -1,4 +1,4 @@
-wre-restart:/data/wre/sbin/rc.webgui restartweb
+wre-restart:"/data/wre/sbin/rc.apache restart; /data/wre/sbin/rc.spectre restart"
 domain-home:/data/domains
 mysql-client:/data/wre/prereqs/mysql/bin/mysql
 mysqldump:/data/wre/prereqs/mysql/bin/mysqldump
