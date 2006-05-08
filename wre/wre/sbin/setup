@@ -249,6 +249,7 @@ sub setupMysql {
 		createFileFromTemplate("setupfiles/" . $config->get('mysql-cnf-template'), $config->get('mysql-cnf'), "/data/wre/var/hoster.arg.cache");
 		system("ln -s " . $config->get('mysql-cnf') . " /data/wre/prereqs/mysql/var/my.cnf");
         	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port'));
+		system("sudo chown mysql /data/wre/prereqs/mysql");
 		system("sudo chown -R mysql /data/wre/prereqs/mysql/var");
 		startMysql();
 		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" . $config->get('db-port'),"root");
