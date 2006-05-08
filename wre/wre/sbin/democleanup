@@ -16,9 +16,6 @@ my $dsn = "DBI:mysql:test;host=" . $config->get('mysqlhost') ;
 if ($config->get('db-port')) {
 	$dsn .= ";port=" . $config->get('db-port') ;
 }
-if ($config->get('db-socket')) {
-	$dsn .= ";mysql_socket=" . $config->get('db-socket') ;
-}
 my $dbh = DBI->connect($dsn,$config->get("adminuser"),$config->get("adminpass"));
 my $demos = $config->get('sites');
 my %newDemos = ();
