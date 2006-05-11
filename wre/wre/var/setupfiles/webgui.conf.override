@@ -1,5 +1,5 @@
 {
-"sitename" : "__sitename__",
+"sitename" : ["__sitename__"],
 "dsn" : "DBI:mysql:__db-name__;host=__db-host__;port=__db-port__",
 "dbuser" : "__site-db-user__",
 "dbpass" : "__site-db-pass__",
@@ -10,9 +10,9 @@
         "html" : "/bin/cat",
         "htm" : "/bin/cat",
 	"pdf" : "/data/wre/prereqs/utils/bin/pdf2txt",
-	"doc" : "/data/wre/prereqs/utils/bin/catdoc"
-	"rtf" : "/data/wre/prereqs/utils/bin/catdoc"
-	"xls" : "/data/wre/prereqs/utils/bin/xls2csv"
+	"doc" : "/data/wre/prereqs/utils/bin/catdoc",
+	"rtf" : "/data/wre/prereqs/utils/bin/catdoc",
+	"xls" : "/data/wre/prereqs/utils/bin/xls2csv",
 	"ppt" : "/data/wre/prereqs/utils/bin/catppt"
         }
 }
