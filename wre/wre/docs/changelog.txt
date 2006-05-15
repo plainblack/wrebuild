@@ -1,6 +1,10 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.7.1
+ - Fixed a problem where sitenames were being created as scalars rather than
+   arrays in the demo system.
+
 0.7.0
  - NOTE: The WRE now creates domains folders as /data/domains/www.example.com
    rather than /data/domains/example.com/www. You don't need to change any

@@ -90,7 +90,7 @@ sub createConfig {
         $config->set("dsn", $dsn);
 	$config->set("dbuser", "demo");
 	$config->set("dbpass","demo");
-	$config->set("sitename", $masterConfig->get("sitename") || "demo");
+	$config->set("sitename", [$masterConfig->get("sitename") || "demo"]);
 	$config->set("gateway", "/".$demoId);
 	$config->set("uploadsURL", "/".$demoId."/uploads");
 	$config->set("uploadsPath", "/data/domains/demo/".$demoId."/uploads");
