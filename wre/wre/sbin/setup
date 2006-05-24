@@ -165,7 +165,7 @@ sub setupDemo {
 		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo", "chown nobody /data/wre/etc/demo.conf") {
 			system($sudo . " " . $_);
 		}
-                open(FILE,"</data/wre/var/setupfiles/demo.modproxy");
+                open(FILE,"</data/wre/etc/demo.modproxy");
                 my $fileContents;
                 while(my $line = <FILE>) {
                         if ($line =~ /ServerName/) {
