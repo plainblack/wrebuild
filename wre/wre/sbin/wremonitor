@@ -77,7 +77,7 @@ sub checkWebProcesses {
   my $allIsWell = 1;
   my $processTable = new Proc::ProcessTable;
   foreach my $process (@{$processTable->table}) {
-    next unless ($process->cmndline =~ /httpd/);
+    next unless ($process->cmndline =~ /httpd.* -D WRE-mod(proxy|perl) /);
 
     #for some reason the pctmem method reports x.4% as x.0%... FYI
     if (my $mem = $process->pctmem >= $config->{httpdMaxMemory}) {
@@ -149,8 +149,8 @@ sub checkWeb {
         $userAgent->agent("wremonitor/1.0");
         $userAgent->timeout($config->{connectionTimeOut});
         my $header = new HTTP::Headers;
-        my $requestproxy = new HTTP::Request (GET => "http://".$config->{hostname}."/", $header);
-        my $requestperl = new HTTP::Request (GET => "http://".$config->{hostname}.":81/", $header);
+        my $requestproxy = new HTTP::Request (GET => "http://".$config->{hostname}.":".$config->{modproxyPort}."/", $header);
+        my $requestperl = new HTTP::Request (GET => "http://".$config->{hostname}.":".$config->{modperlPort}."/", $header);
         my $responseproxy = $userAgent->request($requestproxy);
         my $responseperl = $userAgent->request($requestperl);
         if (($responseproxy->is_success || $responseproxy->code eq "401") && ($responseperl->is_success || $responseperl->code eq "401")) {

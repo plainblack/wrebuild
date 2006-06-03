@@ -83,7 +83,7 @@ sub createConfig {
 	my $dsn = "DBI:mysql:".$demoId.";host=".$masterConfig->get("mysqlhost");
 	my $spectreSubnets = $masterConfig->get("spectreSubnets");
 	$spectreSubnets =~ s/"//g ; # remove quotation marks
-	my @spectreSubnetsList = split(/\s+,\s+/,$spectreSubnets) ;
+	my @spectreSubnetsList = split(/\s*,\s*/,$spectreSubnets) ;
 	if ($masterConfig->get("db-port")) {
 		$dsn .= ";port=".$masterConfig->get("db-port") ;
 	}
