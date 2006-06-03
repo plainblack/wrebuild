@@ -5,6 +5,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Fixed a problem where sitenames were being created as scalars rather than
    arrays in the demo system.
 
+NOTE: Due to changes in the placement of the MySQL config file, the
+/data/wre/prereqs/mysql folder needs to be owned by the mysql user.
+
 0.7.0
  - NOTE: The WRE now creates domains folders as /data/domains/www.example.com
    rather than /data/domains/example.com/www. You don't need to change any
@@ -42,6 +45,11 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix [ 1414228 ] WRE - https causes problems with uploading
  - Changed webguiupdate program to use the update.webgui.org.
  - fix [ 1450469 ] WRE 0.6 - doesn't download wG from mirrors anymore
+
+NOTE: If you're upgrading from MySQL 4 to 5 you MUST do a mysqldump on your
+databases from 4 and then after upgrading to 5, reimport them. If you do not
+do this your databases will become corrupted.
+
 
 0.6.0
  - Added a dev mode option that will autoconfigure the WRE to run
