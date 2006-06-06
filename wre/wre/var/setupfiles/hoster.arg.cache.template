@@ -2,8 +2,6 @@ wre-restart:"/data/wre/sbin/rc.apache restart; /data/wre/sbin/rc.spectre restart
 domain-home:/data/domains
 mysql-client:/data/wre/prereqs/mysql/bin/mysql
 mysqldump:/data/wre/prereqs/mysql/bin/mysqldump
-mysql-cnf:/data/wre/prereqs/mysql/my.cnf
-mysql-cnf-template:my.cnf
 vh-home:/data/wre/etc
 vh-modperl-template:vh.modperl.template
 vh-modproxy-template:vh.modproxy.template
@@ -12,11 +10,6 @@ db-host:localhost
 webgui-home:/data/WebGUI
 admin-db-user:root
 apache-user:nobody
-apache-modperl-template:httpd.modperl.conf
-apache-modperl-dev-template:httpd.modperl.conf.dev
-apache-modproxy-template:httpd.modproxy.conf
-apache-modperl-conf:/data/wre/prereqs/apache/conf/httpd.modperl.conf
-apache-modproxy-conf:/data/wre/prereqs/apache/conf/httpd.modproxy.conf
 awstats-template:awstats.template.conf
 webgui-conf-template:webgui.conf.override
 hoster-home:/data/wre
@@ -24,3 +17,7 @@ chown:/bin/chown
 tar:/usr/bin/tar
 gzip:/usr/bin/gzip
 gunzip:/usr/bin/gunzip
+apache-modperl-port:81
+apache-modproxy-port:80
+db-port:3306
+spectreSubnets:"\"127.0.0.1/32\""

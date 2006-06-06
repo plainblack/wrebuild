@@ -14,13 +14,25 @@ use Socket;
 our (@crons, @diffs);
 our $mysqlRootPassword;
 our $mysqlRootUser;
-our $mysqlHost;
-our $mysqlPort;
-our $apacheModPerlPort ;
-our $apacheModProxyPort ;
+our $mysqlHost = "localhost" ;
+our $mysqlPort = "3306" ;
+our $apacheModPerlPort = "81" ;
+our $apacheModProxyPort = "80" ;
 my $setupType = startup();
 my $isDev = ($setupType eq "install" && prompt("Will this WRE be a dev only environment?","n","y","n") eq "y");
 setupWre($setupType);
+if (@diffs) {
+	printMessage("") ;
+	printMessage("There are differences in critical WRE setup files.  Please use the following diff commands") ;
+	printMessage("to determine what needs to be changed.  Use the contents of") ;
+	printMessage("/data/wre/var/setupfiles/hoster.arg.cache to determine how to change ") ;
+	printMessage("/data/wre/var/hoster.arg.cache and rerun the script.") ;
+	printMessage("") ;
+	displayMessages() ;
+	if (prompt("Do you want to continue anyway?","n","y","n") eq "n") {
+		exit;
+	}
+}
 setupApache($isDev);
 setupMysql($setupType);
 setupAwstats($setupType) unless ($isDev);
@@ -54,8 +66,8 @@ sub displayMessages {
 sub setupApache {
 	my $isDev = shift;
 	printMessage("Configuring Apache...");
-	$apacheModProxyPort = prompt("What port do you want to run ModProxy on:", "80");
-	$apacheModPerlPort = prompt("What port do you want to run ModPerl on:", "81");
+	$apacheModProxyPort = prompt("What port do you want to run ModProxy on:", $apacheModProxyPort);
+	$apacheModPerlPort = prompt("What port do you want to run ModPerl on:", $apacheModPerlPort);
 	my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 	$config->set('apache-modperl-port'=>$apacheModPerlPort);
 	$config->set('apache-modproxy-port'=>$apacheModProxyPort);
@@ -63,18 +75,23 @@ sub setupApache {
 	
 	# create apache modperl configuration file from template
 	if ($isDev) {
-		createFileFromTemplate("setupfiles/" . $config->get('apache-modperl-dev-template'), $config->get('apache-modperl-conf'), "/data/wre/var/hoster.arg.cache") ;
+		createFileFromTemplate("setupfiles/httpd.modperl.conf.dev.template", "/data/wre/var/setupfiles/httpd.modperl.conf.dev", "/data/wre/var/hoster.arg.cache") ;
+		copyFile("/data/wre/var/setupfiles/httpd.modperl.conf.dev", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");
 	} else {
-		createFileFromTemplate("setupfiles/" . $config->get('apache-modperl-template'), $config->get('apache-modperl-conf'), "/data/wre/var/hoster.arg.cache") ;
+		createFileFromTemplate("setupfiles/httpd.modperl.conf.template", "/data/wre/var/setupfiles/httpd.modperl.conf", "/data/wre/var/hoster.arg.cache") ;
+		copyFile("/data/wre/var/setupfiles/httpd.modperl.conf", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");	
 	}
 	# copy startup.pl
 	copyFile("/data/wre/var/setupfiles/startup.pl", "/data/wre/prereqs/apache/conf/startup.pl");
 	# create apache modproxy configuration file from template
-	createFileFromTemplate("setupfiles/" . $config->get('apache-modproxy-template'), $config->get('apache-modproxy-conf'), "/data/wre/var/hoster.arg.cache") ;
+	createFileFromTemplate("setupfiles/httpd.modproxy.conf.template", "/data/wre/var/setupfiles/httpd.modproxy.conf", "/data/wre/var/hoster.arg.cache") ;
+	copyFile("/data/wre/var/setupfiles/httpd.modproxy.conf", "/data/wre/prereqs/apache/conf/httpd.modproxy.conf");
 	# create virtual host modperl template
-	createFileFromTemplate("setupfiles/" . $config->get('vh-modperl-template'), "/data/wre/var/vh.modperl.template", "/data/wre/var/hoster.arg.cache") ;
+	createFileFromTemplate("setupfiles/vh.modperl.template.template", "/data/wre/var/setupfiles/vh.modperl.template", "/data/wre/var/hoster.arg.cache") ;
+	copyFile("/data/wre/var/setupfiles/vh.modperl.template", "/data/wre/var/vh.modperl.template");
 	# create virtual host modproxy template
-	createFileFromTemplate("setupfiles/" . $config->get('vh-modproxy-template'), "/data/wre/var/vh.modproxy.template", "/data/wre/var/hoster.arg.cache") ;
+	createFileFromTemplate("setupfiles/vh.modproxy.template.template", "/data/wre/var/setupfiles/vh.modproxy.template", "/data/wre/var/hoster.arg.cache") ;
+	copyFile("/data/wre/var/setupfiles/vh.modproxy.template", "/data/wre/var/vh.modproxy.template");
 	print "\n\n" ;
 }
 
@@ -105,18 +122,6 @@ sub getMysqlHost {
 }
 
 #----------------------------------------
-sub getMysqlPort {
-	unless ($mysqlPort) {
-		$mysqlPort = prompt("Please specifiy the port where MySQL resides (if this is a single server install, leave the default):","3306");
-		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
-		$config->set('db-port'=>$mysqlPort);
-		$config->write;
-	}
-	return $mysqlPort;
-}
-
-
-#----------------------------------------
 sub getMysqlRootUser {
 	unless ($mysqlRootUser) {
 		$mysqlRootUser = prompt("Please specifiy your MySQL administratrative username:","root");
@@ -138,6 +143,7 @@ sub getMysqlRootPassword {
 #----------------------------------------
 sub setupDemo {
         my $setupType = shift;
+	my $hoster_config = Parse::PlainConfig->new('DELIM' => ':', 'FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
         if (-f "/data/wre/etc/demo.conf") {
                 printMessage("Updating WRE Demo...");
                 copyDemoFiles();
@@ -145,7 +151,6 @@ sub setupDemo {
                 copyDemoFiles();
 		my $pw = prompt("What would you like the demo admin password to be?");
 		startMysql();
-		my $hoster_config = Parse::PlainConfig->new('DELIM' => ':', 'FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 		my $dsn = "DBI:mysql:mysql;host=".getMysqlHost();
 		if ($hoster_config->get("db-port")) {
 			$dsn .= ";port=".$hoster_config->get("db-port") ;
@@ -201,9 +206,16 @@ sub setupDemo {
 
 #----------------------------------------
 sub copyDemoFiles {
-        createFileFromTemplate("setupfiles/demo.conf", "/data/wre/etc/demo.conf", "/data/wre/var/hoster.arg.cache") ;
-        createFileFromTemplate("setupfiles/demo.modproxy", "/data/wre/etc/demo.modproxy", "/data/wre/var/hoster.arg.cache") ;
-        createFileFromTemplate("setupfiles/demo.modperl", "/data/wre/etc/demo.modperl", "/data/wre/var/hoster.arg.cache") ;
+        createFileFromTemplate("setupfiles/demo.conf.template", "/data/wre/var/setupfiles/demo.conf", "/data/wre/var/hoster.arg.cache") ;
+	my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+	my $config1 = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/var/setupfiles/demo.conf', 'PURGE' => 1);
+	$config1->set('spectreSubnets'=>$config->get('spectreSubnets')) ;
+	$config1->write() ;
+        copyFile("/data/wre/var/setupfiles/demo.conf", "/data/wre/etc/demo.conf");
+        createFileFromTemplate("setupfiles/demo.modproxy.template", "/data/wre/var/setupfiles/demo.modproxy", "/data/wre/var/hoster.arg.cache") ;
+        copyFile("/data/wre/var/setupfiles/demo.modproxy", "/data/wre/etc/demo.modproxy");
+        createFileFromTemplate("setupfiles/demo.modperl.template", "/data/wre/var/setupfiles/demo.modperl", "/data/wre/var/hoster.arg.cache") ;
+        copyFile("/data/wre/var/setupfiles/demo.modperl", "/data/wre/etc/demo.modperl");
 }
 
 #----------------------------------------
@@ -233,8 +245,10 @@ sub setupAwstats {
 
 #----------------------------------------
 sub copyAwstatsFiles {
-	createFileFromTemplate("setupfiles/awstats.template.conf", "/data/wre/var/awstats.template.conf", "/data/wre/var/hoster.arg.cache");
-	createFileFromTemplate("setupfiles/stats.modproxy", "/data/wre/etc/stats.modproxy", "/data/wre/var/hoster.arg.cache");
+	createFileFromTemplate("setupfiles/awstats.template.conf.template", "/data/wre/var/setupfiles/awstats.template.conf", "/data/wre/var/hoster.arg.cache");
+	copyFile("/data/wre/var/setupfiles/awstats.template.conf", "/data/wre/var/awstats.template.conf");
+	createFileFromTemplate("setupfiles/stats.modproxy.template", "/data/wre/var/setupfiles/stats.modproxy", "/data/wre/var/hoster.arg.cache");
+	copyFile("/data/wre/var/setupfiles/stats.modproxy", "/data/wre/etc/stats.modproxy");
 }
 
 #----------------------------------------
@@ -244,14 +258,15 @@ sub setupMysql {
 	if ($setupType eq "install" && getMysqlHost() eq "localhost") {
 		$mysqlRootUser = prompt("What would you like the MySQL administrative user to be called:", "root");
 		$mysqlRootPassword = prompt("What would you like the MySQL ".$mysqlRootUser." password to be?");
-		$mysqlPort = prompt("What TCPIP port you like MySQL to run on: ", "3306");
+		$mysqlPort = prompt("What TCPIP port you like MySQL to run on: ", $mysqlPort);
 		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 		$config->set('admin-db-user'=>$mysqlRootUser);
 		$config->set('db-port'=>$mysqlPort);
 		$config->write;
 		# create my.cnf file from template
-		createFileFromTemplate("setupfiles/" . $config->get('mysql-cnf-template'), $config->get('mysql-cnf'), "/data/wre/var/hoster.arg.cache");
-		system("ln -s " . $config->get('mysql-cnf') . " /data/wre/prereqs/mysql/var/my.cnf");
+		createFileFromTemplate("setupfiles/my.cnf.template", "/data/wre/var/setupfiles/my.cnf", "/data/wre/var/hoster.arg.cache");
+		copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
+		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
         	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port'));
 		system("sudo chown mysql /data/wre/prereqs/mysql");
 		system("sudo chown -R mysql /data/wre/prereqs/mysql/var");
@@ -263,6 +278,16 @@ sub setupMysql {
 		$dbh->do("flush privileges");
 		$dbh->disconnect;
 		stopMysql();
+	} elsif ($setupType eq "upgrade" && getMysqlHost() eq "localhost") {
+		$mysqlPort = prompt("What TCPIP port you like MySQL to run on: ", $mysqlPort);
+		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+		$config->set('db-port'=>$mysqlPort);
+		$config->write;
+		# create my.cnf file from template
+		createFileFromTemplate("setupfiles/my.cnf.template", "/data/wre/var/setupfiles/my.cnf", "/data/wre/var/hoster.arg.cache");
+		copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
+		system("rm /data/wre/prereqs/mysql/var/my.cnf");
+		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
 	}
 }
 
@@ -270,6 +295,43 @@ sub setupMysql {
 sub setupWre {
 	my $setupType = shift;
 	printMessage("Configuring the WRE...");
+	system("cp /data/wre/var/setupfiles/hoster.arg.cache.template /data/wre/var/setupfiles/hoster.arg.cache");
+	if ($setupType eq "upgrade") {
+		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
+		my $config1 = Parse::PlainConfig->new('FILE' => '/data/wre/var/setupfiles/hoster.arg.cache', 'PURGE' => 1);
+		if ($config->get('db-port')) {
+			$config1->set('db-port'=>$config->get('db-port')) ;
+		} else {
+			$config1->set('db-port'=>prompt("Please specify the port where MySQL resides):","3306"));
+		}
+		$mysqlPort = $config1->get('db-port') ;
+		
+		if ($config->get('apache-modproxy-port')) {
+			$config1->set('apache-modproxy-port'=>$config->get('apache-modproxy-port')) ;
+		} else {
+			$config1->set('apache-modproxy-port'=>prompt("What port do you want to run ModProxy on:", "80"));
+		}
+		$apacheModProxyPort = $config1->get('apache-modproxy-port') ;
+
+		if ($config->get('apache-modperl-port')) {
+			$config1->set('apache-modperl-port'=>$config->get('apache-modperl-port')) ;
+		} else {
+			$config1->set('apache-modperl-port'=>prompt("What port do you want to run ModPerl on:", "81"));
+		}
+		$apacheModPerlPort = $config1->get('apache-modperl-port') ;
+
+		if ($config->get('spectreSubnets')) {
+			$config1->set('spectreSubnets'=>$config->get('spectreSubnets')) ;
+		} else {
+			my $address = inet_ntoa(scalar gethostbyname( hostname() || 'localhost' )) . '/32' ;
+			my $spectreSubnets = prompt("What IP address(es) will WebGUI be serving requests on (for more than one \naddress please use a comma separated list of CIDR addresses):", $address);
+			$spectreSubnets =~ s/[^\d.,\/]//g ; # clean up input, but it still could be garbage
+			$spectreSubnets =~ s/,/" , "/g ; # reformat
+			$spectreSubnets =  '"127.0.0.1/32"' . ($spectreSubnets ? " , \"$spectreSubnets\"" : "") ;
+			$config1->set('spectreSubnets'=>$spectreSubnets) ; 
+		}
+		$config1->write;
+	}
 	copyFile("/data/wre/var/setupfiles/hoster.arg.cache", "/data/wre/var/hoster.arg.cache");
 	copyFile("/data/wre/var/setupfiles/logrotate.conf", "/data/wre/etc/logrotate.conf");
 }
@@ -316,7 +378,8 @@ sub setupMonitors {
 		stopMysql();
 	}
 	# create wremonitor.conf file from template
-        createFileFromTemplate("setupfiles/wremonitor.conf", "/data/wre/etc/wremonitor.conf", "/data/wre/var/hoster.arg.cache") ;
+        createFileFromTemplate("setupfiles/wremonitor.conf.template", "/data/wre/var/setupfiles/wremonitor.conf", "/data/wre/var/hoster.arg.cache") ;
+	copyFile("/data/wre/var/setupfiles/wremonitor.conf", "/data/wre/etc/wremonitor.conf");
 	if (getMysqlHost() ne "localhost") {
 		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/wremonitor.conf', 'PURGE' => 1);
 		$config->set('skipdb'=>1);
@@ -329,6 +392,7 @@ sub setupBackups {
 	my $setupType = shift;
 	printMessage("Configuring backups...");
 	copyFile("/data/wre/var/setupfiles/backup.exclude", "/data/wre/etc/backup.exclude");
+        createFileFromTemplate("setupfiles/backup.conf.template", "/data/wre/var/setupfiles/backup.conf", "/data/wre/var/hoster.arg.cache") ;
 	if (-f "/data/wre/etc/backup.conf") {
 		copyFile("/data/wre/var/setupfiles/backup.conf", "/data/wre/etc/backup.conf");
 	} else {
@@ -410,7 +474,6 @@ sub createFileFromTemplate {
 	my $opts_file = shift; # Parse::PlainConfig option file
 	my $config = Parse::PlainConfig->new('FILE' => $opts_file, 'PURGE' => 1);
 	my $opts = $config->get_ref ;
-	# create my.cnf file from template
 	open(FILE,">$to") ;
 	print FILE Hoster::Template::process($from,$opts);
 	close(FILE);

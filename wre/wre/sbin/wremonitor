@@ -32,6 +32,14 @@ unless ($config->{skipweb}) {
 unless ($config->{skiphttpdrunaway}) {
         checkWebProcesses($config);
 }
+unless ($config->{skipspectre}) {
+	unless (checkSpectre($config)) {
+		logEntry("Spectre server reported down. Starting the critical monitor.");
+		startCriticalSpectreMonitor($config);
+	} else {
+		logEntry("All is well with the Spectre server.");
+	}
+}
         
 exit;
 
@@ -96,6 +104,55 @@ sub checkWebProcesses {
 
   logEntry("All is well with httpd memory usage.") if ($allIsWell);
 
+}
+
+#-------------------------------------------------------------------
+sub checkSpectre {
+	my $config = shift;
+	my $check = `source /data/wre/sbin/setenvironment; cd /data/WebGUI/sbin ; perl spectre.pl --ping` ;
+        if ($check =~ /^Spectre is Alive!/ ) {
+                return 1;
+        } else {
+                logEntry($check);
+                return 0;
+        }
+}
+
+#-------------------------------------------------------------------
+sub startCriticalSpectreMonitor {
+	my $config = shift;
+	fork and exit;
+	sleep(10);
+	for(1..4) {
+        	unless (checkSpectre($config)) {
+			redAlertSpectre($config);
+        	} else {
+                	logEntry("Spectre server is well once again.");
+			exit;
+        	}
+        	sleep($config->{secondsBetweenChecks});
+	}
+}
+
+#-------------------------------------------------------------------
+sub redAlertSpectre{
+        logEntry("Spectre server down!");
+        if (doSpectreRestart($config)) {
+                sendEmail("The Spectre server was down; wremonitor issued a restart and everything seems OK, but you should probably check it just the same.",$config);
+                logEntry ("Spectre server restart succeeded.");
+        } else {
+                sendEmail("The Spectre server is down; wremonitor issued a restart, but the restart failed.",$config);
+                logEntry ("Spectre server restart failed.");
+        }
+}
+
+#-------------------------------------------------------------------
+sub doSpectreRestart {
+        if (system("/data/wre/sbin/rc.webgui restartspectre")) {
+                return 0;
+        } else {
+                return 1;
+        }
 }
 
 #-------------------------------------------------------------------
