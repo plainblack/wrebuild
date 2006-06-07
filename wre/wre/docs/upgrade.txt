@@ -13,7 +13,7 @@ To upgrade the WRE follow these simple steps:
 
 5. Watch the output of setup. It will tell you if you have any templates that are out of date.
 
-6. Read /data/wre/docs/install.txt to make sure there aren't any new instructions.
+6. Read /data/wre/docs/install.txt and /data/wre/docs/changelog.txt to make sure there aren't any new instructions.
 
 7. Start the WRE.
 
