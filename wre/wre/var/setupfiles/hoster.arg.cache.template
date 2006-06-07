@@ -20,4 +20,3 @@ gunzip:/usr/bin/gunzip
 apache-modperl-port:81
 apache-modproxy-port:80
 db-port:3306
-spectreSubnets:"\"127.0.0.1/32\""
