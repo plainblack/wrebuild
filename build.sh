@@ -53,7 +53,7 @@ clean(){
   make clean
   cd $BUILDDIR
  #mysql
-  cd source/mysql/mysql-5.0.21
+  cd source/mysql/mysql-5.0.22
   make distclean
   cd $BUILDDIR
  #image magick
@@ -211,7 +211,7 @@ buildMysql(){
 	mkdir -p /data/wre/prereqs/mysql/libexec
 	mkdir -p /data/wre/prereqs/mysql/include
 	mkdir -p /data/wre/prereqs/mysql/var
-	cd source/mysql/mysql-5.0.21
+	cd source/mysql/mysql-5.0.22
 	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=/data/wre/prereqs/mysql --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=/data/wre/prereqs/utils --with-unix-socket-path=/data/wre/prereqs/mysql/mysql.sock; checkError $? "MySQL Configure"
 	make; checkError $? "MySQL make"
 	make install; checkError $? "MySQL make install"
@@ -576,6 +576,10 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Graphics::ColorNames Makefile.PL"
 	make; checkError $? "Graphics::ColorNames make"
 	make install; checkError $? "Graphics::ColorNames make install"
+	cd ../Module-Load-0.10
+	perl Makefile.PL; checkError $? "Module::Load Makefile.PL"
+	make; checkError $? "Module::Load make"
+	make install; checkError $? "Module::Load make install"
 	cd ../Color-Calc-1.00
 	perl Makefile.PL; checkError $? "Color::Calc Makefile.PL"
 	make; checkError $? "Color::Calc make"
@@ -600,6 +604,14 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Test::MockObject Makefile.PL"
 	make; checkError $? "Test::MockObject make"
 	make install; checkError $? "Test::MockObject make install"
+	cd ../UNIVERSAL-isa-0.06
+	perl Makefile.PL; checkError $? "UNIVERSAL::isa Makefile.PL"
+	make; checkError $? "UNIVERSAL::isa make"
+	make install; checkError $? "UNIVERSAL::isa make install"
+	cd ../UNIVERSAL-can-1.12
+	perl Makefile.PL; checkError $? "UNIVERSAL::can Makefile.PL"
+	make; checkError $? "UNIVERSAL::can make"
+	make install; checkError $? "UNIVERSAL::can make install"
 	cd ../Class-MakeMethods-1.01
 	perl Makefile.PL; checkError $? "Class::MakeMethods Makefile.PL"
 	make; checkError $? "Class::MakeMethods make"

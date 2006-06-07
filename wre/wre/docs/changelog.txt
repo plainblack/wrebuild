@@ -13,6 +13,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Reworked setup scripts to allow upgrades from prior versions of WRE
  - Added Spectre monitoring to wremonitor
  - fix: demo cleanup not working
+ - Upgraded to MySQL 5.0.22.
 
 NOTE: Due to changes in the placement of the MySQL config file, the
 /data/wre/prereqs/mysql folder needs to be owned by the mysql user.
