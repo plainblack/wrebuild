@@ -283,7 +283,7 @@ sub setupMysql {
 	if ($setupType eq "install" && getMysqlHost() eq "localhost") {
 		$mysqlRootUser = prompt("What would you like the MySQL administrative user to be called:", "root");
 		$mysqlRootPassword = prompt("What would you like the MySQL ".$mysqlRootUser." password to be?");
-		$mysqlPort = prompt("What TCP/IP port you like MySQL to run on: ", $mysqlPort);
+		$mysqlPort = prompt("What TCP/IP port you like MySQL to run on: ", 3306);
 		my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 		$config->set('admin-db-user'=>$mysqlRootUser);
 		$config->set('db-port'=>$mysqlPort);
