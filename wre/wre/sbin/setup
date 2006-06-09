@@ -65,22 +65,22 @@ sub setupApache {
 	
 	# create apache modperl configuration file from template
 	if ($isDev) {
-		createFileFromTemplate("setupfiles/httpd.modperl.conf.dev.template", "/data/wre/var/setupfiles/httpd.modperl.conf.dev");
+		createFileFromTemplate("/data/wre/var/setupfiles/httpd.modperl.conf.dev.template", "/data/wre/var/setupfiles/httpd.modperl.conf.dev");
 		copyFile("/data/wre/var/setupfiles/httpd.modperl.conf.dev", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");
 	} else {
-		createFileFromTemplate("setupfiles/httpd.modperl.conf.template", "/data/wre/var/setupfiles/httpd.modperl.conf");
+		createFileFromTemplate("/data/wre/var/setupfiles/httpd.modperl.conf.template", "/data/wre/var/setupfiles/httpd.modperl.conf");
 		copyFile("/data/wre/var/setupfiles/httpd.modperl.conf", "/data/wre/prereqs/apache/conf/httpd.modperl.conf");	
 	}
 	# copy startup.pl
 	copyFile("/data/wre/var/setupfiles/startup.pl", "/data/wre/prereqs/apache/conf/startup.pl");
 	# create apache modproxy configuration file from template
-	createFileFromTemplate("setupfiles/httpd.modproxy.conf.template", "/data/wre/var/setupfiles/httpd.modproxy.conf") ;
+	createFileFromTemplate("/data/wre/var/setupfiles/httpd.modproxy.conf.template", "/data/wre/var/setupfiles/httpd.modproxy.conf") ;
 	copyFile("/data/wre/var/setupfiles/httpd.modproxy.conf", "/data/wre/prereqs/apache/conf/httpd.modproxy.conf");
 	# create virtual host modperl template
-	createFileFromTemplate("setupfiles/vh.modperl.template.template", "/data/wre/var/setupfiles/vh.modperl.template") ;
+	createFileFromTemplate("/data/wre/var/setupfiles/vh.modperl.template.template", "/data/wre/var/setupfiles/vh.modperl.template") ;
 	copyFile("/data/wre/var/setupfiles/vh.modperl.template", "/data/wre/var/vh.modperl.template");
 	# create virtual host modproxy template
-	createFileFromTemplate("setupfiles/vh.modproxy.template.template", "/data/wre/var/setupfiles/vh.modproxy.template") ;
+	createFileFromTemplate("/data/wre/var/setupfiles/vh.modproxy.template.template", "/data/wre/var/setupfiles/vh.modproxy.template") ;
 	copyFile("/data/wre/var/setupfiles/vh.modproxy.template", "/data/wre/var/vh.modproxy.template");
 	print "\n\n" ;
 }
@@ -231,15 +231,15 @@ sub setupDemo {
 
 #----------------------------------------
 sub copyDemoFiles {
-        createFileFromTemplate("setupfiles/demo.conf.template", "/data/wre/var/setupfiles/demo.conf") ;
+        createFileFromTemplate("/data/wre/var/setupfiles/demo.conf.template", "/data/wre/var/setupfiles/demo.conf") ;
 	my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 	my $config1 = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/var/setupfiles/demo.conf', 'PURGE' => 1);
 	$config1->set('spectreSubnets'=>getSpectreSubnets()) ;
 	$config1->write() ;
         copyFile("/data/wre/var/setupfiles/demo.conf", "/data/wre/etc/demo.conf");
-        createFileFromTemplate("setupfiles/demo.modproxy.template", "/data/wre/var/setupfiles/demo.modproxy") ;
+        createFileFromTemplate("/data/wre/var/setupfiles/demo.modproxy.template", "/data/wre/var/setupfiles/demo.modproxy") ;
         copyFile("/data/wre/var/setupfiles/demo.modproxy", "/data/wre/etc/demo.modproxy");
-        createFileFromTemplate("setupfiles/demo.modperl.template", "/data/wre/var/setupfiles/demo.modperl") ;
+        createFileFromTemplate("/data/wre/var/setupfiles/demo.modperl.template", "/data/wre/var/setupfiles/demo.modperl") ;
         copyFile("/data/wre/var/setupfiles/demo.modperl", "/data/wre/etc/demo.modperl");
 }
 
@@ -270,9 +270,9 @@ sub setupAwstats {
 
 #----------------------------------------
 sub copyAwstatsFiles {
-	createFileFromTemplate("setupfiles/awstats.template.conf.template", "/data/wre/var/setupfiles/awstats.template.conf");
+	createFileFromTemplate("/data/wre/var/setupfiles/awstats.template.conf.template", "/data/wre/var/setupfiles/awstats.template.conf");
 	copyFile("/data/wre/var/setupfiles/awstats.template.conf", "/data/wre/var/awstats.template.conf");
-	createFileFromTemplate("setupfiles/stats.modproxy.template", "/data/wre/var/setupfiles/stats.modproxy");
+	createFileFromTemplate("/data/wre/var/setupfiles/stats.modproxy.template", "/data/wre/var/setupfiles/stats.modproxy");
 	copyFile("/data/wre/var/setupfiles/stats.modproxy", "/data/wre/etc/stats.modproxy");
 }
 
@@ -289,7 +289,7 @@ sub setupMysql {
 		$config->set('db-port'=>$mysqlPort);
 		$config->write;
 		# create my.cnf file from template
-		createFileFromTemplate("setupfiles/my.cnf.template", "/data/wre/var/setupfiles/my.cnf");
+		createFileFromTemplate("/data/wre/var/setupfiles/my.cnf.template", "/data/wre/var/setupfiles/my.cnf");
 		copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
 		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
         	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port'));
@@ -306,7 +306,7 @@ sub setupMysql {
 	} elsif ($setupType eq "upgrade" && getMysqlHost() eq "localhost") {
 		getMysqlPort();
 		# create my.cnf file from template
-		createFileFromTemplate("setupfiles/my.cnf.template", "/data/wre/var/setupfiles/my.cnf");
+		createFileFromTemplate("/data/wre/var/setupfiles/my.cnf.template", "/data/wre/var/setupfiles/my.cnf");
 		copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
 		system("rm /data/wre/prereqs/mysql/var/my.cnf");
 		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
@@ -374,7 +374,7 @@ sub setupMonitors {
 		stopMysql();
 	}
 	# create wremonitor.conf file from template
-        createFileFromTemplate("setupfiles/wremonitor.conf.template", "/data/wre/var/setupfiles/wremonitor.conf") ;
+        createFileFromTemplate("/data/wre/var/setupfiles/wremonitor.conf.template", "/data/wre/var/setupfiles/wremonitor.conf") ;
 	copyFile("/data/wre/var/setupfiles/wremonitor.conf", "/data/wre/etc/wremonitor.conf");
 	if (getMysqlHost() ne "localhost") {
 		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/wremonitor.conf', 'PURGE' => 1);
@@ -388,7 +388,7 @@ sub setupBackups {
 	my $setupType = shift;
 	printMessage("Configuring backups...");
 	copyFile("/data/wre/var/setupfiles/backup.exclude", "/data/wre/etc/backup.exclude");
-        createFileFromTemplate("setupfiles/backup.conf.template", "/data/wre/var/setupfiles/backup.conf") ;
+        createFileFromTemplate("/data/wre/var/setupfiles/backup.conf.template", "/data/wre/var/setupfiles/backup.conf") ;
 	if (-f "/data/wre/etc/backup.conf") {
 		copyFile("/data/wre/var/setupfiles/backup.conf", "/data/wre/etc/backup.conf");
 	} else {
@@ -463,7 +463,7 @@ sub createFileFromTemplate {
 	my $config = Parse::PlainConfig->new('FILE' => $opts_file, 'PURGE' => 1);
 	my $opts = $config->get_ref ;
 	open(FILE,">$to") ;
-	print FILE Hoster::Template::process($from,$opts);
+	print FILE Hoster::Template::parse(Hoster::Template::get($from),$opts);
 	close(FILE);
 }
 

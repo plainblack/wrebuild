@@ -42,7 +42,7 @@ sub promptDemo {
 	my $config = $r->pnotes('masterDemoConfig');
 	$r->content_type("text/html");
 	$r->print(q|<html><head><title>WebGUI Demo</title></head><body>
-<div style="width: 300px; margin-top: 20%; text-align: left; margin-left: 35%; margin-bottom: 10px; background-color: #cccccc; border: 1px solid #800000; padding: 10px; color: #000080;">If you'd like your own personal demo of the <a style="color: #ff2200;" href="http://www.spreadwebgui.com/">WebGUI</a> application framework click the button below. Your demo will last for |.$config->get("duration").q| day(s), then will be deleted.</div> 
+<div style="width: 300px; margin-top: 20%; text-align: left; margin-left: 35%; margin-bottom: 10px; background-color: #cccccc; border: 1px solid #800000; padding: 10px; color: #000080;">If you'd like your own personal demo of the <a style="color: #ff2200;" href="http://www.spreadwebgui.com/">WebGUI Content Engine&reg;</a> click the button below. Your demo will last for |.$config->get("duration").q| day(s), then will be deleted.</div> 
 <div style="text-align: center; width: 300px; margin-left: 35%;"><form action="/create" method="post"><input onclick="this.value='Please wait while we create your demo!'" type="submit" value="Create My Personal WebGUI Demo" /></form></div>
 </body></html>|);
 	return Apache2::Const::OK;
@@ -95,7 +95,7 @@ sub createConfig {
 	$config->set("gateway", "/".$demoId);
 	$config->set("uploadsURL", "/".$demoId."/uploads");
 	$config->set("uploadsPath", "/data/domains/demo/".$demoId."/uploads");
-	$config->set("spectreSubnets", \@spectreSubnets);
+	$config->set("spectreSubnets", \$spectreSubnets);
 }
 
 #-------------------------------------------------------------------
