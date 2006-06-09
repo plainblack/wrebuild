@@ -95,7 +95,7 @@ sub createConfig {
 	$config->set("gateway", "/".$demoId);
 	$config->set("uploadsURL", "/".$demoId."/uploads");
 	$config->set("uploadsPath", "/data/domains/demo/".$demoId."/uploads");
-	$config->set("spectreSubnets", \$spectreSubnets);
+	$config->set("spectreSubnets", $spectreSubnets);
 }
 
 #-------------------------------------------------------------------
