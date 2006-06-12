@@ -1,6 +1,9 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.7.2
+ - Fixed problem related to setting apache-modperl-port
+
 0.7.1
  - Fixed a problem where sitenames were being created as scalars rather than
    arrays in the demo system.

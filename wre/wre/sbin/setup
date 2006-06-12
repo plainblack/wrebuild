@@ -60,8 +60,8 @@ sub setupApache {
 	}
 	my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 	$config->set('apache-modproxy-port'=>$apacheModProxyPort);
-	getModPerlPort();
 	$config->write;
+	getModPerlPort();
 	
 	# create apache modperl configuration file from template
 	if ($isDev) {
