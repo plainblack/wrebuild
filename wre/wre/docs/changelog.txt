@@ -3,6 +3,13 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 
 0.7.2
  - Fixed problem related to setting apache-modperl-port
+ - fix: POE::Component::Client::HTTP missing
+ - fix: pdf2txt
+ - fix: WRE on SuSE Linux 10.1
+ - fix: Mod Perl Fails To Start on Debian
+ - Upgraded to OpenSSL 0.9.7j
+ - Upgraded to Apache 2.0.59
+ - Upgraded to MySQL 5.0.24
 
 0.7.1
  - Fixed a problem where sitenames were being created as scalars rather than

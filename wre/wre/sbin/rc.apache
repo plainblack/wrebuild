@@ -8,10 +8,10 @@ apachehome="/data/wre/prereqs/apache"
 
 startmodperl(){
 	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start >/dev/null 2>&1
+		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
 	else
 		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start >/dev/null 2>&1
+		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then
@@ -40,10 +40,10 @@ stopmodperl(){
 
 startmodproxy(){
 	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start >/dev/null 2>&1
+		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
 	else
 		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start >/dev/null 2>&1
+		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then

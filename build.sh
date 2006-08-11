@@ -19,13 +19,19 @@ clean(){
   cd ../zlib-1.2.3
   make distclean
   make clean
-  cd ../openssl-0.9.7i
+  cd ../openssl-0.9.7j
   make distclean
   make clean
   cd ../libtool-1.5.22
   make distclean
   make clean
   cd ../catdoc-0.94
+  make distclean
+  make clean
+  cd ../expat-2.0.0
+  make distclean
+  make clean
+  cd ../xpdf-3.01
   make distclean
   make clean
   cd $BUILDDIR
@@ -43,7 +49,7 @@ clean(){
   make clean
   cd $BUILDDIR
  #apache 
-  cd source/apache/httpd-2.0.58
+  cd source/apache/httpd-2.0.59
   make distclean
   make clean
   rm -Rf server/exports.c 
@@ -53,7 +59,7 @@ clean(){
   make clean
   cd $BUILDDIR
  #mysql
-  cd source/mysql/mysql-5.0.22
+  cd source/mysql/mysql-5.0.24
   make distclean
   cd $BUILDDIR
  #image magick
@@ -99,7 +105,7 @@ buildUtils(){
 	./configure --prefix=/data/wre/prereqs/utils --shared; checkError $? "zlib Configure"
 	make; checkError $? "zlib make"
 	make install; checkError $? "zlib make install"
-	cd ../openssl-0.9.7i
+	cd ../openssl-0.9.7j
 	./config --prefix=/data/wre/prereqs/utils; checkError $? "OpenSSL Configure"
 	make; checkError $? "OpenSSL make"
 	make test; checkError $? "OpenSSL make test"
@@ -118,11 +124,15 @@ buildUtils(){
 	cd ../charsets
 	make install; checkError $? "catdoc make install charsets"
 	cd ..
+	cd ../expat-2.0.0
+	./configure --prefix=/data/wre/prereqs/utils; checkError $? "expat Configure"
+	make; checkError $? "expat make"
+	make install; checkError $? "expat make install"
 	cd ../xpdf-3.01
 	./configure --without-x --prefix=/data/wre/prereqs/utils; checkError $? "pdftotext Configure"
 	make; checkError $? "pdftotext make"
 	make install; checkError $? "pdftotext make install"
-	echo /data/wre/prereqs/utils/pdftotext \$@ \$@.txt > /data/wre/prereqs/utils/bin/pdf2txt
+	echo /data/wre/prereqs/utils/bin/pdftotext \$@ \$@.txt > /data/wre/prereqs/utils/bin/pdf2txt
 	echo /bin/cat \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
 	echo /bin/rm -f \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
 	chmod 755 /data/wre/prereqs/utils/bin/pdf2txt
@@ -169,7 +179,7 @@ buildApache(){
 	mkdir -p /data/wre/prereqs/apache/lib
 	mkdir -p /data/wre/prereqs/apache/include
 	mkdir -p /data/wre/prereqs/apache/conf
-	cd source/apache/httpd-2.0.58
+	cd source/apache/httpd-2.0.59
 	case $OSNAME in
 		Linux)
 			# insists upon using it's own zlib and ours, which won't work, so temporarily hiding ours
@@ -211,7 +221,7 @@ buildMysql(){
 	mkdir -p /data/wre/prereqs/mysql/libexec
 	mkdir -p /data/wre/prereqs/mysql/include
 	mkdir -p /data/wre/prereqs/mysql/var
-	cd source/mysql/mysql-5.0.22
+	cd source/mysql/mysql-5.0.24
 	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=/data/wre/prereqs/mysql --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=/data/wre/prereqs/utils --with-unix-socket-path=/data/wre/prereqs/mysql/mysql.sock; checkError $? "MySQL Configure"
 	make; checkError $? "MySQL make"
 	make install; checkError $? "MySQL make install"
@@ -592,10 +602,10 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "LWP::Parallel Makefile.PL"
 	make; checkError $? "LWP::Parallel make"
 	make install; checkError $? "LWP::Parallel make install"
-	cd ../POE-Component-Client-UserAgent-0.06
-	perl Makefile.PL; checkError $? "POE::Component::Client::UserAgent Makefile.PL"
-	make; checkError $? "POE::Component::Client::UserAgent make"
-	make install; checkError $? "POE::Component::Client::UserAgent make install"
+	cd ../POE-Component-Client-HTTP-0.77
+	perl Makefile.PL; checkError $? "POE::Component::Client::HTTP Makefile.PL"
+	make; checkError $? "POE::Component::Client::HTTP make"
+	make install; checkError $? "POE::Component::Client::HTTP make install"
 	cd ../Test-Deep-0.095
 	perl Makefile.PL; checkError $? "Test::Deep Makefile.PL"
 	make; checkError $? "Test::Deep make"
