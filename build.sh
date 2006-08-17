@@ -59,7 +59,7 @@ clean(){
   make clean
   cd $BUILDDIR
  #mysql
-  cd source/mysql/mysql-5.0.24
+  cd source/mysql/mysql-5.0.22
   make distclean
   cd $BUILDDIR
  #image magick
@@ -221,7 +221,7 @@ buildMysql(){
 	mkdir -p /data/wre/prereqs/mysql/libexec
 	mkdir -p /data/wre/prereqs/mysql/include
 	mkdir -p /data/wre/prereqs/mysql/var
-	cd source/mysql/mysql-5.0.24
+	cd source/mysql/mysql-5.0.22
 	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=/data/wre/prereqs/mysql --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=/data/wre/prereqs/utils --with-unix-socket-path=/data/wre/prereqs/mysql/mysql.sock; checkError $? "MySQL Configure"
 	make; checkError $? "MySQL make"
 	make install; checkError $? "MySQL make install"
