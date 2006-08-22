@@ -19,7 +19,7 @@ clean(){
   cd ../zlib-1.2.3
   make distclean
   make clean
-  cd ../openssl-0.9.7j
+  cd ../openssl-0.9.7i
   make distclean
   make clean
   cd ../libtool-1.5.22
@@ -105,7 +105,7 @@ buildUtils(){
 	./configure --prefix=/data/wre/prereqs/utils --shared; checkError $? "zlib Configure"
 	make; checkError $? "zlib make"
 	make install; checkError $? "zlib make install"
-	cd ../openssl-0.9.7j
+	cd ../openssl-0.9.7i
 	./config --prefix=/data/wre/prereqs/utils; checkError $? "OpenSSL Configure"
 	make; checkError $? "OpenSSL make"
 	make test; checkError $? "OpenSSL make test"
