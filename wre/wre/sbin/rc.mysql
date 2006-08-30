@@ -5,15 +5,14 @@
 
 mysqlhome="/data/wre/prereqs/mysql"
 . /data/wre/sbin/setenvironment
+rcsudo() { sudo -p 'Password for sudo from %u to %U: ' "$@"; }
 
 startmysql(){
 	echo Starting MySQL
 	if [ $EUID -eq 0 ]; then
 		$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
 	else
-		echo Enter your sudo password
-		sudo echo
-		sudo $mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
+	        rcsudo $mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then
@@ -27,10 +26,9 @@ startmysql(){
 stopmysql(){
 	echo Stopping MySQL
 	if [ $EUID -eq 0 ]; then
-		 $mysqlhome/share/mysql/mysql.server stop
+		$mysqlhome/share/mysql/mysql.server stop
 	else
-		echo Enter your sudo password
-		sudo $mysqlhome/share/mysql/mysql.server stop
+	        rcsudo $mysqlhome/share/mysql/mysql.server stop
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then

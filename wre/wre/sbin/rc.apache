@@ -26,8 +26,7 @@ stopmodperl(){
 	if [ $EUID -eq 0 ]; then
 		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
 	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
+		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then
@@ -58,8 +57,7 @@ stopmodproxy(){
 	if [ $EUID -eq 0 ]; then
 		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
 	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
+		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then

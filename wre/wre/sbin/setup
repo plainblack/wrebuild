@@ -169,6 +169,63 @@ sub getSpectreSubnets {
 }
 
 #----------------------------------------
+sub connectToMysql {
+	my (@dbi_args) = @_;
+	my $dsn = "DBI:mysql:mysql;host=".getMysqlHost().";port=".getMysqlPort();
+
+	# Hardcoded retry and delay values, bleh.
+	my $orig_tries_max = 3;
+	my $delay = 3;
+	my ($tries, $cur_tries_max) = (0, $orig_tries_max);
+
+	my $dbh;
+	    
+	while (1) {
+		++$tries;
+		$dbh = DBI->connect($dsn, @dbi_args);
+		last if defined $dbh;
+
+		if ($tries == $cur_tries_max) {
+			my $response = prompt("Could not connect to the MySQL server after $tries tries.  Keep trying?", 'n', ('y', 'n'));
+			if ($response eq 'y') {
+				$cur_tries_max += $orig_tries_max;
+				next;
+			} else {
+				last;
+			}
+		}
+		printMessage("Could not connect to the MySQL server.");
+	} continue {
+		printMessage("Commencing try number ".($tries+1)." in $delay seconds...");
+		sleep $delay;
+
+		redo;
+	}
+	    
+
+	if ($dbh) {
+		printMessage("Connected to the MySQL server.");
+	} else {
+		printMessage("Could not connect to the MySQL server after $tries tries; giving up.");
+	}
+
+	return $dbh;
+}
+
+sub connectToMysqlAsRoot {
+	# Tail call.
+	@_ = (getMysqlRootUser(), getMysqlRootPassword());
+	goto &connectToMysql;
+}
+
+#----------------------------------------
+sub sudoPrefixTo {
+	my ($uid) = @_;
+	return "" if $< == $uid;
+	return "sudo -p 'Password for sudo from \%u to \%U: ' -u \#$uid ";
+}
+
+#----------------------------------------
 sub setupDemo {
         my $setupType = shift;
         if (-f "/data/wre/etc/demo.conf") {
@@ -178,9 +235,8 @@ sub setupDemo {
                 copyDemoFiles();
 		my $pw = prompt("What would you like the demo admin password to be?");
 		startMysql();
-		my $dsn = "DBI:mysql:mysql;host=".getMysqlHost();
-		$dsn .= ";port=".getMysqlPort() ;
-		my $dbh = DBI->connect($dsn,getMysqlRootUser(),getMysqlRootPassword());
+		my $dbh = connectToMysqlAsRoot();
+		defined($dbh) or die "No database connection; giving up.\n";
 		my $from = getMysqlHost() eq "localhost" ? "localhost" : "%";
 		$dbh->do("grant all privileges on *.* to demoadmin\@'".$from."' identified by '".$pw."' with grant option");
 		$dbh->disconnect;
@@ -193,11 +249,10 @@ sub setupDemo {
                 my $site = prompt("What sitename will you use for the demo (like demo.example.com)?");
 		$config->set('sitename' => $site);
 		$config->write;
-		my $sudo = ($< == 0 ? "" : "sudo "); #set to sudu unless root user is running script
-		printMessage("Enter your sudo password:") if ($sudo);
-		system($sudo . " mkdir -p /data/domains/demo");
-		foreach ("chown nobody /data/WebGUI/etc", "chown nobody /data/domains/demo", "chown nobody /data/wre/etc/demo.conf") {
-			system($sudo . " " . $_);
+		my $sudo = sudoPrefixTo(0);
+		system("$sudo mkdir -p /data/domains/demo");
+		foreach my $dir ("/data/WebGUI/etc", "/data/domains/demo", "/data/wre/etc/demo.conf") {
+			system("$sudo chown nobody $dir");
 		}
                 open(FILE,"</data/wre/etc/demo.modproxy");
                 my $fileContents;
@@ -293,12 +348,12 @@ sub setupMysql {
 		copyFile("/data/wre/var/setupfiles/my.cnf", "/data/wre/prereqs/mysql/my.cnf");
 		system("ln -s /data/wre/prereqs/mysql/my.cnf /data/wre/prereqs/mysql/var/my.cnf");
         	system("cd /data/wre/prereqs/mysql; ./bin/mysql_install_db --port=" . $config->get('db-port'));
-		my $sudo = "";
-		$sudo = "sudo " unless ($< == 0);
-		system($sudo."chown mysql /data/wre/prereqs/mysql");
-		system($sudo."chown -R mysql /data/wre/prereqs/mysql/var");
+		my $sudo = sudoPrefixTo(0);
+		system("$sudo chown mysql /data/wre/prereqs/mysql");
+		system("$sudo chown -R mysql /data/wre/prereqs/mysql/var");
 		startMysql();
-		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" . $config->get('db-port'),"root");
+		my $dbh = connectToMysql('root');
+		defined($dbh) or die "No database connection; giving up.\n";
 		$dbh->do("delete from user where user=''");
 		$dbh->do("delete from user where user='root'");
 		$dbh->do("grant all privileges on *.* to ".getMysqlRootUser()."\@'localhost' identified by '".getMysqlRootPassword()."' with grant option");
@@ -370,7 +425,8 @@ sub setupMonitors {
 	my $config = Parse::PlainConfig->new('FILE' => '/data/wre/var/hoster.arg.cache', 'PURGE' => 1);
 	if (!(-f "/data/wre/etc/wremonitor.conf") && getMysqlHost() eq "localhost") {
 		startMysql();
-		my $dbh = DBI->connect("DBI:mysql:database=mysql;port=" .getMysqlPort(),getMysqlRootUser(),getMysqlRootPassword());
+		my $dbh = connectToMysqlAsRoot();
+		defined($dbh) or die "No database connection; giving up.\n";
 		$dbh->do("grant all privileges on test.* to test\@localhost identified by 'test'");
 		$dbh->disconnect;
 		stopMysql();
@@ -398,7 +454,8 @@ sub setupBackups {
 		my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/backup.conf', 'PURGE' => 1);
 		my $backuppw = prompt("What would you like the database backup password to be?");
 		startMysql();
-		my $dbh = DBI->connect("DBI:mysql:mysql;host=".getMysqlHost().";port=" . getMysqlPort(),getMysqlRootUser(),getMysqlRootPassword());
+		my $dbh = connectToMysqlAsRoot();
+		defined($dbh) or die "No database connection; giving up.\n";
 		my $from = getMysqlHost() eq "localhost" ? "localhost" : "%";
 		$dbh->do("grant select, lock tables, show databases on *.* to backup\@'".$from."' identified by '".$backuppw."'");
 		$dbh->disconnect;
@@ -449,11 +506,9 @@ sub setupWebgui {
 		open(FILE,">/data/WebGUI/etc/spectre.conf");
 		print FILE $spectreConf;
 		close(FILE);
-		my $sudo = "";
-		$sudo = "sudo " unless ($< == 0);
-		printMessage("Enter your sudo password:") if ($sudo);
-		system($sudo." touch /data/wre/var/webgui.log");
-		system($sudo." chown nobody /data/wre/var/webgui.log");
+		my $sudo = sudoPrefixTo(0);
+		system("$sudo touch /data/wre/var/webgui.log");
+		system("$sudo chown nobody /data/wre/var/webgui.log");
 	}
 }
 
