@@ -5,13 +5,13 @@
 
 apachehome="/data/wre/prereqs/apache"
 . /data/wre/sbin/setenvironment
+rcsudo() { sudo -p 'Password for sudo from %u to %U: ' "$@"; }
 
 startmodperl(){
 	if [ $EUID -eq 0 ]; then
 		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
 	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
+		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then
@@ -41,8 +41,7 @@ startmodproxy(){
 	if [ $EUID -eq 0 ]; then
 		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
 	else
-		echo Enter your sudo password
-		sudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
+		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
 	fi
 	ret=$?
 	if [ $ret -eq 0 ]; then
