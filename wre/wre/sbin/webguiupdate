@@ -101,7 +101,7 @@ sub doUpgrade {
 		if ($config->get('db-port')) {
 			$mysql_args .= " --port=" . $config->get('db-port') ;
 		}
-		system("perl upgrade.pl --doit --mysql='/data/wre/prereqs/mysql/bin/mysql $mysql_args' --mysqldump='/data/wre/prereqs/mysql/bin/mysqldump $mysql_args' --override");
+		system("/data/wre/prereqs/perl/bin/perl upgrade.pl --doit --mysql='/data/wre/prereqs/mysql/bin/mysql $mysql_args' --mysqldump='/data/wre/prereqs/mysql/bin/mysqldump $mysql_args' --override");
 	}
 }
 
