@@ -8,6 +8,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: WRE on SuSE Linux 10.1
  - fix: Mod Perl Fails To Start on Debian
  - Upgraded to Apache 2.0.59
+ - Fixed some bugs with removing sites where databases and domains folders
+   didn't get removed properly.
+
 
 0.7.1
  - Fixed a problem where sitenames were being created as scalars rather than

@@ -17,7 +17,23 @@ sub create {
 #------------------------------
 sub destroy {
 	my ($opts) = @_;
-	rmtree($opts->{'domain-home'}.'/'.$opts->{sitename});
+	my $path = $opts->{'domain-home'}.'/'.$opts->{domain}.'/'.$opts->{hostname};
+	if (-e $path) {
+		rmtree($path);
+		$path = $opts->{'domain-home'}.'/'.$opts->{domain};
+		if (-e $path) {
+			opendir(DIR,$path);
+			my @files = readdir(DIR);
+			closedir(DIR);
+			unless (scalar(@files) > 2) {
+				rmdir $path;
+			}
+		}
+	}
+	$path = $opts->{'domain-home'}.'/'.$opts->{sitename};
+	if (-e $path) {
+		rmtree($opts->{'domain-home'}.'/'.$opts->{sitename});
+	}
 }
 
 
