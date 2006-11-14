@@ -13,6 +13,14 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: WRE addsite --no-restart should be --no-wre-restart
  - fix: Locale::US not included in WRE
  - fix: Missing CPAN modules
+ - fix: Image::Magick prereq libxml2 not in WRE
+ - fix: removesite fails when not run as root
+ - fix: set environment in webguiupdate
+ - fix: Search indexer broken
+
+NOTE: The search indexer programs are all located in /data/wre/bin now. Check
+your WebGUI config files to make sure they are pointed to the right location
+in the searchIndexerPlugins directive.
 
 
 0.7.1

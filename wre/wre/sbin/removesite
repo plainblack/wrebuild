@@ -11,6 +11,11 @@ use Hoster::WebGUIDatabase;
 
 $| = 1; 
 
+if (!($^O =~ /^Win/i) && $> != 0) {
+        print "You must be the super user to use this utility.\n";
+        exit;
+}
+
 my $opts = Hoster::Opts::get('/data/wre');
 if ($opts->{help} || $opts->{sitename} eq "" || $opts->{'admin-db-pass'} eq "") {
 	help($opts);

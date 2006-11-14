@@ -132,10 +132,6 @@ buildUtils(){
 	./configure --without-x --prefix=/data/wre/prereqs/utils; checkError $? "pdftotext Configure"
 	make; checkError $? "pdftotext make"
 	make install; checkError $? "pdftotext make install"
-	echo /data/wre/prereqs/utils/bin/pdftotext \$@ \$@.txt > /data/wre/prereqs/utils/bin/pdf2txt
-	echo /bin/cat \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
-	echo /bin/rm -f \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
-	chmod 755 /data/wre/prereqs/utils/bin/pdf2txt
 	cd ../aspell-0.60.4
 	./configure --prefix=/data/wre/prereqs/utils; checkError $? "aspell Configure"
 	make; checkError $? "aspell make"
@@ -249,6 +245,10 @@ buildImageMagick(){
 	perl -i -p -e's[./libtool][libtool]g' Makefile
 	make; checkError $? "Image Magick libjpeg make"
 	make install; checkError $? "Image Magick libjpeg make install"
+	cd ../libxml2-2.6.27
+	./configure --prefix=/data/wre/prereqs/imagemagick; checkError $? "Image Magick libxml2 Configure"
+	make; checkError $? "Image Magick libxml2 make"
+	make install; checkError $? "Image Magick libxml2 make install"
 	cd ../freetype-2.1.10
 	./configure --enable-shared --prefix=/data/wre/prereqs/imagemagick; checkError $? "Image Magick freetype Configure"
 	make; checkError $? "Image Magick freetype make"

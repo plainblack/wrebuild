@@ -9,10 +9,10 @@
         "readme" : "/bin/cat",
         "html" : "/bin/cat",
         "htm" : "/bin/cat",
-	"pdf" : "/data/wre/prereqs/utils/bin/pdf2txt",
-	"doc" : "/data/wre/prereqs/utils/bin/catdoc",
-	"rtf" : "/data/wre/prereqs/utils/bin/catdoc",
-	"xls" : "/data/wre/prereqs/utils/bin/xls2csv",
-	"ppt" : "/data/wre/prereqs/utils/bin/catppt"
+	"pdf" : "/data/wre/bin/pdf2txt",
+	"doc" : "/data/wre/bin/doc2txt",
+	"rtf" : "/data/wre/bin/doc2txt",
+	"xls" : "/data/wre/bin/xls2txt",
+	"ppt" : "/data/wre/bin/ppt2txt"
         }
 }
