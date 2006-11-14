@@ -65,7 +65,7 @@ Options:
 
 	--help			Displays this message.
 
-	--no-restart		Do not restart WRE after creating the configuration.
+	--no-wre-restart	Do not restart WRE after creating the configuration.
 
 	--no-cache		Do not write configuration options to the cache.
 

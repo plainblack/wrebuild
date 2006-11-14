@@ -136,6 +136,14 @@ buildUtils(){
 	echo /bin/cat \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
 	echo /bin/rm -f \$@.txt >> /data/wre/prereqs/utils/bin/pdf2txt
 	chmod 755 /data/wre/prereqs/utils/bin/pdf2txt
+	cd ../aspell-0.60.4
+	./configure --prefix=/data/wre/prereqs/utils; checkError $? "aspell Configure"
+	make; checkError $? "aspell make"
+	make install exec_prefix=/data/wre/prereqs/utils; checkError $? "aspell make install"
+	cd ../aspell-en-0.51-1
+	./configure --vars ASPELL=/data/wre/prereqs/utils; checkError $? "aspell dictionary Configure"
+	make; checkError $? "aspell dictionary make"
+	make install; checkError $? "aspell dictionary make install"
 	cd $BUILDDIR
 }
 
@@ -386,10 +394,6 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "DateTime::Format::Strptime Makefile.PL"
 	make; checkError $? "DateTime::Format::Strptime make"
 	make install; checkError $? "DateTime::Format::Strptime make install"
-	cd ../DateTime-Cron-Simple-0.2
-	perl Makefile.PL; checkError $? "DateTime::Cron::Simple Makefile.PL"
-	make; checkError $? "DateTime::Cron::Simple make"
-	make install; checkError $? "DateTime::Cron::Simple make install"
 	cd ../DateManip-5.44
 	perl Makefile.PL; checkError $? "DateManip Makefile.PL"
 	make; checkError $? "DateManip make"
@@ -510,11 +514,11 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Log::Log4perl Makefile.PL"
 	make; checkError $? "Log::Log4perl make"
 	make install; checkError $? "Log::Log4perl make install"
-	cd ../POE-0.3401
+	cd ../POE-0.9500
 	perl Makefile.PL --default; checkError $? "POE Makefile.PL"
 	make; checkError $? "POE make"
 	make install; checkError $? "POE make install"
-	cd ../POE-Component-IKC-0.1802
+	cd ../POE-Component-IKC-0.1902
 	perl Makefile.PL; checkError $? "POE::Component::IKC Makefile.PL"
 	make; checkError $? "POE::Component::IKC make"
 	make install; checkError $? "POE::Component::IKC make install"
@@ -602,7 +606,27 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "LWP::Parallel Makefile.PL"
 	make; checkError $? "LWP::Parallel make"
 	make install; checkError $? "LWP::Parallel make install"
-	cd ../POE-Component-Client-HTTP-0.77
+	cd ../Digest-BubbleBabble-0.01
+	perl Makefile.PL; checkError $? "Digest::BubbleBabble Makefile.PL"
+	make; checkError $? "Digest::BubbleBabble make"
+	make install; checkError $? "Digest::BubbleBabble make install"
+	cd ../Net-IP-1.25
+	perl Makefile.PL; checkError $? "Net::IP Makefile.PL"
+	make; checkError $? "Net::IP make"
+	make install; checkError $? "Net::IP make install"
+	cd ../Net-DNS-0.59
+	perl Makefile.PL; checkError $? "Net::DNS Makefile.PL"
+	make; checkError $? "Net::DNS make"
+	make install; checkError $? "Net::DNS make install"
+	cd ../POE-Component-Client-DNS-0.99
+	perl Makefile.PL; checkError $? "POE::Component::Client::DNS Makefile.PL"
+	make; checkError $? "POE::Component::Client::DNS make"
+	make install; checkError $? "POE::Component::Client::DNS make install"
+	cd ../POE-Component-Client-Keepalive-0.0901
+	perl Makefile.PL; checkError $? "POE::Component::Client::KeepAlive Makefile.PL"
+	make; checkError $? "POE::Component::Client::KeepAlive make"
+	make install; checkError $? "POE::Component::Client::KeepAlive make install"
+	cd ../POE-Component-Client-HTTP-0.79
 	perl Makefile.PL; checkError $? "POE::Component::Client::HTTP Makefile.PL"
 	make; checkError $? "POE::Component::Client::HTTP make"
 	make install; checkError $? "POE::Component::Client::HTTP make install"
@@ -626,6 +650,14 @@ installPerlModules(){
 	perl Makefile.PL; checkError $? "Class::MakeMethods Makefile.PL"
 	make; checkError $? "Class::MakeMethods make"
 	make install; checkError $? "Class::MakeMethods make install"
+	cd ../Locale-US-1.1
+	perl Makefile.PL; checkError $? "Locale::US Makefile.PL"
+	make; checkError $? "Locale::US make"
+	make install; checkError $? "Locale::US make install"
+	cd ../Text-Aspell-0.06
+	perl Makefile.PL; checkError $? "Text::Aspell Makefile.PL"
+	make; checkError $? "Text::Aspell make"
+	make install; checkError $? "Text::Aspell make install"
 	cd ../MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
 	make; checkError $? "MySQL::Diff make"
