@@ -137,7 +137,7 @@ buildUtils(){
 	make; checkError $? "aspell make"
 	make install exec_prefix=/data/wre/prereqs/utils; checkError $? "aspell make install"
 	cd ../aspell-en-0.51-1
-	./configure --vars ASPELL=/data/wre/prereqs/utils; checkError $? "aspell dictionary Configure"
+	./configure --vars ASPELL=/data/wre/prereqs/utils/bin/aspell WORD_LIST_COMPRESS=/data/wre/prereqs/utils/bin/word-list-compress; checkError $? "aspell dictionary Configure"
 	make; checkError $? "aspell dictionary make"
 	make install; checkError $? "aspell dictionary make install"
 	cd $BUILDDIR
@@ -655,7 +655,7 @@ installPerlModules(){
 	make; checkError $? "Locale::US make"
 	make install; checkError $? "Locale::US make install"
 	cd ../Text-Aspell-0.06
-	perl Makefile.PL; checkError $? "Text::Aspell Makefile.PL"
+	perl Makefile.PL PREFIX=/data/wre/prereqs/perl/lib CCFLAGS=-I/data/wre/prereqs/utils/include LIBS="-L/data/wre/prereqs/utils/lib -laspell"; checkError $? "Text::Aspell Makefile.PL"
 	make; checkError $? "Text::Aspell make"
 	make install; checkError $? "Text::Aspell make install"
 	cd ../MySQL-Diff-0.33
