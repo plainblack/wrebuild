@@ -677,7 +677,7 @@ installAwStats(){
 #wre utils
 installWreUtils(){
 	echo Installing WebGUI Runtime Environment Core and Utilities
-	cp -R wre/wre /data/
+	cp -R wre /data/
 	mkdir /data/wre/etc
 }
 
