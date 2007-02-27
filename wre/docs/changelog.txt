@@ -1,6 +1,17 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.8.0
+ - Rewrote the entire WRE system to be easier to configure, have a more
+   robust API, and work the same on Windows and Unix.
+
+
+NOTE: Since this is a complete rewrite, there is no upgrade path. Instead,
+move your old WRE to a new folder, and install this one from scratch. Then
+migrate your data from the old one to the new one.
+
+
+
 0.7.2
  - Fixed problem related to setting apache-modperl-port
  - fix: POE::Component::Client::HTTP missing
