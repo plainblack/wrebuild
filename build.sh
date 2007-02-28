@@ -123,7 +123,7 @@ buildApache(){
 			mv $WRE_ROOT/prereqs/include/zlib.h $WRE_ROOT/prereqs/include/zlib.h.ignore
 			;;
 	esac
-	./configure --prefix=$WRE_ROOT/prereqs --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
+	./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
 	make; checkError $? "Apache make"
 	make install; checkError $? "Apache make install"
 	case $WRE_OSNAME in
@@ -168,7 +168,7 @@ buildMysql(){
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
         fi	
-	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-unix-socket-path=$WRE_ROOT/prereqs/mysql.sock; checkError $? "MySQL Configure"
+	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-unix-socket-path=$WRE_ROOT/prereqs/mysql.sock; checkError $? "MySQL Configure"
 	make; checkError $? "MySQL make"
 	make install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR
@@ -300,6 +300,7 @@ installPerlModules(){
 	installPerlModule "HTML-TableExtract-2.07"
 	installPerlModule "Finance-Quote-1.11"
 	installPerlModule "JSON-1.05"
+	installPerlModule "JSON-Config-1.0.0"
 	installPerlModule "IO-Socket-SSL-0.97"
 	installPerlModule "perl-ldap-0.33"
 	installPerlModule "Log-Log4perl-1.04"
