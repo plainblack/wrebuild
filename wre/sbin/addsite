@@ -1,7 +1,11 @@
 #!/data/wre/prereqs/perl/bin/perl
 
-use lib '/data/wre/lib';
+my $wreRoot = '/data/wre';
+
+use lib $wreRoot.'/lib';
 use strict;
+use WRE::Config;
+use GetOpt::Long;
 use Hoster::AWStats;
 use Hoster::Opts;
 use Hoster::VirtualHost;
@@ -10,6 +14,23 @@ use Hoster::WebRoot;
 use Hoster::WebGUIDatabase;
 
 $| = 1; 
+
+my $config = WRE::Config->new($wreRoot);
+my $options = WRE::Option->new($config, {
+	sitename	=> {},
+	var1		=> "s",
+	var2		=> "s",
+	var3		=> "s",
+	var4		=> "s",
+	var5		=> "s",
+	var6		=> "s",
+	var7		=> "s",
+	var8		=> "s",
+	var9		=> "s",
+	var0		=> "s",
+	});
+
+my $modperl = WRE::ApacheVirtualHost->new($config, $args
 
 my $opts = Hoster::Opts::get('/data/wre');
 if ($opts->{help}) {

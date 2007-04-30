@@ -30,16 +30,16 @@ buildProgram() {
 buildUtils(){
 	echo Building Utilities
 	mkdir -p $WRE_ROOT/prereqs/bin
-	cd source/utils
+	cd source
 	
 	# lftp
-	buildProgram "lftp-3.3.4" "" "exec_prefix=$WRE_ROOT/prereqs"
+	buildProgram "lftp-3.5.10" "" "exec_prefix=$WRE_ROOT/prereqs"
 
 	# zlib
 	buildProgram "zlib-1.2.3" "--shared"
 
 	# openssl
-	buildProgram "openssl-0.9.7i"
+	buildProgram "openssl-0.9.8e"
 
 	# libtool
 	buildProgram "libtool-1.5.22"
@@ -64,10 +64,10 @@ buildUtils(){
 	buildProgram "expat-2.0.0"
 
 	# xpdf
-	buildProgram "xpdf-3.01" "--without-x"
+	buildProgram "xpdf-3.02" "--without-x"
 
 	# aspell
-	buildProgram "aspell-0.60.4" "" "exec_prefix=$WRE_ROOT/prereqs"
+	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
 	cd ../aspell-en-0.51-1
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
@@ -87,7 +87,7 @@ buildPerl(){
 	mkdir -p $WRE_ROOT/prereqs/man/man1
 	mkdir -p $WRE_ROOT/prereqs/lib
 	mkdir -p $WRE_ROOT/prereqs/include
-	cd source/perl/perl-5.8.8
+	cd source/perl-5.8.8
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
   		make clean
@@ -110,7 +110,7 @@ buildApache(){
 	mkdir -p $WRE_ROOT/prereqs/conf
 
 	# apache
-	cd source/apache/httpd-2.0.59
+	cd source/httpd-2.0.59
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
   		make clean
@@ -133,7 +133,7 @@ buildApache(){
 	esac
 
 	# modperl
-	cd ../mod_perl-2.0.2
+	cd ../mod_perl-2.0.3
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
   		make clean
@@ -164,7 +164,7 @@ buildMysql(){
 	mkdir -p $WRE_ROOT/prereqs/libexec
 	mkdir -p $WRE_ROOT/prereqs/include
 	mkdir -p $WRE_ROOT/prereqs/var
-	cd source/mysql/mysql-5.0.22
+	cd source/mysql-5.0.37
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
         fi	
@@ -175,36 +175,36 @@ buildMysql(){
 }
 
 
-# Image Magick
-buildImageMagick(){
-	echo Building Image Magick
+# Graphics Magick
+buildGraphicsMagick(){
+	echo Building Graphics Magick
 	mkdir -p $WRE_ROOT/prereqs/bin
 	mkdir -p $WRE_ROOT/prereqs/man/man1
 	mkdir -p $WRE_ROOT/prereqs/lib
 	mkdir -p $WRE_ROOT/prereqs/include
 
 	# lib jpeg
-	cd source/imagemagick/libjpeg-6b
+	cd source/libjpeg-6b
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
   		make clean
         fi	
-	./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "Image Magick libjpeg Configure"
+	./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
 	perl -i -p -e's[./libtool][libtool]g' Makefile
-	make; checkError $? "Image Magick libjpeg make"
-	make install; checkError $? "Image Magick libjpeg make install"
+	make; checkError $? "libjpeg make"
+	make install; checkError $? "libjpeg make install"
 
 	# lib xml
 	buildProgram "libxml2-2.6.27"
 
 	# freetype
-	buildProgram "freetype-2.1.10" "--enable-shared"
+	buildProgram "freetype-2.3.4" "--enable-shared"
 
 	# lib ungif
 	buildProgram "libungif-4.1.4" "--enable-shared"
 
 	# lib png
-	cd ../libpng-1.2.10
+	cd ../libpng-1.2.16
 	if [ $WRE_CLEAN == 1]; then
 		make distclean
   		make clean
@@ -218,11 +218,11 @@ buildImageMagick(){
 			;;
 	esac
 	perl -i -p -e's[/usr/local][$WRE_ROOT/prereqs]g' Makefile
-	make; checkError $? "Image Magick libpng make"
-	make install; checkError $? "Image Magick libpng make install"
+	make; checkError $? "Graphics Magick libpng make"
+	make install; checkError $? "Graphics Magick libpng make install"
 
 	# image magick
-	buildProgram "ImageMagick-6.2.7" "--enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
+	buildProgram "GraphicsMagick-1.1.7" "--enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
 
 	cd $WRE_BUILDDIR
 }
@@ -241,7 +241,7 @@ installPerlModule() {
 #perl modules
 installPerlModules(){
 	echo Installing Perl Modules
-	cd source/perl/modules
+	cd source/perlmodules
 	installPerlModule "Net_SSLeay.pm-1.25" "$WRE_ROOT/prereqs"
 	installPerlModule "Compress-Zlib-1.39"
 	installPerlModule "Proc-ProcessTable-0.40"
@@ -257,33 +257,31 @@ installPerlModules(){
 	installPerlModule "Digest-SHA1-2.11"
 	installPerlModule "Module-Build-0.28"
 	installPerlModule "Params-Validate-0.81"
-	installPerlModule "DateTime-Locale-0.22"
+	installPerlModule "DateTime-Locale-0.34"
 	installPerlModule "Class-Singleton-1.03"
-	installPerlModule "DateTime-TimeZone-0.45"
+	installPerlModule "DateTime-TimeZone-0.6501"
 	installPerlModule "Time-Local-1.12"
-	installPerlModule "Test-Simple-0.62"
+	installPerlModule "Test-Simple-0.70"
 	installPerlModule "Devel-Symdump-2.06"
 	installPerlModule "Pod-Escapes-1.04"
 	installPerlModule "ExtUtils-CBuilder-0.18"
 	installPerlModule "Pod-Coverage-0.17"
 	installPerlModule "Pod-Simple-3.04"
 	installPerlModule "podlators-2.0.4"
-	installPerlModule "DateTime-0.30"
+	installPerlModule "DateTime-0.37"
 	installPerlModule "DateTime-Format-Strptime-1.0700"
-	installPerlModule "DateManip-5.44"
-	installPerlModule "HTML-Template-2.8"
-	installPerlModule "Crypt-SSLeay-0.51"
-	installPerlModule "ParsePlainConfig-1.7a"
-	cd ../String-Random-0.21
+	installPerlModule "HTML-Template-2.9"
+	installPerlModule "Crypt-SSLeay-0.54"
+	cd String-Random-0.21
 	perl Build.PL; checkError $? "String::Random Makefile.PL"
 	perl Build; checkError $? "String::Random make"
 	perl Build install; checkError $? "String::Random make install"
-	installPerlModule "Time-HiRes-1.87"
+	cd ..
+	installPerlModule "Time-HiRes-1.9707"
 	installPerlModule "Text-Balanced-1.97"
 	installPerlModule "Tie-IxHash-1.21"
 	installPerlModule "Tie-CPHash-1.02"
 	installPerlModule "Error-0.15009"
-	installPerlModule "Cache-Cache-1.04"
 	installPerlModule "HTML-Highlight-0.20"
 	installPerlModule "HTML-TagFilter-1.03"
 	installPerlModule "IO-String-1.08"
@@ -291,21 +289,21 @@ installPerlModules(){
 	installPerlModule "Archive-Zip-1.16"
 	installPerlModule "XML-NamespaceSupport-1.09"
 	installPerlModule "XML-SAX-0.14"
-	installPerlModule "XML-Simple-2.14"
+	installPerlModule "XML-Simple-2.16"
 	installPerlModule "XML-RSSLite-0.11"
 	installPerlModule "SOAP-Lite-0.67" "--noprompt"
-	installPerlModule "DBI-1.50"
-	installPerlModule "DBD-mysql-3.0002"
+	installPerlModule "DBI-1.54"
+	installPerlModule "DBD-mysql-4.004"
 	installPerlModule "Convert-ASN1-0.20"
 	installPerlModule "HTML-TableExtract-2.07"
-	installPerlModule "Finance-Quote-1.11"
-	installPerlModule "JSON-1.05"
-	installPerlModule "JSON-Config-1.0.0"
+	installPerlModule "Finance-Quote-1.13"
+	installPerlModule "JSON-1.11"
+	installPerlModule "Config-JSON-1.0.3"
 	installPerlModule "IO-Socket-SSL-0.97"
-	installPerlModule "perl-ldap-0.33"
-	installPerlModule "Log-Log4perl-1.04"
-	installPerlModule "POE-0.9500" "--default"
-	installPerlModule "POE-Component-IKC-0.1902"
+	installPerlModule "perl-ldap-0.34"
+	installPerlModule "Log-Log4perl-1.10"
+	installPerlModule "POE-0.9989" "--default"
+	installPerlModule "POE-Component-IKC-0.1904"
 	installPerlModule "String-CRC32-1.4"
 	installPerlModule "ExtUtils-XSBuilder-0.28"
 	installPerlModule "trace-0.51"
@@ -313,10 +311,11 @@ installPerlModules(){
 	installPerlModule "Test-Pod-1.24"
 	installPerlModule "Data-Structure-Util-0.11"
 	installPerlModule "Parse-RecDescent-1.94"
-	cd ../libapreq2-2.07
+	cd libapreq2-2.08
 	./configure --with-apache2-apxs=$WRE_ROOT/prereqs/bin/apxs --enable-perl-glue; checkError $? "libapreq2 configure"
 	make; checkError $? "libapreq2 make"
 	make install; checkError $? "libapreq2 make install"
+	cd ..
 	installPerlModule "Net-Subnets-0.21"
 	installPerlModule "MailTools-1.74"
 	installPerlModule "IO-stringy-2.110"
@@ -328,13 +327,12 @@ installPerlModules(){
 	installPerlModule "Module-Load-0.10"
 	installPerlModule "Color-Calc-1.00"
 	installPerlModule "DateTime-Format-Mail-0.2901"
-	installPerlModule "ParallelUserAgent-2.57"
 	installPerlModule "Digest-BubbleBabble-0.01"
 	installPerlModule "Net-IP-1.25"
 	installPerlModule "Net-DNS-0.59"
-	installPerlModule "POE-Component-Client-DNS-0.99"
-	installPerlModule "POE-Component-Client-Keepalive-0.0901"
-	installPerlModule "POE-Component-Client-HTTP-0.79"
+	installPerlModule "POE-Component-Client-DNS-1.00"
+	installPerlModule "POE-Component-Client-Keepalive-0.1000"
+	installPerlModule "POE-Component-Client-HTTP-0.82"
 	installPerlModule "Test-Deep-0.095"
 	installPerlModule "Test-MockObject-1.06"
 	installPerlModule "UNIVERSAL-isa-0.06"
@@ -342,7 +340,7 @@ installPerlModules(){
 	installPerlModule "Class-MakeMethods-1.01"
 	installPerlModule "Locale-US-1.1"
 	installPerlModule "Text-Aspell-0.06" 'PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS="-L$WRE_ROOT/prereqs/lib -laspell"'
-	cd ../MySQL-Diff-0.33
+	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
 	make; checkError $? "MySQL::Diff make"
 	make install; checkError $? "MySQL::Diff make install"
@@ -355,7 +353,7 @@ installPerlModules(){
 #awstats
 installAwStats(){
 	echo Installing AWStats
-	cp -RL source/awstats/awstats-6.4 $WRE_ROOT/prereqs
+	cp -RL source/awstats-6.6 $WRE_ROOT/prereqs
 }
 
 #wre utils
@@ -379,7 +377,7 @@ buildAll() {
  		buildPerl
  		buildApache
  		buildMysql
- 		buildImageMagick
+ 		buildGraphicsMagick
  		installAwStats
  		installWreUtils
  		installPerlModules
@@ -469,8 +467,8 @@ do
       buildMysql
     ;;
     
-    --imageMagick | --imagemagick)
-      buildImageMagick
+    --graphicsMagick | --graphicsmagick)
+      buildGraphicsMagick
     ;;
     
     --awstats)

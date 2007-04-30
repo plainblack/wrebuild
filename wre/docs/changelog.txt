@@ -4,6 +4,45 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 0.8.0
  - Rewrote the entire WRE system to be easier to configure, have a more
    robust API, and work the same on Windows and Unix.
+ - Upgraded the following components:
+	- MySQL 5.0.37
+	- mod_perl 2.0.3
+ 	- AW Stats 6.6
+	- Freetype 2.3.4
+	- libjpeg 1.2.16
+	- apsell 0.60.5
+	- lftp 3.5.10
+	- OpenSSL 0.9.8e
+	- X PDF 3.02
+	- Net::LDAP 0.34
+ 	- Crypt::SSLeay 0.54
+	- DBD::mysql 4.004
+	- DBI 1.54
+	- DateTime 0.37
+ 	- DateTime::Locale 0.34
+	- DateTime::TimeZone 0.6501
+	- Finance::Quote 1.13
+	- HTML::Template 2.9
+	- JSON 1.11
+	- Log::Log4perl 1.10
+	- POE 0.9989
+	- POE::Component::Client::HTTP 0.82
+	- POE::Component::Client::DNS 1.00
+	- POE::Component::Client::KeepAlive 0.1000
+	- POE::Component::IKC 0.1904
+	- Time::HiRes 1.9707
+	- Test::Simple 0.70
+	- XML::Simple 2.16
+	- libapreq2 2.0.8
+ - Added Config::JSON 1.0.3
+ - Replaced Image Magick with Graphics Magick 1.1.7
+ - Removed the following components since they are no longer used by WebGUI:
+	- Memcached 
+ 	- Cache::Cache 
+ 	- Cache::MemCached 
+ 	- Date::Manip
+	- LWP::Parallel::UserAgent
+	- Parse::PlainConfig
 
 
 NOTE: Since this is a complete rewrite, there is no upgrade path. Instead,
