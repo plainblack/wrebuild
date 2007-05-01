@@ -12,7 +12,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 	- libjpeg 1.2.16
 	- apsell 0.60.5
 	- lftp 3.5.10
-	- OpenSSL 0.9.8e
+	- OpenSSL 0.9.7m
 	- X PDF 3.02
 	- Net::LDAP 0.34
  	- Crypt::SSLeay 0.54
