@@ -34,7 +34,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 	- Test::Simple 0.70
 	- XML::Simple 2.16
 	- libapreq2 2.0.8
- - Added Config::JSON 1.0.3
+ - Added the following components:
+    - Config::JSON 1.0.3
+    - Weather::Com::Finder 0.5.1
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 
@@ -43,6 +45,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  	- Date::Manip
 	- LWP::Parallel::UserAgent
 	- Parse::PlainConfig
+ - fix: WRE needs newer version of mysql to build on OS X intel
+ - fix: Apache logfiles not rolling
+ - fix: WRE needs newer version of openssl to build on OS X intel
 
 
 NOTE: Since this is a complete rewrite, there is no upgrade path. Instead,
