@@ -87,14 +87,7 @@ buildUtils(){
 
 	# aspell
 	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
-	cd aspell-en-0.51-1
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
-        fi	
-	./configure --vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress; checkError $? "aspell dictionary Configure"
-	make; checkError $? "aspell dictionary make"
-	make install; checkError $? "aspell dictionary make install"
+	buildProgram "aspell-en-0.51-1" "--vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress"
 
 	cd $WRE_BUILDDIR
 }
@@ -207,11 +200,12 @@ buildGraphicsMagick(){
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
-        fi	
+    fi	
 	./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
-	perl -i -p -e's[./libtool][libtool]g' Makefile
+	$WRE_ROOT/prereqs/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
 	make; checkError $? "libjpeg make"
 	make install; checkError $? "libjpeg make install"
+    cd ..
 
 	# freetype
 	buildProgram "freetype-2.3.4" "--enable-shared"
@@ -220,11 +214,11 @@ buildGraphicsMagick(){
 	buildProgram "libungif-4.1.4" "--enable-shared"
 
 	# lib png
-	cd ../libpng-1.2.16
+	cd libpng-1.2.16
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
-        fi	
+    fi	
 	case $WRE_OSNAME in
 		SunOS)
 			cp scripts/makefile.solaris Makefile
@@ -233,10 +227,11 @@ buildGraphicsMagick(){
 			cp scripts/makefile.`perl -e "print lc $WRE_OSNAME"` Makefile
 			;;
 	esac
-	perl -i -p -e's[/usr/local][$WRE_ROOT/prereqs]g' Makefile
+	$WRE_ROOT/prereqs/bin/perl -i -p -e's[/usr/local][$WRE_ROOT/prereqs]g' Makefile
 	make; checkError $? "Graphics Magick libpng make"
 	make install; checkError $? "Graphics Magick libpng make install"
-
+    cd ..
+    
 	# graphics magick
 	buildProgram "GraphicsMagick-1.1.7" "--enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
 
