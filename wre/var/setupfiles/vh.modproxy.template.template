@@ -16,5 +16,5 @@
     	RewriteRule ^/extras/ - [L]
     	RewriteRule ^/uploads/ - [L]
 	# proxy webgui pages
-    	RewriteRule ^/(.*) http://__sitename__:__apache-modperl-port__/$1 [P]
+    	RewriteRule ^/(.*) http://%{HTTP_HOST}:__apache-modperl-port__/$1 [P]
 </VirtualHost>

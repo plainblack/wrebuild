@@ -45,6 +45,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  	- Date::Manip
 	- LWP::Parallel::UserAgent
 	- Parse::PlainConfig
+ - fix: Url's in rss feed don't use http_host
  - fix: WRE needs newer version of mysql to build on OS X intel
  - fix: Apache logfiles not rolling
  - fix: WRE needs newer version of openssl to build on OS X intel

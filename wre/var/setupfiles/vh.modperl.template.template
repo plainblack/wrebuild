@@ -1,5 +1,6 @@
 <VirtualHost *:__apache-modperl-port__>
 	ServerName __sitename__
+	ServerAlias __domain__
 	DocumentRoot __domain-home__/__sitename__/public
         SetHandler perl-script
         PerlInitHandler WebGUI
