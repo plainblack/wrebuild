@@ -37,7 +37,6 @@ buildProgram() {
 # utilities
 buildUtils(){
     printHeader "Utilities"
-	mkdir -p $WRE_ROOT/prereqs/bin
 	cd source
 	
 	# lftp
@@ -95,10 +94,6 @@ buildUtils(){
 # perl
 buildPerl(){
 	printHeader "Perl"
-	mkdir -p $WRE_ROOT/prereqs/bin
-	mkdir -p $WRE_ROOT/prereqs/man/man1
-	mkdir -p $WRE_ROOT/prereqs/lib
-	mkdir -p $WRE_ROOT/prereqs/include
 	cd source/perl-5.8.8
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
@@ -115,11 +110,6 @@ buildPerl(){
 # apache
 buildApache(){
 	printHeader "Apache"
-	mkdir -p $WRE_ROOT/prereqs/bin
-	mkdir -p $WRE_ROOT/prereqs/man/man1
-	mkdir -p $WRE_ROOT/prereqs/lib
-	mkdir -p $WRE_ROOT/prereqs/include
-	mkdir -p $WRE_ROOT/prereqs/conf
 
 	# apache
 	cd source/httpd-2.0.59
@@ -170,12 +160,6 @@ buildApache(){
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	mkdir -p $WRE_ROOT/prereqs/bin
-	mkdir -p $WRE_ROOT/prereqs/man/man1
-	mkdir -p $WRE_ROOT/prereqs/lib
-	mkdir -p $WRE_ROOT/prereqs/libexec
-	mkdir -p $WRE_ROOT/prereqs/include
-	mkdir -p $WRE_ROOT/prereqs/var
 	cd source/mysql-5.0.37
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
@@ -190,10 +174,6 @@ buildMysql(){
 # Graphics Magick
 buildGraphicsMagick(){
 	printHeader "Graphics Magick"
-	mkdir -p $WRE_ROOT/prereqs/bin
-	mkdir -p $WRE_ROOT/prereqs/man/man1
-	mkdir -p $WRE_ROOT/prereqs/lib
-	mkdir -p $WRE_ROOT/prereqs/include
 
 	# lib jpeg
 	cd source/libjpeg-6b
@@ -233,7 +213,15 @@ buildGraphicsMagick(){
     cd ..
     
 	# graphics magick
-	buildProgram "GraphicsMagick-1.1.7" "--enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
+	cd GraphicsMagick-1.1.7
+	if [ "$WRE_CLEAN" == 1 ]; then
+		make distclean
+  		make clean
+    fi	
+    export WRE_CONFIGURE="--prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
+	CC=gcc ./configure $CONFIGURE; checkError $? "GraphicsMagick configure"
+	make; checkError $? "GraphicsMagick make"
+	make install; checkError $? "GraphicsMagick make install"
 
 	cd $WRE_BUILDDIR
 }
@@ -243,6 +231,11 @@ buildGraphicsMagick(){
 # param2: parameters to pass to Makefile.PL
 installPerlModule() {
 	cd $1
+    printHeader "PM $1"
+    if [ "$WRE_CLEAN" == 1 ]; then
+        make distclean
+        make clean
+    fi   
 	perl Makefile.PL $2; checkError $? "$1 Makefile.PL"
 	make; checkError $? "$1 make"
 	make install; checkError $? "$1 make install"
@@ -282,7 +275,14 @@ installPerlModules(){
 	installPerlModule "DateTime-0.37"
 	installPerlModule "DateTime-Format-Strptime-1.0700"
 	installPerlModule "HTML-Template-2.9"
-	installPerlModule "Crypt-SSLeay-0.54"
+        my $network_tests = prompt
+                "Do you want to run the live tests (y/N) ?",
+                        'N';
+    export CRYPT_VERSION="Crypt-SSLeay-0.54"
+    $WRE_ROOT/prereqs/bin/perl -i -p -e's[my \$network_tests = prompt][my \$network_tests = "y";]g' $CRYPT_VERSION/Makefile.PL
+    $WRE_ROOT/prereqs/bin/perl -i -p -e's["Do you want to run the live tests \(y/N\) \?",][]g' $CRYPT_VERSION/Makefile.PL
+    $WRE_ROOT/prereqs/bin/perl -i -p -e"s['N';][]g" $CRYPT_VERSION/Makefile.PL
+	installPerlModule $CRYPT_VERSION "--lib=$WRE_ROOT/prereqs"
 	cd String-Random-0.21
 	perl Build.PL; checkError $? "String::Random Makefile.PL"
 	perl Build; checkError $? "String::Random make"
@@ -300,6 +300,7 @@ installPerlModules(){
 	installPerlModule "Archive-Zip-1.16"
 	installPerlModule "XML-NamespaceSupport-1.09"
 	installPerlModule "XML-SAX-0.14"
+	installPerlModule "XML-SAX-Expat-0.38"
 	installPerlModule "XML-Simple-2.16"
 	installPerlModule "XML-RSSLite-0.11"
 	installPerlModule "SOAP-Lite-0.67" "--noprompt"
@@ -512,6 +513,13 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ -d /data ]; then
+	mkdir -p $WRE_ROOT/prereqs/man/man1
+	mkdir -p $WRE_ROOT/prereqs/conf
+	mkdir -p $WRE_ROOT/prereqs/lib
+	mkdir -p $WRE_ROOT/prereqs/libexec
+	mkdir -p $WRE_ROOT/prereqs/include
+	mkdir -p $WRE_ROOT/prereqs/var
+	mkdir -p $WRE_ROOT/prereqs/bin
     if [ "$WRE_BUILD_UTILS" == 1 ]; then
  		buildUtils
     fi
