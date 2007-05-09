@@ -275,9 +275,6 @@ installPerlModules(){
 	installPerlModule "DateTime-0.37"
 	installPerlModule "DateTime-Format-Strptime-1.0700"
 	installPerlModule "HTML-Template-2.9"
-        my $network_tests = prompt
-                "Do you want to run the live tests (y/N) ?",
-                        'N';
     export CRYPT_VERSION="Crypt-SSLeay-0.54"
     $WRE_ROOT/prereqs/bin/perl -i -p -e's[my \$network_tests = prompt][my \$network_tests = "y";]g' $CRYPT_VERSION/Makefile.PL
     $WRE_ROOT/prereqs/bin/perl -i -p -e's["Do you want to run the live tests \(y/N\) \?",][]g' $CRYPT_VERSION/Makefile.PL
@@ -299,7 +296,8 @@ installPerlModules(){
 	installPerlModule "Archive-Tar-1.29"
 	installPerlModule "Archive-Zip-1.16"
 	installPerlModule "XML-NamespaceSupport-1.09"
-	installPerlModule "XML-SAX-0.14"
+    installPerlModule "XML-Parser-2.34" "EXPATLIBPATH=$WRE_ROOT/prereqs/lib EXPATINCPATH=$WRE_ROOT/prereqs/include"
+	#installPerlModule "XML-SAX-0.14"
 	installPerlModule "XML-SAX-Expat-0.38"
 	installPerlModule "XML-Simple-2.16"
 	installPerlModule "XML-RSSLite-0.11"
@@ -312,7 +310,9 @@ installPerlModules(){
 	installPerlModule "JSON-1.11"
 	installPerlModule "Config-JSON-1.0.3"
 	installPerlModule "IO-Socket-SSL-0.97"
-	installPerlModule "perl-ldap-0.34"
+    export LDAP_VERSION="perl-ldap-0.33"
+    $WRE_ROOT/prereqs/bin/perl -i -p -e"s[check_module\('Authen::SASL', 2.00\) or print <<\"EDQ\",\"\\\n\";][print <<\"EDQ\",\"\\\n\";]g" $LDAP_VERSION/Makefile.PL
+	installPerlModule $LDAP_VERSION
 	installPerlModule "Log-Log4perl-1.10"
 	installPerlModule "POE-0.9989" "--default"
 	installPerlModule "POE-Component-IKC-0.1904"
