@@ -341,7 +341,7 @@ installPerlModules(){
 	installPerlModule "DateTime-Format-Mail-0.2901"
 	installPerlModule "Digest-BubbleBabble-0.01"
 	installPerlModule "Net-IP-1.25"
-	installPerlModule "Net-DNS-0.59"
+	installPerlModule "Net-DNS-0.59" "--noonline-tests"
 	installPerlModule "POE-Component-Client-DNS-1.00"
 	installPerlModule "POE-Component-Client-Keepalive-0.1000"
 	installPerlModule "POE-Component-Client-HTTP-0.82"
