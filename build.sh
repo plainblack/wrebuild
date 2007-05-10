@@ -86,7 +86,14 @@ buildUtils(){
 
 	# aspell
 	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
-	buildProgram "aspell-en-0.51-1" "--vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress"
+	cd aspell-en-0.51-1
+	if [ "$WRE_CLEAN" == 1 ]; then
+		make distclean
+  		make clean
+    fi	
+	./configure --vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress; checkError $? "aspell-en configure"
+	make; checkError $? "aspell-en make"
+	make install ; checkError $? "aspell-en make install"
 
 	cd $WRE_BUILDDIR
 }
@@ -297,7 +304,7 @@ installPerlModules(){
 	installPerlModule "Archive-Zip-1.16"
 	installPerlModule "XML-NamespaceSupport-1.09"
     installPerlModule "XML-Parser-2.34" "EXPATLIBPATH=$WRE_ROOT/prereqs/lib EXPATINCPATH=$WRE_ROOT/prereqs/include"
-	#installPerlModule "XML-SAX-0.14"
+	installPerlModule "XML-SAX-0.14"
 	installPerlModule "XML-SAX-Expat-0.38"
 	installPerlModule "XML-Simple-2.16"
 	installPerlModule "XML-RSSLite-0.11"
@@ -351,8 +358,8 @@ installPerlModules(){
 	installPerlModule "UNIVERSAL-can-1.12"
 	installPerlModule "Class-MakeMethods-1.01"
 	installPerlModule "Locale-US-1.1"
-	installPerlModule "Weather-Com-Finder-0.5.1"
-	installPerlModule "Text-Aspell-0.06" 'PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS="-L$WRE_ROOT/prereqs/lib -laspell"'
+	installPerlModule "Weather-Com-0.5.1"
+	installPerlModule "Text-Aspell-0.06" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
 	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
 	make; checkError $? "MySQL::Diff make"
