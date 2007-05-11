@@ -249,6 +249,21 @@ installPerlModule() {
 	cd ..
 }
 
+# some other perl modules are installed the same way
+# param1: module directory
+# param2: parameters to pass to Makefile.PL
+buildPerlModule() {
+	cd $1
+    printHeader "PM $1"
+    if [ "$WRE_CLEAN" == 1 ]; then
+        perl Build clean
+    fi   
+	perl Build.PL $2; checkError $? "$1 Build.PL"
+	perl Build; checkError $? "$1 Build"
+	perl Build install; checkError $? "$1 Build install"
+	cd ..
+}
+
 #perl modules
 installPerlModules(){
 	printHeader "Perl Modules"
@@ -287,11 +302,7 @@ installPerlModules(){
     $WRE_ROOT/prereqs/bin/perl -i -p -e's["Do you want to run the live tests \(y/N\) \?",][]g' $CRYPT_VERSION/Makefile.PL
     $WRE_ROOT/prereqs/bin/perl -i -p -e"s['N';][]g" $CRYPT_VERSION/Makefile.PL
 	installPerlModule $CRYPT_VERSION "--lib=$WRE_ROOT/prereqs"
-	cd String-Random-0.21
-	perl Build.PL; checkError $? "String::Random Makefile.PL"
-	perl Build; checkError $? "String::Random make"
-	perl Build install; checkError $? "String::Random make install"
-	cd ..
+	buildPerlModule "String-Random-0.21"
 	installPerlModule "Time-HiRes-1.9707"
 	installPerlModule "Text-Balanced-1.97"
 	installPerlModule "Tie-IxHash-1.21"
@@ -330,6 +341,7 @@ installPerlModules(){
 	installPerlModule "Test-Pod-1.24"
 	installPerlModule "Data-Structure-Util-0.11"
 	installPerlModule "Parse-RecDescent-1.94"
+    printHeader "libaqpreq2"
 	cd libapreq2-2.08
 	./configure --with-apache2-apxs=$WRE_ROOT/prereqs/bin/apxs --enable-perl-glue; checkError $? "libapreq2 configure"
 	make; checkError $? "libapreq2 make"
@@ -366,6 +378,14 @@ installPerlModules(){
 	make install; checkError $? "MySQL::Diff make install"
 	cp -f mysqldiff $WRE_ROOT/sbin/
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
+    cd ..
+    buildPerlModule "Alien-GvaScript-1.03"
+    installPerlModule "List-MoreUtils-0.22"
+    installPerlModule "Module-CoreList-2.11"
+    installPerlModule "Pod-POM-0.17"
+    installPerlModule "Search-Indexer-0.74"
+    installPerlModule "PPI-HTML-1.07"
+    installPerlModule "Pod-POM-Web-1.04"
 	cd $WRE_BUILDDIR
 }
 
@@ -410,15 +430,15 @@ cat <<_WREHELP
            ./build.sh --perl --apache  #only perl and apache will build
            ./build.sh --all            #build all
 
-  --clean        cleans all pre-req folders for a new build
-  --utilities	 compiles and installs shared utilities
-  --perl         compiles and installs perl
-  --apache       compiles and installs apache
-  --mysql	 compiles and installs mysql
-  --imagemagick  compiles and installs imagemagick
-  --awstats      installs awstats
-  --wre          installs wre
-  --perlmodules  installs perl modules from cpan
+  --clean           cleans all pre-req folders for a new build
+  --utilities	    compiles and installs shared utilities
+  --perl            compiles and installs perl
+  --apache          compiles and installs apache
+  --mysql	        compiles and installs mysql
+  --graphicsmagick  compiles and installs graphicsmagick
+  --awstats         installs awstats
+  --wre             installs wre
+  --perlmodules     installs perl modules from cpan
                                
 _WREHELP
 
@@ -551,6 +571,7 @@ if [ -d /data ]; then
     if [ "$WRE_BUILD_PM" == 1 ]; then
  		installPerlModules
     fi
+    printHeader "Complete And Successful"
 else
     		echo "You must create a writable /data folder to begin."
  	fi
