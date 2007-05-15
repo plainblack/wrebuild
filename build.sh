@@ -67,7 +67,7 @@ buildUtils(){
 	../dist/configure --prefix=$WRE_ROOT/prereqs ; checkError $? "Berkeley DB configure"
 	make; checkError $? "Berkeley DB make"
 	make install; checkError $? "Berkeley DB make install"
-	cd ..	
+	cd ../..
 
 	# catdoc
 	cd catdoc-0.94
@@ -224,7 +224,7 @@ buildGraphicsMagick(){
 			cp scripts/makefile.`perl -e "print lc $WRE_OSNAME"` Makefile
 			;;
 	esac
-	$WRE_ROOT/prereqs/bin/perl -i -p -e's[/usr/local][$WRE_ROOT/prereqs]g' Makefile
+	$WRE_ROOT/prereqs/bin/perl -i -p -e"s[/usr/local][$WRE_ROOT/prereqs]g" Makefile
 	make; checkError $? "Graphics Magick libpng make"
 	make install; checkError $? "Graphics Magick libpng make install"
     cd ..
@@ -395,7 +395,9 @@ installPerlModules(){
     installPerlModule "Pod-POM-0.17"
     installPerlModule "Search-Indexer-0.74"
     installPerlModule "PPI-HTML-1.07"
+    perl -i -p -e"s[/usr/local/BerkeleyDB][$WRE_ROOT/prereqs]g" config.in
     installPerlModule "BerkeleyDB-0.31"
+    installPerlModule "Search-QueryParser-0.91"
     installPerlModule "Pod-POM-Web-1.04"
 	cd $WRE_BUILDDIR
 }
@@ -412,6 +414,7 @@ installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
 	cp -R wre /data/
 	mkdir $WRE_ROOT/etc
+    $WRE_ROOT/bin/apiindexer.pl
 }
 
 #gooey
@@ -576,11 +579,11 @@ if [ -d /data ]; then
     if [ "$WRE_BUILD_AWSTATS" == 1 ]; then
  		installAwStats
     fi
-    if [ "$WRE_BUILD_WRE" == 1 ]; then
- 		installWreUtils
-    fi
     if [ "$WRE_BUILD_PM" == 1 ]; then
  		installPerlModules
+    fi
+    if [ "$WRE_BUILD_WRE" == 1 ]; then
+ 		installWreUtils
     fi
     printHeader "Complete And Successful"
 else
