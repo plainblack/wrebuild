@@ -414,7 +414,6 @@ installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
 	cp -R wre /data/
 	mkdir $WRE_ROOT/etc
-    $WRE_ROOT/bin/apiindexer.pl
 }
 
 #gooey
