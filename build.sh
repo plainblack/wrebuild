@@ -59,6 +59,16 @@ buildUtils(){
 	# libtool
 	buildProgram "libtool-1.5.22"
 
+    # berkeley db
+	cd db-4.5.20.NC/build_unix
+	if [ "$WRE_CLEAN" == 1 ]; then
+		make realclean
+    fi	
+	../dist/configure --prefix=$WRE_ROOT/prereqs ; checkError $? "Berkeley DB configure"
+	make; checkError $? "Berkeley DB make"
+	make install; checkError $? "Berkeley DB make install"
+	cd ..	
+
 	# catdoc
 	cd catdoc-0.94
 	if [ "$WRE_CLEAN" == 1 ]; then
@@ -385,6 +395,7 @@ installPerlModules(){
     installPerlModule "Pod-POM-0.17"
     installPerlModule "Search-Indexer-0.74"
     installPerlModule "PPI-HTML-1.07"
+    installPerlModule "BerkeleyDB-0.31"
     installPerlModule "Pod-POM-Web-1.04"
 	cd $WRE_BUILDDIR
 }
