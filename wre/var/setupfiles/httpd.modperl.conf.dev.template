@@ -196,7 +196,7 @@ PerlRequire /data/WebGUI/sbin/preload.perl
 #  when the value of (unsigned)Group is above 60000; 
 #  don't use Group #-1 on these systems!
 #
-User nobody
+User webgui
 Group #-1
 </IfModule>
 </IfModule>

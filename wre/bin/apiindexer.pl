@@ -1,5 +1,6 @@
 #!/data/wre/prereqs/bin/perl
 use lib '/data/WebGUI/lib';
+use lib '/data/wre/lib';
 use strict;
 use Pod::POM::Web::Indexer;
 print "Indexing POD content...\n";

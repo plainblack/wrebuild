@@ -11,12 +11,15 @@
 #-------------------------------------------------------------------
 
 use strict;
+use lib '../lib';
 use Carp;
-use Config::JSON;
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
 use Path::Class;
+use WRE::Spectre;
+use WRE::Mysql;
+use WRE::Config;
 
 #-------------------------------------------------------------------
 # server daemon
@@ -25,45 +28,30 @@ print "Please contact me at: <URL:", $daemon->url, ">\n";
 while (my $connection = $daemon->accept) {
     while (my $request = $connection->get_request) {
         my $state = {
-            request => $request,
-            connection => $connection,
-            daemon => $daemon
-            };
-        my $handler = getHandler($request->url->path);
+            request     => $request,
+            connection  => $connection,
+            daemon      => $daemon,
+            config      => WRE::Config->new,
+        };
+        my $handler = $request->url->path;
+        $handler =~ s{^/(.*)}{$1};
+        if ($handler eq "" || $handler !~ m/^[A-Za-z]+$/) {
+            $handler = "listSites";
+        }
+        $handler = "www_".$handler;
+        no strict;
         &$handler($state);
-        #if ($request->method eq 'GET' and $request->url->path eq "/xyzzy") {
-            # remember, this is *not* recommended practice :-)
-        #    printHeader($c);
-            #$c->send_file_response("/etc/passwd");
-        #}
-       # else {
-       #     $connection->send_error(RC_FORBIDDEN)
-       # }
+        use strict;
     }
     $connection->close;
     undef($connection);
 }
 
 #-------------------------------------------------------------------
-sub getHandler {
-    my $url = shift;
-    my %handlers = (
-        "/add-site" => \&www_addSite,
-        "/delete-site" => \&www_deleteSite,
-        "/edit-webgui-config" => \&www_editWebguiConfig,
-        "/edit-apache-config" => \&www_editApacheConfig,
-        "/list-templates" => \&www_listTemplates,
-        "/list-services" => \&www_listServices,
-        "/list-utilities" => \&www_listUtilities,
-        "/list-settings" => \&www_listSettings,
-        "/list-sites" => \&www_listSites,
-        "/wre.css" => \&www_getCss,
-    );
-    my $handler = $handlers{$url};
-    unless (defined $handler) {
-        $handler = \&www_listSites;
-    }
-    return $handler;
+# this takes care of www_ methods that are called accidentally or maliciously
+sub AUTOLOAD {
+	our $AUTOLOAD;
+    www_listSites(@_);
 }
 
 
@@ -78,11 +66,11 @@ sub getNavigation {
     my $utilities = ($section eq "utilities") ? $toggle : '';
     my $content = qq|
     <div id="tabsWrapper">
-    <a href="/list-sites" $sites>Sites</a>
-    <a href="/list-services" $services>Services</a>
-    <a href="/list-settings" $settings>Settings</a>
-    <a href="/list-templates" $templates>Templates</a>
-    <a href="/list-utilities" $utilities>Utilities</a>
+    <a href="/listSites" $sites>Sites</a>
+    <a href="/listServices" $services>Services</a>
+    <a href="/listSettings" $settings>Settings</a>
+    <a href="/listTemplates" $templates>Templates</a>
+    <a href="/listUtilities" $utilities>Utilities</a>
     <div id="logo">WRE Console</div>
     <div id="navUnderline"></div>
     </div>
@@ -95,7 +83,7 @@ sub getNavigation {
 sub sendResponse {
     my $state = shift;
     my $content = shift;
-    $content = '<html><head><title>WRE Console</title><link rel="stylesheet" href="/wreconsole.css" type="text/css"
+    $content = '<html><head><title>WRE Console</title><link rel="stylesheet" href="/css" type="text/css"
     /></head> <body><div id="contentWrapper">'.$content.'</div><div id="credits">&copy; 2005-2007 <a
     href="http://www.plainblack.com/">Plain Black Corporation</a>. All rights reserved.</div></body></html>';
     my $response = HTTP::Response->new();
@@ -106,7 +94,7 @@ sub sendResponse {
 
 
 #-------------------------------------------------------------------
-sub www_getCss {
+sub www_css {
     my $state = shift;
     $state->{connection}->send_file_response("/data/wre/var/wreconsole.css");
 }
@@ -142,7 +130,72 @@ sub www_editWebguiConfig {
 #-------------------------------------------------------------------
 sub www_listServices {
     my $state = shift;
+    my $status = shift;
     my $content = getNavigation("services");
+    $content .= '<div class="status">'.$status.'</div>';
+    $content .= '<table class="items">
+    <tr>
+        <td>Apache Modproxy</td>
+        <td>
+             <form action="/startModproxy" method="post">
+                <input type="submit" value="Start" />
+             </form>
+             <form action="/stopModproxy" method="post">
+                <input type="submit" value="Stop" />
+             </form>
+             <form action="/restartModproxy" method="post">
+                <input type="submit" value="Restart" />
+             </form>
+         </td>
+    </tr>
+    <tr>
+        <td>Apache Modperl</td>
+        <td>
+             <form action="/startModperl" method="post">
+                <input type="submit" value="Start" />
+             </form>
+             <form action="/stopModperl" method="post">
+                <input type="submit" value="Stop" />
+             </form>
+             <form action="/restartModperl" method="post">
+                <input type="submit" value="Restart" />
+             </form>
+         </td>
+    </tr>
+    <tr>
+        <td>MySQL</td>
+        <td>
+             <form action="/startMysql" method="post">
+                <input type="submit" value="Start" />
+             </form>
+             <form action="/stopMysql" method="post">
+                <input type="submit" value="Stop" />
+             </form>
+             <form action="/restartMysql" method="post">
+                <input type="submit" value="Restart" />
+             </form>
+         </td>
+    </tr>
+    <tr>
+        <td>Spectre</td>
+        <td>';
+    my $spectre = WRE::Spectre->new($state->{config});
+    if ($spectre->ping) {
+            $content .= ' <form action="/stopSpectre" method="post">
+                <input type="submit" value="Stop" />
+             </form>';
+    } else {
+             $content .= '<form action="/startSpectre" method="post">
+                <input type="submit" value="Start" />
+             </form>';
+    }
+    $content .= '
+             <form action="/restartSpectre" method="post">
+                <input type="submit" value="Restart" />
+             </form>
+         </td>
+    </tr>
+    </table>';
     sendResponse($state, $content);
 }
 
@@ -157,7 +210,7 @@ sub www_listSettings {
 sub www_listSites {
     my $state = shift;
     my $content = getNavigation("sites") . q|
-             <form action="/add-site" method="post">
+             <form action="/addSite" method="post">
                 <input type="submit" value="Add Site" />
              </form>
         <table class="items">|;
@@ -171,15 +224,15 @@ sub www_listSites {
         my $sitename = $filename;
         $sitename =~ s/^(.*)\.conf$/$1/;
         $content .= qq|<tr><td>$sitename</td> <td>
-             <form action="/edit-webgui-config" method="post">
+             <form action="/editWebguiConfig" method="post">
                 <input type="hidden" name="config" value="$filename" />
                 <input type="submit" value="Edit WebGUI Config" />
              </form>
-             <form action="/edit-apache-config" method="post">
+             <form action="/editApacheConfig" method="post">
                 <input type="hidden" name="config" value="$filename" />
                 <input type="submit" value="Edit Apache Config" />
              </form>
-             <form action="/delete-site" method="post">
+             <form action="/deleteSite" method="post">
                 <input type="hidden" name="config" value="$filename" />
                 <input type="submit" value="Delete Site" />
              </form>
@@ -203,4 +256,47 @@ sub www_listUtilities {
     sendResponse($state, $content);
 }
 
+#-------------------------------------------------------------------
+sub www_restartModperl {
+    my $state = shift;
+    my $service = WRE::Modperl->new($state->{config});
+    my $status = "Modperl restarted.";
+    unless ($service->restart) {
+        $status = "Modperl did not restart successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_restartSpectre {
+    my $state = shift;
+    my $service = WRE::Spectre->new($state->{config});
+    my $status = "Spectre restarted.";
+    unless ($service->restart) {
+        $status = "Spectre did not restart successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_startSpectre {
+    my $state = shift;
+    my $service = WRE::Spectre->new($state->{config});
+    my $status = "Spectre started.";
+    unless ($service->start) {
+        $status = "Spectre did not start successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_stopSpectre {
+    my $state = shift;
+    my $service = WRE::Spectre->new($state->{config});
+    my $status = "Spectre stopped.";
+    unless ($service->stop) {
+        $status = "Spectre did not stop successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
 

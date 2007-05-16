@@ -9,6 +9,11 @@ body {
     font-family: sans-serif;
 }
 
+.status {
+    color: orange;
+    font-size: 14pt;
+}
+
 .items {
     width: 100%;
     border: 0px;
