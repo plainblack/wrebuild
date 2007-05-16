@@ -95,7 +95,7 @@ sub getNavigation {
 sub sendResponse {
     my $state = shift;
     my $content = shift;
-    $content = '<html><head><title>WRE Console</title><link rel="stylesheet" href="/wre.css" type="text/css"
+    $content = '<html><head><title>WRE Console</title><link rel="stylesheet" href="/wreconsole.css" type="text/css"
     /></head> <body><div id="contentWrapper">'.$content.'</div><div id="credits">&copy; 2005-2007 <a
     href="http://www.plainblack.com/">Plain Black Corporation</a>. All rights reserved.</div></body></html>';
     my $response = HTTP::Response->new();
@@ -108,7 +108,7 @@ sub sendResponse {
 #-------------------------------------------------------------------
 sub www_getCss {
     my $state = shift;
-    $state->{connection}->send_file_response("/data/wre/var/wre.css");
+    $state->{connection}->send_file_response("/data/wre/var/wreconsole.css");
 }
 
 #-------------------------------------------------------------------
