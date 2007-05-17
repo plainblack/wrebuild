@@ -401,6 +401,7 @@ installPerlModules(){
     installPerlModule "BerkeleyDB-0.31"
     installPerlModule "Search-QueryParser-0.91"
     installPerlModule "Pod-POM-Web-1.04"
+	installPerlModule "File-Slurp-9999.12"
 	cd $WRE_BUILDDIR
 }
 

@@ -53,6 +53,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - PPI::HTML 1.07
     - version 0.7203
     - Path::Class 0.16
+    - File::Slurp 9999.12
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 
@@ -65,6 +66,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: WRE needs newer version of mysql to build on OS X intel
  - fix: Apache logfiles not rolling
  - fix: WRE needs newer version of openssl to build on OS X intel
+ - fix: mysql.server --defaults-file doesn't work with newer versions of MySQL
+ - fix: WRE sudo problem
+   5.0
 
 
 NOTE: Since this is a complete rewrite, there is no upgrade path. Instead,

@@ -12,7 +12,9 @@
 
 use strict;
 use lib '../lib';
-use Carp;
+use Carp qw(carp croak);
+use CGI;
+use File::Slurp;
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
@@ -34,6 +36,7 @@ while (my $connection = $daemon->accept) {
             connection  => $connection,
             daemon      => $daemon,
             config      => WRE::Config->new,
+            cgi         => parseRequest($request),
         };
         my $handler = $request->url->path;
         $handler =~ s{^/(.*)}{$1};
@@ -80,6 +83,30 @@ sub getNavigation {
     return $content;
 }
 
+#-------------------------------------------------------------------
+sub parseRequest {
+    my $request = shift;
+    my $method = $request->method;
+    if ( $method eq 'GET' || $method eq 'HEAD' ) {
+        return CGI->new( $request->uri->equery );
+    }
+    elsif ( $method eq 'POST' ) {
+        my $contentType = $request->content_type;
+        if ( ! $contentType || $contentType eq "application/x-www-form-urlencoded" ) {
+            return CGI->new( $request->content );
+        }
+        elsif ( $contentType eq "multipart/form-data") {
+            carp "Can't process multi-part data.";
+        }
+        else {
+            carp "Invalid content type: $contentType";
+        }
+    }
+    else {
+        carp "Unsupported method: $method"; 
+    }
+    return {};
+}
 
 #-------------------------------------------------------------------
 sub sendResponse {
@@ -98,7 +125,7 @@ sub sendResponse {
 #-------------------------------------------------------------------
 sub www_css {
     my $state = shift;
-    $state->{connection}->send_file_response("/data/wre/var/wreconsole.css");
+    $state->{connection}->send_file_response($state->{config}->getRoot("/var/wreconsole.css"));
 }
 
 #-------------------------------------------------------------------
@@ -123,6 +150,52 @@ sub www_editApacheConfig {
 }
 
 #-------------------------------------------------------------------
+sub www_editTemplate {
+    my $state = shift;
+    my $content = getNavigation("templates");
+    my $filename = $state->{cgi}->param("filename");
+    if ($filename !~ m/\.template$/ || $filename =~ m{/}) {
+            sendResponse($state, "Stop dicking around!");
+            return;
+    }
+    my $template;
+    eval { $template = read_file($state->{config}->getRoot("/var/".$filename)) };
+    if ($@) {
+        carp "Couldn't open template file for editing $@";
+        $content .= '<div class="status">'.$@.'</div>';
+    }
+    $template =~ s/\&/&amp;/xmsg;
+    $template =~ s/\>/&gt;/xmsg;
+    $template =~ s/\</&lt;/xmsg;
+    $content .= '
+        <form action="/editTemplateSave" method="post">
+        <input type="hidden" name="filename" value="'.$filename.'" />
+        <div><b>'.$filename.'</b></div>
+        <textarea name="template" style="width: 700px; height: 400px;">'.$template.'</textarea><br />
+        <input type="submit" value="Save" /> 
+        </form>
+    ';
+    sendResponse($state, $content);
+}
+
+#-------------------------------------------------------------------
+sub www_editTemplateSave {
+    my $state = shift;
+    my $filename = $state->{cgi}->param("filename");
+    if ($filename !~ m/\.template$/ || $filename =~ m{/}) {
+            sendResponse($state, "Stop dicking around!");
+            return;
+    }
+    my $status = $filename." saved.";
+    eval { write_file($state->{config}->getRoot("/var/".$filename), $state->{cgi}->param("template")) };
+    if ($@) {
+        $status = "Couldn't save $filename. $@";
+        carp $status;
+    }
+    www_listTemplates($state, $status);
+}
+
+#-------------------------------------------------------------------
 sub www_editWebguiConfig {
     my $state = shift;
     my $content = getNavigation("sites");
@@ -138,13 +211,21 @@ sub www_listServices {
     $content .= '<table class="items">
     <tr>
         <td>Apache Modproxy</td>
-        <td>
-             <form action="/startModproxy" method="post">
-                <input type="submit" value="Start" />
-             </form>
+        <td>';
+    my $modproxy = WRE::Modproxy->new($state->{config});
+    if ($modproxy->ping) {
+        $content .= '
              <form action="/stopModproxy" method="post">
                 <input type="submit" value="Stop" />
-             </form>
+             </form>';
+    }
+    else {
+        $content .= '
+             <form action="/startModproxy" method="post">
+                <input type="submit" value="Start" />
+             </form>';
+    }
+    $content .= '
              <form action="/restartModproxy" method="post">
                 <input type="submit" value="Restart" />
              </form>
@@ -152,13 +233,21 @@ sub www_listServices {
     </tr>
     <tr>
         <td>Apache Modperl</td>
-        <td>
-             <form action="/startModperl" method="post">
-                <input type="submit" value="Start" />
-             </form>
+        <td>';
+    my $modperl = WRE::Modperl->new($state->{config});
+    if ($modperl->ping) {
+        $content .= '
              <form action="/stopModperl" method="post">
                 <input type="submit" value="Stop" />
-             </form>
+             </form>';
+    }
+    else {
+        $content .= '
+             <form action="/startModperl" method="post">
+                <input type="submit" value="Start" />
+             </form>';
+    }
+    $content .= '
              <form action="/restartModperl" method="post">
                 <input type="submit" value="Restart" />
              </form>
@@ -166,13 +255,21 @@ sub www_listServices {
     </tr>
     <tr>
         <td>MySQL</td>
-        <td>
-             <form action="/startMysql" method="post">
-                <input type="submit" value="Start" />
-             </form>
+        <td>';
+    my $mysql = WRE::Mysql->new($state->{config});
+    if ($mysql->ping) {
+        $content .= '
              <form action="/stopMysql" method="post">
                 <input type="submit" value="Stop" />
-             </form>
+             </form>';
+    }
+    else {
+        $content .= '
+             <form action="/startMysql" method="post">
+                <input type="submit" value="Start" />
+             </form>';
+    }
+    $content .= '
              <form action="/restartMysql" method="post">
                 <input type="submit" value="Restart" />
              </form>
@@ -186,7 +283,8 @@ sub www_listServices {
             $content .= ' <form action="/stopSpectre" method="post">
                 <input type="submit" value="Stop" />
              </form>';
-    } else {
+    } 
+    else {
              $content .= '<form action="/startSpectre" method="post">
                 <input type="submit" value="Start" />
              </form>';
@@ -216,7 +314,7 @@ sub www_listSites {
                 <input type="submit" value="Add Site" />
              </form>
         <table class="items">|;
-    my $folder = dir('','data','WebGUI','etc') || carp "Couldn't open WebGUI configs folder.";
+    my $folder = dir($state->{config}->getWebguiRoot('/etc')) || carp "Couldn't open WebGUI configs folder.";
     while (my $file = $folder->next) {
         next if $file->is_dir;
         my $filename = $file->basename;
@@ -247,7 +345,23 @@ sub www_listSites {
 #-------------------------------------------------------------------
 sub www_listTemplates {
     my $state = shift;
+    my $status = shift;
     my $content = getNavigation("templates");
+    $content .= '<div class="status">'.$status.'</div>';
+    $content .= q| <table class="items">|;
+    my $folder = dir($state->{config}->getRoot("/var")) || carp "Couldn't open wre templates folder.";
+    while (my $file = $folder->next) {
+        next if $file->is_dir;
+        my $filename = $file->basename;
+        next unless $filename =~ m/\.template$/;
+        $content .= qq|<tr><td>$filename</td> <td>
+             <form action="/editTemplate" method="post">
+                <input type="hidden" name="filename" value="$filename" />
+                <input type="submit" value="Edit" />
+             </form>
+            </td></tr>|;
+    }
+    $content .= q|</table>|;
     sendResponse($state, $content);
 }
 
