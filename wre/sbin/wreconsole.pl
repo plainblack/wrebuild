@@ -17,9 +17,11 @@ use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
 use Path::Class;
-use WRE::Spectre;
-use WRE::Mysql;
 use WRE::Config;
+use WRE::Modperl;
+use WRE::Modproxy;
+use WRE::Mysql;
+use WRE::Spectre;
 
 #-------------------------------------------------------------------
 # server daemon
@@ -268,6 +270,28 @@ sub www_restartModperl {
 }
 
 #-------------------------------------------------------------------
+sub www_restartModproxy {
+    my $state = shift;
+    my $service = WRE::Modproxy->new($state->{config});
+    my $status = "Modproxy restarted.";
+    unless ($service->restart) {
+        $status = "Modproxy did not restart successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_restartMysql {
+    my $state = shift;
+    my $service = WRE::Mysql->new($state->{config});
+    my $status = "MySQL restarted.";
+    unless ($service->restart) {
+        $status = "MySQL did not restart successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
 sub www_restartSpectre {
     my $state = shift;
     my $service = WRE::Spectre->new($state->{config});
@@ -279,12 +303,78 @@ sub www_restartSpectre {
 }
 
 #-------------------------------------------------------------------
+sub www_startModperl {
+    my $state = shift;
+    my $service = WRE::Modperl->new($state->{config});
+    my $status = "Modperl started.";
+    unless ($service->start) {
+        $status = "Modperl did not start successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_startModproxy {
+    my $state = shift;
+    my $service = WRE::Modproxy->new($state->{config});
+    my $status = "Modproxy started.";
+    unless ($service->start) {
+        $status = "Modproxy did not start successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_startMysql {
+    my $state = shift;
+    my $service = WRE::Mysql->new($state->{config});
+    my $status = "MySQL started.";
+    unless ($service->start) {
+        $status = "MySQL did not start successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
 sub www_startSpectre {
     my $state = shift;
     my $service = WRE::Spectre->new($state->{config});
     my $status = "Spectre started.";
     unless ($service->start) {
         $status = "Spectre did not start successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_stopModperl {
+    my $state = shift;
+    my $service = WRE::Modperl->new($state->{config});
+    my $status = "Modperl stopped.";
+    unless ($service->stop) {
+        $status = "Modperl did not stop successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_stopModproxy {
+    my $state = shift;
+    my $service = WRE::Modproxy->new($state->{config});
+    my $status = "Modproxy stopped.";
+    unless ($service->stop) {
+        $status = "Modproxy did not stop successfully. ".$@;
+    }
+    www_listServices($state, $status);
+}
+
+#-------------------------------------------------------------------
+sub www_stopMysql {
+    my $state = shift;
+    my $service = WRE::Mysql->new($state->{config});
+    my $status = "MySQL stopped.";
+    unless ($service->stop) {
+        $status = "MySQL did not stop successfully. ".$@;
     }
     www_listServices($state, $status);
 }

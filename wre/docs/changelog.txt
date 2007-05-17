@@ -5,13 +5,15 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Rewrote the entire WRE system to be easier to configure, have a more
    robust API, and work the same on Windows and Unix.
  - Added the WRE Console.
+ - Several security improvements including masked HTTP Server Tokens and the
+   WRE having it's own system level user for all its processes.
  - Added a Perl / WebGUI API documentation server.
  - Upgraded the following components:
 	- MySQL 5.0.37
 	- mod_perl 2.0.3
  	- AW Stats 6.6
 	- Freetype 2.3.4
-	- libjpeg 1.2.16
+    - libpng 1.2.18
 	- apsell 0.60.5
 	- lftp 3.5.10
 	- OpenSSL 0.9.7m
@@ -49,6 +51,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - Pod::POM 0.17
     - Module::CoreList 2.11
     - PPI::HTML 1.07
+    - version 0.7203
+    - Path::Class 0.16
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 

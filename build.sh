@@ -211,7 +211,7 @@ buildGraphicsMagick(){
 	buildProgram "libungif-4.1.4" "--enable-shared"
 
 	# lib png
-	cd libpng-1.2.16
+	cd libpng-1.2.18
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
@@ -336,6 +336,8 @@ installPerlModules(){
 	installPerlModule "HTML-TableExtract-2.07"
 	installPerlModule "Finance-Quote-1.13"
 	installPerlModule "JSON-1.11"
+    installPerlModule "version-0.7203"
+    installPerlModule "Path-Class-0.16"
 	installPerlModule "Config-JSON-1.0.3"
 	installPerlModule "IO-Socket-SSL-0.97"
     export LDAP_VERSION="perl-ldap-0.33"
