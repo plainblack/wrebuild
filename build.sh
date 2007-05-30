@@ -402,6 +402,7 @@ installPerlModules(){
     installPerlModule "Search-QueryParser-0.91"
     installPerlModule "Pod-POM-Web-1.04"
 	installPerlModule "File-Slurp-9999.12"
+	installPerlModule "Text-CSV_XS-0.26"
 	cd $WRE_BUILDDIR
 }
 

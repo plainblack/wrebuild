@@ -54,6 +54,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - version 0.7203
     - Path::Class 0.16
     - File::Slurp 9999.12
+    - Text::CSV_XS 0.26
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 
