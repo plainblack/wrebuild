@@ -1,0 +1,43 @@
+W R E   T E M P L A T E   V A R I A B L E S
+-------------------------------------------------------------------
+
+The WRE uses Template Toolkit [1] to generate its config files. The following
+variables are exposed to all the templates during site creation.
+
+
+databaseName            The name of the database for this site. 
+                        Example: www_example_com
+
+domain                  The sitename minus the hostname. Example: example.com
+
+domainRoot              The path to where site uploads, logs, stats, and other
+                        files are stored. Example: /data/domains
+
+databaseHost            The hostname where mysql resides. Example: localhost
+
+databasePassword        The password that WebGUI uses to acess this sites
+                        database.
+
+databasePort            The port that we connect to MySQL on. Example: 3306
+
+
+databaseUser            The username that WebGUI uses to access this sites
+                        database.
+
+sitename                The real name of the site. Example: www.example.com
+
+var0 - var9             A series of variables that can be used for custom
+                        purposes. For example, if you like to add a hostname 
+                        alias to all your sites that can be accessed even when 
+                        the real domain hasn't been configured yet, you'd use 
+                        one of these variables.
+
+webguiRoot              The path to the root of the WebGUI install.
+                        Example: /data/WebGUI
+
+wreRoot                 The path to the root of the WRE install.
+                        Example: /data/wre
+
+
+[1] http://search.cpan.org/~abw/Template-Toolkit-2.19/lib/Template/Manual/Syntax.pod
+

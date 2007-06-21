@@ -13,3 +13,4 @@ wait_timeout=600
 query_cache_size=32M
 default-character-set=utf8
 port=__db-port__
+skip-innodb

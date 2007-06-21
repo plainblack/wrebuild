@@ -191,9 +191,10 @@ buildMysql(){
 # Graphics Magick
 buildGraphicsMagick(){
 	printHeader "Graphics Magick"
+    cd source
 
 	# lib jpeg
-	cd source/libjpeg-6b
+	cd libjpeg-6b
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
@@ -228,15 +229,15 @@ buildGraphicsMagick(){
 	make; checkError $? "Graphics Magick libpng make"
 	make install; checkError $? "Graphics Magick libpng make install"
     cd ..
-    
+   
 	# graphics magick
 	cd GraphicsMagick-1.1.7
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
-  		make clean
+ 		make clean
     fi	
     export WRE_CONFIGURE="--prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
-	CC=gcc ./configure $CONFIGURE; checkError $? "GraphicsMagick configure"
+	./configure $WRE_CONFIGURE; checkError $? "GraphicsMagick configure"
 	make; checkError $? "GraphicsMagick make"
 	make install; checkError $? "GraphicsMagick make install"
 
@@ -397,7 +398,8 @@ installPerlModules(){
     installPerlModule "Pod-POM-0.17"
     installPerlModule "Search-Indexer-0.74"
     installPerlModule "PPI-HTML-1.07"
-    perl -i -p -e"s[/usr/local/BerkeleyDB][$WRE_ROOT/prereqs]g" config.in
+    WRE_BERKLEY_VERSION="BerkeleyDB-0.31"
+    perl -i -p -e"s[/usr/local/BerkeleyDB][$WRE_ROOT/prereqs]g" $WRE_BERKLEY_VERSION/config.in
     installPerlModule "BerkeleyDB-0.31"
     installPerlModule "Search-QueryParser-0.91"
     installPerlModule "Pod-POM-Web-1.04"
@@ -453,9 +455,9 @@ cat <<_WREHELP
   --apache          compiles and installs apache
   --mysql	        compiles and installs mysql
   --graphicsmagick  compiles and installs graphicsmagick
+  --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
   --wre             installs wre
-  --perlmodules     installs perl modules from cpan
                                
 _WREHELP
 
@@ -579,11 +581,11 @@ if [ -d /data ]; then
     if [ "$WRE_BUILD_GRAPHICSMAGICK" == 1 ]; then
  		buildGraphicsMagick
     fi
-    if [ "$WRE_BUILD_AWSTATS" == 1 ]; then
- 		installAwStats
-    fi
     if [ "$WRE_BUILD_PM" == 1 ]; then
  		installPerlModules
+    fi
+    if [ "$WRE_BUILD_AWSTATS" == 1 ]; then
+ 		installAwStats
     fi
     if [ "$WRE_BUILD_WRE" == 1 ]; then
  		installWreUtils

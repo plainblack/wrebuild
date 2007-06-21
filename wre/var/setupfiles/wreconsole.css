@@ -52,7 +52,7 @@ form {
    display: inline;
 }
 
-#navUnderline {
+#footerOverline, #navUnderline {
     height: 3px;
     width: 100%;
     background-color: #000030;
@@ -61,6 +61,10 @@ form {
     margin: 0px;
     padding: 0px;
     margin-bottom: 8px;
+}
+
+#footerOverline {
+    margin-top: 8px;
 }
 
 #logo {

@@ -14,17 +14,21 @@ use strict;
 use lib '../lib';
 use Carp qw(carp croak);
 use CGI;
+use Digest::MD5;
 use File::Slurp;
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
 use JSON qw(objToJson jsonToObj);
 use Path::Class;
+use Sys::Hostname;
+use Socket;
 use WRE::Config;
 use WRE::Modperl;
 use WRE::Modproxy;
 use WRE::Mysql;
 use WRE::Spectre;
+
 
 #-------------------------------------------------------------------
 # server daemon
@@ -32,7 +36,7 @@ my $daemon = HTTP::Daemon->new(
     ReusePort   => 1,
     ReuseAddr   => 1,
     MultiHomed  => 1,
-    LocalAddr   => "10.0.0.182",
+    LocalAddr   => undef,
     LocalPort   => 60834,
     ) || croak "Couldn't start server.";
 print "Please contact me at: <URL:", $daemon->url, ">\n";
@@ -66,6 +70,11 @@ sub AUTOLOAD {
     www_listSites(@_);
 }
 
+
+#-------------------------------------------------------------------
+sub findSubnet {
+    inet_ntoa(scalar gethostbyname( hostname() || 'localhost' )) . '/32' ; 
+}
 
 #-------------------------------------------------------------------
 sub getNavigation {
@@ -128,12 +137,13 @@ sub sendResponse {
     my $state = shift;
     my $content = shift;
     $content = '<html><head><title>WRE Console</title><link rel="stylesheet" href="/css" type="text/css"
-    /></head> <body><div id="contentWrapper">'.$content.'</div><div id="credits">&copy; 2005-2007 <a
+    /></head> <body><div id="contentWrapper">'.$content.'</div><div id="footerOverline"></div><div id="credits">&copy; 2005-2007 <a
     href="http://www.plainblack.com/">Plain Black Corporation</a>. All rights reserved.</div></body></html>';
     my $response = HTTP::Response->new();
     $response->header("Content-Type" => "text/html");
     $response->content($content);
     $state->{connection}->send_response($response);
+    $state->{connection}->force_last_request;
 }
 
 
@@ -146,8 +156,79 @@ sub www_css {
 #-------------------------------------------------------------------
 sub www_addSite {
     my $state = shift;
+    my $status = shift;
     my $content = getNavigation("sites");
+    my $cgi = $state->{cgi};
+    $content .= '
+    <h1>Add A Site</h1>
+    <div class="status">'.$status.'</div>
+    <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
+    <form action="/addSiteSave" method="post">
+    <table class="items">
+    <tr>
+        <td>Admin Database Password</td>
+        <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /><span class="subtext">Required</span></td>
+    </tr>
+    <tr>
+        <td>Site Name</td>
+        <td><input type="text" name="sitename" value="'.$cgi->param("sitename").'" /><span class="subtext">Required</span></td>
+    </tr>
+    <tr>
+        <td>Site Database User</td>
+        <td><input type="text" name="siteDatabaseUser" value="'.$cgi->param("siteDatabaseUser").'" /><span class="subtext">Will be auto generated if left
+        blank.</span></td>
+    </tr>
+    <tr>
+        <td>Site Database Password</td>
+        <td><input type="password" name="siteDatabasePassword" value="'.$cgi->param("siteDatabasePassword").'" /><span class="subtext">Will be auto generated if
+        left blank.</td>
+    </tr>
+    <tr>
+        <td>Custom Variables</td>
+        <td>
+            var0 <input type="text" name="var0" value="'.$cgi->param("var0").'" /><br />
+            var1 <input type="text" name="var1" value="'.$cgi->param("var1").'" /><br />
+            var2 <input type="text" name="var2" value="'.$cgi->param("var2").'" /><br />
+            var3 <input type="text" name="var3" value="'.$cgi->param("var3").'" /><br />
+            var4 <input type="text" name="var4" value="'.$cgi->param("var4").'" /><br />
+            var5 <input type="text" name="var5" value="'.$cgi->param("var5").'" /><br />
+            var6 <input type="text" name="var6" value="'.$cgi->param("var6").'" /><br />
+            var7 <input type="text" name="var7" value="'.$cgi->param("var7").'" /><br />
+            var8 <input type="text" name="var8" value="'.$cgi->param("var8").'" /><br />
+            var9 <input type="text" name="var9" value="'.$cgi->param("var9").'" /><br />
+        </td>
+    </tr>
+    </table>
+    <input type="submit" value="Create Site" onclick="this.value=\'Please wait...\';" />
+    </form>
+    ';
     sendResponse($state, $content);
+}
+
+#-------------------------------------------------------------------
+sub www_addSiteSave {
+    my $state = shift;
+    my $cgi = $state->{cgi};
+    my $site = WRE::Site->new($state->{config}, $cgi->param("sitename"), $cgi->param("adminPassword"));
+    if ($site->checkCreationSanity) {
+        $site->create({
+            siteDatabaseUser        => $cgi->param("siteDatabaseUser"),
+            siteDatabasePassword    => $cgi->param("siteDatabasePassword"),
+            var0                    => $cgi->param("var0"),
+            var1                    => $cgi->param("var1"),
+            var2                    => $cgi->param("var2"),
+            var3                    => $cgi->param("var3"),
+            var4                    => $cgi->param("var4"),
+            var5                    => $cgi->param("var5"),
+            var6                    => $cgi->param("var6"),
+            var7                    => $cgi->param("var7"),
+            var8                    => $cgi->param("var8"),
+            var9                    => $cgi->param("var9"),
+            });
+        return www_listSites($state, $site->getSitename." was created. Don't forget to restart the web servers and Spectre.");
+    } else {
+        return www_addSite($state, "Site could not be created because ".$!);
+    }
 }
 
 #-------------------------------------------------------------------
@@ -698,6 +779,209 @@ sub www_restartSpectre {
 }
 
 #-------------------------------------------------------------------
+sub www_setup {
+    my $state = shift;
+    my $out = qq| <div id="tabsWrapper"> <div id="logo">WRE Console</div> <div id="navUnderline"></div> </div> |;
+    my $config = $state->{config};
+    my $cgi = $state->{cgi};
+    my $file = WRE::File->new($config);
+
+    # copy css into place
+    $file->copy($config->getRoot("/var/setupfiles/wreconsole.css"),
+        $config->getRoot("/var/wreconsole.css"));
+
+    # deal with data form posted
+    my $collectedJson = $cgi->param("collected");
+    my $collected = JSON::jsonToObj($collectedJson);
+    foreach my $key ($cgi->param) {
+        next if $key eq "collected" || $key eq "step";
+        $collected->{$key} = $cgi->param($key);
+    }
+    $collectedJson = JSON::objToJson($collected);
+
+    # apache stuff
+    if ($cgi->param("step") eq "apache") {
+        my $apache = $config->get("apache");
+        $out .= '<h1>Apache</h1>
+            <form action="/setup" method="post">
+            <input type="hidden" name="step" value="mysql">
+            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <p>
+            mod_proxy Port <br />
+            <input type="text" name="modproxyPort" value="'.($collected->{modproxyPort} || $apache->{modproxyPort}).'" />
+            </p>
+            <p>
+            mod_perl Port <br />
+            <input type="text" name="modperlPort" value="'.($collected->{modperlPort} || $apache->{modperlPort}).'" />
+            </p>
+            <input type="button" value="&laquo; Previous" onclick="this.form.step.value=\'\';this.form.submit()" />
+            <input type="submit" value="Next &raquo;" />
+            </form>
+            ';
+    }
+
+    # mysql stuff
+    elsif ($cgi->param("step") eq "mysql") {
+        my $mysql = $config->get("mysql");
+        $out .= '<h1>MySQL</h1>
+            <form action="/setup" method="post">
+            <input type="hidden" name="step" value="webgui">
+            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <p>
+            Host <br />
+            <input type="text" name="mysqlHost" value="'.($collected->{mysqlHost} || $mysql->{hostname}).'" />
+            </p>
+            <p>
+            Port <br />
+            <input type="text" name="mysqlPort" value="'.($collected->{mysqlPort} || $mysql->{port}).'" />
+            </p>
+            <p>
+            Admin User <br />
+            <input type="text" name="mysqlAdminUser" value="'.($collected->{mysqlAdminUser} || $mysql->{adminUser}).'" />
+            </p>
+            <p>
+            Admin Password <br />
+            <input type="text" name="mysqlAdminPassword" value="'.($collected->{mysqlAdminPassword} || "123qwe").'" />
+            </p>
+            <input type="button" value="&laquo; Previous"
+            onclick="this.form.step.value=\'apache\';this.form.submit();" />
+            <input type="submit" value="Next &raquo;" />
+            </form>
+            ';
+    }
+
+    # webgui stuff
+    elsif ($cgi->param("step") eq "webgui") {
+        $out .= '<h1>WebGUI</h1>
+            <form action="/setup" method="post">
+            <input type="hidden" name="step" value="finish">
+            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <p>
+            What are the subnets WebGUI can expect Spectre to connect from? <br />
+            <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || findSubnet()).'" />
+            <div class="subtext">If you do not know, then specify all of your IP addresses as a comma separated
+            list like: 10.0.0.1/32,10.11.0.1/32,192.168.1.44/32
+            </p>
+            <input type="button" value="&laquo; Previous"
+            onclick="this.form.step.value=\'mysql\';this.form.submit();" />
+            <input type="submit" value="Next &raquo;" />
+            </form>
+            ';
+    }
+
+    # ready to install 
+    elsif ($cgi->param("step") eq "finish") {
+        $out .= '<h1>Ready To Install</h1>
+            <p>The WRE is now ready to configure itself and install WebGUI.</p>
+            <form action="/setup" method="post">
+            <input type="hidden" name="step" value="install">
+            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <input type="button" value="&laquo; Previous" class="deleteButton"
+            onclick="this.form.step.value=\'webgui\';this.form.submit();" />
+            <input type="submit" class="saveButton" value="Install &raquo;" />
+            </form>
+            ';
+    }
+
+    # ready to install 
+    elsif ($cgi->param("step") eq "install") {
+        my $crlf = "\015\012";
+        my $socket = $state->{connection};
+        
+        # disable buffer caching
+        select $socket;
+        $| = 1; 
+
+        # header
+        $socket->send_basic_header; 
+        print $socket "Content-Type: text/html$crlf";
+        print $socket $crlf;
+        print $socket "<h1>Configuring Your WRE Server</h1>$crlf";
+
+        # config file
+        print $socket "<p>Updating WRE config.</p>$crlf";
+        $config->set("user", $collected->{wreUser});
+        my $mysql = $config->get("mysql");
+        $mysql->{adminUser} = $collected->{mysqlAdminUser};
+        $mysql->{hostname}  = $collected->{mysqlHost};
+        $mysql->{port}      = $collected->{mysqlPort};
+        $config->set("mysql", $mysql);
+        my $apache = $config->get("apache");
+        $apache->{modperlPort}  = $collected->{modperlPort};
+        $apache->{modproxyPort} = $collected->{modproxyPort};
+        $config->set("apache", $apache);
+        my $webgui = $config->get("webgui");
+        my $spectreSubnetsString = $collected->{spectreSubnets};
+        $spectreSubnetsString =~ s/\s+//g;
+        my @spectreSubnets = split(",", $spectreSubnetsString);
+        push(@spectreSubnets, "127.0.0.1/32");
+        $webgui->{configOverrides}{spectreSubnets} = \@spectreSubnets;
+        $config->set("webgui", $webgui);
+        my $diff = "";
+
+        # generate template vars
+        my %var = (
+            databasePort    => $collected->{mysqlPort}, 
+            databaseHost    => $collected->{mysqlHost}, 
+            modproxyPort    => $collected->{modproxyPort}, 
+            modperlPort     => $collected->{modperlPort}, 
+            );
+
+        # mysql
+        if ($collected->{mysqlHost} eq "localhost") {
+            print $socket "<p>Configuring MySQL.</p>$crlf";
+            $diff = $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
+                $config->getRoot("/etc/my.cnf"),
+                { templateVars => \%var });
+            if ($diff ne "1") {
+                print $socket "<p>MySQL config file found that differs from the original. Please verify.
+                    <br />$diff</p>";
+            }
+        }
+
+        # apache
+        print $socket "<p>Configuring Apache.</p>$crlf";
+
+        # downloading webgui
+        print $socket "<p>Downloading WebGUI.</p>$crlf";
+
+        # extracting webgui
+        print $socket "<p>Extracting WebGUI.</p>$crlf";
+
+        # configuring webgui
+        print $socket "<p>Configuring WebGUI.</p>$crlf";
+
+        # status
+        print $socket "<h1>Configuration Complete</h1><a href=\"/\">Click here to manage your WRE server.</a>$crlf";
+
+        # done
+        $socket->force_last_request;
+        return;
+    }
+
+    # WRE
+    else {
+        $out .= '<h1>WRE</h1>
+            <form action="/setup" method="post">
+            <input type="hidden" name="step" value="apache">
+            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <p>
+            WRE Operating System User<br />
+            <input type="text" name="wreUser" value="'.($collected->{wreUser} || $config->get("user")).'" />
+            </p>
+            <p>
+            Do you want to configure this WRE as a development only environment?<br />
+            <input type="radio" name="devOnly" value="1" />Yes &nbsp;
+            <input type="radio" name="devOnly" value="0" checked="1" />No
+            </p>
+            <input type="submit" value="Next &raquo;" />
+            </form>
+            ';
+    }
+    sendResponse($state, $out);
+}
+
+#-------------------------------------------------------------------
 sub www_startModperl {
     my $state = shift;
     my $service = WRE::Modperl->new($state->{config});
@@ -791,4 +1075,5 @@ sub www_stopSpectre {
     }
     www_listServices($state, $status);
 }
+
 

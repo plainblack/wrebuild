@@ -21,6 +21,62 @@ my $wreConfig = {};
 
 #-------------------------------------------------------------------
 
+=head2 getDatabaseHandle ( password, [ username, dsn ] )
+
+Returns an administrator's database handle.
+
+=head3 password
+
+The password you want to connect with.
+
+=head3 username
+
+The username you want to connect with. This defaults to the "adminUser" specified in the config file, which is
+usually "root".
+
+=head3 dsn
+
+A dsn to connect with. By default uses the DSN for the test database.
+
+=cut
+
+sub getDatabaseHandle {
+    my $self = shift;
+    my $password = shift;
+    my $mysql = $wreConfig->get("mysql");
+    my $username = shift || $mysql->{adminUser};
+    my $dsn = shift || 'DBI:mysql:'.$mysql->{test}->{database}.';host='.$mysql->{hostname}.';port='.$mysql->{port};
+    my $db = undef;
+    eval { 
+        $db = DBI->connect($dsn, $username, $password);
+    };
+    return $db;
+}
+
+#-------------------------------------------------------------------
+
+=head2 isAdmin ( password )
+
+Checks to see if the specified password will work to log in as mysql admin.
+
+=head3 password
+
+The password to check.
+
+=cut
+
+sub isAdmin {
+    my $self = shift;
+    my $db = $self->getDatabaseHandle(shift);
+    if (defined $db) {
+        $db->disconnect;
+        return 1;
+    }
+    return 0;
+}
+
+#-------------------------------------------------------------------
+
 =head2 new ( wreConfig )
 
 Constructor.
@@ -48,14 +104,7 @@ Returns a 1 if MySQL is running, or a 0 if it is not.
 sub ping {
     my $self = shift;
     my $mysql = $wreConfig->get("mysql");
-    my $db = undef;
-    eval { 
-        $db = DBI->connect(
-            'DBI:mysql:'.$mysql->{test}->{database}.';host='.$mysql->{hostname}.';port='.$mysql->{port},
-            $mysql->{test}->{user}, 
-            $mysql->{test}->{password}
-            ); 
-    };
+    my $db = $self->getDatabaseHandle($mysql->{test}->{password}, $mysql->{test}->{user});
     if (defined $db) {
        $db->disconnect;
        return 1;
