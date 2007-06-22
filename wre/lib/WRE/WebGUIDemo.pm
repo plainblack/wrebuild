@@ -17,6 +17,7 @@ use DBI;
 use WebGUI;
 use WebGUI::Config;
 use WRE::Config;
+use WRE::File;
 
 #-------------------------------------------------------------------
 sub handler {   
@@ -92,27 +93,19 @@ sub createDemo {
         .'" ' .$params->{databaseName};
 
     # create webroot
-	mkpath($wreConfig->getDomainHome('/demo/'.$demoId.'/uploads/'));
-    my $uploads = $config->getDomainHome('/demo/'.$demoId.'/uploads/');
-    my $baseUploads = $demo->{creation}{uploads}.'/';
-    find({ 
-        no_chdir=>1, 
-        wanted=> sub { 
-            my $newPath = $File::Find::name;
-            $newPath =~ s/$baseUploads(.*)/$1/;
-            $newPath = $uploads.$newPath;
-            cp($File::Find::name, $newPath);
-            } 
-        }, $baseUploads);
+    my $file = WRE::File->new($config);
+	$file->makePath($wreConfig->getDomainHome('/demo/'.$demoId.'/uploads/'));
+    $file->copy($demo->{creation}{uploads}.'/'),
+        $config->getDomainHome('/demo/'.$demoId.'/uploads/'),
+        { force=>1, recursive=>1}); 
 
     # create webgui config
-    cp($demo->{creation}{config}, $config->getWebguiRoot("/etc/".$demoId.".conf"));
+    $file->copy($demo->{creation}{config}, $config->getWebguiRoot("/etc/".$demoId.".conf"), {force=>1});
     $webguiConfig = Config::JSON->new($config->getWebguiRoot("/etc/".$demoId.".conf"));
     my $overrides = $config->get("webgui")->{configOverrides};
     my $overridesAsTemplate =  JSON::objToJson($overrides);
-    my $overridesAsJson = "";
-    $template->process(\$overridesAsTemplate , $params, \$overridesAsJson);
-    my $overridesAsHashRef = JSON::jsonToObj($overridesAsJson);
+    my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate , $params);
+    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
     foreach my $key (%{$overridesAsHashRef}) {
         $webguiConfig->set($key, $overridesAsHashRef->{$key});
     }
