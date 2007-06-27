@@ -12,6 +12,8 @@ package WRE::File;
 
 use strict;
 use Carp qw(carp);
+use Class::InsideOut qw(private public new id);
+use Digest::MD5;
 use File::Copy qw(cp);
 use File::Find qw(find);
 use File::Path qw(mkpath rmtree);
@@ -21,10 +23,9 @@ use Template;
 { # begin inside out object
 
 # cache these things
-my $wreConfig = "";
-my $groupId = "";
-my $userId = "";
-my $template = "";
+private groupId => my %groupId;
+private userId => my %userId;
+private template => my %template;
 
 #-------------------------------------------------------------------
 
@@ -39,11 +40,13 @@ Change the path's privileges to be owned by the WRE user.
 sub changeOwner {
     my $self = shift;
     my $path = shift;
-    unless ($groupId eq "" || $userId eq "") {
+    my $refId = id $self;
+    unless ($groupId{$refId} eq "" || $userId{$refId} eq "") {
         my $crap = "";
-        ($crap, $crap, $userId, $groupId) = getpwnam $wreConfig->get("user") or carp $wreConfig->get("user")." not in passwd file";
+        my $user = $self->wreConfig->get("user");
+        ($crap, $crap, $userId{$refId}, $groupId{$refId}) = getpwnam $user or carp $user." not in passwd file";
     }
-    chown $userId, $groupId, $path;
+    chown $userId{$refId}, $groupId{$refId}, $path;
 }
 
 
@@ -59,8 +62,9 @@ sub compare {
     my $self = shift;
     my $path1 = shift;
     my $path2 = shift;
-    return ($self->getMd5sum($path1) eq $self->getMd5sum($path2));
+    return ($self->getMd5sum($path1) eq $self->getMd5sum($path2)) ? 1 : 0;
 }
+
 
 #-------------------------------------------------------------------
 
@@ -85,15 +89,20 @@ A hash reference of options that you can pass into the copy process.
 
 A boolean that overwrites the file if it already exists. The diff is still returned though.
 
+=head4 processTemplate
+
+A boolean indicating whether to process the from file as a template. If this is specified then the resulting 
+file is compared to the to file (if it exists) for diffing purposes. A default set of template variables will
+be used from the config file. 
+
 =head4 recursive
 
 A boolean recursively copies the from if it is a directory.
 
 =head4 templateVars
 
-A hash reference containing template variables. If this is specified then the from file is considered to be a
-template instead of a file, and the template variables are processed on the template, the resulting file is
-compared to the to file (if it exists) for diffing purposes.
+A hash reference containing template variables. No need to specify "processTemplate" if you have specified
+a list of template variables to process.
 
 =cut
 
@@ -134,7 +143,7 @@ sub copy {
         # copy a file
         else {
             # process a template
-            if (exists $options->{templateVars}) {
+            if ($options->{processTemplate} || exists $options->{templateVars}) {
                 my $temp = $to.".tmp";
                 $self->spit($temp, $self->processTemplate($from, $options->{templateVars}));
                 if ($self->compare($temp, $to) || $options->{force}) {
@@ -182,22 +191,6 @@ sub delete {
     elsif (-f $path) {
         unlink $path
     }
-}
-
-
-#-------------------------------------------------------------------
-
-=head2 DESTROY ()
-
-Destructor.
-
-=cut
-
-sub DESTROY {
-    undef $template;
-    undef $wreConfig;
-    undef $userId;
-    undef $groupId;
 }
 
 
@@ -254,21 +247,17 @@ sub makePath {
 
 #-------------------------------------------------------------------
 
-=head2 new ( config )
+=head2 new ( wreConfig => $config )
 
 Constructor.
 
-=head3 config
+=head3 wreConfig
 
 A reference to a WRE Configuration object.
 
 =cut
 
-sub new {
-    my $class = shift;
-    $wreConfig = shift;
-    bless \do{my $scalar}, $class;
-}
+# auto created by Class::InsideOut
 
 
 
@@ -285,20 +274,36 @@ contents of the scalar it is pointing to will be used as the template.
 
 =head3 vars
 
-A hash reference containing the template variables to process on the template.
+A hash reference containing the template variables to process on the template. The following template variables
+are automatically generated and added to the list: databaseHost, databasePort, modproxyPort, modperlPort,
+domainRoot, wreRoot, webguiRoot
 
 =cut
 
 sub processTemplate {
-    my $self = shift;
-    my $input = shift;
-    my $var = shift;
-    my $output = "";
+    my $self    = shift;
+    my $input   = shift;
+    my $var     = shift;
+    my $config = $self->wreConfig;
+
+    # add in some template template variables
+    $var->{databaseHost}  = $config->get("mysql")->{hostname};
+    $var->{databasePort}  = $config->get("mysql")->{port};
+    $var->{modproxyPort}  = $config->get("apache")->{modproxyPort};
+    $var->{modperlPort}   = $config->get("apache")->{modperlPort};
+    $var->{domainRoot}    = $config->getDomainRoot;
+    $var->{wreRoot}       = $config->getRoot;
+    $var->{webguiRoot}    = $config->getWebguiRoot;
+
     # cache template
-    if ($template eq "") {
-        $template = Template->new;
+    my $refId = id $self; # inside out reference id
+    if ($template{$refId} eq "") {
+        $template{$refId} = Template->new;
     }
-    $template->process($input, $var, \$output);
+
+    # process the template
+    my $output = "";
+    $template{$refId}->process($input, $var, \$output);
     return \$output;
 }
 
@@ -337,8 +342,20 @@ sub spit {
     my $self = shift;
     my $path = shift;
     my $content = shift;
-    return write_file($path, $content);
+    write_file($path, $content);
+    $self->changeOwner($path);
 }
+
+
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %wreConfig;
 
 
 

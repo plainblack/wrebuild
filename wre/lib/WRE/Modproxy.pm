@@ -13,31 +13,19 @@ package WRE::Modproxy;
 use strict;
 use base 'WRE::Service';
 use Carp qw(carp);
+use Class::InsideOut qw(new);
 use HTTP::Request;
 use HTTP::Headers;
 use LWP::UserAgent;
 
-{ # begin inside out object
+=head1 ISA
 
-my $wreConfig = {};
-
-#-------------------------------------------------------------------
-
-=head2 new ( wreConfig )
-
-Constructor.
-
-=head3 wreConfig
-
-A WRE::Config object.
+WRE::Service
 
 =cut
 
-sub new {
-    my $class = shift;
-    $wreConfig = shift;
-    bless \do{my $scalar}, $class;
-}
+{ # begin inside out object
+
 
 #-------------------------------------------------------------------
 
@@ -49,6 +37,7 @@ Returns a 1 if Modproxy is running, or a 0 if it is not.
 
 sub ping {
     my $self = shift;
+    my $wreConfig = $self->wreConfig;
     my $apache = $wreConfig->get("apache");
     my $userAgent = new LWP::UserAgent;
     $userAgent->agent("wre/1.0");
@@ -77,6 +66,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub start {
     my $self = shift;
+    my $wreConfig = $self->wreConfig;
     my $count = 0;
     my $success = 0;
     system($wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
@@ -103,6 +93,7 @@ sub stop {
     my $self = shift;
     my $count = 0;
     my $success = 0;
+    my $wreConfig = $self->wreConfig;
     system($wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
         ." -D WRE-modproxy -k stop");
     while ($count < 10 && $success == 0) {

@@ -1,5 +1,5 @@
-<VirtualHost *:__apache-modproxy-port__>
-ServerName stats
-DocumentRoot /data/wre/prereqs/awstats/wwwroot
+<VirtualHost *:[% modproxyPort %]>
+ServerName [% hostname %]
+DocumentRoot [% domainRoot %]/prereqs/wwwroot
 DirectoryIndex awstats.pl
 </VirtualHost>

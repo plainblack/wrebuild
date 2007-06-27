@@ -1,4 +1,4 @@
-package WRE::Service;
+package WRE::Host;
 
 #-------------------------------------------------------------------
 # WRE is Copyright 2005-2007 Plain Black Corporation.
@@ -13,9 +13,52 @@ package WRE::Service;
 use strict;
 use Carp qw(croak);
 use Class::InsideOut qw(new public);
+use Socket;
+use Sys::Hostname;
+
 
 { # begin inside out object
 
+
+#-------------------------------------------------------------------
+
+=head2 getHostname ( )
+
+Returns the hostname of this box. Note that this is not foolproof.
+
+=cut
+
+sub getHostname {
+    my $self = shift;
+    return hostname() || 'localhost'; 
+}
+
+#-------------------------------------------------------------------
+
+=head2 getIp ( )
+
+Gets the IP address of the box. Note that this isn't foolproof.
+
+=cut
+
+sub getIp {
+    my $self = shift;
+    return inet_ntoa(scalar gethostbyname( $self->getHostname )); 
+}
+
+#-------------------------------------------------------------------
+
+=head2 getSubnet ( )
+
+Returns the subnet (in CIDR) of the primary inteface for this box. Note that this is not 100% foolproof. It's more of an
+educated guess.
+
+=cut
+
+sub getSubnet {
+    my $self = shift;
+    return $self->getIp . '/32' ; 
+}
 
 #-------------------------------------------------------------------
 
@@ -34,67 +77,14 @@ A reference to a WRE Configuration object.
 
 #-------------------------------------------------------------------
 
-=head2 ping ( )
-
-Returns a 1 if spectre is running, or a 0 if it is not. Must be overridden by all subclasses.
-
-=cut
-
-sub ping {
-    croak "Subclass didn't override as directed.";
-}
-
-#-------------------------------------------------------------------
-
-=head2 restart ( )
-
-Returns a 1 if the restart was successful, or a 0 if it was not. Shouldn't need to be overriden or extended in most
-circumstances.
-
-=cut
-
-sub restart {
-    my $self = shift;
-    if ($self->stop) {
-        return $self->start;
-    }
-    return 0;
-}
-
-#-------------------------------------------------------------------
-
-=head2 start ( )
-
-Returns a 1 if the start was successful, or a 0 if it was not. Must be overridden by all subclasses.
-
-=cut
-
-sub start {
-    croak "Subclass didn't override as directed.";
-}
-
-#-------------------------------------------------------------------
-
-=head2 stop ( )
-
-Returns a 1 if the stop was successful, or a 0 if it was not. Must be overriden by all subclasses.
-
-=cut
-
-sub stop {
-    croak "Subclass didn't override as directed.";
-}
-
-
-#-------------------------------------------------------------------
-
 =head2 wreConfig ( )
 
 Returns a reference to the WRE cconfig.
 
 =cut
 
-public wreConfig => my %config;
+public wreConfig => my %wreConfig;
+
 
 
 

@@ -13,29 +13,21 @@ package WRE::Spectre;
 use strict;
 use base 'WRE::Service';
 use Carp qw(carp);
+use Class::InsideOut qw(register id readonly);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 
-{ # begin inside out object
+=head1 ISA
 
-my $spectreConfig = {};
-my $wreConfig = {};
-
-#-------------------------------------------------------------------
-
-=head2 getConfig ()
-
-Returns a reference to the Config::JSON object for spectre.
+WRE::Service
 
 =cut
 
-sub getConfig {
-    return $spectreConfig;
-}
+{ # begin inside out object
 
 #-------------------------------------------------------------------
 
-=head2 new ( wreConfig )
+=head2 new ( wreConfig => $config )
 
 Constructor.
 
@@ -47,10 +39,13 @@ A WRE::Config object.
 
 sub new {
     my $class = shift;
-    $wreConfig = shift;
-    $spectreConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/spectre.conf"));
-    bless \do{my $scalar}, $class;
+    my $config = shift;
+    my $self = WRE::Service->new(@_);
+    register($self, $class);
+    $spectreConfig->{id $self} = Config::JSON->new($config->getWebguiRoot("/etc/spectre.conf"));
+    return $self;
 }
+
 
 #-------------------------------------------------------------------
 
@@ -62,6 +57,7 @@ Returns a 1 if spectre is running, or a 0 if it is not.
 
 sub ping {
     my $self = shift;
+    my $spectreConfig = $self->spectreConfig;
     my $remote = create_ikc_client(
         port    => $spectreConfig->get("port"),
         ip      => $spectreConfig->get("ip"),
@@ -86,6 +82,17 @@ sub ping {
         return 0;
     }
 }
+
+#-------------------------------------------------------------------
+
+=head2 spectreConfig ( )
+
+Returns a reference to the Spectre Config object.
+
+=cut
+
+readonly spectreConfig => my %spectreConfig;
+
 
 #-------------------------------------------------------------------
 

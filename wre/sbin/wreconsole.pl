@@ -15,7 +15,6 @@ use lib '../lib';
 use Carp qw(carp croak);
 use CGI;
 use Digest::MD5;
-use File::Slurp;
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
@@ -24,6 +23,7 @@ use Path::Class;
 use Sys::Hostname;
 use Socket;
 use WRE::Config;
+use WRE::Host;
 use WRE::Modperl;
 use WRE::Modproxy;
 use WRE::Mysql;
@@ -70,11 +70,6 @@ sub AUTOLOAD {
     www_listSites(@_);
 }
 
-
-#-------------------------------------------------------------------
-sub findSubnet {
-    inet_ntoa(scalar gethostbyname( hostname() || 'localhost' )) . '/32' ; 
-}
 
 #-------------------------------------------------------------------
 sub getNavigation {
@@ -209,9 +204,13 @@ sub www_addSite {
 sub www_addSiteSave {
     my $state = shift;
     my $cgi = $state->{cgi};
-    my $site = WRE::Site->new($state->{config}, $cgi->param("sitename"), $cgi->param("adminPassword"));
+    my $site = WRE::Site->new(
+            wreConfig       => $state->{config}, 
+            sitename        => $cgi->param("sitename"), 
+            adminPassword   => $cgi->param("adminPassword")
+            );
     if ($site->checkCreationSanity) {
-        $site->create({
+        $site->create(params=>{
             siteDatabaseUser        => $cgi->param("siteDatabaseUser"),
             siteDatabasePassword    => $cgi->param("siteDatabasePassword"),
             var0                    => $cgi->param("var0"),
@@ -252,7 +251,10 @@ sub www_editSettings {
     my $content = getNavigation("settings");
     my $configOverrides = objToJson($config->get("webgui")->{configOverrides}, 
         {pretty => 1, indent => 4, autoconv=>0, skipinvalid=>1}); 
+    my $logs = $config->get("logs");
+    my $apache = $config->get("apache");
     my $wreMonitor = $config->get("wreMonitor");
+    my $webstats = $config->get("webstats");
     my $backup = $config->get("backup");
     my $demo = $config->get("demo");
     makeHtmlFormSafe(\$configOverrides); 
@@ -263,20 +265,20 @@ sub www_editSettings {
 
         <p>
         Default Hostname<br />
-        <input type="text" name="apacheDefaultHostname" value="'.$config->get("apache")->{defaultHostname}.'" /> 
+        <input type="text" name="apacheDefaultHostname" value="'.$apache->{defaultHostname}.'" /> 
         <span class="subtext">The hostname the WRE will check to see if Apache is alive. </span>
         </p>
 
         <p>
         Connection Timeout<br />
-        <input type="text" name="apacheConnectionTimeout" value="'.$config->get("apache")->{connectionTimeout}.'" /> 
+        <input type="text" name="apacheConnectionTimeout" value="'.$apache->{connectionTimeout}.'" /> 
         <span class="subtext">How long the WRE will wait when checking to see if Apache is alive before
         deciding to give up.</span>
         </p>
 
         <p>
         Max Memory<br />
-        <input type="text" name="apacheMaxMemoryPercent" value="'.$config->get("apache")->{maxMemoryPercent}.'" /> 
+        <input type="text" name="apacheMaxMemoryPercent" value="'.$apache->{maxMemoryPercent}.'" /> 
         <span class="subtext">The percentage of the servers memory that the WRE will allow Apache processes
         to use before killing them.</span>
         </p>
@@ -334,7 +336,64 @@ sub www_editSettings {
         </fieldset>
 
         <p><input type="submit" class="saveButton" value="Save" /></p>
+        <fieldset><legend>Logs</legend>
+
+        <p>
+        Number of Rotations<br />
+        <input type="text" name="logRotations" value="'.$logs->{rotations}.'" /> 
+        <span class="subtext">How many old sets of logs should be kept around?</span>
+        </p>
+        </fieldset>
+
+        <p><input type="submit" class="saveButton" value="Save" /></p>
+        <fieldset><legend>Demo</legend>
+
+        <p>
+        Enable?<br />
+        <input type="radio" name="enableDemo" value="1" '.(($demo->{enabled} == 1) ? 'checked="1"' : '').' />Yes 
+        <input type="radio" name="enableDemo" value="0" '.(($demo->{enabled} != 1) ? 'checked="1"' : '').' />No
+        <span class="subtext">Do you want to enable the WebGUI demo server?</span>
+        </p>
+
+        <p>
+        Hostname<br />
+        <input type="text" name="demoHost" value="'.$demo->{hostname}.'" /> 
+        <span class="subtext">What do you want the hostname of your demo server to be?</span>
+        </p>
+
+        <p>
+        Duration<br />
+        <input type="text" name="demoDuration" value="'.$demo->{duration}.'" /> 
+        <span class="subtext">How many days should each demo last?</span>
+        </p>
+        </fieldset>
+
+        <p><input type="submit" class="saveButton" value="Save" /></p>
+        <fieldset><legend>Web Statistics</legend>
+
+        <p>
+        Enable?<br />
+        <input type="radio" name="enableWebstats" value="1" '.(($webstats->{enabled} == 1) ? 'checked="1"' : '').' />Yes 
+        <input type="radio" name="enableWebstats" value="0" '.(($webstats->{enabled} != 1) ? 'checked="1"' : '').' />No
+        <span class="subtext">Do you want the WRE to keep track of web statistics?</span>
+        </p>
+
+        <p>
+        Hostname<br />
+        <input type="text" name="webstatsHost" value="'.$webstats->{hostname}.'" /> 
+        <span class="subtext">What do you want the WRE to use as a hostname for your web stats server?</span>
+        </p>
+        </fieldset>
+
+        <p><input type="submit" class="saveButton" value="Save" /></p>
         <fieldset><legend>Backups</legend>
+
+        <p>
+        Enable?<br />
+        <input type="radio" name="enableBackups" value="1" '.(($backup->{enabled} == 1) ? 'checked="1"' : '').' />Yes 
+        <input type="radio" name="enableBackups" value="0" '.(($backup->{enabled} != 1) ? 'checked="1"' : '').' />No
+        <span class="subtext">Do you want the WRE to perform backups?</span>
+        </p>
 
         <p>
         Path<br />
@@ -374,6 +433,13 @@ sub www_editSettings {
         - Runaway Processes<br />
         </p>
 
+        <p>
+        External Scripts<br />
+        <textarea name="externalScripts">'.join("\n", @{$backup->{externalScripts}}).'</textarea>
+        <span class="subtext">The paths to some external scripts that you\'d like to run as part of the backup
+            process. One per line.</span>
+        </p>
+
         <fieldset><legend>FTP</legend>
         <p>
         Enabled<br />
@@ -393,6 +459,12 @@ sub www_editSettings {
         Rotations<br />
         <input type="text" name="backupFtpRotations" value="'.$backup->{ftp}{rotations}.'" /> 
         <span class="subtext">How many copies of the backup should we keep on the FTP server at one time.</span>
+        </p>
+
+        <p>
+        Host<br />
+        <input type="text" name="backupFtpHost" value="'.$backup->{ftp}{hostname}.'" /> 
+        <span class="subtext">The hostname of the FTP server you wish to back up files to.</span>
         </p>
 
         <p>
@@ -417,6 +489,105 @@ sub www_editSettings {
     return sendResponse($state, $content);
 }
 
+#-------------------------------------------------------------------
+sub www_editSettingsSave {
+    my $state           = shift;
+    my $cgi             = $state->{cgi};
+    my $config          = $state->{config};
+    my $file            = WRE::File->new(wreConfig=>$config);
+
+    # webgui 
+    my $webgui                  = $config->get("webgui");
+    $webgui->{configOverrides}  = JSON::jsonToObj($cgi->param("webguiConfigOverrides"));
+    $config->set("webgui", $webgui);
+    
+    # logs
+    my $logs            = $config->get("logs");
+    $logs->{rotations}  = $cgi->param("logRotations");
+    $config->set("logs", $logs);
+    
+    # wre monitor
+    my $wreMonitor                      = $config->get("wreMonitor");
+    my $notifyString                    = $cgi->param("wreMonitorNotify");
+    $notifyString                       =~ s/\s+//g;
+    my @notify                          = split(",", $notifyString); 
+    $wreMonitor->{notify}               = \@notify;
+    $wreMonitor->{secondsBetweenChecks} = $cgi->param("wreMonitorSecondsBetweenChecks");
+    $wreMonitor->{items}{modperl}       = $cgi->param("wreMonModperl");
+    $wreMonitor->{items}{modproxy}      = $cgi->param("wreMonModproxy");
+    $wreMonitor->{items}{mysql}         = $cgi->param("wreMonMysql");
+    $wreMonitor->{items}{runaway}       = $cgi->param("wreMonRunaway");
+    $wreMonitor->{items}{spectre}       = $cgi->param("wreMonSpectre");
+    $config->set("wreMonitor", $wreMonitor);
+
+    # webstats
+    my $webstats            = $config->get("webstats");
+    $webstats->{hostname}   = $cgi->param("webstatsHost");
+    # have to enable web stats
+    if ($webstats->{enabled} == 0 && $cgi->param("enableWebstats") == 1) {
+        $file->copy($config->getRoot("/var/setupfiles/stats.modproxy", $config->getRoot("/etc/stats.modproxy"), 
+            { force => 1, templateVars=>{ hostname=>$webstats->{hostname} });
+    }
+    # have to disable webstats
+    elsif ($webstats->{enabled} == 1 && $cgi->param("enableWebstats") == 0) {
+        $file->delete($config->getRoot("/etc/stats.modproxy"));
+    }
+    $webstats->{enabled}    = $cgi->param("enableWebstats");
+    $config->set("webstats", $webstats);
+
+    # backups
+    my $backup                          = $config->get("backup");
+    my $externalScriptsString           = $cgi->param("externalScripts");
+    my @externalScripts                 = split("\n", $externalScriptsString);
+    $backup->{externalScripts}          = \@externalScripts;
+    $backup->{path}                     = $cgi->param("backupPath");
+    $backup->{enabled}                  = $cgi->param("enableBackups");
+    $backup->{rotations}                = $cgi->param("backupRotations");
+    $backup->{compress}                 = $cgi->param("backupCompress");
+    $backup->{items}{fullWre}           = $cgi->param("backupFullWre");
+    $backup->{items}{smallWre}          = $cgi->param("backupSmallWre");
+    $backup->{items}{mysql}             = $cgi->param("backupMysql");
+    $backup->{items}{webgui}            = $cgi->param("backupWebgui");
+    $backup->{items}{domainsFolder}     = $cgi->param("backupDomains");
+    $backup->{ftp}{enabled}             = $cgi->param("backupFtpEnabled");
+    $backup->{ftp}{user}                = $cgi->param("backupFtpUser");
+    $backup->{ftp}{password}            = $cgi->param("backupFtpPassword");
+    $backup->{ftp}{usePassiveTransfers} = $cgi->param("backupFtpPassive");
+    $backup->{ftp}{path}                = $cgi->param("backupFtpPath");
+    $backup->{ftp}{hostname}            = $cgi->param("backupFtpHost");
+    $backup->{ftp}{rotations}           = $cgi->param("backupFtpRotations");
+    $config->set("backup", $backup);
+
+    # demo
+    my $demo            = $config->get("demo");
+    # have to enable demos
+    $demo->{hostname}   = $cgi->param("demoHost");
+    if ($demo->{enabled} == 0 && $cgi->param("enableDemo") == 1) {
+        $file->makePath($config->getDomainRoot("/demo"));
+        $file->copy($config->getRoot("/var/setupfiles/demo.modproxy", $config->getRoot("/etc/demo.modproxy"), 
+            { force => 1, templateVars=>{ hostname=>$demo->{hostname} });
+        $file->copy($config->getRoot("/var/setupfiles/demo.modperl", $config->getRoot("/etc/demo.modperl"), 
+            { force => 1, templateVars=>{ hostname=>$demo->{hostname} });
+    }
+    # have to disable demos
+    elsif ($webstats->{enabled} == 1 && $cgi->param("enableWebstats") == 0) {
+        $file->delete($config->getRoot("/etc/demo.modproxy"));
+        $file->delete($config->getRoot("/etc/demo.modperl"));
+    }
+    $demo->{enabled}    = $cgi->param("enableDemo");
+    $demo->{duration}   = $cgi->param("demoDuration");
+    $config->set("demo", $demo);
+
+    # apache
+    my $apache                      = $config->get("apache");
+    $apache->{defaultHostname}      = $cgi->param("apacheDefaultHostname");
+    $apache->{modproxyPort}         = $cgi->param("apacheModproxyPort");
+    $apache->{modperlPort}          = $cgi->param("apacheModperlPort");
+    $apache->{connectionTimeout}    = $cgi->param("apacheConnectionTimeout");
+    $config->set("apache", $apache);
+
+    return www_editSettings($state);
+}
 
 
 #-------------------------------------------------------------------
@@ -455,8 +626,9 @@ sub www_editTemplateSave {
             sendResponse($state, "Stop dicking around!");
             return;
     }
+    my $file WRE::File->new(wreConfig=>$state->{config});
     my $status = $filename." saved.";
-    eval { write_file($state->{config}->getRoot("/var/".$filename), $state->{cgi}->param("template")) };
+    eval { $file->spit($state->{config}->getRoot("/var/".$filename), $state->{cgi}->param("template")) };
     if ($@) {
         $status = "Couldn't save $filename. $@";
         carp $status;
@@ -539,23 +711,24 @@ sub www_editSiteSave {
     }
     my $sitename = $filename;
     $sitename =~ s/^(.*)\.conf$/$1/;
+    my $file = WRE::File->new(wreConfig=>$state->{config});
     my $status = $sitename." saved.";
-    eval { write_file($state->{config}->getWebguiRoot("/etc/".$filename), $state->{cgi}->param("webgui")) };
+    eval { $file->spit($state->{config}->getWebguiRoot("/etc/".$filename), $state->{cgi}->param("webgui")) };
     if ($@) {
         $status = "Couldn't save $filename. $@";
         carp $status;
     }
-    eval { write_file($state->{config}->getRoot("/etc/".$sitename.".modproxy"), $state->{cgi}->param("modproxy")) };
+    eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".modproxy"), $state->{cgi}->param("modproxy")) };
     if ($@) {
         $status = "Couldn't save $sitename.modproxy. $@";
         carp $status;
     }
-    eval { write_file($state->{config}->getRoot("/etc/".$sitename.".modperl"), $state->{cgi}->param("modperl")) };
+    eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".modperl"), $state->{cgi}->param("modperl")) };
     if ($@) {
         $status = "Couldn't save $sitename.modperl. $@";
         carp $status;
     }
-    eval { write_file($state->{config}->getRoot("/etc/awstats.".$sitename.".conf"), $state->{cgi}->param("awstats")) };
+    eval { $file->spit($state->{config}->getRoot("/etc/awstats.".$sitename.".conf"), $state->{cgi}->param("awstats")) };
     if ($@) {
         $status = "Couldn't save awstats.$sitename.conf. $@";
         carp $status;
@@ -573,7 +746,7 @@ sub www_listServices {
     <tr>
         <td>Apache Modproxy</td>
         <td>';
-    my $modproxy = WRE::Modproxy->new($state->{config});
+    my $modproxy = WRE::Modproxy->new(wreConfig=>$state->{config});
     if ($modproxy->ping) {
         $content .= '
              <form action="/stopModproxy" method="post">
@@ -595,7 +768,7 @@ sub www_listServices {
     <tr>
         <td>Apache Modperl</td>
         <td>';
-    my $modperl = WRE::Modperl->new($state->{config});
+    my $modperl = WRE::Modperl->new(wreConfig=>$state->{config});
     if ($modperl->ping) {
         $content .= '
              <form action="/stopModperl" method="post">
@@ -617,7 +790,7 @@ sub www_listServices {
     <tr>
         <td>MySQL</td>
         <td>';
-    my $mysql = WRE::Mysql->new($state->{config});
+    my $mysql = WRE::Mysql->new(wreConfig=>$state->{config});
     if ($mysql->ping) {
         $content .= '
              <form action="/stopMysql" method="post">
@@ -639,7 +812,7 @@ sub www_listServices {
     <tr>
         <td>Spectre</td>
         <td>';
-    my $spectre = WRE::Spectre->new($state->{config});
+    my $spectre = WRE::Spectre->new(wreConfig=>$state->{config});
     if ($spectre->ping) {
             $content .= ' <form action="/stopSpectre" method="post">
                 <input type="submit" value="Stop" />
@@ -737,7 +910,7 @@ sub www_listUtilities {
 #-------------------------------------------------------------------
 sub www_restartModperl {
     my $state = shift;
-    my $service = WRE::Modperl->new($state->{config});
+    my $service = WRE::Modperl->new(wreConfig=>$state->{config});
     my $status = "Modperl restarted.";
     unless ($service->restart) {
         $status = "Modperl did not restart successfully. ".$@;
@@ -748,7 +921,7 @@ sub www_restartModperl {
 #-------------------------------------------------------------------
 sub www_restartModproxy {
     my $state = shift;
-    my $service = WRE::Modproxy->new($state->{config});
+    my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
     my $status = "Modproxy restarted.";
     unless ($service->restart) {
         $status = "Modproxy did not restart successfully. ".$@;
@@ -759,7 +932,7 @@ sub www_restartModproxy {
 #-------------------------------------------------------------------
 sub www_restartMysql {
     my $state = shift;
-    my $service = WRE::Mysql->new($state->{config});
+    my $service = WRE::Mysql->new(wreConfig=>$state->{config});
     my $status = "MySQL restarted.";
     unless ($service->restart) {
         $status = "MySQL did not restart successfully. ".$@;
@@ -770,7 +943,7 @@ sub www_restartMysql {
 #-------------------------------------------------------------------
 sub www_restartSpectre {
     my $state = shift;
-    my $service = WRE::Spectre->new($state->{config});
+    my $service = WRE::Spectre->new(wreConfig=>$state->{config});
     my $status = "Spectre restarted.";
     unless ($service->restart) {
         $status = "Spectre did not restart successfully. ".$@;
@@ -784,7 +957,7 @@ sub www_setup {
     my $out = qq| <div id="tabsWrapper"> <div id="logo">WRE Console</div> <div id="navUnderline"></div> </div> |;
     my $config = $state->{config};
     my $cgi = $state->{cgi};
-    my $file = WRE::File->new($config);
+    my $file = WRE::File->new(wreConfig=>$config);
 
     # copy css into place
     $file->copy($config->getRoot("/var/setupfiles/wreconsole.css"),
@@ -852,13 +1025,14 @@ sub www_setup {
 
     # webgui stuff
     elsif ($cgi->param("step") eq "webgui") {
+        my $host = WRE::Host->new(wreConfig=>$config);
         $out .= '<h1>WebGUI</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="finish">
             <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
             <p>
             What are the subnets WebGUI can expect Spectre to connect from? <br />
-            <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || findSubnet()).'" />
+            <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || $host->getSubnet).'" />
             <div class="subtext">If you do not know, then specify all of your IP addresses as a comma separated
             list like: 10.0.0.1/32,10.11.0.1/32,192.168.1.44/32
             </p>
@@ -919,28 +1093,39 @@ sub www_setup {
         $config->set("webgui", $webgui);
         my $diff = "";
 
-        # generate template vars
-        my %var = (
-            databasePort    => $collected->{mysqlPort}, 
-            databaseHost    => $collected->{mysqlHost}, 
-            modproxyPort    => $collected->{modproxyPort}, 
-            modperlPort     => $collected->{modperlPort}, 
-            );
-
         # mysql
         if ($collected->{mysqlHost} eq "localhost") {
             print $socket "<p>Configuring MySQL.</p>$crlf";
-            $diff = $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
+            $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                 $config->getRoot("/etc/my.cnf"),
-                { templateVars => \%var });
-            if ($diff ne "1") {
-                print $socket "<p>MySQL config file found that differs from the original. Please verify.
-                    <br />$diff</p>";
-            }
+                { force => 1, processTemmplate=>1 });
         }
+        my $mysql = WRE::Mysql->new(wreConfig=>$config);
 
         # apache
         print $socket "<p>Configuring Apache.</p>$crlf";
+        if ($collected->{devOnly}) {
+            $file->copy($config->getRoot("/var/setupfiles/modperl.conf.dev"),
+                    $config->getRoot("/etc/modperl.conf"),
+                    { force => 1, processTemplate=>1 });
+        }
+        else {
+            $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
+                    $config->getRoot("/etc/modperl.conf"),
+                    { force => 1, processTemplate=>1 });
+        }
+        $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
+            $config->getRoot("/etc/modproxy.conf"),
+            { force => 1, processTemplate=>1 });
+        $file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
+            $config->getRoot("/etc/modperl.pl"),
+            { force => 1 });
+        $file->copy($config->getRoot("/var/setupfiles/modperl.template"),
+            $config->getRoot("/var/modperl.template"),
+            { force => 1 });
+        $file->copy($config->getRoot("/var/setupfiles/modproxy.template"),
+            $config->getRoot("/var/modproxy.template"),
+            { force => 1 });
 
         # downloading webgui
         print $socket "<p>Downloading WebGUI.</p>$crlf";
@@ -984,7 +1169,7 @@ sub www_setup {
 #-------------------------------------------------------------------
 sub www_startModperl {
     my $state = shift;
-    my $service = WRE::Modperl->new($state->{config});
+    my $service = WRE::Modperl->new(wreConfig=>$state->{config});
     my $status = "Modperl started.";
     unless ($service->start) {
         $status = "Modperl did not start successfully. ".$@;
@@ -995,7 +1180,7 @@ sub www_startModperl {
 #-------------------------------------------------------------------
 sub www_startModproxy {
     my $state = shift;
-    my $service = WRE::Modproxy->new($state->{config});
+    my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
     my $status = "Modproxy started.";
     unless ($service->start) {
         $status = "Modproxy did not start successfully. ".$@;
@@ -1006,7 +1191,7 @@ sub www_startModproxy {
 #-------------------------------------------------------------------
 sub www_startMysql {
     my $state = shift;
-    my $service = WRE::Mysql->new($state->{config});
+    my $service = WRE::Mysql->new(wreConfig=>$state->{config});
     my $status = "MySQL started.";
     unless ($service->start) {
         $status = "MySQL did not start successfully. ".$@;
@@ -1017,7 +1202,7 @@ sub www_startMysql {
 #-------------------------------------------------------------------
 sub www_startSpectre {
     my $state = shift;
-    my $service = WRE::Spectre->new($state->{config});
+    my $service = WRE::Spectre->new(wreConfig=>$state->{config});
     my $status = "Spectre started.";
     unless ($service->start) {
         $status = "Spectre did not start successfully. ".$@;
@@ -1035,7 +1220,7 @@ sub www_stopConsole {
 #-------------------------------------------------------------------
 sub www_stopModperl {
     my $state = shift;
-    my $service = WRE::Modperl->new($state->{config});
+    my $service = WRE::Modperl->new(wreConfig=>$state->{config});
     my $status = "Modperl stopped.";
     unless ($service->stop) {
         $status = "Modperl did not stop successfully. ".$@;
@@ -1046,7 +1231,7 @@ sub www_stopModperl {
 #-------------------------------------------------------------------
 sub www_stopModproxy {
     my $state = shift;
-    my $service = WRE::Modproxy->new($state->{config});
+    my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
     my $status = "Modproxy stopped.";
     unless ($service->stop) {
         $status = "Modproxy did not stop successfully. ".$@;
@@ -1057,7 +1242,7 @@ sub www_stopModproxy {
 #-------------------------------------------------------------------
 sub www_stopMysql {
     my $state = shift;
-    my $service = WRE::Mysql->new($state->{config});
+    my $service = WRE::Mysql->new(wreConfig=>$state->{config});
     my $status = "MySQL stopped.";
     unless ($service->stop) {
         $status = "MySQL did not stop successfully. ".$@;
@@ -1068,7 +1253,7 @@ sub www_stopMysql {
 #-------------------------------------------------------------------
 sub www_stopSpectre {
     my $state = shift;
-    my $service = WRE::Spectre->new($state->{config});
+    my $service = WRE::Spectre->new(wreConfig=>$state->{config});
     my $status = "Spectre stopped.";
     unless ($service->stop) {
         $status = "Spectre did not stop successfully. ".$@;

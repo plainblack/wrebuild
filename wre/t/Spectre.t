@@ -5,7 +5,7 @@ use WRE::Config;
 use WRE::Spectre;
 
 my $wreConfig = WRE::Config->new();
-my $spectre = WRE::Spectre->new($wreConfig);
+my $spectre = WRE::Spectre->new(wreConfig=>$wreConfig);
 ok(defined $spectre, "Create spectre object");
 is(ref $spectre->getConfig, "Config::JSON", "Can fetch spectre config object.");
 is($spectre->ping, 0, "Spectre is supposed to be down.");

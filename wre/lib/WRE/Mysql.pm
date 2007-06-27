@@ -13,15 +13,21 @@ package WRE::Mysql;
 use strict;
 use base 'WRE::Service';
 use Carp qw(carp);
+use Class::InsideOut qw(new);
 use DBI;
+
+=head1 ISA
+
+WRE::Service
+
+=cut
 
 { # begin inside out object
 
-my $wreConfig = {};
 
 #-------------------------------------------------------------------
 
-=head2 getDatabaseHandle ( password, [ username, dsn ] )
+=head2 getDatabaseHandle ( password => $password, [ username=>$user, dsn=>$dsn ] )
 
 Returns an administrator's database handle.
 
@@ -42,10 +48,11 @@ A dsn to connect with. By default uses the DSN for the test database.
 
 sub getDatabaseHandle {
     my $self = shift;
-    my $password = shift;
-    my $mysql = $wreConfig->get("mysql");
-    my $username = shift || $mysql->{adminUser};
-    my $dsn = shift || 'DBI:mysql:'.$mysql->{test}->{database}.';host='.$mysql->{hostname}.';port='.$mysql->{port};
+    my %options = @_;
+    my $password = $options{password};
+    my $mysql = $self->wreConfig->get("mysql");
+    my $username = $options{username} || $mysql->{adminUser};
+    my $dsn = $options{dsn} || 'DBI:mysql:'.$mysql->{test}->{database}.';host='.$mysql->{hostname}.';port='.$mysql->{port};
     my $db = undef;
     eval { 
         $db = DBI->connect($dsn, $username, $password);
@@ -55,7 +62,7 @@ sub getDatabaseHandle {
 
 #-------------------------------------------------------------------
 
-=head2 isAdmin ( password )
+=head2 isAdmin ( password => $password )
 
 Checks to see if the specified password will work to log in as mysql admin.
 
@@ -67,30 +74,12 @@ The password to check.
 
 sub isAdmin {
     my $self = shift;
-    my $db = $self->getDatabaseHandle(shift);
+    my $db = $self->getDatabaseHandle(@_);
     if (defined $db) {
         $db->disconnect;
         return 1;
     }
     return 0;
-}
-
-#-------------------------------------------------------------------
-
-=head2 new ( wreConfig )
-
-Constructor.
-
-=head3 wreConfig
-
-A WRE::Config object.
-
-=cut
-
-sub new {
-    my $class = shift;
-    $wreConfig = shift;
-    bless \do{my $scalar}, $class;
 }
 
 #-------------------------------------------------------------------
@@ -104,7 +93,7 @@ Returns a 1 if MySQL is running, or a 0 if it is not.
 sub ping {
     my $self = shift;
     my $mysql = $wreConfig->get("mysql");
-    my $db = $self->getDatabaseHandle($mysql->{test}->{password}, $mysql->{test}->{user});
+    my $db = $self->getDatabaseHandle(password=>$mysql->{test}->{password}, username=>$mysql->{test}->{user});
     if (defined $db) {
        $db->disconnect;
        return 1;
@@ -159,6 +148,7 @@ sub stop {
     }
     return $success;
 }
+
 
 
 

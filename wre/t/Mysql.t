@@ -5,7 +5,7 @@ use WRE::Config;
 use WRE::Mysql;
 
 my $wreConfig = WRE::Config->new();
-my $mysql = WRE::Mysql->new($wreConfig);
+my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
 ok(defined $mysql, "Create mysql object");
 is($mysql->ping, 0, "MySQL is supposed to be down.");
 isnt($mysql->ping, 1, "MySQL is supposed to be down. False positive.");

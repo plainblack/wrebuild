@@ -5,7 +5,7 @@ use WRE::Config;
 use WRE::Modperl;
 
 my $wreConfig = WRE::Config->new();
-my $modperl = WRE::Modperl->new($wreConfig);
+my $modperl = WRE::Modperl->new(wreConfig=>$wreConfig);
 ok(defined $modperl, "Create modperl object");
 is($modperl->ping, 0, "modperl is supposed to be down.");
 isnt($modperl->ping, 1, "modperl is supposed to be down. False positive.");

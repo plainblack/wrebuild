@@ -1,4 +1,4 @@
-package WRE::WebGUIDemo;
+package WRE::WebguiDemo;
 
 #-------------------------------------------------------------------
 # WRE is Copyright 2005-2007 Plain Black Corporation.
@@ -93,7 +93,7 @@ sub createDemo {
         .'" ' .$params->{databaseName};
 
     # create webroot
-    my $file = WRE::File->new($config);
+    my $file = WRE::File->new(wreConfig=>$config);
 	$file->makePath($wreConfig->getDomainHome('/demo/'.$demoId.'/uploads/'));
     $file->copy($demo->{creation}{uploads}.'/'),
         $config->getDomainHome('/demo/'.$demoId.'/uploads/'),

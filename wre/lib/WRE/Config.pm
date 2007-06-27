@@ -12,7 +12,7 @@ package WRE::Config;
 
 use strict;
 use base 'Config::JSON';
-use Class::Std::Utils;
+use Class::InsideOut qw ( register );
 use File::Copy qw(cp);
 
 { # begin inside out object
@@ -131,8 +131,8 @@ sub new {
     unless (-f $class->getRoot("/etc/wre.conf")) {
         cp($class->getRoot("/var/setupfiles/wre.conf"), $class->getRoot("/etc/wre.conf"));        
     }
-    my $object = Config::JSON->new($class->getRoot("/etc/wre.conf"));
-    bless $object, $class;
+    my $self = Config::JSON->new($class->getRoot("/etc/wre.conf"));
+    register($self, $class);
 }
 
 

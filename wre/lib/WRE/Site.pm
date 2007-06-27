@@ -12,7 +12,7 @@ package WRE::Site;
 
 use strict;
 use Carp qw(carp);
-use Class::Std::Utils;
+use Class::InsideOut qw(new public private id);
 use Config::JSON;
 use JSON;
 use String::Random qw(random_string);
@@ -21,14 +21,14 @@ use WRE::Mysql;
 
 { # begin inside out object
 
-my $sitename = "";
-my $adminPassword = "";
-my $wreConfig = "";
+private sitename => my %sitename, { set_hook => sub { $_ = lc $_ } };
+private adminPassword => my %adminPassword;
+
 
 
 #-------------------------------------------------------------------
 
-=head2 create ( params )
+=head2 create ( params => $params)
 
 Creates a site given the creation information.
 
@@ -53,22 +53,22 @@ A series of variables that will be added to the list of template variables used 
 sub create {
     my $self = shift;
     my $params = shift;
-    my $file = WRE::File->new($wreConfig);
-
+    my $wreConfig = $self->wreConfig;
+    my $file = WRE::File->new(wreConfig=>$wreConfig);
+    my $refId = id $self;
+    my $sitename = $sitename{$refId};
     # manufacture stuff
     $params->{databaseName} = $self->makeDatabaseName;
     $params->{databaseUser} ||= random_string("ccccccc");
     $params->{databasePassword} ||= random_string("cCncCncCncCn");
-    $params->{databaseHost} = $wreConfig->get("mysql")->{hostname};
-    $params->{databasePort} = $wreConfig->get("mysql")->{port};
     $params->{sitename} = $sitename;
     my $domain = $sitename;
     $domain =~ s/\w+\.(.*)/$1/;
     $params->{domain} = $domain;
 
     # create database
-    my $mysql = WRE::Mysql->new($wreConfig);
-    my $db = $mysql->getDatabaseHandle($adminPassword);
+    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
+    my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
     $db->do("grant all privileges on ".$params->{databaseName}.".* to ".$params->{databaseUser}
         ."@'%' identified by '".$params->{databasePassword}."'");
     $db->do("flush privileges");
@@ -129,22 +129,23 @@ displayed to a user.
 
 sub checkCreationSanity {
     my $self = shift;
-    my $mysql = WRE::Mysql->new($wreConfig);
+    my $wreConfig = $self->wreConfig;
+    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
 
     # check that this user has admin rights
-    unless ($mysql->isAdmin($adminPassword)) {
+    unless ($mysql->isAdmin(password=>$adminPassword)) {
         carp "Invalid admin password.";
         return 0;
     }
 
     # check that the config file isn't already there
-    unless (-e $config->getWebguiRoot("/etc/".$sitename.".conf") {
+    unless (-e $wreConfig->getWebguiRoot("/etc/".$sitename.".conf") {
         carp "WebGUI config file for $sitename already exists.";
         return 0;
     }
 
     # check for the existence of a database with this name
-    my $db = $mysql->getDatabaseHandle($adminPassword);
+    my $db = $mysql->getDatabaseHandle(password=>$adminPassword);
     my $sth = $db->prepare("show databases like ?");
     my $databaseName = $self->makeDatabaseName;
     $sth->execute($databaseName);
@@ -172,15 +173,18 @@ Delete's a site and everything related to it.
 
 sub delete {
     my $self = shift;
-    my $file = WRE::File->new($wreConfig);
+    my $wreConfig = $self->wreConfig;
+    my $file = WRE::File->new(wreConfig=>$wreConfig);
+    my $refId = id $self;
+    my $sitename = $sitename{$refId};
 
     # database
     my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
     my $databaseName = $webguiConfig->get("dsn");
     $databaseName =~ s/^DBI\:mysql\:(\w+).*$/$1/i; 
     my $databaseUser = $webguiConfig->get("dbuser");
-    my $mysql = WRE::Mysql->new($wreConfig);
-    my $db = $mysql->getDatabaseHandle($adminPassword);
+    my $mysql = WRE::Mysql->new(wreConfig=>$ereConfig);
+    my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
     $db->do("drop database $databaseName");
     $db->do("revoke all privileges on ".$databaseName.".* from ".$databaseUser."@'%'");
 
@@ -204,20 +208,6 @@ sub delete {
 
 #-------------------------------------------------------------------
 
-=head2 DESTROY ()
-
-Destructor.
-
-=cut
-
-sub DESTROY {
-    undef $adminPassword;
-    undef $wreConfig;
-    undef $sitename;
-}
-
-#-------------------------------------------------------------------
-
 =head2 makeDatabaseName ( )
 
 Returns a database friendly name generated from the sitename.
@@ -226,7 +216,7 @@ Returns a database friendly name generated from the sitename.
 
 sub makeDatabaseName {
     my $self = shift;
-    my $databaseName = $sitename;
+    my $databaseName = $sitename{id $self};
     $databaseName =~ s/\W/_/g;
     return $databaseName;
 }
@@ -234,11 +224,11 @@ sub makeDatabaseName {
 
 #-------------------------------------------------------------------
 
-=head2 new ( )
+=head2 new ( wreConfig => $config, sitename => $sitename, adminPassword => $pass)
 
 Constructor.
 
-=head3 config
+=head3 wreConfig
 
 A reference to a WRE Configuration object.
 
@@ -252,13 +242,18 @@ The password for the WRE database "root" user.
 
 =cut
 
-sub new {
-    my $class = shift;
-    $wreConfig = shift;
-    $sitename = lc(shift);
-    $adminPassword = shift;
-    bless \do{my $scalar}, $class;
-}
+# auto generated
+
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %config;
+
 
 
 } # end inside out object

@@ -8,11 +8,6 @@ variables are exposed to all the templates during site creation.
 databaseName            The name of the database for this site. 
                         Example: www_example_com
 
-domain                  The sitename minus the hostname. Example: example.com
-
-domainRoot              The path to where site uploads, logs, stats, and other
-                        files are stored. Example: /data/domains
-
 databaseHost            The hostname where mysql resides. Example: localhost
 
 databasePassword        The password that WebGUI uses to acess this sites
@@ -23,6 +18,15 @@ databasePort            The port that we connect to MySQL on. Example: 3306
 
 databaseUser            The username that WebGUI uses to access this sites
                         database.
+
+domain                  The sitename minus the hostname. Example: example.com
+
+domainRoot              The path to where site uploads, logs, stats, and other
+                        files are stored. Example: /data/domains
+
+modproxyPort            The Apache port running modproxy.
+
+modperlPort             The Apache port running modperl.
 
 sitename                The real name of the site. Example: www.example.com
 
