@@ -18,6 +18,7 @@ use File::Copy qw(cp);
 use File::Find qw(find);
 use File::Path qw(mkpath rmtree);
 use File::Slurp qw(read_file write_file);
+use File::Temp qw(tempfile tempdir);
 use Template;
 
 { # begin inside out object
@@ -146,7 +147,7 @@ sub copy {
             if ($options->{processTemplate} || exists $options->{templateVars}) {
                 my $temp = $to.".tmp";
                 $self->spit($temp, $self->processTemplate($from, $options->{templateVars}));
-                if ($self->compare($temp, $to) || $options->{force}) {
+                if ($options->{force} || !(-f $to) || $self->compare($temp, $to)) {
                     cp($temp, $to);
                 }
                 else {
@@ -156,7 +157,7 @@ sub copy {
             }
             # not dealing with a template
             else {
-                if ($self->compare($from, $to) || $options->{force}) {
+                if ($options->{force} || !(-f $to) || $self->compare($from, $to)) {
                     cp($from, $to);
                 }
                 else {
@@ -242,6 +243,20 @@ sub makePath {
     my $self = shift;
     my $path = shift;
     mkpath($path);
+}
+
+
+#-------------------------------------------------------------------
+
+=head2 makeTempPath () 
+
+Creates a temporary path and returns the path as a string. Will automatically delete the temporary path at program
+exit if you forget to clean it up.
+
+=cut
+
+sub makeTempPath {
+    return tempdir( CLEANUP => 1 );    
 }
 
 

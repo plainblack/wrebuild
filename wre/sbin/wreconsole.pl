@@ -1049,10 +1049,24 @@ sub www_setup {
             <p>The WRE is now ready to configure itself and install WebGUI.</p>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="install">
+            <input type="hidden" name="manualWebguiInstall" value="0">
             <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
-            <input type="button" value="&laquo; Previous" class="deleteButton"
-            onclick="this.form.step.value=\'webgui\';this.form.submit();" />
-            <input type="submit" class="saveButton" value="Install &raquo;" />
+            <p style="width: 60%;">
+                If you would like to modify settings before the installation press the button below.<br />
+                <input type="button" value="&laquo; Previous" class="deleteButton"
+                    onclick="this.form.step.value=\'webgui\';this.form.submit();" />
+            </p>
+            <p style="width: 60%;">
+                If you would like the WRE to automatically download and install WebGUI, then press the button below.<br />
+                <input type="submit" class="saveButton" value="Automated Install &raquo;" />
+            </p>
+            <p style="width: 60%;">
+                If you would like to install WebGUI manually yourself, then do so now, and press the button below
+                when finished.<br />
+                <input type="button" value="Manual Install &raquo;" class="saveButton"
+                    onclick="this.form.manualWebguiInstall.value=\'1\';this.form.submit();" />
+            </p>
+            <p style="width: 60%;">
             </form>
             ';
     }
@@ -1127,11 +1141,22 @@ sub www_setup {
             $config->getRoot("/var/modproxy.template"),
             { force => 1 });
 
-        # downloading webgui
-        print $socket "<p>Downloading WebGUI.</p>$crlf";
+        unless ($collected->{manualWebguiInstall}) {
+            my $update = WRE::WebguiUpdate->new(wreConfig=>$config);
 
-        # extracting webgui
-        print $socket "<p>Extracting WebGUI.</p>$crlf";
+            print $socket "<p>Determining lastest version of WebGUI.</p>$crlf";
+            my $version = $update->getLatestVersionNumber;
+
+            print $socket "<p>Locating a mirror.</p>$crlf";
+            my $mirrors = $update->getMirrors($version);
+
+            print $socket "<p>Downloading WebGUI. Please be patient, this can take a while.</p>$crlf";
+            my $download = $update->downloadFile($mirrors->{plainblack}{url});
+
+            print $socket "<p>Extracting WebGUI. Please be patient, this can take a while.</p>$crlf";
+            $update->extractArchive($download);
+            
+        }
 
         # configuring webgui
         print $socket "<p>Configuring WebGUI.</p>$crlf";

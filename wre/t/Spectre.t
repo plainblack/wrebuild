@@ -6,7 +6,7 @@ use WRE::Spectre;
 
 my $wreConfig = WRE::Config->new();
 my $spectre = WRE::Spectre->new(wreConfig=>$wreConfig);
-ok(defined $spectre, "Create spectre object");
+isa_ok($spectre, "WRE::Spectre");
 is(ref $spectre->getConfig, "Config::JSON", "Can fetch spectre config object.");
 is($spectre->ping, 0, "Spectre is supposed to be down.");
 isnt($spectre->ping, 1, "Spectre is supposed to be down. False positive.");
@@ -17,4 +17,3 @@ is($spectre->restart, 1, "Restart spectre.");
 is($spectre->ping, 1, "Spectre is supposed to be up.");
 is($spectre->stop, 1, "Stop spectre.");
 is($spectre->ping, 0, "Spectre is supposed to be down.");
-

@@ -4,7 +4,7 @@ use Test::More tests => 10;
 use WRE::Config;
 
 my $config = WRE::Config->new();
-is(ref $config, "WRE::Config", "Got a valid object.");
+isa_ok($config, "WRE::Config");
 is($config->getRoot, "/data/wre", "Default WRE root is /data/wre");
 is($config->getRoot("x/y"), "/data/wre/x/y", "WRE root append without slash");
 is($config->getRoot("/x/y"), "/data/wre/x/y", "WRE root append with slash");

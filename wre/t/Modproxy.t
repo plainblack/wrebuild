@@ -6,7 +6,7 @@ use WRE::Modproxy;
 
 my $wreConfig = WRE::Config->new();
 my $modproxy = WRE::Modproxy->new(wreConfig=>$wreConfig);
-ok(defined $modproxy, "Create modproxy object");
+isa_ok($modproxy, "WRE::Modproxy");
 is($modproxy->ping, 0, "modproxy is supposed to be down.");
 isnt($modproxy->ping, 1, "modproxy is supposed to be down. False positive.");
 is($modproxy->start, 1, "Start modproxy.");

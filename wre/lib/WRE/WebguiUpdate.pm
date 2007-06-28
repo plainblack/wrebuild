@@ -18,11 +18,76 @@ use HTTP::Headers;
 use HTTP::Request;
 use JSON;
 use LWP::UserAgent;
+use WRE::File;
 use WRE::Host;
 
 
 { # begin inside out object
 
+
+
+#-------------------------------------------------------------------
+
+=head2 downloadFile ( url )
+
+Downloads a file and returns a path to the location it downloaded to. Returns a -1 if it couldn't download the
+file, and a -2 if it couldn't write the file.
+
+=cut
+
+sub downloadFile {
+    my $self = shift;
+    my $url = shift;
+    my $ua = LWP::UserAgent->new;
+    my $request = HTTP::Request->new(GET => $url);
+    my $response = $ua->request($request);
+    if ($response->is_error) {
+        croak "Couldn't download file because ".$response->error_as_HTML;
+        return -1;
+    }
+    my $file = WRE::File->new(wreConfig=>$self->wreConfig);
+    my $path = $file->makeTempPath."/webgui.tar.gz";
+    if (open(my $fh, ">", $path)) {
+        binmode $fh;
+        print {$fh} $response->content;
+        close($fh);
+        return $path;
+    } 
+    else {
+        croak "Couldn't write downloaded file to $path because $!";
+        return -2;
+    }
+}
+
+#-------------------------------------------------------------------
+
+=head2 extractArchive ( path )
+
+Extracts the archive over the top of the existing WebGUI installation. Returns 1 if successful and croaks and
+returns 0 if not.
+
+=head3 path
+
+The path to the archive to be extracted.
+
+=cut 
+
+sub extractArchive {    
+    my $self = shift;
+    my $path = shift;
+    my $config = $self->wreConfig;
+    my $file = WRE::File->new(wreConfig => $config);
+    $file->makePath($config->getWebguiRoot);
+    my @webguiRoot = split("/", $config->getWebguiRoot);
+    pop @webguiRoot;
+    chdir join("/", @webguiRoot);
+    Archive::Tar->extract_archive($path,1);
+    if (Archive::Tar->error) {
+       croak "Couldn't extract WebGUI archive because ".Archive::Tar->error;
+       return 0; 
+    }
+    return 1;
+}
 
 
 #-------------------------------------------------------------------
@@ -58,7 +123,7 @@ sub getLatestVersionNumber {
 
 #-------------------------------------------------------------------
 
-=head2 getMirrorsList ( version )
+=head2 getMirrors ( version )
 
 Returns a hash reference of available mirrors for a particular version.
 
@@ -68,7 +133,8 @@ A version number for WebGUI.
 
 =cut
 
-sub getMirrorsList {
+sub getMirrors {
+    my $self = shift;
     my $version = shift;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new(GET => 'http://update.webgui.org/getmirrors.pl?version='.$version);
