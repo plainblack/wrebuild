@@ -176,10 +176,10 @@ buildApache(){
 
     if [ "$WRE_BUILD_WDK" == 1 ]; then
         # neon
-        buildProgram("neon-0.26.4","--with-zlib=$WRE_ROOT/prereqs --with-ssl=$WRE_ROOT/prereqs");
+        buildProgram "neon-0.26.4" "--with-zlib=$WRE_ROOT/prereqs --with-ssl=$WRE_ROOT/prereqs"
 
         # subversion 
-        buildProgram("subversion-1.4.4", "--with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs");
+        buildProgram "subversion-1.4.4" "--with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs"
 
     fi
 
