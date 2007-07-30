@@ -4,124 +4,85 @@ my $wreRoot = '/data/wre';
 
 use lib $wreRoot.'/lib';
 use strict;
-use WRE::Config;
 use GetOpt::Long;
-use Hoster::AWStats;
-use Hoster::Opts;
-use Hoster::VirtualHost;
-use Hoster::WebGUIConfig;
-use Hoster::WebRoot;
-use Hoster::WebGUIDatabase;
+use WRE::Config;
+use WRE::Site;
 
 $| = 1; 
 
-my $config = WRE::Config->new($wreRoot);
-my $options = WRE::Option->new($config, {
-	sitename	=> {},
-	var1		=> "s",
-	var2		=> "s",
-	var3		=> "s",
-	var4		=> "s",
-	var5		=> "s",
-	var6		=> "s",
-	var7		=> "s",
-	var8		=> "s",
-	var9		=> "s",
-	var0		=> "s",
-	});
+my $config = WRE::Config->new();
+my ($var1, $var2, $var3, $var4, $var5, $var6, $var7, $var8, $var9, $var0, $sitename, $adminPassword, 
+    $dbUser, $dbPassword, $help) = "";
+GetOptions(
+    "help"                  => \$help,
+    "var1=s"                => \$var1,    
+    "var2=s"                => \$var2,    
+    "var3=s"                => \$var3,    
+    "var4=s"                => \$var4,    
+    "var5=s"                => \$var5,    
+    "var6=s"                => \$var6,    
+    "var7=s"                => \$var7,    
+    "var8=s"                => \$var8,    
+    "var9=s"                => \$var9,    
+    "var0=s"                => \$var0,    
+    "sitename=s"            => \$sitename,
+    "adminPassword=s"       => \$adminPassword,
+    "databaseUser=s"        => \$dbUser,
+    "databasePassword=s"    => \$dbPassword, 
+    );
 
-my $modperl = WRE::ApacheVirtualHost->new($config, $args
+my $dbAdminUser = $config->get("mysql")->{adminUser};
 
-my $opts = Hoster::Opts::get('/data/wre');
-if ($opts->{help}) {
-	help($opts);
-	exit;
-}
-$opts = Hoster::Opts::generate($opts);
-if ($opts->{'print-vars'}) {
-	Hoster::Opts::printVars($opts);
-	exit;
-}
-if ($opts->{'print-values'}) {
-	Hoster::Opts::printValues($opts);
-	exit;
-}
-if ($opts->{sitename} eq "" || $opts->{'admin-db-pass'} eq "") {
-	help($opts);
-	exit;
-}
-
-Hoster::VirtualHost::create($opts);
-Hoster::AWStats::create($opts);
-Hoster::WebRoot::create($opts);
-Hoster::WebGUIConfig::create($opts);
-Hoster::WebGUIDatabase::create($opts);
-system($opts->{'wre-restart'}) unless ($opts->{'no-wre-restart'});
-
-
-#------------------------------
-sub help {
-	my $opts = $_[0];
-	print <<STOP;
-
-WRE: Add A Site - Copyright 2003-2006 Plain Black Corporation
-
-Usage: $0 --sitename=www.example.com --admin-db-pass=PASSWORD
+if ($help || $adminPassword eq "" || $sitename eq "") {
+    print <<STOP;
+Usage: perl $0 --sitename=www.example.com --adminPassword=123qwe
 
 Options:
-	--admin-db-pass		The password for admin-db-user.
 
-	--admin-db-user		The database user that has rights to create new
-				databases and grant privileges. Defaults to "$opts->{'admin-db-user'}".
+ --adminPassword    The password for the "$dbAdminUser" in your MySQL database.
 
-	--apache-user		The user that Apache runs as. Defaults to "$opts->{'apache-user'}".
+ --databaseUser     The username you'd like created to access this site's database.
 
-	--chown			The path to your system's chown script. Defaults to
-				"$opts->{'chown'}".
+ --databasePassword The password you'd like created to access this site's database.
 
-	--db-host		Your database host. Defaults to "$opts->{'db-host'}".
+ --help             This message.
 
-	--gateway-template	The name of the file to use as a template for the WebGUI
-				gateway application. Defaults to "$opts->{'gateway-template'}".
+ --sitename         The name of the site you'd like to create. For example: www.example.com 
+                    or intranet.example.com
 
-	--help			Displays this message.
-
-	--no-wre-restart	Do not restart WRE after creating the configuration.
-
-	--no-cache		Do not write configuration options to the cache.
-
-	--print-vars		Displays a list of template vars that could be used when
-				parsing templates. To use this you must specify a full
-				working command line. The program will exit without running
-				the command.
-
-	--site-db-pass		The password to use on the database for this site.
-				Defaultly generates a random password.
-
-	--site-db-user		The username to use on the database for this site.
-				Defaultly generates a random username.
-
-	--sitename		The combined hostname and domain name of the site. For
-				example "www.example.com".
-
-	--var[n]		Create a template variable where n is 0-9. Using "--var1",
-				for example, would create "__var1__" for template
-				processing.
-
-	--vh-modperl-template	The name of the template file to use for mod_perl virtual 
-				hosts. Defaults to "$opts->{'vh-modperl-template'}".
-
-	--vh-modproxy-template	The name of the template file to use for mod_proxy virtual 
-				hosts. Defaults to "$opts->{'vh-modproxy-template'}".
-
-	--webgui-conf-template	The name of the file to use as a template for overriding
-				the parameters in WebGUI.conf.original in the WebGUI install.
-				Defaults to "$opts->{'webgui-conf-template'}".
-
-	--wre-restart		The command line used to restart WRE. Defaults to
-				"$opts->{'wre-restart'}".
+ --var0-9           A series of variables you can use to arbitrary information into the site
+                    creation process. These variables will be exposed to all templates used to
+                    create this site.
 
 STOP
 }
+
+
+my $site = WRE::Site->new(
+    wreConfig       => $config,
+    sitename        => $sitename,
+    adminPassword   => $adminPassword,
+    );
+if ($site->checkCreationSanity) {
+    $site->create(params=>{
+        siteDatabaseUser        => $databaseUser,
+        siteDatabasePassword    => $databasePassword,
+        var0                    => $var0,
+        var1                    => $var1,
+        var2                    => $var2,
+        var3                    => $var3,
+        var4                    => $var4,
+        var5                    => $var5,
+        var6                    => $var6,
+        var7                    => $var7,
+        var8                    => $var8,
+        var9                    => $var9,
+        });
+    print $site->getSitename." was created. Don't forget to restart the web servers and Spectre.\n";
+} 
+else {
+    print $site->getSitename." could not be created because ".$!.".\n";
+}
+
 
 
