@@ -81,7 +81,7 @@ if ($site->checkCreationSanity) {
     print $site->getSitename." was created. Don't forget to restart the web servers and Spectre.\n";
 } 
 else {
-    print $site->getSitename." could not be created because ".$!.".\n";
+    print $site->getSitename." could not be created because: ".$!."\n";
 }
 
 

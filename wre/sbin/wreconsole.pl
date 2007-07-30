@@ -235,15 +235,55 @@ sub www_addSiteSave {
 #-------------------------------------------------------------------
 sub www_deleteSite {
     my $state = shift;
+    my $status = shift;
+    my $content = getNavigation("sites");
+    my $cgi = $state->{cgi};
+    $content .= '
+    <h1>Delete A Site</h1>
+    <div class="status">'.$status.'</div>
+    <p>Are you sure you wish to delete this site and all it\'s content and users? This cannot be undone, once you
+    click on the button below.</p>
+    <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
+    <form action="/addSiteSave" method="post">
+    <input type="hidden" name="filename" value="'.$cgi->param("filename").'" />
+    <table class="items">
+    <tr>
+        <td>Site</td>
+        <td>'.$cgi->param("filename").'</td>
+    </tr>
+    <tr>
+        <td>Admin Database Password</td>
+        <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /><span class="subtext">Required</span></td>
+    </tr>
+    </table>
+    <input type="submit" value="Delete Site" onclick="this.value=\'Please wait...\';" />
+    </form>
+    ';
+    sendResponse($state, $content);
+}
+
+
+#-------------------------------------------------------------------
+sub www_deleteSiteSave {
+    my $state = shift;
     my $filename = $state->{cgi}->param("filename");
-    if ($filename !~ m/\.conf$/ || $filename =~ m{/} || $filename eq "spectre.conf" || $filename eq "log.conf") {
+    if ($filename !~ m/\.conf$/ || $filename =~ m{/}) {
             sendResponse($state, "Stop dicking around!");
             return;
     }
     my $sitename = $filename;
     $sitename =~ s/^(.*)\.conf$/$1/;
+    my $site = WRE::Site->new(
+            wreConfig       => $state->{config}, 
+            sitename        => $sitename, 
+            adminPassword   => $cgi->param("adminPassword")
+            );
+    if ($site->checkDeletionSanity) {
+        www_listSites($state, $sitename." deleted."); 
+    } else {
+        return www_deleteSite($state, $sitename." could not be created because ".$!);
+    }
     my $status = $sitename." deleted.";
-    www_listSites($state, $status); 
 }
 
 #-------------------------------------------------------------------
@@ -867,9 +907,7 @@ sub www_listSites {
              </form>
              <form action="/deleteSite" method="post">
                 <input type="hidden" name="filename" value="$filename" />
-                <input type="submit" 
-                    onclick="return confirm('Are you sure you wish to delete this site and all it\\\'s content and users?');"
-                    class="deleteButton" value="Delete" />
+                <input type="submit" class="deleteButton" value="Delete" />
              </form>
             </td></tr>|;
     }

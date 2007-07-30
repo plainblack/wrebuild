@@ -95,8 +95,8 @@ sub create {
 	$file->makePath($wreConfig->getDomainHome('/'.$sitename.'/logs'));
 	$file->makePath($wreConfig->getDomainHome('/'.$sitename.'/public'));
     my $uploads = $wreConfig->getDomainHome('/'.$sitename.'/public/uploads/');
-    my $baseUploads = $wreConfig->getWebguiHome('/www/uploads/');
-    $file->copy($wreConfig->getWebguiHome('/www/uploads/'), 
+    my $baseUploads = $wreConfig->getWebguiRoot('/www/uploads/');
+    $file->copy($wreConfig->getWebguiRoot('/www/uploads/'), 
         $wreConfig->getDomainHome('/'.$sitename.'/public/uploads/'),
         { recursive => 1, force=>1 });
 
@@ -142,6 +142,7 @@ sub checkCreationSanity {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
+    my $sitename = $sitename{id $self};
 
     # check that this user has admin rights
     unless ($mysql->isAdmin(password=>$adminPassword)) {
@@ -150,7 +151,7 @@ sub checkCreationSanity {
     }
 
     # check that the config file isn't already there
-    unless (-e $wreConfig->getWebguiRoot("/etc/".$sitename.".conf") {
+    if (-e $wreConfig->getWebguiRoot("/etc/".$sitename.".conf") {
         carp "WebGUI config file for $sitename already exists.";
         return 0;
     }
@@ -167,9 +168,47 @@ sub checkCreationSanity {
         $db->disconnect;
         return 0;
     }
+    $db->disconnect;
 
     # all tests were successful
-    $db->disconnect;
+    return 1;
+}
+
+#-------------------------------------------------------------------
+
+=head2 checkDeletionSanity ( )
+
+Returns a 1 if all the tests pass, and a 0 if they don't. Carps the error messages on failure so they can be
+displayed to a user.
+
+=cut
+
+sub checkDeletionSanity {
+    my $self = shift;
+    my $wreConfig = $self->wreConfig;
+    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
+    my $sitename = $sitename{id $self};
+    my $filename = $sitenmae.".conf";
+
+    # check that this user has admin rights
+    unless ($mysql->isAdmin(password=>$adminPassword)) {
+        carp "Invalid admin password.";
+        return 0;
+    }
+
+    # check that the config file isn't already there
+    unless (-e $wreConfig->getWebguiRoot("/etc/".$filename) {
+        carp "WebGUI config file for $sitename doesn't exist.";
+        return 0;
+    }
+
+    # check if they're trying to delete WebGUI system configs
+    if ($filename eq "spectre.conf" || $filename eq "log.conf") {
+        carp "Not a WebGUI site config.";
+        return 0;
+    }
+
+    # all tests were successful
     return 1;
 }
 
@@ -194,7 +233,7 @@ sub delete {
     my $databaseName = $webguiConfig->get("dsn");
     $databaseName =~ s/^DBI\:mysql\:(\w+).*$/$1/i; 
     my $databaseUser = $webguiConfig->get("dbuser");
-    my $mysql = WRE::Mysql->new(wreConfig=>$ereConfig);
+    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
     $db->do("drop database $databaseName");
     $db->do("revoke all privileges on ".$databaseName.".* from ".$databaseUser."@'%'");
