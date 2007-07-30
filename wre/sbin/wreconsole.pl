@@ -23,11 +23,13 @@ use Path::Class;
 use Sys::Hostname;
 use Socket;
 use WRE::Config;
+use WRE::File;
 use WRE::Host;
 use WRE::Modperl;
 use WRE::Modproxy;
 use WRE::Mysql;
 use WRE::Spectre;
+use WRE::WebguiUpdate;
 
 
 #-------------------------------------------------------------------
@@ -525,8 +527,8 @@ sub www_editSettingsSave {
     $webstats->{hostname}   = $cgi->param("webstatsHost");
     # have to enable web stats
     if ($webstats->{enabled} == 0 && $cgi->param("enableWebstats") == 1) {
-        $file->copy($config->getRoot("/var/setupfiles/stats.modproxy", $config->getRoot("/etc/stats.modproxy"), 
-            { force => 1, templateVars=>{ hostname=>$webstats->{hostname} });
+        $file->copy($config->getRoot("/var/setupfiles/stats.modproxy"), $config->getRoot("/etc/stats.modproxy"), 
+            { force => 1, templateVars=> { hostname=>$webstats->{hostname} } });
     }
     # have to disable webstats
     elsif ($webstats->{enabled} == 1 && $cgi->param("enableWebstats") == 0) {
@@ -564,10 +566,10 @@ sub www_editSettingsSave {
     $demo->{hostname}   = $cgi->param("demoHost");
     if ($demo->{enabled} == 0 && $cgi->param("enableDemo") == 1) {
         $file->makePath($config->getDomainRoot("/demo"));
-        $file->copy($config->getRoot("/var/setupfiles/demo.modproxy", $config->getRoot("/etc/demo.modproxy"), 
-            { force => 1, templateVars=>{ hostname=>$demo->{hostname} });
-        $file->copy($config->getRoot("/var/setupfiles/demo.modperl", $config->getRoot("/etc/demo.modperl"), 
-            { force => 1, templateVars=>{ hostname=>$demo->{hostname} });
+        $file->copy($config->getRoot("/var/setupfiles/demo.modproxy"), $config->getRoot("/etc/demo.modproxy"), 
+            { force => 1, templateVars=>{ hostname=>$demo->{hostname} } });
+        $file->copy($config->getRoot("/var/setupfiles/demo.modperl"), $config->getRoot("/etc/demo.modperl"), 
+            { force => 1, templateVars=>{ hostname=>$demo->{hostname} } });
     }
     # have to disable demos
     elsif ($webstats->{enabled} == 1 && $cgi->param("enableWebstats") == 0) {
@@ -626,7 +628,7 @@ sub www_editTemplateSave {
             sendResponse($state, "Stop dicking around!");
             return;
     }
-    my $file WRE::File->new(wreConfig=>$state->{config});
+    my $file = WRE::File->new(wreConfig=>$state->{config});
     my $status = $filename." saved.";
     eval { $file->spit($state->{config}->getRoot("/var/".$filename), $state->{cgi}->param("template")) };
     if ($@) {
@@ -1033,8 +1035,9 @@ sub www_setup {
             <p>
             What are the subnets WebGUI can expect Spectre to connect from? <br />
             <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || $host->getSubnet).'" />
-            <div class="subtext">If you do not know, then specify all of your IP addresses as a comma separated
-            list like: 10.0.0.1/32,10.11.0.1/32,192.168.1.44/32
+            <div class="subtext">We have guessed for you, so you can accept that if you do not know what to put
+                here. If there are multiple IP addresses assigned to this machine, then do a comma separated list
+                like: 10.0.0.1/32,10.11.0.1/32,192.168.1.44/32
             </p>
             <input type="button" value="&laquo; Previous"
             onclick="this.form.step.value=\'mysql\';this.form.submit();" />
@@ -1160,6 +1163,10 @@ sub www_setup {
 
         # configuring webgui
         print $socket "<p>Configuring WebGUI.</p>$crlf";
+        $file->copy($config->getWebguiRoot("/etc/log.conf.original"), $config->getWebguiRoot("/etc/log.conf"),
+            { force => 1 });
+        $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
+            { force => 1 });
 
         # status
         print $socket "<h1>Configuration Complete</h1><a href=\"/\">Click here to manage your WRE server.</a>$crlf";

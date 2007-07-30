@@ -7,7 +7,10 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added the WRE Console.
  - Several security improvements including masked HTTP Server Tokens and the
    WRE having it's own system level user for all its processes.
- - Added a Perl / WebGUI API documentation server.
+ - Added a WDK (WebGUI Development Kit) build mode that adds extra features to
+   the WRE just for developers.
+ - Added a Perl / WebGUI API documentation server (WDK only).
+ - Added the subversion version control system with SVN::Web browsing (WDK only).
  - Upgraded the following components:
 	- MySQL 5.0.37
 	- mod_perl 2.0.3
@@ -55,6 +58,12 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - Path::Class 0.16
     - File::Slurp 9999.12
     - Text::CSV_XS 0.26
+    - Neon 0.26.4
+    - Subversion 1.4.4
+    - File::Which 0.05
+    - File::Temp 0.18
+    - HTML::TagCloud 0.34
+    - Class::InsideOut 1.06
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 
@@ -69,7 +78,6 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: WRE needs newer version of openssl to build on OS X intel
  - fix: mysql.server --defaults-file doesn't work with newer versions of MySQL
  - fix: WRE sudo problem
-   5.0
 
 
 NOTE: Since this is a complete rewrite, there is no upgrade path. Instead,

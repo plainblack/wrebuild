@@ -25,6 +25,17 @@ use WRE::Host;
 { # begin inside out object
 
 
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %config;
+
+
 
 #-------------------------------------------------------------------
 
@@ -161,17 +172,6 @@ A reference to a WRE Configuration object.
 
 # auto created by Class::InsideOut
 
-
-
-#-------------------------------------------------------------------
-
-=head2 wreConfig ( )
-
-Returns a reference to the WRE cconfig.
-
-=cut
-
-public wreConfig => my %config;
 
 
 

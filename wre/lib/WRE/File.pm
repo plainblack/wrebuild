@@ -23,10 +23,30 @@ use Template;
 
 { # begin inside out object
 
+
+=head1 METHODS
+
+The following methods are available from this package.
+
+=cut
+
+
 # cache these things
 private groupId => my %groupId;
 private userId => my %userId;
 private template => my %template;
+
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %wreConfig;
+
+
 
 #-------------------------------------------------------------------
 
@@ -360,17 +380,6 @@ sub spit {
     write_file($path, $content);
     $self->changeOwner($path);
 }
-
-
-#-------------------------------------------------------------------
-
-=head2 wreConfig ( )
-
-Returns a reference to the WRE cconfig.
-
-=cut
-
-public wreConfig => my %wreConfig;
 
 
 

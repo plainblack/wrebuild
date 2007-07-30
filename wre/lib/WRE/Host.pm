@@ -20,6 +20,25 @@ use Sys::Hostname;
 { # begin inside out object
 
 
+=head1 METHODS
+
+The following methods are available from this package.
+
+=cut
+
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %wreConfig;
+
+
+
+
 #-------------------------------------------------------------------
 
 =head2 getHostname ( )
@@ -73,18 +92,6 @@ A reference to a WRE Configuration object.
 =cut
 
 # auto created by Class::InsideOut
-
-
-#-------------------------------------------------------------------
-
-=head2 wreConfig ( )
-
-Returns a reference to the WRE cconfig.
-
-=cut
-
-public wreConfig => my %wreConfig;
-
 
 
 

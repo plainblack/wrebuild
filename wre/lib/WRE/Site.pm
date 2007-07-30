@@ -24,6 +24,17 @@ use WRE::Mysql;
 private sitename => my %sitename, { set_hook => sub { $_ = lc $_ } };
 private adminPassword => my %adminPassword;
 
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %config;
+
+
 
 
 #-------------------------------------------------------------------
@@ -243,17 +254,6 @@ The password for the WRE database "root" user.
 =cut
 
 # auto generated
-
-#-------------------------------------------------------------------
-
-=head2 wreConfig ( )
-
-Returns a reference to the WRE cconfig.
-
-=cut
-
-public wreConfig => my %config;
-
 
 
 } # end inside out object

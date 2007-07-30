@@ -19,6 +19,17 @@ use Class::InsideOut qw(new public);
 
 #-------------------------------------------------------------------
 
+=head2 wreConfig ( )
+
+Returns a reference to the WRE cconfig.
+
+=cut
+
+public wreConfig => my %config;
+
+
+#-------------------------------------------------------------------
+
 =head2 new ( wreConfig => $config )
 
 Constructor.
@@ -84,17 +95,6 @@ Returns a 1 if the stop was successful, or a 0 if it was not. Must be overriden 
 sub stop {
     croak "Subclass didn't override as directed.";
 }
-
-
-#-------------------------------------------------------------------
-
-=head2 wreConfig ( )
-
-Returns a reference to the WRE cconfig.
-
-=cut
-
-public wreConfig => my %config;
 
 
 

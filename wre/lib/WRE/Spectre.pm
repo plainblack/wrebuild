@@ -13,7 +13,7 @@ package WRE::Spectre;
 use strict;
 use base 'WRE::Service';
 use Carp qw(carp);
-use Class::InsideOut qw(register id readonly);
+use Class::InsideOut qw(register id public);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 
@@ -24,6 +24,17 @@ WRE::Service
 =cut
 
 { # begin inside out object
+
+#-------------------------------------------------------------------
+
+=head2 spectreConfig ( )
+
+Returns a reference to the Spectre Config object.
+
+=cut
+
+public spectreConfig => my %spectreConfig;
+
 
 #-------------------------------------------------------------------
 
@@ -42,7 +53,7 @@ sub new {
     my $config = shift;
     my $self = WRE::Service->new(@_);
     register($self, $class);
-    $spectreConfig->{id $self} = Config::JSON->new($config->getWebguiRoot("/etc/spectre.conf"));
+    $spectreConfig{id $self} = Config::JSON->new($config->getWebguiRoot("/etc/spectre.conf"));
     return $self;
 }
 
@@ -85,17 +96,6 @@ sub ping {
 
 #-------------------------------------------------------------------
 
-=head2 spectreConfig ( )
-
-Returns a reference to the Spectre Config object.
-
-=cut
-
-readonly spectreConfig => my %spectreConfig;
-
-
-#-------------------------------------------------------------------
-
 =head2 start ( )
 
 Returns a 1 if the start was successful, or a 0 if it was not.
@@ -106,6 +106,7 @@ sub start {
     my $self = shift;
     my $count = 0;
     my $success = 0;
+    my $wreConfig = $self->wreConfig;
     chdir($wreConfig->getWebguiRoot("/sbin"));
     system($wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon");
     while ($count < 10 && $success == 0) {
@@ -128,6 +129,7 @@ sub stop {
     my $self = shift;
     my $count = 0;
     my $success = 0;
+    my $wreConfig = $self->wreConfig;
     chdir($wreConfig->getWebguiRoot("/sbin"));
     system($wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown");
     while ($count < 10 && $success == 0) {

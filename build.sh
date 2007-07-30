@@ -59,15 +59,18 @@ buildUtils(){
 	# libtool
 	buildProgram "libtool-1.5.22"
 
-    # berkeley db
-	cd db-4.5.20.NC/build_unix
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make realclean
-    fi	
-	../dist/configure --prefix=$WRE_ROOT/prereqs ; checkError $? "Berkeley DB configure"
-	make; checkError $? "Berkeley DB make"
-	make install; checkError $? "Berkeley DB make install"
-	cd ../..
+    if [ "$WRE_BUILD_WDK" == 1 ]; then
+
+        # berkeley db
+	    cd db-4.5.20.NC/build_unix
+	    if [ "$WRE_CLEAN" == 1 ]; then
+		    make realclean
+        fi	
+	    ../dist/configure --prefix=$WRE_ROOT/prereqs ; checkError $? "Berkeley DB configure"
+	    make; checkError $? "Berkeley DB make"
+	    make install; checkError $? "Berkeley DB make install"
+	    cd ../..
+    fi
 
 	# catdoc
 	cd catdoc-0.94
@@ -150,13 +153,14 @@ buildApache(){
 		mv $WRE_ROOT/prereqs/include/zlib.h.ignore $WRE_ROOT/prereqs/include/zlib.h
 			;;
 	esac
+	echo "webgui/package   wgpkg" >> $WRE_ROOT/prereqs/conf/mime.types
 
 	# modperl
 	cd ../mod_perl-2.0.3
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
-        fi	
+    fi	
 	perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
 	make; checkError $? "mod_perl make"
 # The tests fail on all systems even on good builds
@@ -169,8 +173,17 @@ buildApache(){
 #			;;
 #	esac
 	make install; checkError $? "mod_perl make install"
+
+    if [ "$WRE_BUILD_WDK" == 1 ]; then
+        # neon
+        buildProgram("neon-0.26.4","--with-zlib=$WRE_ROOT/prereqs --with-ssl=$WRE_ROOT/prereqs");
+
+        # subversion 
+        buildProgram("subversion-1.4.4", "--with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs");
+
+    fi
+
 	cd $WRE_BUILDDIR
-	echo "webgui/package   wgpkg" >> $WRE_ROOT/prereqs/conf/mime.types
 }
 
 
@@ -392,19 +405,25 @@ installPerlModules(){
 	cp -f mysqldiff $WRE_ROOT/sbin/
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
-    buildPerlModule "Alien-GvaScript-1.03"
-    installPerlModule "List-MoreUtils-0.22"
-    installPerlModule "Module-CoreList-2.11"
-    installPerlModule "Pod-POM-0.17"
-    installPerlModule "Search-Indexer-0.74"
-    installPerlModule "PPI-HTML-1.07"
-    WRE_BERKLEY_VERSION="BerkeleyDB-0.31"
-    perl -i -p -e"s[/usr/local/BerkeleyDB][$WRE_ROOT/prereqs]g" $WRE_BERKLEY_VERSION/config.in
-    installPerlModule "BerkeleyDB-0.31"
-    installPerlModule "Search-QueryParser-0.91"
-    installPerlModule "Pod-POM-Web-1.04"
+    if [ "$WRE_BUILD_WDK" == 1 ]; then
+        buildPerlModule "Alien-GvaScript-1.03"
+        installPerlModule "List-MoreUtils-0.22"
+        installPerlModule "Module-CoreList-2.11"
+        installPerlModule "Pod-POM-0.17"
+        installPerlModule "Search-Indexer-0.74"
+        installPerlModule "PPI-HTML-1.07"
+        WRE_BERKLEY_VERSION="BerkeleyDB-0.31"
+        perl -i -p -e"s[/usr/local/BerkeleyDB][$WRE_ROOT/prereqs]g" $WRE_BERKLEY_VERSION/config.in
+        installPerlModule "BerkeleyDB-0.31"
+        installPerlModule "Search-QueryParser-0.91"
+        installPerlModule "Pod-POM-Web-1.04"
+    fi
 	installPerlModule "File-Slurp-9999.12"
 	installPerlModule "Text-CSV_XS-0.26"
+	installPerlModule "File-Temp-0.18"
+	installPerlModule "File-Which-0.05"
+	installPerlModule "Class-InsideOut-1.06"
+	installPerlModule "HTML-TagCloud-0.34"
 	cd $WRE_BUILDDIR
 }
 
@@ -420,6 +439,10 @@ installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
 	cp -R wre /data/
 	mkdir $WRE_ROOT/etc
+    if [ $WRE_BUILD_WDK != 1 ]; then
+        rm -f $WRE_ROOT/bin/apiindexer.pl   
+        rm -f $WRW_ROOT/bin/apiwebserver.pl
+    fi
 }
 
 #gooey
@@ -445,9 +468,9 @@ cat <<_WREHELP
   Build switches cause only selecte applications to build.
   They can be combined to build only certain apps.
   
-  Example: ./build.sh --perl           #only perl will be built
-           ./build.sh --perl --apache  #only perl and apache will build
-           ./build.sh --all            #build all
+  Example: ./build.sh --perl           # only perl will be built
+           ./build.sh --perl --apache  # only perl and apache will build
+           ./build.sh --all            # build all (except wdk)
 
   --clean           cleans all pre-req folders for a new build
   --utilities	    compiles and installs shared utilities
@@ -457,7 +480,8 @@ cat <<_WREHELP
   --graphicsmagick  compiles and installs graphicsmagick
   --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
-  --wre             installs wre
+  --wre             installs WebGUI Runtime Environment scripts and API
+  --wdk             insalls WebGUI Developmment Kit tools
                                
 _WREHELP
 
@@ -526,6 +550,10 @@ do
     
     --wre)
         export WRE_BUILD_WRE=1
+    ;;
+    
+    --wdk)
+        export WRE_BUILD_WDK=1
     ;;
     
     --wre=revolutionary)
