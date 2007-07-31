@@ -24,16 +24,18 @@ printHeader(){
 
 buildProgram() {
 	cd $1
+    printHeader $1
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
     fi	
+    echo "Configuring $1 with ./configure --prefix=$WRE_ROOT/prereqs $2"
 	./configure --prefix=$WRE_ROOT/prereqs $2; checkError $? "$1 configure"
 	make; checkError $? "$1 make"
 	make install $3; checkError $? "$1 make install"
 	cd ..	
 }
-                 
+
 # utilities
 buildUtils(){
     printHeader "Utilities"
@@ -242,17 +244,10 @@ buildGraphicsMagick(){
 	make; checkError $? "Graphics Magick libpng make"
 	make install; checkError $? "Graphics Magick libpng make install"
     cd ..
-   
+  
 	# graphics magick
-	cd GraphicsMagick-1.1.7
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
- 		make clean
-    fi	
-    export WRE_CONFIGURE="--prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS='-L$WRE_ROOT/prereqs/lib' CPPFLAGS='-I$WRE_ROOT/prereqs/include' --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
-	./configure $WRE_CONFIGURE; checkError $? "GraphicsMagick configure"
-	make; checkError $? "GraphicsMagick make"
-	make install; checkError $? "GraphicsMagick make install"
+    export WRE_CONFIGURE="--prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
+    buildProgram "GraphicsMagick-1.1.7" "$WRE_CONFIGURE"
 
 	cd $WRE_BUILDDIR
 }
