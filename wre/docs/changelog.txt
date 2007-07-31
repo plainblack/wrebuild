@@ -64,6 +64,19 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - File::Temp 0.18
     - HTML::TagCloud 0.34
     - Class::InsideOut 1.06
+    - Exception-Class 1.23
+    - XML-RSS-Parser 4
+    - HTTP-Server-Simple 0.27
+    - TimeDate 1.16
+    - Number-Format 1.52
+    - Locale-Maketext 1.10
+    - Locale-Maketext-Lexicon 0.64
+    - Template-Plugin-Clickable 0.06
+    - Template-Plugin-Clickable-Email 0.01
+    - Template-Plugin-Number-Format 1.01
+    - WWW-Mechanize 1.30
+    - YAML 0.65
+    - SVN-Web 0.53
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 

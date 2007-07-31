@@ -351,6 +351,7 @@ installPerlModules(){
 	installPerlModule "IO-Socket-SSL-0.97"
     export LDAP_VERSION="perl-ldap-0.33"
     $WRE_ROOT/prereqs/bin/perl -i -p -e"s[check_module\('Authen::SASL', 2.00\) or print <<\"EDQ\",\"\\\n\";][print <<\"EDQ\",\"\\\n\";]g" $LDAP_VERSION/Makefile.PL
+    $WRE_ROOT/prereqs/bin/perl -i -nl -e"print unless /'SASL authentication' => \[/../\],/" $LDAP_VERSION/Makefile.PL
 	installPerlModule $LDAP_VERSION
 	installPerlModule "Log-Log4perl-1.10"
 	installPerlModule "POE-0.9989" "--default"
@@ -412,6 +413,19 @@ installPerlModules(){
         installPerlModule "BerkeleyDB-0.31"
         installPerlModule "Search-QueryParser-0.91"
         installPerlModule "Pod-POM-Web-1.04"
+        installPerlModule "Exception-Class-1.23"
+	    installPerlModule "XML-RSS-Parser-4"
+        installPerlModule "HTTP-Server-Simple-0.27"
+        installPerlModule "TimeDate-1.16"
+        installPerlModule "Number-Format-1.52"
+        installPerlModule "Locale-Maketext-1.10"
+        installPerlModule "Locale-Maketext-Lexicon-0.64"
+        installPerlModule "Template-Plugin-Clickable-0.06"
+        installPerlModule "Template-Plugin-Clickable-Email-0.01"
+        installPerlModule "Template-Plugin-Number-Format-1.01"
+        installPerlModule "WWW-Mechanize-1.30"
+        installPerlModule "YAML-0.65"
+        installPerlModule "SVN-Web-0.53"
     fi
 	installPerlModule "File-Slurp-9999.12"
 	installPerlModule "Text-CSV_XS-0.26"
@@ -434,7 +448,7 @@ installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
 	cp -R wre /data/
 	mkdir $WRE_ROOT/etc
-    if [ $WRE_BUILD_WDK != 1 ]; then
+    if [ $WRE_BUILD_WDK <> 1 ]; then
         rm -f $WRE_ROOT/bin/apiindexer.pl   
         rm -f $WRW_ROOT/bin/apiwebserver.pl
     fi
