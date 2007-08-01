@@ -1,8 +1,8 @@
-<VirtualHost *:__apache-modperl-port__>
-	ServerName __sitename__
-	ServerAlias __domain__
-	DocumentRoot __domain-home__/__sitename__/public
+<VirtualHost *:[% modperlPort %]>
+	ServerName [% sitename %]
+	ServerAlias [% domain %]
+	DocumentRoot [% domainRoot %]/[% sitename %]/public
         SetHandler perl-script
         PerlInitHandler WebGUI
-        PerlSetVar WebguiConfig __sitename__.conf
+        PerlSetVar WebguiConfig [% sitename %].conf
 </VirtualHost>

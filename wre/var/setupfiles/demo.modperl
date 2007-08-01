@@ -1,7 +1,7 @@
-<VirtualHost *:__apache-modperl-port__>
-	ServerName __demo-sitename__
-	DocumentRoot /data/domains/demo
-        PerlRequire /data/wre/lib/Hoster/WebguiDemo.pm
+<VirtualHost *:[% modperlPort %]>
+	ServerName [% sitename %]
+	DocumentRoot [% domainRoot %]/demo
+        PerlRequire [% wreRoot %]/lib/Hoster/WebguiDemo.pm
         SetHandler perl-script
         PerlInitHandler Hoster::WebguiDemo
 </VirtualHost>

@@ -1,10 +1,10 @@
-<VirtualHost *:__apache-modproxy-port__>
-	ServerName __demo-sitename__
-	DocumentRoot /data/domains/demo
+<VirtualHost *:[% modproxyPort %]>
+	ServerName [% sitename %]
+	DocumentRoot [% domainRoot %]/demo
 	RewriteEngine On
-        RewriteLog "/data/wre/prereqs/apache/logs/modrewrite.log"
+        RewriteLog "[% wreRoot %]/var/logs/modrewrite.log"
         RewriteLogLevel 0
-        # block nimda attacks from getting to WebGUI
+        # block IIS related attacks from getting to WebGUI
         RewriteRule ^/scripts/ - [L]
         RewriteRule ^/default.ida - [L]
         RewriteRule ^/_vti_bin - [L]
@@ -13,5 +13,5 @@
         RewriteRule ^/favicon.ico - [L]
         RewriteRule ^/extras/ - [L]
         # proxy webgui pages
-	RewriteRule ^/(.*) http://__demo-sitename__:__apache-modperl-port__/$1 [P]
+	RewriteRule ^/(.*) http://[% sitename %]:[% modperlPort %]/$1 [P]
 </VirtualHost>

@@ -48,7 +48,7 @@
 # If there is several log files from load balancing servers :
 # Example: "/pathtotools/logresolvemerge.pl *.log |"
 #
-LogFile="/data/domains/__sitename__/logs/access.log.0"
+LogFile="[% domainRoot %]/[% sitename %]/logs/access.log.0"
 
 
 # Enter the log file type you want to analyze.
@@ -145,7 +145,7 @@ LogSeparator=" "
 # Example: "ftp.domain.com"
 # Example: "domain.com"
 #
-SiteDomain="__sitename__"
+SiteDomain="[% sitename %]"
 
 
 # Enter here all other possible domain names, addresses or virtual host
@@ -160,7 +160,7 @@ SiteDomain="__sitename__"
 # Note: You can also use @/mypath/myfile if list of aliases are in a file.
 # Example: "www.myserver.com localhost 127.0.0.1 REGEX[mydomain\.(net|org)$]"
 #
-HostAliases="__sitename__ __domain__"
+HostAliases="[% sitename %] [% domain %]"
 
 
 # If you want to have hosts reported by name instead of ip address, AWStats
@@ -195,7 +195,7 @@ DNSLookup=1
 # Example: "C:/awstats_data_dir"
 # Default: "."          (means same directory as awstats.pl)
 #
-DirData="/data/domains/__sitename__/awstats"
+DirData="[% domainRoot %]/[% sitename %]/awstats"
 
 
 # Relative or absolute web URL of your awstats cgi-bin directory.

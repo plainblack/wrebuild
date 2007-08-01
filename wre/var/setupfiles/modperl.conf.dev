@@ -25,8 +25,8 @@
 # of the server's control files begin with "/" (or "drive:/" for Win32), the
 # server will use that explicit path.  If the filenames do *not* begin
 # with "/", the value of ServerRoot is prepended -- so "logs/foo.log"
-# with ServerRoot set to "/data/wre/prereqs/apache" will be interpreted by the
-# server as "/data/wre/prereqs/apache/logs/foo.log".
+# with ServerRoot set to "[% wreRoot %]/prereqs/apache" will be interpreted by the
+# server as "[% wreRoot %]/var/logs/foo.log".
 #
 
 ### Section 1: Global Environment
@@ -47,7 +47,7 @@
 #
 # Do NOT add a slash at the end of the directory path.
 #
-ServerRoot "/data/wre/prereqs/apache"
+ServerRoot "[% wreRoot %]/prereqs/apache"
 
 #
 # The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
@@ -135,7 +135,7 @@ MaxRequestsPerChild 0
 #
 #Listen 12.34.56.78:80
 
-Listen __apache-modperl-port__
+Listen [% modperlPort %]
 
 #
 # Dynamic Shared Object (DSO) Support
@@ -158,10 +158,10 @@ LoadModule perl_module modules/mod_perl.so
       PerlSetVar StatusOptionsAll On
       PerlSetVar StatusDeparseOptions "-p -sC"
   </Location>
-PerlSetVar WebguiRoot /data/WebGUI
-PerlRequire /data/wre/prereqs/apache/conf/startup.pl
+PerlSetVar WebguiRoot [% webguiRoot %]
+PerlRequire [% wreRoot %]/prereqs/apache/conf/startup.pl
 PerlCleanupHandler Apache2::SizeLimit
-PerlRequire /data/WebGUI/sbin/preload.perl
+PerlRequire [% webguiRoot %]/sbin/preload.perl
 
 #
 # ExtendedStatus controls whether Apache will generate "full" status
@@ -236,7 +236,7 @@ UseCanonicalName Off
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-DocumentRoot "/data/wre/prereqs/apache/htdocs"
+DocumentRoot "[% wreRoot %]/prereqs/apache/htdocs"
 
 #
 # Each directory to which Apache has access can be configured with respect
@@ -250,7 +250,7 @@ DocumentRoot "/data/wre/prereqs/apache/htdocs"
     Options FollowSymLinks
     AllowOverride None
 </Directory>
-Alias /extras /data/WebGUI/www/extras
+Alias /extras [% webguiRoot %]/www/extras
 
 #
 # Note that from this point forward you must specifically allow
@@ -262,7 +262,7 @@ Alias /extras /data/WebGUI/www/extras
 #
 # This should be changed to whatever you set DocumentRoot to.
 #
-<Directory "/data/wre/prereqs/apache/htdocs">
+<Directory "[% wreRoot %]/prereqs/apache/htdocs">
 
 #
 # Possible values for the Options directive are "None", "All",
@@ -459,9 +459,9 @@ ServerSignature Off
 # We include the /icons/ alias for FancyIndexed directory listings.  If you
 # do not use FancyIndexing, you may comment this out.
 #
-Alias /icons/ "/data/wre/prereqs/apache/icons/"
+Alias /icons/ "[% wreRoot %]/prereqs/apache/icons/"
 
-<Directory "/data/wre/prereqs/apache/icons">
+<Directory "[% wreRoot %]/prereqs/apache/icons">
     Options Indexes MultiViews
     AllowOverride None
     Order allow,deny
@@ -473,9 +473,9 @@ Alias /icons/ "/data/wre/prereqs/apache/icons/"
 # the manual, even if you choose to move your DocumentRoot.  You may comment
 # this out if you do not care for the documentation.
 #
-AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "/data/wre/prereqs/apache/manual$1"
+AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "[% wreRoot %]/prereqs/apache/manual$1"
 
-<Directory "/data/wre/prereqs/apache/manual">
+<Directory "[% wreRoot %]/prereqs/apache/manual">
     Options Indexes
     AllowOverride None
     Order allow,deny
@@ -497,7 +497,7 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "/data/wre/prereqs/apac
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "/data/wre/prereqs/apache/cgi-bin/"
+ScriptAlias /cgi-bin/ "[% wreRoot %]/prereqs/apache/cgi-bin/"
 
 <IfModule mod_cgid.c>
 #
@@ -508,10 +508,10 @@ ScriptAlias /cgi-bin/ "/data/wre/prereqs/apache/cgi-bin/"
 </IfModule>
 
 #
-# "/data/wre/prereqs/apache/cgi-bin" should be changed to whatever your ScriptAliased
+# "[% wreRoot %]/prereqs/apache/cgi-bin" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "/data/wre/prereqs/apache/cgi-bin">
+<Directory "[% wreRoot %]/prereqs/apache/cgi-bin">
     AllowOverride None
     Options None
     Order allow,deny
@@ -688,7 +688,7 @@ AddHandler type-map var
 #   Alias /error/include/ "/your/include/path/"
 #
 # which allows you to create your own set of files by starting with the
-# /data/wre/prereqs/apache/error/include/ files and copying them to /your/include/path/, 
+# [% wreRoot %]/prereqs/apache/error/include/ files and copying them to /your/include/path/, 
 # even on a per-VirtualHost basis.  The default include files will display
 # your Apache version number and your ServerAdmin email address regardless
 # of the setting of ServerSignature.
@@ -696,9 +696,9 @@ AddHandler type-map var
 # The internationalized error documents require mod_alias, mod_include
 # and mod_negotiation.  To activate them, uncomment the following 30 lines.
 
-#    Alias /error/ "/data/wre/prereqs/apache/error/"
+#    Alias /error/ "[% wreRoot %]/prereqs/apache/error/"
 #
-#    <Directory "/data/wre/prereqs/apache/error">
+#    <Directory "[% wreRoot %]/prereqs/apache/error">
 #        AllowOverride None
 #        Options IncludesNoExec
 #        AddOutputFilter Includes html
@@ -811,6 +811,6 @@ BrowserMatch "^gnome-vfs" redirect-carefully
 
 
 
-NameVirtualHost *:__apache-modperl-port__
+NameVirtualHost *:[% modperlPort %]
 
-Include /data/wre/etc/*.modperl
+Include [% wreRoot %]/etc/*.modperl
