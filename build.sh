@@ -155,7 +155,13 @@ buildApache(){
 		mv $WRE_ROOT/prereqs/include/zlib.h.ignore $WRE_ROOT/prereqs/include/zlib.h
 			;;
 	esac
-	echo "webgui/package   wgpkg" >> $WRE_ROOT/prereqs/conf/mime.types
+	echo "webgui/package   wgpkg" >> $WRE_ROOT/etc/mime.types
+    rm -f $WRE_ROOT/etc/highperformance-std.conf
+    rm -f $WRE_ROOT/etc/highperformance.conf
+    rm -f $WRE_ROOT/etc/httpd-std.conf 
+    rm -f $WRE_ROOT/etc/httpd.conf 
+    rm -f $WRE_ROOT/etc/ssl-std.conf
+    rm -f $WRE_ROOT/etc/ssl.conf
 
 	# modperl
 	cd ../mod_perl-2.0.3
