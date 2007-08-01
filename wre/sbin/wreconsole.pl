@@ -276,7 +276,7 @@ sub www_deleteSiteSave {
     my $site = WRE::Site->new(
             wreConfig       => $state->{config}, 
             sitename        => $sitename, 
-            adminPassword   => $cgi->param("adminPassword")
+            adminPassword   => $state->{cgi}->param("adminPassword")
             );
     if ($site->checkDeletionSanity) {
         www_listSites($state, $sitename." deleted."); 
