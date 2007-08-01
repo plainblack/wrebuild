@@ -1,4 +1,4 @@
-#!/data/wre/prereqs/perl/bin/perl
+#!/data/wre/prereqs/bin/perl
 
 $| = 1;
 

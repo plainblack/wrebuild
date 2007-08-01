@@ -12,7 +12,7 @@ package WRE::Spectre;
 
 use strict;
 use base 'WRE::Service';
-use Carp qw(carp);
+use Carp qw(croak);
 use Class::InsideOut qw(register id public);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
@@ -35,6 +35,16 @@ Returns a reference to the Spectre Config object.
 
 public spectreConfig => my %spectreConfig;
 
+#-------------------------------------------------------------------
+
+=head2 wreConfig ( )
+
+Returns a reference to the WRE Config object.
+
+=cut
+
+public wreConfig => my %wreConfig;
+
 
 #-------------------------------------------------------------------
 
@@ -50,10 +60,11 @@ A WRE::Config object.
 
 sub new {
     my $class = shift;
-    my $config = shift;
+    my %options = @_;
     my $self = WRE::Service->new(@_);
     register($self, $class);
-    $spectreConfig{id $self} = Config::JSON->new($config->getWebguiRoot("/etc/spectre.conf"));
+    $wreConfig{id $self} = $options{wreConfig};
+    $spectreConfig{id $self} = Config::JSON->new($options{wreConfig}->getWebguiRoot("/etc/spectre.conf"));
     return $self;
 }
 
@@ -76,20 +87,20 @@ sub ping {
         timeout => 10
         );
     unless ($remote) {
-        carp "Couldn't connect to Spectre because ".$POE::Component::IKC::ClientLite::error;
+        croak "Couldn't connect to Spectre because ".$POE::Component::IKC::ClientLite::error;
         return 0;
     }
     my $result = $remote->post_respond('admin/ping');
     $remote->disconnect;
     unless (defined $result) {
-        carp "Didn't get a response from Spectre because ".$POE::Component::IKC::ClientLite::error;
+        croak "Didn't get a response from Spectre because ".$POE::Component::IKC::ClientLite::error;
         return 0;
     }
     undef $remote;
     if ($result eq "pong") {
         return 1;
     } else {
-        carp "Received '".$result."' when we expected 'pong'.";
+        croak "Received '".$result."' when we expected 'pong'.";
         return 0;
     }
 }
@@ -111,7 +122,7 @@ sub start {
     system($wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon");
     while ($count < 10 && $success == 0) {
         sleep(1);
-        $success = $self->ping;
+        eval {$success = $self->ping };
         $count++;
     }
     return $success;
@@ -134,7 +145,7 @@ sub stop {
     system($wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown");
     while ($count < 10 && $success == 0) {
         sleep(1);
-        $success = !$self->ping;
+        eval {$success = !$self->ping};
         $count++;
     }
     return $success;

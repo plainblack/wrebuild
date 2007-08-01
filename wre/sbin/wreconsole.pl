@@ -1154,8 +1154,29 @@ sub www_setup {
             $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                 $config->getRoot("/etc/my.cnf"),
                 { force => 1, processTemmplate=>1 });
+            my $mysql = WRE::Mysql->new(wreConfig=>$config);
+            chdir($config->getRoot("/prereqs/mysql"));
+            system("./bin/mysql_install_db --port=" . $collected->{mysqlPort});
+            $file->makePath($config->getRoot("/var/mysql"));
+            my $mysql = WRE::Mysql->new(wreConfig=>$config);
+            if ($mysql->start) {
+                my $db = $mysql->getDatabaseHandle(undef,"root");
+                if (defined $db) {
+                    $db->do("delete from user where user=''");
+                    $db->do("delete from user where user='root'");
+                    $db->do("grant all privileges on *.* to ".$collected->{mysqlAdminUser}."\@'localhost' identified by '".$collected->{mysqlAdminPassword}."' with grant option");
+                    $db->do("flush privileges");
+                    $db->disconnect;
+                }
+                else {
+                    print $socket "Couldn't connect to MySQL to configure it. ".$@;
+                }
+                $mysql->stop;
+            }
+            else {
+                print $socket "Couldn't start MySQL to configure it. You'll have to change some setings and try again. ".$@;
+            }
         }
-        my $mysql = WRE::Mysql->new(wreConfig=>$config);
 
         # apache
         print $socket "<p>Configuring Apache.</p>$crlf";

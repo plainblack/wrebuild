@@ -12,7 +12,7 @@ package WRE::Mysql;
 
 use strict;
 use base 'WRE::Service';
-use Carp qw(carp);
+use Carp qw(croak);
 use Class::InsideOut qw(new);
 use DBI;
 
@@ -55,8 +55,9 @@ sub getDatabaseHandle {
     my $dsn = $options{dsn} || 'DBI:mysql:'.$mysql->{test}->{database}.';host='.$mysql->{hostname}.';port='.$mysql->{port};
     my $db = undef;
     eval { 
-        $db = DBI->connect($dsn, $username, $password);
+        $db = DBI->connect($dsn, $username, $password, {RaiseError=>1});
     };
+    croak "Couldn't connect to MySQL because ".$@;
     return $db;
 }
 
@@ -98,7 +99,6 @@ sub ping {
        $db->disconnect;
        return 1;
     }
-    carp "Couldn't connect to database because: $@";
     return 0;
 }
 
@@ -116,10 +116,11 @@ sub start {
     my $self = shift;
     my $count = 0;
     my $success = 0;
-    system($self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." start");
+    my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." start";
+    `$cmd`; 
     while ($count < 10 && $success == 0) {
         sleep(1);
-        $success = $self->ping;
+        eval {$success = $self->ping};
         $count++;
     }
     return $success;
@@ -139,9 +140,10 @@ sub stop {
     my $self = shift;
     my $count = 0;
     my $success = 0;
-    system($self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." stop");
+    my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." stop";
+    `$cmd`;
     while ($count < 10 && $success == 0) {
-        $success = !$self->ping;
+        eval {$success = !$self->ping};
         unless ($success) {
             $count++;
         }

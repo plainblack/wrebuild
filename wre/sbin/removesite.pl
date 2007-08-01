@@ -1,8 +1,6 @@
-#!/data/wre/prereqs/perl/bin/perl
+#!/data/wre/prereqs/bin/perl
 
-my $wreRoot = '/data/wre';
-
-use lib $wreRoot.'/lib';
+use lib '/data/wre/lib';
 use strict;
 use GetOpt::Long;
 use WRE::Config;

@@ -12,7 +12,7 @@ package WRE::Modperl;
 
 use strict;
 use base 'WRE::Service';
-use Carp qw(carp);
+use Carp qw(croak);
 use Class::InsideOut qw(new);
 use HTTP::Request;
 use HTTP::Headers;
@@ -50,7 +50,7 @@ sub ping {
     if ($response->is_success || $response->code eq "401") {
         return 1;
 	} 
-    carp "Modperl received error code ".$response->code." with message ".$response->error_as_HTML;
+    croak "Modperl received error code ".$response->code." with message ".$response->error_as_HTML;
     return 0;
 }
 
@@ -73,7 +73,7 @@ sub start {
         ." -D WRE-modperl -E ".$config->getRoot("/var/logs/modperl.error.log")." -k start");
     while ($count < 10 && $success == 0) {
         sleep(1);
-        $success = $self->ping;
+        eval {$success = $self->ping };
         $count++;
     }
     return $success;
@@ -97,7 +97,7 @@ sub stop {
     system($config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
         ." -D WRE-modperl -k stop");
     while ($count < 10 && $success == 0) {
-        $success = !$self->ping;
+        eval { $success = !$self->ping };
         unless ($success) {
             $count++;
         }
