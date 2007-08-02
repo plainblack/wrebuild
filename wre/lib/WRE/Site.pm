@@ -21,8 +21,17 @@ use WRE::Mysql;
 
 { # begin inside out object
 
-private sitename => my %sitename, { set_hook => sub { $_ = lc $_ } };
 private adminPassword => my %adminPassword;
+
+#-------------------------------------------------------------------
+
+=head2 sitename ( )
+
+Returns the sitename for the site we're working with.
+
+=cut
+
+public sitename => my %sitename, { set_hook => sub { $_ = lc $_ } };
 
 #-------------------------------------------------------------------
 
@@ -67,7 +76,7 @@ sub create {
     my $wreConfig = $self->wreConfig;
     my $file = WRE::File->new(wreConfig=>$wreConfig);
     my $refId = id $self;
-    my $sitename = $sitename{$refId};
+    my $sitename = $self->sitename;
     # manufacture stuff
     $params->{databaseName} = $self->makeDatabaseName;
     $params->{databaseUser} ||= random_string("ccccccc");
@@ -125,7 +134,7 @@ sub create {
 
     # create modproxy config
     $file->copy($wreConfig->getRoot("/var/modproxy.template"), 
-        $wreConfig->getRoot("/etc/".$sitename.".modperl"),
+        $wreConfig->getRoot("/etc/".$sitename.".modproxy"),
         { templateVars => $params, force => 1 });
 }
 
@@ -142,7 +151,7 @@ sub checkCreationSanity {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
-    my $sitename = $sitename{id $self};
+    my $sitename = $self->sitename;
     my $password = $adminPassword{id $self};
 
     # check that mysql is alive
@@ -194,7 +203,7 @@ sub checkDeletionSanity {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
-    my $sitename = $sitename{id $self};
+    my $sitename = $self->sitename;
     my $filename = $sitename.".conf";
 
     # check that mysql is alive
@@ -239,7 +248,7 @@ sub delete {
     my $wreConfig = $self->wreConfig;
     my $file = WRE::File->new(wreConfig=>$wreConfig);
     my $refId = id $self;
-    my $sitename = $sitename{$refId};
+    my $sitename = $self->sitename;
 
     # database
     my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
@@ -279,7 +288,7 @@ Returns a database friendly name generated from the sitename.
 
 sub makeDatabaseName {
     my $self = shift;
-    my $databaseName = $sitename{id $self};
+    my $databaseName = $self->sitename;
     $databaseName =~ s/\W/_/g;
     return $databaseName;
 }

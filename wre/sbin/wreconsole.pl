@@ -163,23 +163,23 @@ sub www_addSite {
     <div class="status">'.$status.'</div>
     <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
     <form action="/addSiteSave" method="post">
-    <table class="items">
+    <table>
     <tr>
         <td>Admin Database Password</td>
-        <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /><span class="subtext">Required</span></td>
+        <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /> <span class="subtext">Required</span></td>
     </tr>
     <tr>
         <td>Site Name</td>
-        <td><input type="text" name="sitename" value="'.$cgi->param("sitename").'" /><span class="subtext">Required</span></td>
+        <td><input type="text" name="sitename" value="'.$cgi->param("sitename").'" /> <span class="subtext">Required</span></td>
     </tr>
     <tr>
         <td>Site Database User</td>
-        <td><input type="text" name="siteDatabaseUser" value="'.$cgi->param("siteDatabaseUser").'" /><span class="subtext">Will be auto generated if left
+        <td><input type="text" name="siteDatabaseUser" value="'.$cgi->param("siteDatabaseUser").'" /> <span class="subtext">Will be auto generated if left
         blank.</span></td>
     </tr>
     <tr>
         <td>Site Database Password</td>
-        <td><input type="password" name="siteDatabasePassword" value="'.$cgi->param("siteDatabasePassword").'" /><span class="subtext">Will be auto generated if
+        <td><input type="password" name="siteDatabasePassword" value="'.$cgi->param("siteDatabasePassword").'" /> <span class="subtext">Will be auto generated if
         left blank.</td>
     </tr>
     <tr>
@@ -198,7 +198,7 @@ sub www_addSite {
         </td>
     </tr>
     </table>
-    <input type="submit" value="Create Site" onclick="this.value=\'Please wait...\';" />
+    <input type="submit" class="saveButton" value="Create Site" onclick="this.value=\'Please wait...\';" />
     </form>
     ';
     sendResponse($state, $content);
@@ -228,7 +228,7 @@ sub www_addSiteSave {
             var8                    => $cgi->param("var8"),
             var9                    => $cgi->param("var9"),
             });
-        return www_listSites($state, $site->getSitename." was created. Don't forget to restart the web servers and Spectre.");
+        return www_listSites($state, $site->sitename." was created. Don't forget to restart the web servers and Spectre.");
     } 
     else {
         return www_addSite($state, "Site could not be created because ".$@);
@@ -249,17 +249,17 @@ sub www_deleteSite {
     <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
     <form action="/deleteSiteSave" method="post">
     <input type="hidden" name="filename" value="'.$cgi->param("filename").'" />
-    <table class="items">
+    <table>
     <tr>
         <td>Site</td>
         <td>'.$cgi->param("filename").'</td>
     </tr>
     <tr>
         <td>Admin Database Password</td>
-        <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /><span class="subtext">Required</span></td>
+        <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /> <span class="subtext">Required</span></td>
     </tr>
     </table>
-    <input type="submit" value="Delete Site" onclick="this.value=\'Please wait...\';" />
+    <input type="submit" class="deleteButton" value="Delete Site" onclick="this.value=\'Please wait...\';" />
     </form>
     ';
     sendResponse($state, $content);

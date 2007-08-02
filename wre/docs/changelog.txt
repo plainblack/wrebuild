@@ -7,6 +7,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added the WRE Console.
  - Several security improvements including masked HTTP Server Tokens and the
    WRE having it's own system level user for all its processes.
+ - Added commented SSL directives to modproxy templates so that all you need
+   to do to enable SSL is get a certificate, and uncomment the directives.
  - Added a WDK (WebGUI Development Kit) build mode that adds extra features to
    the WRE just for developers.
  - Added a Perl / WebGUI API documentation server (WDK only).
