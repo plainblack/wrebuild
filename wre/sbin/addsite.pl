@@ -61,8 +61,8 @@ my $site = WRE::Site->new(
     sitename        => $sitename,
     adminPassword   => $adminPassword,
     );
-if ($site->checkCreationSanity) {
-    $site->create(params=>{
+if (eval {$site->checkCreationSanity}) {
+    $site->create({
         siteDatabaseUser        => $databaseUser,
         siteDatabasePassword    => $databasePassword,
         var0                    => $var0,
@@ -79,7 +79,7 @@ if ($site->checkCreationSanity) {
     print $site->getSitename." was created. Don't forget to restart the web servers and Spectre.\n";
 } 
 else {
-    print $site->getSitename." could not be created because: ".$!."\n";
+    print $site->getSitename." could not be created because: ".$@."\n";
 }
 
 

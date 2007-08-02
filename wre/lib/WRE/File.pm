@@ -173,7 +173,7 @@ sub copy {
                 else {
                     $out = "diff $to $from";
                 }
-               # $self->delete($temp);
+                $self->delete($temp);
             }
             # not dealing with a template
             else {
@@ -332,6 +332,7 @@ sub processTemplate {
     $var->{modperlPort}   = $config->get("apache")->{modperlPort};
     $var->{domainRoot}    = $config->getDomainRoot;
     $var->{wreRoot}       = $config->getRoot;
+    $var->{wreUser}       = $config->get("user");
     $var->{webguiRoot}    = $config->getWebguiRoot;
 
     # cache template

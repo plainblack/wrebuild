@@ -40,12 +40,12 @@ my $site = WRE::Site->new(
     sitename        => $sitename,
     adminPassword   => $adminPassword,
     );
-if ($site->checkDeletionSanity) {
+if (eval {$site->checkDeletionSanity}) {
     $site->delete;
     print $site->getSitename." was deleted. Don't forget to restart the web servers and Spectre.\n";
 } 
 else {
-    print $site->getSitename." could not be deleted because: ".$!."\n";
+    print $site->getSitename." could not be deleted because: ".$@."\n";
 }
 
 

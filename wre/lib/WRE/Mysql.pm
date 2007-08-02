@@ -148,9 +148,7 @@ sub stop {
     while ($count < 10 && $success == 0) {
         sleep(1);
         eval {$success = !$self->ping };
-        unless ($success) {
-            $count++;
-        }
+        $count++;
     }
     return $success;
 }

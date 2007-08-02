@@ -11,7 +11,7 @@ package WRE::Site;
 #-------------------------------------------------------------------
 
 use strict;
-use Carp qw(carp);
+use Carp qw(croak);
 use Class::InsideOut qw(new public private id);
 use Config::JSON;
 use JSON;
@@ -80,31 +80,31 @@ sub create {
     # create database
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
-    $db->do("grant all privileges on ".$params->{databaseName}.".* to ".$params->{databaseUser}
-        ."@'%' identified by '".$params->{databasePassword}."'");
+    $db->do("grant all privileges on ".$params->{databaseName}.".* to '".$params->{databaseUser}
+        ."'\@'%' identified by '".$params->{databasePassword}."'");
     $db->do("flush privileges");
     $db->do("create database ".$params->{databaseName});
     $db->disconnect;
-    system $wreConfig->getRoot('/prereqs/bin/mysql -u'.$params->{databaseUser}.' -p'
+    system $wreConfig->getRoot('/prereqs/bin/mysql').' -u'.$params->{databaseUser}.' -p'
         .$params->{databasePassword}.' --host='.$params->{databaseHost}.' --port='
         .$params->{databasePort}.' -e "source '.$wreConfig->getWebguiRoot("/docs/create.sql")
         .'" ' .$params->{databaseName};
 
     # create webroot
-	$file->makePath($wreConfig->getDomainHome('/'.$sitename.'/awstats'));
-	$file->makePath($wreConfig->getDomainHome('/'.$sitename.'/logs'));
-	$file->makePath($wreConfig->getDomainHome('/'.$sitename.'/public'));
-    my $uploads = $wreConfig->getDomainHome('/'.$sitename.'/public/uploads/');
+	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/awstats'));
+	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/logs'));
+	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/public'));
+    my $uploads = $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/');
     my $baseUploads = $wreConfig->getWebguiRoot('/www/uploads/');
     $file->copy($wreConfig->getWebguiRoot('/www/uploads/'), 
-        $wreConfig->getDomainHome('/'.$sitename.'/public/uploads/'),
+        $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/'),
         { recursive => 1, force=>1 });
 
     # create webgui config
     $file->copy($wreConfig->getWebguiRoot("/etc/WebGUI.conf.original"),
         $wreConfig->getWebguiRoot("/etc/".$sitename.".conf"),
         { force => 1 });
-    $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
+    my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
     my $overrides = $wreConfig->get("webgui")->{configOverrides};
     my $overridesAsTemplate =  JSON::objToJson($overrides);
     my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate, $params);
@@ -143,28 +143,35 @@ sub checkCreationSanity {
     my $wreConfig = $self->wreConfig;
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $sitename = $sitename{id $self};
+    my $password = $adminPassword{id $self};
+
+    # check that mysql is alive
+    unless (eval {$mysql->ping}) {
+        croak "MySQL appears to be down. ".$@;
+        return 0;
+    }
 
     # check that this user has admin rights
-    unless ($mysql->isAdmin(password=>$adminPassword)) {
-        carp "Invalid admin password.";
+    unless (eval {$mysql->isAdmin(password=>$password)}) {
+        croak "Invalid admin password. ". $@;
         return 0;
     }
 
     # check that the config file isn't already there
-    if (-e $wreConfig->getWebguiRoot("/etc/".$sitename.".conf") {
-        carp "WebGUI config file for $sitename already exists.";
+    if (-e $wreConfig->getWebguiRoot("/etc/".$sitename.".conf")) {
+        croak "WebGUI config file for $sitename already exists.";
         return 0;
     }
 
     # check for the existence of a database with this name
-    my $db = $mysql->getDatabaseHandle(password=>$adminPassword);
+    my $db = $mysql->getDatabaseHandle(password=>$password);
     my $sth = $db->prepare("show databases like ?");
     my $databaseName = $self->makeDatabaseName;
     $sth->execute($databaseName);
     my ($databaseExists) = $sth->fetchrow_array;
     $sth->finish;
     if ($databaseExists) {
-        carp "A database called $databaseName already exists.";
+        croak "A database called $databaseName already exists.";
         $db->disconnect;
         return 0;
     }
@@ -188,23 +195,29 @@ sub checkDeletionSanity {
     my $wreConfig = $self->wreConfig;
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $sitename = $sitename{id $self};
-    my $filename = $sitenmae.".conf";
+    my $filename = $sitename.".conf";
+
+    # check that mysql is alive
+    unless (eval {$mysql->ping}) {
+        croak "MySQL appears to be down. ".$@;
+        return 0;
+    }
 
     # check that this user has admin rights
-    unless ($mysql->isAdmin(password=>$adminPassword)) {
-        carp "Invalid admin password.";
+    unless (eval {$mysql->isAdmin(password=>$adminPassword{id $self})} ) {
+        croak "Invalid admin password.";
         return 0;
     }
 
     # check that the config file isn't already there
-    unless (-e $wreConfig->getWebguiRoot("/etc/".$filename) {
-        carp "WebGUI config file for $sitename doesn't exist.";
+    unless (-e $wreConfig->getWebguiRoot("/etc/".$filename)) {
+        croak "WebGUI config file for $sitename doesn't exist.";
         return 0;
     }
 
     # check if they're trying to delete WebGUI system configs
     if ($filename eq "spectre.conf" || $filename eq "log.conf") {
-        carp "Not a WebGUI site config.";
+        croak "Not a WebGUI site config.";
         return 0;
     }
 
@@ -236,7 +249,7 @@ sub delete {
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
     $db->do("drop database $databaseName");
-    $db->do("revoke all privileges on ".$databaseName.".* from ".$databaseUser."@'%'");
+    $db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'%'");
 
     # webgui
     $file->delete($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));

@@ -29,6 +29,7 @@ use WRE::Host;
 use WRE::Modperl;
 use WRE::Modproxy;
 use WRE::Mysql;
+use WRE::Site;
 use WRE::Spectre;
 use WRE::WebguiUpdate;
 
@@ -208,12 +209,12 @@ sub www_addSiteSave {
     my $state = shift;
     my $cgi = $state->{cgi};
     my $site = WRE::Site->new(
-            wreConfig       => $state->{config}, 
-            sitename        => $cgi->param("sitename"), 
-            adminPassword   => $cgi->param("adminPassword")
-            );
-    if ($site->checkCreationSanity) {
-        $site->create(params=>{
+        wreConfig       => $state->{config}, 
+        sitename        => $cgi->param("sitename"), 
+        adminPassword   => $cgi->param("adminPassword")
+        );
+    if (eval {$site->checkCreationSanity}) {
+        $site->create({
             siteDatabaseUser        => $cgi->param("siteDatabaseUser"),
             siteDatabasePassword    => $cgi->param("siteDatabasePassword"),
             var0                    => $cgi->param("var0"),
@@ -228,8 +229,9 @@ sub www_addSiteSave {
             var9                    => $cgi->param("var9"),
             });
         return www_listSites($state, $site->getSitename." was created. Don't forget to restart the web servers and Spectre.");
-    } else {
-        return www_addSite($state, "Site could not be created because ".$!);
+    } 
+    else {
+        return www_addSite($state, "Site could not be created because ".$@);
     }
 }
 
@@ -245,7 +247,7 @@ sub www_deleteSite {
     <p>Are you sure you wish to delete this site and all it\'s content and users? This cannot be undone, once you
     click on the button below.</p>
     <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
-    <form action="/addSiteSave" method="post">
+    <form action="/deleteSiteSave" method="post">
     <input type="hidden" name="filename" value="'.$cgi->param("filename").'" />
     <table class="items">
     <tr>
@@ -275,14 +277,16 @@ sub www_deleteSiteSave {
     my $sitename = $filename;
     $sitename =~ s/^(.*)\.conf$/$1/;
     my $site = WRE::Site->new(
-            wreConfig       => $state->{config}, 
-            sitename        => $sitename, 
-            adminPassword   => $state->{cgi}->param("adminPassword")
-            );
-    if ($site->checkDeletionSanity) {
+        wreConfig       => $state->{config}, 
+        sitename        => $sitename, 
+        adminPassword   => $state->{cgi}->param("adminPassword")
+        );
+    if (eval{$site->checkDeletionSanity}) {
+        $site->delete;
         www_listSites($state, $sitename." deleted."); 
-    } else {
-        return www_deleteSite($state, $sitename." could not be created because ".$!);
+    } 
+    else {
+        return www_deleteSite($state, $sitename." could not be created because ".$@);
     }
     my $status = $sitename." deleted.";
 }
@@ -642,19 +646,20 @@ sub www_editTemplate {
             sendResponse($state, "Stop dicking around!");
             return;
     }
+    my $file = WRE::File->new(wreConfig=>$state->{config});
     my $template;
-    eval { $template = read_file($state->{config}->getRoot("/var/".$filename)) };
+    eval { $template = $file->slurp($state->{config}->getRoot("/var/".$filename)) };
     if ($@) {
         carp "Couldn't open template file for editing $@";
         $content .= '<div class="status">'.$@.'</div>';
     }
-    makeHtmlFormSafe(\$template);
+    makeHtmlFormSafe($template);
     $content .= '
         <form action="/editTemplateSave" method="post">
         <input type="submit" class="saveButton" value="Save" /> 
         <input type="hidden" name="filename" value="'.$filename.'" />
         <div><b>'.$filename.'</b></div>
-        <textarea name="template">'.$template.'</textarea><br />
+        <textarea name="template">'.$$template.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> 
         </form>
     ';
@@ -690,13 +695,14 @@ sub www_editSite {
     }
     my $sitename = $filename;
     $sitename =~ s/^(.*)\.conf$/$1/;
+    my $file = WRE::File->new(wreConfig=>$state->{config});
     my $contents;
-    eval { $contents = read_file($state->{config}->getWebguiRoot("/etc/".$filename)) };
+    eval { $contents = $file->slurp($state->{config}->getWebguiRoot("/etc/".$filename)) };
     if ($@) {
         carp "Couldn't open template file for editing $@";
         $content .= '<div class="status">'.$@.'</div>';
     }
-    makeHtmlFormSafe(\$contents);
+    makeHtmlFormSafe($contents);
     $content .= '
         <p>Making a modification of these files requires a restart of modperl and modproxy afterwards, and sometimes also a restart
         of Spectre after that.</p>
@@ -704,40 +710,43 @@ sub www_editSite {
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
         <input type="hidden" name="filename" value="'.$filename.'" />
         <div><b>'.$filename.'</b></div>
-        <textarea name="webgui">'.$contents.'</textarea><br />
+        <textarea name="webgui">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" />  <br /><br />
     ';
-    eval { $contents = read_file($state->{config}->getRoot("/etc/".$sitename.".modproxy")) };
+    $$contents = '';
+    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/".$sitename.".modproxy")) };
     if ($@) {
         carp "Couldn't open $sitename.modproxy file for editing $@";
         $content .= '<div class="status">'.$@.'</div>';
     }
-    makeHtmlFormSafe(\$contents);
+    makeHtmlFormSafe($contents);
     $content .= '
         <div><b>'.$sitename.'.modproxy</b></div>
-        <textarea name="modproxy">'.$contents.'</textarea><br />
+        <textarea name="modproxy">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
     ';
-    eval { $contents = read_file($state->{config}->getRoot("/etc/".$sitename.".modperl")) };
+    $$contents = '';
+    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/".$sitename.".modperl")) };
     if ($@) {
         carp "Couldn't open $sitename.modperl file for editing $@";
         $content .= '<div class="status">'.$@.'</div>';
     }
-    makeHtmlFormSafe(\$contents);
+    makeHtmlFormSafe($contents);
     $content .= '
         <div><b>'.$sitename.'.modperl</b></div>
-        <textarea name="modperl">'.$contents.'</textarea><br />
+        <textarea name="modperl">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
     ';
-    eval { $contents = read_file($state->{config}->getRoot("/etc/awstats.".$sitename.".conf")) };
+    $$contents = '';
+    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/awstats.".$sitename.".conf")) };
     if ($@) {
         carp "Couldn't open awstats.$sitename.conf file for editing $@";
         $content .= '<div class="status">'.$@.'</div>';
     }
-    makeHtmlFormSafe(\$contents);
+    makeHtmlFormSafe($contents);
     $content .= '
         <div><b>awstats.'.$sitename.'.conf</b></div>
-        <textarea name="awstats">'.$contents.'</textarea><br />
+        <textarea name="awstats">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> 
         </form>
     ';
@@ -1193,6 +1202,9 @@ sub www_setup {
             $mysql->stop;
         }
         else {
+            my $monitor = $config->get("wreMonitor");
+            $monitor->{items}{mysql} = 0;
+            $config->set("wreMonitor", $monitor);
             print $socket "<blockquote>Connecting</blockquote>";
             my $db = eval { $mysql->getDatabaseHandle($collected->{mysqlAdminPassword}, $collected->{mysqlAdminUser})};
             if ($@) {
@@ -1231,6 +1243,9 @@ sub www_setup {
             { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/modproxy.template"),
             $config->getRoot("/var/modproxy.template"),
+            { force => 1 });
+        $file->copy($config->getRoot("/var/setupfiles/awstats.template"),
+            $config->getRoot("/var/awstats.template"),
             { force => 1 });
 
         unless ($collected->{manualWebguiInstall}) {

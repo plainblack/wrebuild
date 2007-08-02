@@ -100,9 +100,7 @@ sub stop {
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         eval { $success = !$self->ping };
-        unless ($success) {
-            $count++;
-        }
+        $count++;
     }
     return $success;
 }
