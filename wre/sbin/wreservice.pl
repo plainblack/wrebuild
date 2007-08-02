@@ -71,21 +71,6 @@ STOP
 
 my $config = WRE::Config->new;
 
-if (scalar(@start)) {
-    if (grep /^mysql|all$/, @start) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
-    }
-    if (grep /^modperl|all|web$/, @start) {
-        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->start}, "Start mod_perl");
-    }
-    if (grep /^modproxy|all|web$/, @start) {
-        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->start}, "Start mod_proxy");
-    }
-    if (grep /^spectre|all$/, @start) {
-        printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->start}, "Start S.P.E.C.T.R.E.");
-    }
-}
-
 if (scalar(@stop)) {
     if (grep /^spectre|all$/, @stop) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->stop}, "Stop S.P.E.C.T.R.E.");
@@ -98,6 +83,21 @@ if (scalar(@stop)) {
     }
     if (grep /^mysql|all$/, @stop) {
         printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->stop}, "Stop MySQL");
+    }
+}
+
+if (scalar(@start)) {
+    if (grep /^mysql|all$/, @start) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
+    }
+    if (grep /^modperl|all|web$/, @start) {
+        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->start}, "Start mod_perl");
+    }
+    if (grep /^modproxy|all|web$/, @start) {
+        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->start}, "Start mod_proxy");
+    }
+    if (grep /^spectre|all$/, @start) {
+        printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->start}, "Start S.P.E.C.T.R.E.");
     }
 }
 

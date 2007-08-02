@@ -42,6 +42,8 @@ webguiRoot              The path to the root of the WebGUI install.
 wreRoot                 The path to the root of the WRE install.
                         Example: /data/wre
 
+wreUser                 The user that the WRE will run under.
+
 
 [1] http://search.cpan.org/~abw/Template-Toolkit-2.19/lib/Template/Manual/Syntax.pod
 
