@@ -1,6 +1,6 @@
 use lib '../lib';
 use strict;
-use Test::More tests => 14;
+use Test::More tests => 16;
 use WRE::Config;
 use WRE::File;
 
@@ -51,6 +51,18 @@ isnt($file->compare($testFile, $testFile."2"), 1, "compare() different");
 # copy
 is($file->copy($testFile, $testFile."3"), "1", "copy() straight");
 is($file->copy($testFile, $testFile."2"), "diff /tmp/wrefiletest2 /tmp/wrefiletest", "copy() diff");
+
+# processTemplate
+my $content = "This is my modperl port: [% modperlPort %].";
+my $evaluatedContent = "This is my modperl port: 81.";
+is(${$file->processTemplate(\$content)}, $evaluatedContent, "processTemplate() with scalarref");
+
+
+# copy as template
+$file->spit($testFile, \$content);
+$file->copy($testFile, $testFile."2", {force=>1, processTemplate=>1});
+my $contentRef = $file->slurp($testFile."2");
+is($$contentRef, $evaluatedContent, "copy() as template");
 
 # path
 $file->makePath("/tmp/foo/bar");

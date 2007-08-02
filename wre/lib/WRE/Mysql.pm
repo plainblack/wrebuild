@@ -57,7 +57,9 @@ sub getDatabaseHandle {
     eval { 
         $db = DBI->connect($dsn, $username, $password, {RaiseError=>1});
     };
-    croak "Couldn't connect to MySQL because ".$@;
+    if ($@) {
+        croak "Couldn't connect to MySQL because ".$@;
+    }
     return $db;
 }
 
@@ -144,7 +146,8 @@ sub stop {
     my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." stop";
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
-        evalu {$success = !$self->ping };
+        sleep(1);
+        eval {$success = !$self->ping };
         unless ($success) {
             $count++;
         }

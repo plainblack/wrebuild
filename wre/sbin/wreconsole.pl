@@ -1158,45 +1158,52 @@ sub www_setup {
         my $diff = "";
 
         # mysql
+        print $socket "<p>Configuring MySQL.</p>$crlf";
         if ($collected->{mysqlHost} eq "localhost") {
-            print $socket "<p>Configuring MySQL.</p>$crlf";
+            print $socket "<blockquote>Writing config file</blockquote>";
             $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                 $config->getRoot("/etc/my.cnf"),
                 { force => 1, processTemplate=>1 });
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
+            print $socket "<blockquote>Creating default databases</blockquote>";
+            $file->makePath($config->getRoot("/var/mysql"));
             chdir($config->getRoot("/prereqs"));
             system("./bin/mysql_install_db --port=" . $collected->{mysqlPort});
-            $file->makePath($config->getRoot("/var/mysql"));
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
-            if ($mysql->start) {
-                my $db = eval{ $mysql->getDatabaseHandle(undef,"root")};
-                if ($@) {
-                    print $socket "Couldn't connect to MySQL to configure it. ".$@;
-                }
-                else {
-                    $db->do("delete from user where user=''");
-                    $db->do("delete from user where user='root'");
-                    $db->do("grant all privileges on *.* to ".$collected->{mysqlAdminUser}."\@'localhost' identified by '".$collected->{mysqlAdminPassword}."' with grant option");
-                    $db->do("grant all privileges on test.* to test\@'localhost' identified by 'test'");
-                    $db->do("grant select, lock tables, show on *.* to backup\@'localhost' identified by '".$mysqlBackupPassword."'");
-                    $db->do("flush privileges");
-                    $db->disconnect;
-                }
-                $mysql->stop;
+            print $socket "<blockquote>Starting MySQL</blockquote>";
+            $mysql->start;
+            print $socket "<blockquote>Connecting</blockquote>";
+            my $db = eval{ $mysql->getDatabaseHandle(undef,"root")};
+            if ($@) {
+                print $socket "Couldn't connect to MySQL to configure it. ".$@;
             }
             else {
-                print $socket "Couldn't start MySQL to configure it. You'll have to change some setings and try again. ".$@;
-            }
+                print $socket "<blockquote>Setting Privileges</blockquote>";
+                $db->do("use mysql");
+                $db->do("delete from user where user=''");
+                $db->do("delete from user where user='root'");
+                $db->do("grant all privileges on *.* to ".$collected->{mysqlAdminUser}."\@'localhost' identified by '".$collected->{mysqlAdminPassword}."' with grant option");
+                $db->do("grant all privileges on test.* to test\@'localhost' identified by 'test'");
+                $db->do("grant select, lock tables, show databases on *.* to backup\@'localhost' identified by '".$mysqlBackupPassword."'");
+                $db->do("flush privileges");
+                print $socket "<blockquote>Disconnecting</blockquote>";
+                $db->disconnect;
+             }
+            print $socket "<blockquote>Stopping MySQL</blockquote>";
+            $mysql->stop;
         }
         else {
+            print $socket "<blockquote>Connecting</blockquote>";
             my $db = eval { $mysql->getDatabaseHandle($collected->{mysqlAdminPassword}, $collected->{mysqlAdminUser})};
             if ($@) {
                 print $socket "Couldn't connect to remote MySQL server to configure it. ".$@;
             }
             else {
+                print $socket "<blockquote>Setting Privileges</blockquote>";
                 $db->do("grant all privileges on test.* to test\@'%' identified by 'test'");
                 $db->do("grant select, lock tables, show on *.* to backup\@'%' identified by '".$mysqlBackupPassword."'");
                 $db->do("flush privileges");
+                print $socket "<blockquote>Disconnecting</blockquote>";
                 $db->disconnect;
             }            
         }

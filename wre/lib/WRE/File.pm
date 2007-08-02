@@ -173,7 +173,7 @@ sub copy {
                 else {
                     $out = "diff $to $from";
                 }
-                $self->delete($temp);
+               # $self->delete($temp);
             }
             # not dealing with a template
             else {
@@ -298,14 +298,13 @@ A reference to a WRE Configuration object.
 
 #-------------------------------------------------------------------
 
-=head2 processTemplate ( { path | scalarref }, vars )
+=head2 processTemplate ( { input }, vars )
 
 Returns a scalar reference of the processed template.
 
-=head3 path | scalarref
+=head3 input
 
-If a path is passed in, a file will be loaded, and processed as a template. If a scalarref is passed in, then the
-contents of the scalar it is pointing to will be used as the template.
+Either a path to a template file as a scalar or a scalar reference to a template string.
 
 =head3 vars
 
@@ -321,6 +320,11 @@ sub processTemplate {
     my $var     = shift;
     my $config = $self->wreConfig;
 
+    # check to see if a path was passed in
+    unless (ref $input eq "SCALAR") {
+        $input = $self->slurp($input);
+    }
+
     # add in some template template variables
     $var->{databaseHost}  = $config->get("mysql")->{hostname};
     $var->{databasePort}  = $config->get("mysql")->{port};
@@ -333,11 +337,11 @@ sub processTemplate {
     # cache template
     my $refId = id $self; # inside out reference id
     if ($template{$refId} eq "") {
-        $template{$refId} = Template->new;
+        $template{$refId} = Template->new(INCLUDE_PATH=>'/');
     }
 
     # process the template
-    my $output = "";
+    my $output = undef;
     $template{$refId}->process($input, $var, \$output);
     return \$output;
 }
@@ -377,7 +381,9 @@ sub spit {
     my $self = shift;
     my $path = shift;
     my $content = shift;
-    write_file($path, $content);
+    unless (write_file($path, $content)) {
+        carp "Couldn't write content to $path because $!";
+    }
     $self->changeOwner($path);
 }
 
