@@ -20,6 +20,7 @@ use HTTP::Response;
 use HTTP::Status;
 use JSON qw(objToJson jsonToObj);
 use Path::Class;
+use String::Random qw(random_string);
 use Sys::Hostname;
 use Socket;
 use WRE::Config;
@@ -88,7 +89,7 @@ sub getNavigation {
     <a href="/listServices" $services>Services</a>
     <a href="/editSettings" $settings>Settings</a>
     <a href="/listTemplates" $templates>Templates</a>
-    <a href="/listUtilities" $utilities>Utilities</a>
+    <!-- a href="/listUtilities" $utilities>Utilities</a -->
     <div id="logo">WRE Console</div>
     <div id="navUnderline"></div>
     </div>
@@ -789,7 +790,7 @@ sub www_listServices {
         <td>Apache Modproxy</td>
         <td>';
     my $modproxy = WRE::Modproxy->new(wreConfig=>$state->{config});
-    if ($modproxy->ping) {
+    if (eval{$modproxy->ping}) {
         $content .= '
              <form action="/stopModproxy" method="post">
                 <input type="submit" value="Stop" />
@@ -811,7 +812,7 @@ sub www_listServices {
         <td>Apache Modperl</td>
         <td>';
     my $modperl = WRE::Modperl->new(wreConfig=>$state->{config});
-    if ($modperl->ping) {
+    if (eval{$modperl->ping}) {
         $content .= '
              <form action="/stopModperl" method="post">
                 <input type="submit" value="Stop" />
@@ -833,7 +834,7 @@ sub www_listServices {
         <td>MySQL</td>
         <td>';
     my $mysql = WRE::Mysql->new(wreConfig=>$state->{config});
-    if ($mysql->ping) {
+    if (eval{$mysql->ping}) {
         $content .= '
              <form action="/stopMysql" method="post">
                 <input type="submit" value="Stop" />
@@ -855,7 +856,7 @@ sub www_listServices {
         <td>Spectre</td>
         <td>';
     my $spectre = WRE::Spectre->new(wreConfig=>$state->{config});
-    if ($spectre->ping) {
+    if (eval{$spectre->ping}) {
             $content .= ' <form action="/stopSpectre" method="post">
                 <input type="submit" value="Stop" />
              </form>';
@@ -1130,17 +1131,25 @@ sub www_setup {
         # config file
         print $socket "<p>Updating WRE config.</p>$crlf";
         $config->set("user", $collected->{wreUser});
-        my $mysql = $config->get("mysql");
-        $mysql->{adminUser} = $collected->{mysqlAdminUser};
-        $mysql->{hostname}  = $collected->{mysqlHost};
-        $mysql->{port}      = $collected->{mysqlPort};
+
+        my $mysql                   = $config->get("mysql");
+        $mysql->{adminUser}         = $collected->{mysqlAdminUser};
+        $mysql->{hostname}          = $collected->{mysqlHost};
+        $mysql->{port}              = $collected->{mysqlPort};
         $config->set("mysql", $mysql);
-        my $apache = $config->get("apache");
-        $apache->{modperlPort}  = $collected->{modperlPort};
-        $apache->{modproxyPort} = $collected->{modproxyPort};
+
+        my $backup                  = $config->get("backup");
+        my $mysqlBackupPassword     = random_string("cCncCncCncCn");
+        $backup->{mysql}{password}  = $mysqlBackupPassword;
+        $config->set("backup", $backup);
+
+        my $apache                  = $config->get("apache");
+        $apache->{modperlPort}      = $collected->{modperlPort};
+        $apache->{modproxyPort}     = $collected->{modproxyPort};
         $config->set("apache", $apache);
-        my $webgui = $config->get("webgui");
-        my $spectreSubnetsString = $collected->{spectreSubnets};
+
+        my $webgui                  = $config->get("webgui");
+        my $spectreSubnetsString    = $collected->{spectreSubnets};
         $spectreSubnetsString =~ s/\s+//g;
         my @spectreSubnets = split(",", $spectreSubnetsString);
         push(@spectreSubnets, "127.0.0.1/32");
@@ -1153,29 +1162,43 @@ sub www_setup {
             print $socket "<p>Configuring MySQL.</p>$crlf";
             $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                 $config->getRoot("/etc/my.cnf"),
-                { force => 1, processTemmplate=>1 });
+                { force => 1, processTemplate=>1 });
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
-            chdir($config->getRoot("/prereqs/mysql"));
+            chdir($config->getRoot("/prereqs"));
             system("./bin/mysql_install_db --port=" . $collected->{mysqlPort});
             $file->makePath($config->getRoot("/var/mysql"));
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
             if ($mysql->start) {
-                my $db = $mysql->getDatabaseHandle(undef,"root");
-                if (defined $db) {
+                my $db = eval{ $mysql->getDatabaseHandle(undef,"root")};
+                if ($@) {
+                    print $socket "Couldn't connect to MySQL to configure it. ".$@;
+                }
+                else {
                     $db->do("delete from user where user=''");
                     $db->do("delete from user where user='root'");
                     $db->do("grant all privileges on *.* to ".$collected->{mysqlAdminUser}."\@'localhost' identified by '".$collected->{mysqlAdminPassword}."' with grant option");
+                    $db->do("grant all privileges on test.* to test\@'localhost' identified by 'test'");
+                    $db->do("grant select, lock tables, show on *.* to backup\@'localhost' identified by '".$mysqlBackupPassword."'");
                     $db->do("flush privileges");
                     $db->disconnect;
-                }
-                else {
-                    print $socket "Couldn't connect to MySQL to configure it. ".$@;
                 }
                 $mysql->stop;
             }
             else {
                 print $socket "Couldn't start MySQL to configure it. You'll have to change some setings and try again. ".$@;
             }
+        }
+        else {
+            my $db = eval { $mysql->getDatabaseHandle($collected->{mysqlAdminPassword}, $collected->{mysqlAdminUser})};
+            if ($@) {
+                print $socket "Couldn't connect to remote MySQL server to configure it. ".$@;
+            }
+            else {
+                $db->do("grant all privileges on test.* to test\@'%' identified by 'test'");
+                $db->do("grant select, lock tables, show on *.* to backup\@'%' identified by '".$mysqlBackupPassword."'");
+                $db->do("flush privileges");
+                $db->disconnect;
+            }            
         }
 
         # apache

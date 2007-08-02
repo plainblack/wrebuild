@@ -94,7 +94,8 @@ Returns a 1 if MySQL is running, or a 0 if it is not.
 sub ping {
     my $self = shift;
     my $mysql = $self->wreConfig->get("mysql");
-    my $db = $self->getDatabaseHandle(password=>$mysql->{test}->{password}, username=>$mysql->{test}->{user});
+    my $db;
+    eval {$db = $self->getDatabaseHandle(password=>$mysql->{test}->{password}, username=>$mysql->{test}->{user})};
     if (defined $db) {
        $db->disconnect;
        return 1;
@@ -117,10 +118,10 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." start";
-    `$cmd`; 
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
-        eval {$success = $self->ping};
+        eval {$success = $self->ping };
         $count++;
     }
     return $success;
@@ -141,9 +142,9 @@ sub stop {
     my $count = 0;
     my $success = 0;
     my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." stop";
-    `$cmd`;
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
-        eval {$success = !$self->ping};
+        evalu {$success = !$self->ping };
         unless ($success) {
             $count++;
         }

@@ -119,10 +119,11 @@ sub start {
     my $success = 0;
     my $wreConfig = $self->wreConfig;
     chdir($wreConfig->getWebguiRoot("/sbin"));
-    system($wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon");
+    my $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon";
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
-        eval {$success = $self->ping };
+        eval {$success = $self->ping};
         $count++;
     }
     return $success;
@@ -142,10 +143,11 @@ sub stop {
     my $success = 0;
     my $wreConfig = $self->wreConfig;
     chdir($wreConfig->getWebguiRoot("/sbin"));
-    system($wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown");
+    my $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown";
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
-        eval {$success = !$self->ping};
+        eval{$success = !$self->ping};
         $count++;
     }
     return $success;

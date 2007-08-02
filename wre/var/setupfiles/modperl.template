@@ -2,7 +2,9 @@
 	ServerName [% sitename %]
 	ServerAlias [% domain %]
 	DocumentRoot [% domainRoot %]/[% sitename %]/public
-        SetHandler perl-script
-        PerlInitHandler WebGUI
-        PerlSetVar WebguiConfig [% sitename %].conf
+    SetEnvIf SSLPROXY "1" \
+        SSLPROXY
+    SetHandler perl-script
+    PerlInitHandler WebGUI
+    PerlSetVar WebguiConfig [% sitename %].conf
 </VirtualHost>

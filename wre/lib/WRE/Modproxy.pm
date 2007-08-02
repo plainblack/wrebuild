@@ -69,8 +69,9 @@ sub start {
     my $wreConfig = $self->wreConfig;
     my $count = 0;
     my $success = 0;
-    system($wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
-        ." -D WRE-modproxy -E ".$wreConfig->getRoot("/var/logs/modproxy.error.log")." -k start");
+    my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
+        ." -D WRE-modproxy -E ".$wreConfig->getRoot("/var/logs/modproxy.error.log")." -k start";
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
         eval {$success = $self->ping};
@@ -94,8 +95,9 @@ sub stop {
     my $count = 0;
     my $success = 0;
     my $wreConfig = $self->wreConfig;
-    system($wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
-        ." -D WRE-modproxy -k stop");
+    my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
+        ." -D WRE-modproxy -k stop";
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         eval {$success = !$self->ping};
         unless ($success) {

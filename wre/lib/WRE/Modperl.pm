@@ -69,8 +69,9 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
-    system($config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf") 
-        ." -D WRE-modperl -E ".$config->getRoot("/var/logs/modperl.error.log")." -k start");
+    my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf") 
+        ." -D WRE-modperl -E ".$config->getRoot("/var/logs/modperl.error.log")." -k start";
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
         eval {$success = $self->ping };
@@ -94,8 +95,9 @@ sub stop {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
-    system($config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
-        ." -D WRE-modperl -k stop");
+    my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
+        ." -D WRE-modperl -k stop";
+    `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         eval { $success = !$self->ping };
         unless ($success) {

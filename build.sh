@@ -452,7 +452,7 @@ installAwStats(){
 #wre utils
 installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
-	cp -R wre /data/
+	cp -Rf wre /data/
 	mkdir $WRE_ROOT/etc
     if [ $WRE_BUILD_WDK <> 1 ]; then
         rm -f $WRE_ROOT/bin/apiindexer.pl   
