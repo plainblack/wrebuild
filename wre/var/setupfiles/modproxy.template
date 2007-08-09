@@ -1,4 +1,4 @@
-<VirtualHost *:[% modproxyPort %]_>
+<VirtualHost *:[% modproxyPort %]>
 	ServerName [% sitename %]
 	ServerAlias [% domain %]
 	CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined

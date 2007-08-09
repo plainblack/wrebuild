@@ -353,7 +353,7 @@ installPerlModules(){
 	installPerlModule "JSON-1.11"
     installPerlModule "version-0.7203"
     installPerlModule "Path-Class-0.16"
-	installPerlModule "Config-JSON-1.0.3"
+	installPerlModule "Config-JSON-1.1.0"
 	installPerlModule "IO-Socket-SSL-0.97"
     export LDAP_VERSION="perl-ldap-0.33"
     $WRE_ROOT/prereqs/bin/perl -i -p -e"s[check_module\('Authen::SASL', 2.00\) or print <<\"EDQ\",\"\\\n\";][print <<\"EDQ\",\"\\\n\";]g" $LDAP_VERSION/Makefile.PL

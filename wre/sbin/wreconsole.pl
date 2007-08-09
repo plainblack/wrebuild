@@ -15,6 +15,7 @@ use lib '../lib';
 use Carp qw(carp croak);
 use CGI;
 use Digest::MD5;
+use File::Which qw(which);
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
@@ -325,8 +326,8 @@ sub www_editSettings {
 
         <p>
         Max Memory<br />
-        <input type="text" name="apacheMaxMemoryPercent" value="'.$apache->{maxMemoryPercent}.'" /> 
-        <span class="subtext">The percentage of the servers memory that the WRE will allow Apache processes
+        <input type="text" name="apacheMaxMemoryPercent" value="'.$apache->{maxMemory}.'" /> 
+        <span class="subtext">The amount of the servers memory (in bytes) that the WRE will allow Apache/mod_perl processes
         to use before killing them.</span>
         </p>
 
@@ -352,13 +353,6 @@ sub www_editSettings {
         Email Address<br />
         <input type="text" name="wreMonitorNotify" value="'.join(", ", @{$wreMonitor->{notify}}).'" /> 
         <span class="subtext">Email address to alert when site goes down. Comma separated list.</span>
-        </p>
-
-        <p>
-        Seconds Between Checks<br />
-        <input type="text" name="wreMonitorSecondsBetweenChecks" value="'.$wreMonitor->{secondsBetweenChecks}.'" /> 
-        <span class="subtext">After an alert has been sounded, how long to wait until checking again to see if its
-        back up.</span>
         </p>
 
         <p>
@@ -798,13 +792,13 @@ sub www_listServices {
     if (eval{$modproxy->ping}) {
         $content .= '
              <form action="/stopModproxy" method="post">
-                <input type="submit" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" />
              </form>';
     }
     else {
         $content .= '
              <form action="/startModproxy" method="post">
-                <input type="submit" value="Start" />
+                <input type="submit" class="saveButton" value="Start" />
              </form>';
     }
     $content .= '
@@ -820,13 +814,13 @@ sub www_listServices {
     if (eval{$modperl->ping}) {
         $content .= '
              <form action="/stopModperl" method="post">
-                <input type="submit" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" />
              </form>';
     }
     else {
         $content .= '
              <form action="/startModperl" method="post">
-                <input type="submit" value="Start" />
+                <input type="submit" class="saveButton" value="Start" />
              </form>';
     }
     $content .= '
@@ -842,13 +836,13 @@ sub www_listServices {
     if (eval{$mysql->ping}) {
         $content .= '
              <form action="/stopMysql" method="post">
-                <input type="submit" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" />
              </form>';
     }
     else {
         $content .= '
              <form action="/startMysql" method="post">
-                <input type="submit" value="Start" />
+                <input type="submit" class="saveButton" value="Start" />
              </form>';
     }
     $content .= '
@@ -868,7 +862,7 @@ sub www_listServices {
     } 
     else {
              $content .= '<form action="/startSpectre" method="post">
-                <input type="submit" value="Start" />
+                <input type="submit" class="saveButton" value="Start" />
              </form>';
     }
     $content .= '
@@ -880,7 +874,7 @@ sub www_listServices {
     <tr>
         <td>WRE Console</td>
         <td><form action="/stopConsole" method="post">
-              <input type="submit" value="Stop" />
+              <input type="submit" class="deleteButton" value="Stop" />
              </form>
         </td>
     </table>';
@@ -1136,6 +1130,11 @@ sub www_setup {
         # config file
         print $socket "<p>Updating WRE config.</p>$crlf";
         $config->set("user", $collected->{wreUser});
+        $config->set("tar", which("tar"));
+        $config->set("gzip", which("gzip"));
+        $config->set("gunzip", which("gunzip"));
+        $config->set("ipcs", which("ipcs"));
+        $config->set("grep", which("grep"));
 
         my $mysql                   = $config->get("mysql");
         $mysql->{adminUser}         = $collected->{mysqlAdminUser};

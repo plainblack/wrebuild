@@ -86,6 +86,18 @@ sub create {
     $domain =~ s/\w+\.(.*)/$1/;
     $params->{domain} = $domain;
 
+    # create webgui config
+    $file->copy($wreConfig->getWebguiRoot("/etc/WebGUI.conf.original"),
+        $wreConfig->getWebguiRoot("/etc/".$sitename.".conf"),
+        { force => 1 });
+    my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
+    my $overridesAsTemplate =  JSON::objToJson($wreConfig->get("webgui/configOverrides"));
+    my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate, $params);
+    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
+    foreach my $key (keys %{$overridesAsHashRef}) {
+        $webguiConfig->set($key, $overridesAsHashRef->{$key});
+    }
+    
     # create database
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
@@ -109,19 +121,6 @@ sub create {
         $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/'),
         { recursive => 1, force=>1 });
 
-    # create webgui config
-    $file->copy($wreConfig->getWebguiRoot("/etc/WebGUI.conf.original"),
-        $wreConfig->getWebguiRoot("/etc/".$sitename.".conf"),
-        { force => 1 });
-    my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
-    my $overrides = $wreConfig->get("webgui")->{configOverrides};
-    my $overridesAsTemplate =  JSON::objToJson($overrides);
-    my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate, $params);
-    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
-    foreach my $key (%{$overridesAsHashRef}) {
-        $webguiConfig->set($key, $overridesAsHashRef->{$key});
-    }
-    
     # create awstats config
     $file->copy($wreConfig->getRoot("/var/awstats.template"),
         $wreConfig->getRoot("/etc/awstats.".$sitename.".conf"),
