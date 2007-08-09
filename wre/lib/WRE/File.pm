@@ -364,7 +364,7 @@ sub slurp {
 
 #-------------------------------------------------------------------
 
-=head2 spit ( path, content )
+=head2 spit ( path, content, options )
 
 Writes content into a file.
 
@@ -376,13 +376,24 @@ The path to the file you wish to write to.
 
 A scalar reference containing what you want to put into the file.
 
+=head3 options
+
+A hash reference of additional options.
+
+=head4 append
+
+A boolean, that if turned on will append to the file rather than overwritting it.
+
 =cut
 
 sub spit {
-    my $self = shift;
-    my $path = shift;
-    my $content = shift;
-    unless (write_file($path, $content)) {
+    my $self        = shift;
+    my $path        = shift;
+    my $content     = shift;
+    my $options     = shift;
+    my %params      = ();
+    $params{append} = $options->{append};
+    unless (write_file($path, \%params, $content)) {
         carp "Couldn't write content to $path because $!";
     }
     $self->changeOwner($path);
@@ -392,4 +403,6 @@ sub spit {
 
 
 } # end inside out object
+
 1;
+

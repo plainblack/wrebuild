@@ -5,6 +5,12 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Rewrote the entire WRE system to be easier to configure, have a more
    robust API, and work the same on Windows and Unix.
  - Added the WRE Console.
+ - WRE Monitor no longer panics.
+ - WRE Monitor can now check for modperl runaways on all Unix platforms.
+ - WRE Monitor can now notify multiple email addresses.
+ - Replaced rc. scripts with WRE Service controller, which is more robust and
+   platform independent.
+ - Created a folder for service scripts for various platforms.
  - Several security improvements including masked HTTP Server Tokens and the
    WRE having it's own system level user for all its processes.
  - Added commented SSL directives to modproxy templates so that all you need

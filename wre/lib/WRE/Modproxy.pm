@@ -29,6 +29,19 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
+=head getName () 
+
+Returns human readable name.
+
+=cut
+
+sub getName {
+    return "Apache/mod_proxy";
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 ping ( )
 
 Returns a 1 if Modproxy is running, or a 0 if it is not.

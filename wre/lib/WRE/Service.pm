@@ -30,6 +30,19 @@ public wreConfig => my %config;
 
 #-------------------------------------------------------------------
 
+=head2 getName () 
+
+Returns a human readable name for this service. This must be overridden by the subclass.
+
+=cut
+
+sub getName {
+    croak "getName() was not overridden by the subclass as directed.";
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 new ( wreConfig => $config )
 
 Constructor.

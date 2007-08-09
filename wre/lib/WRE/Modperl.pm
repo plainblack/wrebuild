@@ -30,6 +30,46 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
+=head getName () 
+
+Returns human readable name.
+
+=cut
+
+sub getName {
+    return "Apache/mod_perl";
+}
+
+#-------------------------------------------------------------------
+
+=head killRunaways () 
+
+Kills any processes that are larger than the maxMemory setting in the config file. Returns the number of processes
+killed.
+
+=cut
+
+sub killRunaways {
+    my $self = shift;
+    eval { require Proc::ProcessTable; };
+    if ($@) { # can't check if this module doesn't exist (eg: windows)
+        return 0;
+    }
+    my $killed = 0;
+    my $processTable = Proc::ProcessTable->new;
+    my $maxMemory = $self->wreConfig->get("apache/maxMemory");
+    foreach my $process (@{$processTable->table}) {
+        next unless ($process->cmndline =~ /httpd.* -D WRE-modperl /);
+        if ($process->size >= $maxMemory) {
+            $killed += $process->kill(9);
+        }
+    }
+    return $killed;
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 ping ( )
 
 Returns a 1 if Modperl is running, or a 0 if it is not.

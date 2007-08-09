@@ -296,7 +296,7 @@ sub www_editSettings {
     my $state = shift;
     my $config = $state->{config};
     my $content = getNavigation("settings");
-    my $configOverrides = objToJson($config->get("webgui")->{configOverrides}, 
+    my $configOverrides = objToJson($config->get("webgui/configOverrides"), 
         {pretty => 1, indent => 4, autoconv=>0, skipinvalid=>1}); 
     my $logs = $config->get("logs");
     my $apache = $config->get("apache");
@@ -544,14 +544,10 @@ sub www_editSettingsSave {
     my $file            = WRE::File->new(wreConfig=>$config);
 
     # webgui 
-    my $webgui                  = $config->get("webgui");
-    $webgui->{configOverrides}  = JSON::jsonToObj($cgi->param("webguiConfigOverrides"));
-    $config->set("webgui", $webgui);
+    $config->set("webgui/configOverrides", JSON::jsonToObj($cgi->param("webguiConfigOverrides")));
     
     # logs
-    my $logs            = $config->get("logs");
-    $logs->{rotations}  = $cgi->param("logRotations");
-    $config->set("logs", $logs);
+    $config->set("logs/rotations", $cgi->param("logRotations"));
     
     # wre monitor
     my $wreMonitor                      = $config->get("wreMonitor");
@@ -1202,9 +1198,7 @@ sub www_setup {
             $mysql->stop;
         }
         else {
-            my $monitor = $config->get("wreMonitor");
-            $monitor->{items}{mysql} = 0;
-            $config->set("wreMonitor", $monitor);
+            $config->set("wreMonitor/items/mysql", 0);
             print $socket "<blockquote>Connecting</blockquote>";
             my $db = eval { $mysql->getDatabaseHandle($collected->{mysqlAdminPassword}, $collected->{mysqlAdminUser})};
             if ($@) {

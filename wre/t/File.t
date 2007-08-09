@@ -1,6 +1,6 @@
 use lib '../lib';
 use strict;
-use Test::More tests => 16;
+use Test::More tests => 17;
 use WRE::Config;
 use WRE::File;
 
@@ -23,6 +23,10 @@ $content .= "XXXX";
 $file->spit($testFile, \$content);
 $read = $file->slurp($testFile);
 is(${$read}, $content, "spit()");
+my $append = "ZZZZ";
+$file->spit($testFile, \$append, { append => 1 });
+$read = $file->slurp($testFile);
+is(${$read}, $content.$append, "spit() append");
 
 # chown
 $file->changeOwner($testFile);
@@ -39,17 +43,17 @@ else {
 }
 
 # md5
-is($file->getMd5sum($testFile), "f34ff5bf9ad371dfca49dc97218cace5", "getMd5sum()");
+is($file->getMd5sum($testFile), "250be89ccf439ab7c048fcbc6a65bd58", "getMd5sum()");
 
 # compare
 $file->spit($testFile."2", \$content);
-is($file->compare($testFile, $testFile."2"), 1, "compare() same");
-$content .= "YYY";
-$file->spit($testFile."2", \$content);
 isnt($file->compare($testFile, $testFile."2"), 1, "compare() different");
+$file->spit($testFile."2", \$append, { append => 1 });
+is($file->compare($testFile, $testFile."2"), 1, "compare() same");
 
 # copy
 is($file->copy($testFile, $testFile."3"), "1", "copy() straight");
+$file->spit($testFile, \$append, { append => 1 });
 is($file->copy($testFile, $testFile."2"), "diff /tmp/wrefiletest2 /tmp/wrefiletest", "copy() diff");
 
 # processTemplate

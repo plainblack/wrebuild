@@ -27,6 +27,19 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
+=head getName () 
+
+Returns human readable name.
+
+=cut
+
+sub getName {
+    return "S.P.E.C.T.R.E.";
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 spectreConfig ( )
 
 Returns a reference to the Spectre Config object.

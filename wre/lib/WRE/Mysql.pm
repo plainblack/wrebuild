@@ -65,6 +65,19 @@ sub getDatabaseHandle {
 
 #-------------------------------------------------------------------
 
+=head getName () 
+
+Returns human readable name.
+
+=cut
+
+sub getName {
+    return "MySQL";
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 isAdmin ( password => $password )
 
 Checks to see if the specified password will work to log in as mysql admin.
