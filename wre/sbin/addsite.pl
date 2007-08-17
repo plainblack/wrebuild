@@ -1,5 +1,15 @@
 #!/data/wre/prereqs/bin/perl
 
+#-------------------------------------------------------------------
+# WRE is Copyright 2005-2007 Plain Black Corporation.
+#-------------------------------------------------------------------
+# Please read the legal notices (docs/legal.txt) and the license
+# (docs/license.txt) that came with this distribution before using
+# this software.
+#-------------------------------------------------------------------
+# http://www.plainblack.com	            		info@plainblack.com
+#-------------------------------------------------------------------
+
 use lib '/data/wre/lib';
 use strict;
 use GetOpt::Long;

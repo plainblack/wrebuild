@@ -12,43 +12,14 @@
 # based upon perl-logrotate.pl by Aki Tossavainen <cmouse@youzen.ext.b2.fi> (c) 2004
 
 use strict;
+use lib '/data/wre/lib';
 use WRE::Config;
-use Config::JSON;
 
-# Configuration file to use.
 my $config = WRE::Config->new;
-
-# Init variables
-our @logfiles;
-
-# how many old files should we keep
 our $rotateFiles = $config->get("logs/rotations") || 3;
 
-#-------------------------------------------------------------------
-sub findLogFiles {
-    my $path = shift;
-    if ( opendir( DIR, $path ) ) {
-        my @filelist = readdir(DIR);
-        closedir(DIR);
-        foreach my $file (@filelist) {
-            if ( $file =~ /\.log$/ ) {
-                push( @logfiles, $path . "/" . $file );
-            }
-            else {
-                unless ( $file =~ /public$/ 
-                    || $file eq ".." 
-                    || $file eq "." 
-                    || $file =~ /setupfiles/ ) {
-                    findLogFiles( $path . "/" . $file );
-                }
-            }
-        }
-    }
-}
-
-#-------------------------------------------------------------------
-# Main Program
-
+# locate log files to rotate
+our @logfiles = ();
 findLogFiles($config->getRoot("/var/logs"));
 findLogFiles($config->getDomainsRoot);
 
@@ -91,4 +62,28 @@ for my $logfile (@logfiles) {
         print "Unable to open file $logfile\n";
     }
 }
+
+
+#-------------------------------------------------------------------
+sub findLogFiles {
+    my $path = shift;
+    if ( opendir( DIR, $path ) ) {
+        my @filelist = readdir(DIR);
+        closedir(DIR);
+        foreach my $file (@filelist) {
+            if ( $file =~ /\.log$/ ) {
+                push( @logfiles, $path . "/" . $file );
+            }
+            else {
+                unless ( $file =~ /public$/ 
+                    || $file eq ".." 
+                    || $file eq "." 
+                    || $file =~ /setupfiles/ ) {
+                    findLogFiles( $path . "/" . $file );
+                }
+            }
+        }
+    }
+}
+
 

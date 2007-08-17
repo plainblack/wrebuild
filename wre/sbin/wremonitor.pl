@@ -1,9 +1,19 @@
 #!/data/wre/prereqs/bin/perl
 
+#-------------------------------------------------------------------
+# WRE is Copyright 2005-2007 Plain Black Corporation.
+#-------------------------------------------------------------------
+# Please read the legal notices (docs/legal.txt) and the license
+# (docs/license.txt) that came with this distribution before using
+# this software.
+#-------------------------------------------------------------------
+# http://www.plainblack.com	            		info@plainblack.com
+#-------------------------------------------------------------------
+
 $| = 1;
 
 use strict;
-use lib '../lib';
+use lib '/data/wre/lib';
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;
