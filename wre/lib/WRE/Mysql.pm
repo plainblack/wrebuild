@@ -27,6 +27,38 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
+=head2 dump ( database => $database, path => $path )
+
+Dumps a database to a specified file path.
+
+=head3 database
+
+The name of the database you want to dump.
+
+=head3 path
+
+The path to the file where you want the dump to be created.
+
+=cut
+
+sub dump {
+    my $self    = shift;
+    my %options = @_;    
+    my $config  = $self->wreConfig;
+    my $command = $config->get("/prereqs/bin/mysqldump")
+        ." --user=".$config->get("backup/mysql/user")
+        ." --password=".$config->get("backup/mysql/password")
+        ." --host=".$config->get("mysql/hostname")
+        ." --port=".$config->get("mysql/port")
+        ." --result-file=".$options{path}
+        ." --opt" # increased dump and load performance
+        ." ".$options{database};
+    system($command);
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 getDatabaseHandle ( password => $password, [ username=>$user, dsn=>$dsn ] )
 
 Returns an administrator's database handle.

@@ -1,39 +1,146 @@
 #!/data/wre/prereqs/perl/bin/perl
 
+#-------------------------------------------------------------------
+# WRE is Copyright 2005-2007 Plain Black Corporation.
+#-------------------------------------------------------------------
+# Please read the legal notices (docs/legal.txt) and the license
+# (docs/license.txt) that came with this distribution before using
+# this software.
+#-------------------------------------------------------------------
+# http://www.plainblack.com	            		info@plainblack.com
+#-------------------------------------------------------------------
+
 use strict;
-use Parse::PlainConfig;
-use DBI;
+use lib '../lib';
 use Net::FTP;
+use WRE::Config;
+use WRE::Mysql;
 
-# get configuration
-my $config = Parse::PlainConfig->new( 'DELIM' => '=', 'FILE' => '/data/wre/etc/backup.conf', 'PURGE' => 1);
-my $backupDir = $config->get("backupDir");
-my $tar = $config->get("tar");
-my $rotate = $config->get("rotateBackups");
+my $config = WRE::Config->new;
 
-rotateBackupFiles($rotate,$backupDir) if ($rotate);
-backupMysql($config->get("mysqluser"),$config->get("mysqlpass"),$backupDir,$config->get("mysqlhost"),$config->get("db-port")) if ($config->get("backupMysql"));
-backupDomains($tar,$backupDir) if ($config->get("backupDomains"));
-backupWebgui($tar,$backupDir) if ($config->get("backupWebgui"));
-backupWre($tar,$backupDir) if ($config->get("backupWre"));
-runExternalScripts($config->get("externalScripts"));
-compressBackups($config->get("gzip"),$backupDir) if ($config->get("compressBackups"));
-copyToFtp($config->get("ftphost"),$config->get("ftpuser"),$config->get("ftppass"),$config->get("ftpCopiesToKeep"),$config->get("ftpPassiveTransfers"),$backupDir) if ($config->get("backupToFtp"));
+rotateBackupFiles($config);
+backupMysql($config);
+backupDomains($config);
+backupWebgui($config);
+backupWre($config);
+runExternalScripts($config);
+compressBackups($config);
+copyToFtp($config);
 
 
+#-------------------------------------------------------------------
+sub backupDomains {
+    my $config          = shift;
+
+    # should we run?
+    return undef unless $config->get("backup/items/domainsFolder");
+
+    my $domainsRoot     = $config->getDomainsRoot;
+
+    # get domains to backup
+	opendir(DIR, $domainsRoot);
+	my @domains = readdir(DIR);
+	closedir(DIR);
+
+    # create tarballs
+	my $tar         = $config->get("tar");
+	my $backupDir   = $config->get("backup/path");
+    my $excludes    = $config->getRoot("/etc/backup.exclude");
+	foreach my $domain (@domains) {
+		next if ($domain eq "." || $domain eq ".." || $domain eq "demo");
+		system("$tar --exclude-from=$excludes --create --file $backupDir/$domain.tar $domainsRoot/$domain");
+	}
+}
+
+#-------------------------------------------------------------------
+sub backupMysql {
+    my $config = shift;
+
+    # should we run?
+    return undef unless $config->get("backup/items/mysql");
+
+    my $mysql       = WRE::Mysql->new(wreConfig=>$config);
+    my $db          = $mysql->getDatabaseHandle( 
+        password=>$config->get("backup/mysql/password"), 
+        username=>$config->get("backup/mysql/user"),
+        );
+    my $backupDir   = $config->get("backup/path");
+
+    # find databases to back up 
+	my $databases = $db->prepare("show databases");
+	$databases->execute;
+	while (my ($name) = $databases->fetchrow_array) {
+
+        # skip some databases
+		next if ($name =~ /^demo\d/);
+		next if ($name =~ /^test$/);
+
+        # create dump
+        $mysql->dump(database=>$name, path=>$backupDir."/".$name.".sql");
+	}
+	$db->disconnect;
+}
+
+#-------------------------------------------------------------------
+sub backupWebgui {
+    my $config = shift;
+
+    # should we run?
+    return undef unless $config->get("backup/items/webgui");
+
+    # create tarball
+	system($config->get("tar")." --exclude-from".$config->getRoot("/etc/backup.exclude")." --create --file "
+        .$config->get("backup/path")."/webgui.tar /data/WebGUI");
+}
+
+#-------------------------------------------------------------------
+sub backupWre {
+    my $config  = shift;
+    my $full    = $config->get("backup/items/fullWre");
+    my $small   = $config->get("backup/items/smallWre");
+
+    # should we run?
+    return undef unless ($full || $small);
+
+    # whole thing or just configs?
+    my $pathToBackup = ($full) ? $config->getRoot : $config->getRoot("/etc");
+
+    # create tarball
+	system($config->get("tar")." --exclude-from".$config->getRoot("/etc/backup.exclude")." --create --file "
+        .$config->get("backup/path")."/wre.tar ".$pathToBackup);
+}
+
+#-------------------------------------------------------------------
+sub compressBackups {
+    my $config      = shift;
+	my $gzip        = $config->get("gzip");
+	my $backupDir   = $config->get("backup/path");
+
+    # compress files
+	system("$gzip -f $backupDir/*.sql");
+	system("$gzip -f $backupDir/*.tar");
+}
+
+#-------------------------------------------------------------------
 sub copyToFtp {
-	my $host = shift;
-	my $user = shift;
-	my $pass = shift;
-	my $copiesToKeep = shift;
-	my $passive = shift;
-	my $backupDir = shift;
-	my $now = time;
+    my $config      = shift;
+	my $now         = time;
+    my $passive     = $config->get("backup/ftp/usePassiveTransfers");
+    my $host        = $config->get("backup/ftp/hostname");
+    my $path        = $config->get("backup/ftp/path");
+    my $user        = $config->get("backup/ftp/user");
+    my $pass        = $config->get("backup/ftp/password");
+
+    # do rotations
 	my $ftp = Net::FTP->new($host,Passive=>$passive);
-	$ftp->login($user,$pass);
+	$ftp->login($user,$pass) or die "Could not connect to FTP server: $@\n";
+	if ($path) {
+		$ftp->cwd($path) or die "Could not change to $path directory: $@\n";
+	}
 	my @dirs = $ftp->ls;
 	@dirs = sort(@dirs);
 	my $i = scalar(@dirs);
+    my $copiesToKeep = $config->get("backup/ftp/rotations");
 	foreach my $dir (@dirs) {
 		last if ($i < $copiesToKeep);
 		$ftp->rmdir($dir,1);
@@ -41,31 +148,46 @@ sub copyToFtp {
 	}
 	$ftp->mkdir($now);
 	$ftp->quit;
-	my $passivecmd = "";
-	unless ($passive) {
-		$passivecmd = "set ftp:passive-mode off; ";
-	} 
-	system('/data/wre/prereqs/utils/bin/lftp -e "'.$passivecmd.'mput -O '.$now.' '.$backupDir.'/*.gz; exit" -u '.$user.','.$pass.' ftp://'.$host.' > /dev/null');
+
+    # do transfer
+	my $passivecmd = $passive ? "" : "set ftp:passive-mode off; ";
+	system($config->getRoot('/prereqs/bin/lftp').' -e "'.$passivecmd.'mput -O '.$now.' '
+        .$config->get("backup/path").'/*.gz; exit" -u '.$user.','.$pass.' ftp://'.$host.$path);
 }
 
+#-------------------------------------------------------------------
 sub rotateBackupFiles {
-	my $numberOfRotations = shift;
-	my $backupDir = shift;
+    my $config      = shift;
+    my $backupDir   = $config->get("backup/path");
+    my $rotations   = $config->get("backup/rotations") - 1; # .gz counts as 1
+
+    # get the list of files
 	opendir(DIR,$backupDir);
 	my @files = readdir(DIR);
 	closedir(DIR);
-	for (my $i = $numberOfRotations; $i > 0; $i--) {
+
+    # rotate and delete old files
+	for (my $i = $rotations; $i > 0; $i--) {
 		foreach my $file (@files) {
+
+            # only look at files where their extension is a specific digit
 			if ($file =~ /(.*\.)$i$/) {
 				my $filefront = $1;
-				if ($i == $numberOfRotations) {
+
+                # get rid of oldest files
+				if ($i == $rotations) {
 					unlink "$backupDir/".$file;
-				} else {
+				} 
+
+                # rotate younger files
+                else {
 					rename "$backupDir/".$file, "$backupDir/".$filefront.($i+1);
 				}
 			}
 		}
 	}
+
+    # rotate new files
 	foreach my $file (@files) {
 		if ($file =~ /\.gz$/) {
 			rename "$backupDir/".$file, "$backupDir/".$file.".1";
@@ -73,74 +195,13 @@ sub rotateBackupFiles {
 	}
 }
 
+#-------------------------------------------------------------------
 sub runExternalScripts {
-	my $externalScripts = shift;
-	my @scripts;
-	if (ref $externalScripts eq "ARRAY") {
-		@scripts = @{$externalScripts};
-	} elsif ($externalScripts ne "") {
-		push(@scripts,$externalScripts);
-	}
-	foreach my $script (@scripts) {
+    my $config          = shift;
+	foreach my $script (@{$config->get("backup/externalScripts")}) {
 		system($script);
 	}
 }
 
-sub backupDomains {
-	my $tar = shift;
-	my $backupDir = shift;
-	opendir(DIR,"/data/domains");
-	my @domains = readdir(DIR);
-	closedir(DIR);
-	foreach my $domain (@domains) {
-		next if ($domain eq "." || $domain eq "..");
-		system("$tar --exclude-from=/data/wre/etc/backup.exclude --create --file $backupDir/$domain.tar /data/domains/$domain");
-	}
-}
-
-sub backupWre {
-	my $tar = shift;
-	my $backupDir = shift;
-	system("$tar --exclude-from=/data/wre/etc/backup.exclude --create --file $backupDir/wre.tar /data/wre");
-}
-
-sub backupWebgui {
-	my $tar = shift;
-	my $backupDir = shift;
-	system("$tar --exclude-from=/data/wre/etc/backup.exclude --create --file $backupDir/webgui.tar /data/WebGUI");
-}
-
-sub compressBackups {
-	my $gzip = shift;
-	my $backupDir = shift;
-	system("$gzip -f $backupDir/*.sql");
-	system("$gzip -f $backupDir/*.tar");
-}
-
-sub backupMysql {
-	my $user = shift;
-	my $pass = shift;
-	my $backupDir = shift;
-	my $host = shift;
-	my $db_port = shift ;
-	my $dsn = "DBI:mysql:mysql;host=$host" ;
-	if ($db_port) {
-		$dsn .= ";port=$db_port" ;
-	}
-	my $dbh = DBI->connect($dsn,$user,$pass);
-	my $sth = $dbh->prepare("show databases");
-	$sth->execute;
-	my $cmd = "/data/wre/prereqs/mysql/bin/mysqldump --host=$host" ;
-	if ($db_port) {
-		$cmd .= " --port=$db_port" ;
-	}
-	while (my ($name) = $sth->fetchrow_array) {
-		next if ($name =~ /^demo\d/);
-		next if ($name =~ /^test$/);
-		system($cmd . " -u".$user." -p".$pass." ".$name." > $backupDir/".$name.".sql");
-	}
-	$sth->finish;
-	$dbh->disconnect;
-}
 
 
