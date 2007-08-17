@@ -1,24 +1,28 @@
 #!/data/wre/prereqs/bin/perl
 
-#####
-## logrotate.pl for the WebGUI Runtime Environment
-## based upon perl-logrotate.pl by Aki Tossavainen <cmouse@youzen.ext.b2.fi> (c) 2004
-##
-# Does a log file rotation as defined by config file.
-# Does not break open logfiles, just truncates them.
-####
+#-------------------------------------------------------------------
+# WRE is Copyright 2005-2007 Plain Black Corporation.
+#-------------------------------------------------------------------
+# Please read the legal notices (docs/legal.txt) and the license
+# (docs/license.txt) that came with this distribution before using
+# this software.
+#-------------------------------------------------------------------
+# http://www.plainblack.com	            		info@plainblack.com
+#-------------------------------------------------------------------
+# based upon perl-logrotate.pl by Aki Tossavainen <cmouse@youzen.ext.b2.fi> (c) 2004
 
 use strict;
+use WRE::Config;
 use Config::JSON;
 
 # Configuration file to use.
-my $config = Config::JSON->new("/data/wre/etc/wre.conf")->get("logrotate");
+my $config = WRE::Config->new;
 
 # Init variables
 our @logfiles;
 
 # how many old files should we keep
-our $rotateFiles = $config->{rotations} || 3;
+our $rotateFiles = $config->get("logs/rotations") || 3;
 
 #-------------------------------------------------------------------
 sub findLogFiles {
@@ -31,8 +35,12 @@ sub findLogFiles {
                 push( @logfiles, $path . "/" . $file );
             }
             else {
-                findLogFiles( $path . "/" . $file )
-                    unless ( $file =~ /public$/ || $file eq ".." || $file eq "." || $file =~ /setupfiles/ );
+                unless ( $file =~ /public$/ 
+                    || $file eq ".." 
+                    || $file eq "." 
+                    || $file =~ /setupfiles/ ) {
+                    findLogFiles( $path . "/" . $file );
+                }
             }
         }
     }
@@ -41,8 +49,8 @@ sub findLogFiles {
 #-------------------------------------------------------------------
 # Main Program
 
-findLogFiles("/data/wre/var");
-findLogFiles("/data/domains");
+findLogFiles($config->getRoot("/var/logs"));
+findLogFiles($config->getDomainsRoot);
 
 # now that we know what we are expected to do, we'll start
 for my $logfile (@logfiles) {
