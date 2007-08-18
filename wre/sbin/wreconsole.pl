@@ -1180,7 +1180,7 @@ sub www_setup {
                 { force => 1, processTemplate=>1 });
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
             print $socket "<blockquote>Creating default databases</blockquote>";
-            $file->makePath($config->getRoot("/var/mysql"));
+            $file->makePath($config->getRoot("/var/mysqldata"));
             chdir($config->getRoot("/prereqs"));
             system("./bin/mysql_install_db --port=" . $collected->{mysqlPort});
             my $mysql = WRE::Mysql->new(wreConfig=>$config);

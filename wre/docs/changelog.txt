@@ -17,13 +17,17 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
    to do to enable SSL is get a certificate, and uncomment the directives.
  - Added a WDK (WebGUI Development Kit) build mode that adds extra features to
    the WRE just for developers.
+ - WRE no longer contains extras like Apache documentation and MySQL
+   benchmarks, which shaves around 75 megabytes off its deployed size. These
+   things are still included in the WDK version if you want them.
  - Added a Perl / WebGUI API documentation server (WDK only).
  - Added the subversion version control system with SVN::Web browsing (WDK only).
  - Upgraded the following components:
-	- MySQL 5.0.37
+	- MySQL 5.0.45
 	- mod_perl 2.0.3
  	- AW Stats 6.6
 	- Freetype 2.3.4
+    - catdoc 0.94.2
     - libpng 1.2.18
 	- apsell 0.60.5
 	- lftp 3.5.10
@@ -51,7 +55,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 	- libapreq2 2.0.8
  - Added the following components:
     - Oracle Berkeley DB 4.5.20 
-    - Config::JSON 1.0.3
+    - Config::JSON 1.1.1
     - Weather::Com::Finder 0.5.1
     - BerkeleyDB 0.31
     - Search::QueryParser 0.91
@@ -85,6 +89,10 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - WWW-Mechanize 1.30
     - YAML 0.65
     - SVN-Web 0.53
+    - DateTime::Event::Recurrence 0.16
+    - DateTime::Set 0.25
+    - Set::Infinite 0.61
+    - DateTime::Event::ICal 0.09
  - Replaced Image Magick with Graphics Magick 1.1.7
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 

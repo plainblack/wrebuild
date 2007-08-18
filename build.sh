@@ -75,7 +75,7 @@ buildUtils(){
     fi
 
 	# catdoc
-	cd catdoc-0.94
+	cd catdoc-0.94.2
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
@@ -198,11 +198,14 @@ buildApache(){
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.0.37
+	cd source/mysql-5.0.45
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
-        fi	
-	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock; checkError $? "MySQL Configure"
+    fi	
+    if [ "$WRE_BUILD_WDK" != 1 ]; then
+        WRE_MYSQL_EXTRAS="--without-docs --without-man --without-bench"
+    fi
+	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-innodb $WRE_MYSQL_EXTRAS; checkError $? "MySQL Configure"
 	make; checkError $? "MySQL make"
 	make install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR
@@ -353,7 +356,7 @@ installPerlModules(){
 	installPerlModule "JSON-1.11"
     installPerlModule "version-0.7203"
     installPerlModule "Path-Class-0.16"
-	installPerlModule "Config-JSON-1.1.0"
+	installPerlModule "Config-JSON-1.1.1"
 	installPerlModule "IO-Socket-SSL-0.97"
     export LDAP_VERSION="perl-ldap-0.33"
     $WRE_ROOT/prereqs/bin/perl -i -p -e"s[check_module\('Authen::SASL', 2.00\) or print <<\"EDQ\",\"\\\n\";][print <<\"EDQ\",\"\\\n\";]g" $LDAP_VERSION/Makefile.PL
@@ -439,6 +442,10 @@ installPerlModules(){
 	installPerlModule "File-Which-0.05"
 	installPerlModule "Class-InsideOut-1.06"
 	installPerlModule "HTML-TagCloud-0.34"
+	installPerlModule "Set-Infinite-0.61"
+	installPerlModule "DateTime-Set-0.25"
+	installPerlModule "DateTime-Event-Recurrence-0.16"
+	installPerlModule "DateTime-Event-ICal-0.09"
 	cd $WRE_BUILDDIR
 }
 
@@ -446,7 +453,7 @@ installPerlModules(){
 #awstats
 installAwStats(){
 	printHeader "AWStats"
-	cp -RL source/awstats-6.6 $WRE_ROOT/prereqs
+	cp -RL source/awstats-6.6/* $WRE_ROOT/prereqs/
 }
 
 #wre utils
@@ -454,10 +461,25 @@ installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
 	cp -Rf wre /data/
 	mkdir $WRE_ROOT/etc
-    if [ $WRE_BUILD_WDK <> 1 ]; then
+    if [ "$WRE_BUILD_WDK" != 1 ]; then
         rm -f $WRE_ROOT/bin/apiindexer.pl   
         rm -f $WRW_ROOT/bin/apiwebserver.pl
     fi
+}
+
+# make the WRE distro smaller by getting rid of non-essential stuff
+makeItSmall(){
+    printHeader "Making WRE smaller"
+    rm -Rf $WRE_ROOT/prereqs/man
+    rm -Rf $WRE_ROOT/prereqs/manual
+    rm -Rf $WRE_ROOT/prereqs/sql-bench
+    rm -Rf $WRE_ROOT/prereqs/mysql-test
+    rm -Rf $WRE_ROOT/prereqs/README.TXT
+    rm -Rf $WRE_ROOT/prereqs/docs
+    rm -Rf $WRE_ROOT/prereqs/share/doc
+    rm -Rf $WRE_ROOT/prereqs/share/gtk-doc
+    rm -Rf $WRE_ROOT/prereqs/share/man
+    rm -Rf $WRE_ROOT/prereqs/share/GraphicsMagick*
 }
 
 #gooey
@@ -633,10 +655,12 @@ if [ -d /data ]; then
     if [ "$WRE_BUILD_WRE" == 1 ]; then
  		installWreUtils
     fi
+    if [ "$WRE_BUILD_WDK" != 1 ]; then
+        makeItSmall
+    fi
     printHeader "Complete And Successful"
 else
-    		echo "You must create a writable /data folder to begin."
- 	fi
+  	echo "You must create a writable /data folder to begin."
     exit 0
 fi
 
