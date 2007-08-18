@@ -1,75 +1,28 @@
 #!/bin/bash
 # chkconfig: 2345 90 60
-# description: Start and stop WebGUI (WRE) MySQL
-# processname: wremysql
+# description: Start and stop WebGUI (WRE) Apache
+# processname: wreapache
 
-mysqlhome="/data/wre/prereqs/mysql"
-. /data/wre/sbin/setenvironment
-rcsudo() { sudo -p 'Password for sudo from %u to %U: ' "$@"; }
-
-startmysql(){
-	echo Starting MySQL
-	if [ $EUID -eq 0 ]; then
-		$mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
-	else
-	        rcsudo $mysqlhome/share/mysql/mysql.server start --defaults-file=$mysqlhome/my.cnf >/dev/null 2>&1 &                                              
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo MySQL Started
-	else
-    	    	echo MySQL failed to start!
-	fi
-	return $ret
-}
-
-stopmysql(){
-	echo Stopping MySQL
-	if [ $EUID -eq 0 ]; then
-		$mysqlhome/share/mysql/mysql.server stop
-	else
-	        rcsudo $mysqlhome/share/mysql/mysql.server stop
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo MySQL Stopped
-	else
-		echo MySQL failed to stop!
-	fi
-	return $ret
-}
-
-start(){
-	startmysql
-}
-
-stop(){
-	stopmysql
-}
-
-restart(){
-	stop
-	sleep 3
-	start
-}
-
+. /data/wre/sbin/setenvironment.sh
 
 # See how we were called.
 case "$1" in
   	start)
-    		start
+   		/data/wre/sbin/wreservice.pl --quiet --start mysql
     	;;
   	stop)
-    		stop
+    	/data/wre/sbin/wreservice.pl --quiet --stop mysql
     	;;
   	restart)
-    		restart
+    	/data/wre/sbin/wreservice.pl --quiet --restart mysql
     	;;
   	*)
-		echo $"WRE MySQL Service Controller"
-    		echo $"Usage:"
+		echo $"WRE Apache Service Controller"
+   		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
-    		exit 1
+   		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
+   		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
+    	exit 1
 esac
 
 exit $?

@@ -1,58 +1,28 @@
 #!/bin/bash
 # chkconfig: 2345 90 60
-# description: Start and stop WebGUI Spectre
-# processname: spectre
+# description: Start and stop WebGUI (WRE) Spectre
+# processname: wreapache
 
-. /data/wre/sbin/setenvironment
-
-start(){
-	cd /data/WebGUI/sbin
-	perl spectre.pl --daemon >/dev/null 2>&1
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo Spectre Started
-	else
-    	    	echo Spectre failed to start!
-	fi
-	return $ret
-}
-
-stop(){
-	echo Stopping Spectre
-	cd /data/WebGUI/sbin
-	perl spectre.pl --shutdown >/dev/null 2>&1
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo Spectre Stopped
-	else
-		echo Spectre failed to stop!
-	fi
-	return $ret
-}
-
-restart(){
-	stop
-	sleep 3
-	start
-}
-
+. /data/wre/sbin/setenvironment.sh
 
 # See how we were called.
 case "$1" in
   	start)
-    		start
+   		/data/wre/sbin/wreservice.pl --quiet --start spectre
     	;;
   	stop)
-    		stop
+    	/data/wre/sbin/wreservice.pl --quiet --stop spectre
     	;;
   	restart)
-    		restart
+    	/data/wre/sbin/wreservice.pl --quiet --restart spectre
     	;;
   	*)
-		echo $"Spectre Service Controller"
-    		echo $"Usage:"
+		echo $"WRE Apache Service Controller"
+   		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
-    		exit 1
+   		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
+   		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
+    	exit 1
 esac
 
 exit $?

@@ -9,9 +9,9 @@ To upgrade the WRE follow these simple steps:
 
 3. Extract the new WRE over the top of the old one.
 
-4. Run /data/wre/sbin/setup.
+4. Run /data/wre/sbin/wreupgrade.pl
 
-5. Watch the output of setup. It will tell you if you have any templates that are out of date.
+5. Watch the output of wreupgrade.pl. It will tell you if you have any templates that are out of date.
 
 6. Read /data/wre/docs/install.txt and /data/wre/docs/changelog.txt to make sure there aren't any new instructions.
 

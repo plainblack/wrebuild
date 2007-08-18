@@ -1,138 +1,46 @@
 #!/bin/bash
 # chkconfig: 2345 90 60
-# description: Start and stop WebGUI (WRE) Apache services
+# description: Start and stop WebGUI (WRE) Apache
 # processname: wreapache
 
-apachehome="/data/wre/prereqs/apache"
-. /data/wre/sbin/setenvironment
-rcsudo() { sudo -p 'Password for sudo from %u to %U: ' "$@"; }
-
-startmodperl(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
-	else
-		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -E $apachehome/logs/modperl.error.log -k start 
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo mod_perl Started
-	else
-    	    	echo mod_perl failed to start!
-	fi
-	return $ret
-}
-
-stopmodperl(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
-	else
-		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modperl.conf -D WRE-modperl -k stop
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo mod_perl Stopped
-	else
-		echo mod_perl failed to stop!
-	fi
-	return $ret
-}
-
-startmodproxy(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
-	else
-		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -E $apachehome/logs/modproxy.error.log -k start 
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-	    	echo mod_proxy Started
-	else
-    	    	echo mod_proxy failed to start!
-	fi
-	return $ret
-}
-
-stopmodproxy(){
-	if [ $EUID -eq 0 ]; then
-		$apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
-	else
-		rcsudo $apachehome/bin/apachectl -f $apachehome/conf/httpd.modproxy.conf -D WRE-modproxy -k stop
-	fi
-	ret=$?
-	if [ $ret -eq 0 ]; then
-		echo mod_proxy Stopped
-	else
-		echo mod_proxy failed to stop!
-	fi
-	return $ret
-}
-
-start(){
-	startmodperl
-	sleep 2
-	startmodproxy
-}
-
-stop(){
-	stopmodproxy
-	stopmodperl
-}
-
-restart(){
-	stop
-	sleep 3
-	start
-}
-
-restartmodperl(){
-    	stopmodperl
-    	sleep 3
-    	startmodperl
-}
-
-restartmodproxy(){
-    	stopmodproxy
-    	sleep 3
-    	startmodproxy
-}
-
+. /data/wre/sbin/setenvironment.sh
 
 # See how we were called.
 case "$1" in
   	start)
-    		start
+   		/data/wre/sbin/wreservice.pl --quiet --start web
     	;;
   	stop)
-    		stop
+    	/data/wre/sbin/wreservice.pl --quiet --stop web
     	;;
   	restart)
-    		restart
+    	/data/wre/sbin/wreservice.pl --quiet --restart web
     	;;
   	startmodperl)
-    		startmodperl
+    	/data/wre/sbin/wreservice.pl --quiet --start modperl
     	;;
   	stopmodperl)
-    		stopmodperl
+    	/data/wre/sbin/wreservice.pl --quiet --stop modperl
     	;;
   	restartmodperl)
-    		restartmodperl
+    	/data/wre/sbin/wreservice.pl --quiet --restart modperl
     	;;
   	startmodproxy)
-    		startmodproxy
+    	/data/wre/sbin/wreservice.pl --quiet --start modproxy
     	;;
   	stopmodproxy)
-    		stopmodproxy
+    	/data/wre/sbin/wreservice.pl --quiet --stop modproxy
     	;;
   	restartmodproxy)
-    		restartmodproxy
+    	/data/wre/sbin/wreservice.pl --quiet --restart modproxy
     	;;
   	*)
 		echo $"WRE Apache Service Controller"
-    		echo $"Usage:"
+   		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
-    		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
-    		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
-    		exit 1
+   		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
+   		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
+    	exit 1
 esac
 
 exit $?

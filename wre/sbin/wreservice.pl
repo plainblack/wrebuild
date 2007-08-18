@@ -21,7 +21,7 @@ use WRE::Spectre;
 
 $|=1;   # turn off buffering
 
-my ($help, $verbose) = "";
+my ($quiet, $help, $verbose) = "";
 my (@start, @stop, @restart, @status) = ();
 
 GetOptions(
@@ -31,6 +31,7 @@ GetOptions(
     "restart|cycle=s{1,4}"      => \@restart,
     "status|ping=s{1,4}"        => \@status,
     "verbose"                   => \$verbose,
+    "quiet"                     => \$quiet,
     );
 
 if ($help || !(scalar(@start) || scalar(@stop) || scalar(@restart) || scalar(@status))) {
@@ -73,6 +74,8 @@ Actions:
 Options:
 
     --help          This message.
+
+    --quiet         No output unless there's an error.
 
     --verbose       Print out additional information about failures.
 
@@ -145,12 +148,12 @@ if (scalar(@status)) {
 sub printSuccess {
     my $action = shift;
     my $description = shift;
-    print sprintf("%-22s", $description.":"); 
+    print sprintf("%-22s", $description.":") unless ($quiet); 
     if (eval { &$action }) {
-        print "OK\n";
+        print "OK\n" unless ($quiet);
     }
     else {
-        print "FAILED!\n";
+        print "FAILED!\n" unless ($quiet);
         print "Additional information: ".$@."\n" if ($verbose);
     }
 }

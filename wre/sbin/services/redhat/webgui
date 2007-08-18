@@ -1,86 +1,76 @@
 #!/bin/bash
 # chkconfig: 2345 90 60
 # description: Start and stop WebGUI (WRE) related services
-# processname: wre
+# processname: webgui
 
-. /data/wre/sbin/setenvironment
+. /data/wre/sbin/setenvironment.sh
 
 # See how we were called.
 case "$1" in
   	start)
-    		/data/wre/sbin/rc.mysql start
-    		/data/wre/sbin/rc.apache start
-    		/data/wre/sbin/rc.spectre start
+   		/data/wre/sbin/wreservice.pl --quiet --start all
     	;;
   	stop)
-    		/data/wre/sbin/rc.spectre stop
-    		/data/wre/sbin/rc.apache stop
-		/data/wre/sbin/rc.mysql stop
+    	/data/wre/sbin/wreservice.pl --quiet --stop all
     	;;
   	restart)
-    		/data/wre/sbin/rc.spectre stop
-    		/data/wre/sbin/rc.apache stop
-    		/data/wre/sbin/rc.mysql stop
-		sleep 1
-    		/data/wre/sbin/rc.mysql start
-    		/data/wre/sbin/rc.apache start
-    		/data/wre/sbin/rc.spectre start
+    	/data/wre/sbin/wreservice.pl --quiet --restart all
     	;;
   	startmysql)
-    		/data/wre/sbin/rc.mysql start
+    	/data/wre/sbin/wreservice.pl --quiet --start mysql
     	;;
   	stopmysql)
-		/data/wre/sbin/rc.mysql stop
+		/data/wre/sbin/wreservice.pl --quiet --stop mysql
     	;;
   	restartmysql)
-    		/data/wre/sbin/rc.mysql restart
+    	/data/wre/sbin/wreservice.pl --quiet --restart mysql
     	;;
   	startweb)
-    		/data/wre/sbin/rc.apache start
+    	/data/wre/sbin/wreservice.pl --quiet --start web
     	;;
   	stopweb)
-    		/data/wre/sbin/rc.apache stop
+    	/data/wre/sbin/wreservice.pl --quiet --stop web
     	;;
   	restartweb)
-    		/data/wre/sbin/rc.apache restart
+    	/data/wre/sbin/wreservice.pl --quiet --restart web
     	;;
   	startmodperl)
-    		/data/wre/sbin/rc.apache startmodperl
+    	/data/wre/sbin/wreservice.pl --quiet --start modperl
     	;;
   	stopmodperl)
-    		/data/wre/sbin/rc.apache stopmodperl
+    	/data/wre/sbin/wreservice.pl --quiet --stop modperl
     	;;
   	restartmodperl)
-    		/data/wre/sbin/rc.apache restartmodperl
+    	/data/wre/sbin/wreservice.pl --quiet --restart modperl
     	;;
   	startmodproxy)
-    		/data/wre/sbin/rc.apache startmodproxy
+    	/data/wre/sbin/wreservice.pl --quiet --start modproxy
     	;;
   	stopmodproxy)
-    		/data/wre/sbin/rc.apache stopmodproxy
+    	/data/wre/sbin/wreservice.pl --quiet --stop modproxy
     	;;
   	restartmodproxy)
-    		/data/wre/sbin/rc.apache restartmodproxy
+    	/data/wre/sbin/wreservice.pl --quiet --restart modproxy
     	;;
   	startspectre)
-    		/data/wre/sbin/rc.spectre start
+    	/data/wre/sbin/wreservice.pl --quiet --start spectre
     	;;
   	stopspectre)
-    		/data/wre/sbin/rc.spectre stop
+    	/data/wre/sbin/wreservice.pl --quiet --stop spectre
     	;;
   	restartspectre)
-    		/data/wre/sbin/rc.spectre restart
+    	/data/wre/sbin/wreservice.pl --quiet --restart spectre
     	;;
   	*)
 		echo $"WRE Service Controller"
-    		echo $"Usage:"
+   		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
 		echo $"	$0 { startweb | stopweb | restartweb }"
-    		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
-    		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
-    		echo $"	$0 { startmysql | stopmysql | restartmysql }"
-    		echo $"	$0 { startspectre | stopspectre | restartspectre }"
-    		exit 1
+   		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
+   		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
+   		echo $"	$0 { startmysql | stopmysql | restartmysql }"
+   		echo $"	$0 { startspectre | stopspectre | restartspectre }"
+   		exit 1
 esac
 
 exit $?

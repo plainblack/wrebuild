@@ -8,9 +8,9 @@ http://wiki.webgui.org/
 
 PRIOR TO INSTALLING
 
-The WRE requires works best on a Linux-based operating system. We
-recommend Red Hat Enterprise Linux, but it is not required. You
-can also use the WRE on Mac OS X, BSD, and Windows based platforms.
+The WRE works best on a Linux-based operating system. We recommend 
+Red Hat Enterprise Linux, but it is not required. You can also use 
+the WRE on Mac OS X, BSD, and Windows based platforms.
 
 
 INSTALLING
@@ -27,13 +27,12 @@ user whatever you want, but we recommend "webgui". On most systems
 you run a command similar to the following as the root user:
 
 	adduser -s /sbin/nologin webgui
-
-		or
-
+            - or -
 	useradd -s /sbin/nologin webgui
 
-NOTE: If you're just using the WRE for development on your machine, feel
-free to just use your own user account rather than creating a new one.
+    NOTE: If you're just using the WRE for development on your 
+    machine, feel free to just use your own user account rather than 
+    creating a new one.
 
 
 3. If you have an existing Apache or MySQL running please shut them
@@ -60,14 +59,19 @@ will be using, including the AWStats site.
     . setenvironment.sh
     ./wreconsole.pl
 
+    NOTE: You should probably add the following command to your
+    profile so it executes every time you log in:
+
+    . /data/wre/sbin/setenvironment.sh
+
 
 7. Use your favorite web browser to visit the WRE Console setup page:
 
     http://localhost:60834/setup   
-
+            - or -
     http://www.example.com:60834/setup
 
-NOTE: You may have to open a firewall port to access this.
+    NOTE: You may have to open a firewall port to access this.
 
 
 8. Follow the on screen instructions to complete the configuration.
@@ -108,7 +112,7 @@ include RHEL, Fedora, Mandrake, SuSE, CentOS, and others. You can set up the
 WRE to start automatically at system boot by running the following commands
 after the WRE is installed:
 
-ln -s /data/wre/sbin/services/redhat/rc.webgui /etc/init.d/webgui
+ln -s /data/wre/sbin/services/redhat/webgui /etc/init.d/webgui
 chkconfig --add webgui
 chkconfig webgui on
 
