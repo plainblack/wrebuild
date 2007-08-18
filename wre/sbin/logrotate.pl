@@ -63,6 +63,15 @@ for my $logfile (@logfiles) {
     }
 }
 
+# if stats are enabled let's compile them
+
+if ($config->get("awstats/enabled")) {
+    system($config->getRoot("/prereqs/tools/awstats_updateall.pl")
+        ." now -awstatsprog=".$config->getRoot("/prereqs/wwwroot/awstats.pl")
+        ." -configdir=".$config->getRoot("/etc")
+        );
+}
+
 
 #-------------------------------------------------------------------
 sub findLogFiles {

@@ -11,7 +11,7 @@ package WRE::File;
 #-------------------------------------------------------------------
 
 use strict;
-use Carp qw(carp);
+use Carp qw(croak carp);
 use Class::InsideOut qw(private public new id);
 use Digest::MD5;
 use File::Copy qw(cp);
@@ -21,7 +21,6 @@ use File::Slurp qw(read_file write_file);
 use File::Temp qw(tempfile tempdir);
 use Template;
 
-{ # begin inside out object
 
 
 =head1 METHODS
@@ -394,15 +393,89 @@ sub spit {
     my %params      = ();
     $params{append} = $options->{append};
     unless (write_file($path, \%params, $content)) {
-        carp "Couldn't write content to $path because $!";
+        croak "Couldn't write content to $path because $!";
     }
     $self->changeOwner($path);
 }
 
+#-------------------------------------------------------------------
 
+=head2 tar ( file => $filename, stuff => @folders, [ gzip=>1, exclude=>$excludeFile ] ) 
 
+Creates a tarball.
 
-} # end inside out object
+=head3 file
+
+The path and filename of an archive to create.
+
+=head3 stuff
+
+An array reference of folder and file paths (stuff) to add to the archive. If there is only one path in this array,
+and the array is a directory, tar will change to the folder before compressing.
+
+=head3 gzip
+
+Compress the file as it is created.
+
+=head3 exclude
+
+A path to an excludes file.
+
+=cut
+
+sub tar {
+    my $self = shift;
+    my %options = @_;
+    my $args = "";
+    if ($options{gzip}) {
+        $args .= " --gzip";
+    }
+    if (exists $options{exclude}) {
+        $args .= " --exclude-from=".$options{exclude};
+    }
+    if (scalar(@{$options{stuff}}) == 1 && -d $options{stuff}->[0]) {
+        chdir $options{stuff}->[0];
+        $options{stuff}->[0] = ".";
+    }
+    # use real tar cuz Archive::Tar is sloooooowwwww
+    if (system($self->wreConfig->get("tar")." --create $args --file ".$options{file}." ".join(" ", @{$options{stuff}}))) {
+        croak "Couldn't create ".$options{file}.".";
+    }
+}
+
+#-------------------------------------------------------------------
+
+=head2 untar ( file => $filename, path => $path, [ gunzip=>1 ] )
+
+Extracts a tarball.
+
+=head3 file
+
+The path and filename of the tarball.
+
+=head3 path
+
+The location where you,'d like the tarball extracted.
+
+=head3 gunzip
+
+A boolean indicating whether to unzip the tarball while extracting it. 
+
+=cut
+
+sub untar {
+    my $self = shift;
+    my %options = @_;
+    my $args = "";
+    if ($options{gunzip}) {
+        $args .= " --gunzip";
+    }
+    chdir $options{path};
+    # use real tar cuz Archive::Tar is sloooooowwwww
+    if (system($self->wreConfig->get("tar")." --extract $args --file ".$options{file})) {
+        croak "Couldn't extract ".$options{file}.".";
+    }
+}
 
 1;
 

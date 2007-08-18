@@ -3,14 +3,14 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   I N S T A L L
 
 The instructions below should allow an experienced WRE admin to
 get WRE up and running quickly. For more online instructions visit
-http://www.plainblack.com/docs
+http://wiki.webgui.org/
 
 
 PRIOR TO INSTALLING
 
-The WRE requires a Unix-style operating system, such as Linux,
-therefore you cannot use Windows. We recommend Red Hat Enterprise
-Linux or Mac OS X, but it is not required.
+The WRE requires works best on a Linux-based operating system. We
+recommend Red Hat Enterprise Linux, but it is not required. You
+can also use the WRE on Mac OS X, BSD, and Windows based platforms.
 
 
 INSTALLING
@@ -22,14 +22,18 @@ INSTALLING
 	tar xvfz /path/to/wre-x.x.x-osname.tar.gz
 
 
-2. Add a "mysql" user to the system. On most systems you run a 
-command similar to the following as the root user:
+2. Add a "webgui" user to the system. Note that you can name this 
+user whatever you want, but we recommend "webgui". On most systems 
+you run a command similar to the following as the root user:
 
-	adduser -s /sbin/nologin mysql
+	adduser -s /sbin/nologin webgui
 
 		or
 
-	useradd -s /sbin/nologin mysql
+	useradd -s /sbin/nologin webgui
+
+NOTE: If you're just using the WRE for development on your machine, feel
+free to just use your own user account rather than creating a new one.
 
 
 3. If you have an existing Apache or MySQL running please shut them
@@ -50,38 +54,46 @@ rename it so that it doesn't interfere with the WRE MySQL.
 will be using, including the AWStats site.
 
 
-6. Run the setup program which will initialize the WRE for your
-system and download and install WebGUI.
+6. Run the WRE Console which you can use to configure WebGUI.
 
 	cd /data/wre/sbin
-	./setup
+    . setenvironment.sh
+    ./wreconsole.pl
 
 
-7. Start the WRE
+7. Use your favorite web browser to visit the WRE Console setup page:
 
-	cd /data/wre/sbin
-	./rc.webgui start
+    http://localhost:60834/setup   
+
+    http://www.example.com:60834/setup
+
+NOTE: You may have to open a firewall port to access this.
 
 
-8. Add the following cron jobs to your server's cron tab.
+8. Follow the on screen instructions to complete the configuration.
 
-	0 1 * * * /data/wre/sbin/logrotate
-	*/3 * * * * /data/wre/sbin/wremonitor
-	0 3 * * * /data/wre/sbin/backup
 
-	If you want AWStats to be compiled nightly add this:
+9. Go to the "Services" tab and start MySQL.
 
-	0 2 * * * /data/wre/prereqs/awstats/tools/awstats_updateall.pl now -awstatsprog=/data/wre/prereqs/awstats/wwwroot/awstats.pl -configdir=/data/wre/etc
+
+10. Go to the "Sites" tab and add your first web site.
+
+
+11. Go to the "Services" tab and start mod_proxy, mod_perl, and S.P.E.C.T.R.E.
+
+
+12. Visit your new web site!
+
+
+13. Add the following cron jobs to your server's cron tab.
+
+	0 0 * * * /data/wre/sbin/logrotate.pl
+	*/3 * * * * /data/wre/sbin/wremonitor.pl
+	0 2 * * * /data/wre/sbin/backup.pl
 
 	If you are using the demo system then add this:
 
-	0 0 * * * /data/wre/sbin/democleanup
-
-
-9. Add a site.
-
-	cd /data/wre/sbin
-	./addsite --admin-db-pass=YOURPASSWORD --sitename=www.example.com
+	0 0 * * * /data/wre/sbin/democleanup.pl
 
 
 
@@ -96,19 +108,16 @@ include RHEL, Fedora, Mandrake, SuSE, CentOS, and others. You can set up the
 WRE to start automatically at system boot by running the following commands
 after the WRE is installed:
 
-ln -s /data/wre/sbin/rc.webgui /etc/init.d/webgui
+ln -s /data/wre/sbin/services/redhat/rc.webgui /etc/init.d/webgui
 chkconfig --add webgui
 chkconfig webgui on
 
 
-Mac OSX
+Mac OS X
 
 There is no command line user add script on Mac OSX. This means you have to
 use the really horrible netinfo interface to add a user. Instead, we recommend
 downloading the user utilities from this site:
 
 http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
-
-
-
 

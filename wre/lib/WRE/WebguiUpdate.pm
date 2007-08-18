@@ -11,7 +11,6 @@ package WRE::WebguiUpdate;
 #-------------------------------------------------------------------
 
 use strict;
-use Archive::Tar;
 use Carp qw(croak);
 use Class::InsideOut qw(new public);
 use HTTP::Headers;
@@ -91,10 +90,13 @@ sub extractArchive {
     $file->makePath($config->getWebguiRoot);
     my @webguiRoot = split("/", $config->getWebguiRoot);
     pop @webguiRoot;
-    chdir join("/", @webguiRoot);
-    Archive::Tar->extract_archive($path,1);
-    if (Archive::Tar->error) {
-       croak "Couldn't extract WebGUI archive because ".Archive::Tar->error;
+    eval{$file->untar(
+            path    => join("/", @webguiRoot),
+            file    => $path,
+            gunzip  => 1,
+            )};
+    if ($@) {
+       croak "Couldn't extract WebGUI archive because ".$@;
        return 0; 
     }
     return 1;

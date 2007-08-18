@@ -16,7 +16,8 @@ use Net::FTP;
 use WRE::Config;
 use WRE::Mysql;
 
-my $config = WRE::Config->new;
+my $config  = WRE::Config->new;
+my $util    = WRE::File->new(wreConfig => $config);
 
 rotateBackupFiles($config);
 backupMysql($config);
@@ -48,7 +49,12 @@ sub backupDomains {
     my $excludes    = $config->getRoot("/etc/backup.exclude");
 	foreach my $domain (@domains) {
 		next if ($domain eq "." || $domain eq ".." || $domain eq "demo");
-		system("$tar --exclude-from=$excludes --create --file $backupDir/$domain.tar $domainsRoot/$domain");
+        eval {$util->tar(
+            exclude     => $excludes,
+            file        => "$backupDir/$domain.tar",
+            stuff       => ["$domainsRoot/$domain"],
+            )};
+        print $@."\n" if ($@);
 	}
 }
 
@@ -89,8 +95,12 @@ sub backupWebgui {
     return undef unless $config->get("backup/items/webgui");
 
     # create tarball
-	system($config->get("tar")." --exclude-from".$config->getRoot("/etc/backup.exclude")." --create --file "
-        .$config->get("backup/path")."/webgui.tar /data/WebGUI");
+    eval {$util->tar(
+        exclude     => $config->getRoot("/etc/backup.exclude"),
+        file        => $config->get("backup/path")."/webgui.tar",
+        stuff       => [$config->getWebguiRoot],
+        )};
+    print $@."\n" if ($@);
 }
 
 #-------------------------------------------------------------------
@@ -106,8 +116,12 @@ sub backupWre {
     my $pathToBackup = ($full) ? $config->getRoot : $config->getRoot("/etc");
 
     # create tarball
-	system($config->get("tar")." --exclude-from".$config->getRoot("/etc/backup.exclude")." --create --file "
-        .$config->get("backup/path")."/wre.tar ".$pathToBackup);
+    eval {$util->tar(
+        exclude     => $config->getRoot("/etc/backup.exclude"),
+        file        => $config->get("backup/path")."/wre.tar",
+        stuff       => [$pathToBackup],
+        )};
+    print $@."\n" if ($@);
 }
 
 #-------------------------------------------------------------------
