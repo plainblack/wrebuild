@@ -44,7 +44,7 @@ my $daemon = HTTP::Daemon->new(
     LocalAddr   => undef,
     LocalPort   => 60834,
     ) || croak "Couldn't start server.";
-print "Please contact me at: <URL:", $daemon->url, ">\n";
+print "Please contact me at:\n\t", $daemon->url, "\n";
 while (my $connection = $daemon->accept) {
     while (my $request = $connection->get_request) {
         my $state = {
@@ -199,7 +199,7 @@ sub www_addSite {
         </td>
     </tr>
     </table>
-    <input type="submit" class="saveButton" value="Create Site" onclick="this.value=\'Please wait...\';" />
+    <input type="submit" class="saveButton" value="Create Site" onclick="this.value=\'Adding...\';" />
     </form>
     ';
     sendResponse($state, $content);
@@ -260,7 +260,7 @@ sub www_deleteSite {
         <td><input type="password" name="adminPassword" value="'.$cgi->param("adminPassword").'" /> <span class="subtext">Required</span></td>
     </tr>
     </table>
-    <input type="submit" class="deleteButton" value="Delete Site" onclick="this.value=\'Please wait...\';" />
+    <input type="submit" class="deleteButton" value="Delete Site" onclick="this.value=\'Deleting...\';" />
     </form>
     ';
     sendResponse($state, $content);
@@ -784,6 +784,10 @@ sub www_listServices {
     my $status = shift;
     my $content = getNavigation("services");
     $content .= '<div class="status">'.$status.'</div>';
+    unless ($state->{config}->isPrivilegedUser) {
+        $content .= q|<p class="status"><b>WARNING:</b> Because you are not an administrator on this machine, you
+            will not be able to start services on ports 1-1024.</p>|;
+    }
     $content .= '<table class="items">
     <tr>
         <td>Apache Modproxy</td>
@@ -792,18 +796,18 @@ sub www_listServices {
     if (eval{$modproxy->ping}) {
         $content .= '
              <form action="/stopModproxy" method="post">
-                <input type="submit" class="deleteButton" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
              <form action="/startModproxy" method="post">
-                <input type="submit" class="saveButton" value="Start" />
+                <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
              </form>';
     }
     $content .= '
              <form action="/restartModproxy" method="post">
-                <input type="submit" value="Restart" />
+                <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
     </tr>
@@ -814,18 +818,18 @@ sub www_listServices {
     if (eval{$modperl->ping}) {
         $content .= '
              <form action="/stopModperl" method="post">
-                <input type="submit" class="deleteButton" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
              <form action="/startModperl" method="post">
-                <input type="submit" class="saveButton" value="Start" />
+                <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
              </form>';
     }
     $content .= '
              <form action="/restartModperl" method="post">
-                <input type="submit" value="Restart" />
+                <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
     </tr>
@@ -836,18 +840,18 @@ sub www_listServices {
     if (eval{$mysql->ping}) {
         $content .= '
              <form action="/stopMysql" method="post">
-                <input type="submit" class="deleteButton" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
              <form action="/startMysql" method="post">
-                <input type="submit" class="saveButton" value="Start" />
+                <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
              </form>';
     }
     $content .= '
              <form action="/restartMysql" method="post">
-                <input type="submit" value="Restart" />
+                <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
     </tr>
@@ -857,24 +861,24 @@ sub www_listServices {
     my $spectre = WRE::Spectre->new(wreConfig=>$state->{config});
     if (eval{$spectre->ping}) {
             $content .= ' <form action="/stopSpectre" method="post">
-                <input type="submit" value="Stop" />
+                <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     } 
     else {
              $content .= '<form action="/startSpectre" method="post">
-                <input type="submit" class="saveButton" value="Start" />
+                <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
              </form>';
     }
     $content .= '
              <form action="/restartSpectre" method="post">
-                <input type="submit" value="Restart" />
+                <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
     </tr>
     <tr>
         <td>WRE Console</td>
         <td><form action="/stopConsole" method="post">
-              <input type="submit" class="deleteButton" value="Stop" />
+              <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>
         </td>
     </table>';
@@ -1035,6 +1039,12 @@ sub www_setup {
 
     # mysql stuff
     elsif ($cgi->param("step") eq "mysql") {
+        if (-f "/etc/my.cnf") {
+            $out .= q|<p class="status">There is a file at /etc/my.cnf that you must move or it will interfere with the WRE.</p>|;
+        }
+        if (-f "/my.ini") {
+            $out .= q|<p class="status">There is a file at /my.ini that you must move or it will interfere with the WRE.</p>|;
+        }
         my $mysql = $config->get("mysql");
         $out .= '<h1>MySQL</h1>
             <form action="/setup" method="post">
@@ -1262,11 +1272,20 @@ sub www_setup {
         print $socket "<p>Configuring WebGUI.</p>$crlf";
         $file->copy($config->getWebguiRoot("/etc/log.conf.original"), $config->getWebguiRoot("/etc/log.conf"),
             { force => 1 });
+        system($config->getRoot("/prereqs/bin/perl")
+            ." -i -p -e's[/var/log/webgui.log][".$config->getRoot("/var/logs/webgui.log")."]g' "
+            .$config->getWebguiRoot("/etc/log.conf")
+            );
         $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
             { force => 1 });
 
         # status
-        print $socket "<h1>Configuration Complete</h1><a href=\"/\">Click here to manage your WRE server.</a>$crlf";
+        print $socket "<h1>Configuration Complete</h1>
+            <p>Please add the following maintenance scripts to your crontab:</p>
+            <pre>    0 0 * * * /data/wre/sbin/logrotate.pl
+    */3 * * * * /data/wre/sbin/wremonitor.pl
+    0 2 * * * /data/wre/sbin/backup.pl</pre>
+            <p><a href=\"/\">Click here to manage your WRE server.</a></p>$crlf";
 
         # done
         $socket->force_last_request;
@@ -1300,7 +1319,7 @@ sub www_startModperl {
     my $state = shift;
     my $service = WRE::Modperl->new(wreConfig=>$state->{config});
     my $status = "Modperl started.";
-    unless ($service->start) {
+    unless (eval {$service->start} ) {
         $status = "Modperl did not start successfully. ".$@;
     }
     www_listServices($state, $status);
@@ -1311,7 +1330,7 @@ sub www_startModproxy {
     my $state = shift;
     my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
     my $status = "Modproxy started.";
-    unless ($service->start) {
+    unless (eval {$service->start}) {
         $status = "Modproxy did not start successfully. ".$@;
     }
     www_listServices($state, $status);
@@ -1322,7 +1341,7 @@ sub www_startMysql {
     my $state = shift;
     my $service = WRE::Mysql->new(wreConfig=>$state->{config});
     my $status = "MySQL started.";
-    unless ($service->start) {
+    unless (eval {$service->start}) {
         $status = "MySQL did not start successfully. ".$@;
     }
     www_listServices($state, $status);
@@ -1333,7 +1352,7 @@ sub www_startSpectre {
     my $state = shift;
     my $service = WRE::Spectre->new(wreConfig=>$state->{config});
     my $status = "Spectre started.";
-    unless ($service->start) {
+    unless (eval {$service->start}) {
         $status = "Spectre did not start successfully. ".$@;
     }
     www_listServices($state, $status);

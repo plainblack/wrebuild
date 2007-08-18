@@ -10,7 +10,7 @@
 # http://www.plainblack.com	            		info@plainblack.com
 #-------------------------------------------------------------------
 
-use lib '/data/wre/lib';
+use lib '../lib';
 use strict;
 use Getopt::Long;
 use WRE::Config;
@@ -83,6 +83,11 @@ STOP
 }
 
 my $config = WRE::Config->new;
+
+unless ($config->isPrivilegedUser) {
+    print "\nWARNING: Because you are not an administrator on this system, you will not be able to
+        start services on ports 1-1024.\n\n";
+}
 
 if (scalar(@stop)) {
     if (grep /^spectre|all$/, @stop) {

@@ -11,7 +11,7 @@
 #----------------------------------------------------------------------------------------------
 
 use strict;
-use lib '../lib';
+use lib '/data/wre/lib';
 use CPAN;
 use List::Util;
 use WRE::Config;

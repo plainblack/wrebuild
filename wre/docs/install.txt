@@ -59,6 +59,11 @@ will be using, including the AWStats site.
     . setenvironment.sh
     ./wreconsole.pl
 
+    NOTE: If you are not an administrator on this machine you should
+    start the WRE console with sudo like thi:
+
+    sudo ./wreconsole.pl
+
     NOTE: You should probably add the following command to your
     profile so it executes every time you log in:
 

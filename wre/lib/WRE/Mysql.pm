@@ -164,7 +164,8 @@ sub start {
     my $self = shift;
     my $count = 0;
     my $success = 0;
-    my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." start";
+    my $config = $self->wreConfig;
+    my $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." start --user=".$config->get("user");
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -187,12 +188,12 @@ Note: The process that runs this command must be either root or the user specifi
 sub stop {
     my $self = shift;
     my $count = 0;
-    my $success = 0;
+    my $success = 1;
     my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." stop";
     `$cmd`; # catch command line output
-    while ($count < 10 && $success == 0) {
+    while ($count < 10 && $success == 1) {
         sleep(1);
-        eval {$success = !$self->ping };
+        eval {$success = $self->ping };
         $count++;
     }
     return $success;

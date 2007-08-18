@@ -79,13 +79,12 @@ Returns a 1 if Modperl is running, or a 0 if it is not.
 sub ping {
     my $self = shift;
     my $apache = $self->wreConfig->get("apache");
-    my $userAgent = new LWP::UserAgent;
+    my $userAgent = LWP::UserAgent->new;
     $userAgent->agent("wre/1.0");
     $userAgent->timeout($apache->{connectionTimeout});
-    my $header = new HTTP::Headers;
-    my $request = new HTTP::Request(
-        GET => "http://".$apache->{defaultHostname}.":".$apache->{modperl}->{port}."/", $header
-        );
+    my $header = HTTP::Headers->new;
+    my $url = "http://".$apache->{defaultHostname}.":".$apache->{modperlPort}."/";
+    my $request = HTTP::Request->new( GET => $url, $header);
     my $response = $userAgent->request($request);
     if ($response->is_success || $response->code eq "401") {
         return 1;
@@ -109,6 +108,9 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
+    unless ($config->get("apache/modperlPort") > 1024 || $config->isPrivilegedUser) {
+        croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
+    }
     my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf") 
         ." -D WRE-modperl -E ".$config->getRoot("/var/logs/modperl.error.log")." -k start";
     `$cmd`; # catch command line output
@@ -133,13 +135,13 @@ Note: The process that runs this command must be either root or the user specifi
 sub stop {
     my $self = shift;
     my $count = 0;
-    my $success = 0;
+    my $success = 1;
     my $config = $self->wreConfig;
     my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
         ." -D WRE-modperl -k stop";
     `$cmd`; # catch command line output
-    while ($count < 10 && $success == 0) {
-        eval { $success = !$self->ping };
+    while ($count < 10 && $success == 1) {
+        eval { $success = $self->ping };
         $count++;
     }
     return $success;

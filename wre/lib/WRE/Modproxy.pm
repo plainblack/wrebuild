@@ -57,7 +57,7 @@ sub ping {
     $userAgent->timeout($apache->{connectionTimeout});
     my $header = new HTTP::Headers;
     my $request = new HTTP::Request(
-        GET => "http://".$apache->{defaultHostname}.":".$apache->{modproxy}->{port}."/", $header
+        GET => "http://".$apache->{defaultHostname}.":".$apache->{modproxyPort}."/", $header
         );
     my $response = $userAgent->request($request);
     if ($response->is_success || $response->code eq "401") {
@@ -80,6 +80,9 @@ Note: The process that runs this command must be either root or the user specifi
 sub start {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
+    unless ($wreConfig->get("apache/modperlPort") > 1024 || $wreConfig->isPrivilegedUser) {
+        croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
+    }
     my $count = 0;
     my $success = 0;
     my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
@@ -106,13 +109,13 @@ Note: The process that runs this command must be either root or the user specifi
 sub stop {
     my $self = shift;
     my $count = 0;
-    my $success = 0;
+    my $success = 1;
     my $wreConfig = $self->wreConfig;
     my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
         ." -D WRE-modproxy -k stop";
     `$cmd`; # catch command line output
-    while ($count < 10 && $success == 0) {
-        eval {$success = !$self->ping};
+    while ($count < 10 && $success == 1) {
+        eval {$success = $self->ping};
         $count++;
     }
     return $success;
