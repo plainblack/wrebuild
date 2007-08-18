@@ -140,9 +140,9 @@ Returns a 1 if MySQL is running, or a 0 if it is not.
 
 sub ping {
     my $self = shift;
-    my $mysql = $self->wreConfig->get("mysql");
+    my $config = $self->wreConfig;
     my $db;
-    eval {$db = $self->getDatabaseHandle(password=>$mysql->{test}->{password}, username=>$mysql->{test}->{user})};
+    eval {$db = $self->getDatabaseHandle(password=>$config->get("mysql/test/password"), username=>$config->get("mysql/test/user"))};
     if (defined $db) {
        $db->disconnect;
        return 1;
@@ -196,7 +196,7 @@ sub stop {
         eval {$success = $self->ping };
         $count++;
     }
-    return $success;
+    return !$success;
 }
 
 

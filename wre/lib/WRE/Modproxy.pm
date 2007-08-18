@@ -24,8 +24,6 @@ WRE::Service
 
 =cut
 
-{ # begin inside out object
-
 
 #-------------------------------------------------------------------
 
@@ -118,11 +116,10 @@ sub stop {
         eval {$success = $self->ping};
         $count++;
     }
-    return $success;
+    return !$success;
 }
 
 
 
-} # end inside out object
 
 1;
