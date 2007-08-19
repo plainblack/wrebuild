@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------
 
 use strict;
-use lib '../lib';
+use lib '/data/wre/lib';
 use Carp qw(carp croak);
 use CGI;
 use Digest::MD5;
@@ -1018,6 +1018,10 @@ sub www_setup {
 
     # apache stuff
     if ($cgi->param("step") eq "apache") {
+        unless (getpwnam $collected->{wreUser}) {
+            $out .= qq|<p class="status">There is no user $collected->{wreUser} on this system, please create it or go
+                back and change the user you'd like to run the WRE under.</p>|;
+        }
         my $apache = $config->get("apache");
         $out .= '<h1>Apache</h1>
             <form action="/setup" method="post">
@@ -1182,7 +1186,7 @@ sub www_setup {
             print $socket "<blockquote>Creating default databases</blockquote>";
             $file->makePath($config->getRoot("/var/mysqldata"));
             chdir($config->getRoot("/prereqs"));
-            system("./bin/mysql_install_db --port=" . $collected->{mysqlPort});
+            system("./bin/mysql_install_db --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
             print $socket "<blockquote>Starting MySQL</blockquote>";
             $mysql->start;
@@ -1278,6 +1282,7 @@ sub www_setup {
             );
         $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
             { force => 1 });
+        $file->changeOwner($config->getWebguiRoot("/etc"));
 
         # status
         print $socket "<h1>Configuration Complete</h1>

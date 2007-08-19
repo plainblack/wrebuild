@@ -262,6 +262,7 @@ sub makePath {
     my $self = shift;
     my $path = shift;
     mkpath($path);
+    $self->changeOwner($path);
 }
 
 

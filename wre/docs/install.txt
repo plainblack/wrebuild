@@ -124,9 +124,10 @@ chkconfig webgui on
 
 Mac OS X
 
-There is no command line user add script on Mac OSX. This means you have to
-use the really horrible netinfo interface to add a user. Instead, we recommend
-downloading the user utilities from this site:
+There is no command line user add script on Mac OSX. Therefore you can either
+use the graphical "Accounts" manager in "System Preferences", or the really
+horrible "netinfo" command line utility. Alternatively, you can also download
+some free user utilities from this site:
 
 http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
 

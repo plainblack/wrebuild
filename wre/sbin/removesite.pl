@@ -12,7 +12,7 @@
 
 use lib '/data/wre/lib';
 use strict;
-use GetOpt::Long;
+use Getopt::Long;
 use WRE::Config;
 use WRE::Site;
 
@@ -30,7 +30,7 @@ my $dbAdminUser = $config->get("mysql")->{adminUser};
 
 if ($help || $adminPassword eq "" || $sitename eq "") {
     print <<STOP;
-Usage: perl $0 --sitename=www.example.com --adminPassword=123qwe
+Usage: $0 --sitename=www.example.com --adminPassword=123qwe
 
 Options:
 
@@ -42,6 +42,7 @@ Options:
                     or intranet.example.com
 
 STOP
+    exit;
 }
 
 
@@ -52,10 +53,10 @@ my $site = WRE::Site->new(
     );
 if (eval {$site->checkDeletionSanity}) {
     $site->delete;
-    print $site->getSitename." was deleted. Don't forget to restart the web servers and Spectre.\n";
+    print $site->sitename." was deleted. Don't forget to restart the web servers and Spectre.\n";
 } 
 else {
-    print $site->getSitename." could not be deleted because: ".$@."\n";
+    print $site->sitename." could not be deleted because: ".$@."\n";
 }
 
 

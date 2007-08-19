@@ -12,7 +12,7 @@
 
 use lib '/data/wre/lib';
 use strict;
-use GetOpt::Long;
+use Getopt::Long;
 use WRE::Config;
 use WRE::Site;
 
@@ -39,11 +39,11 @@ GetOptions(
     "databasePassword=s"    => \$dbPassword, 
     );
 
-my $dbAdminUser = $config->get("mysql")->{adminUser};
+my $dbAdminUser = $config->get("mysql/adminUser");
 
 if ($help || $adminPassword eq "" || $sitename eq "") {
     print <<STOP;
-Usage: perl $0 --sitename=www.example.com --adminPassword=123qwe
+Usage: $0 --sitename=www.example.com --adminPassword=123qwe
 
 Options:
 
@@ -63,6 +63,7 @@ Options:
                     create this site.
 
 STOP
+    exit;
 }
 
 
@@ -73,8 +74,8 @@ my $site = WRE::Site->new(
     );
 if (eval {$site->checkCreationSanity}) {
     $site->create({
-        siteDatabaseUser        => $databaseUser,
-        siteDatabasePassword    => $databasePassword,
+        siteDatabaseUser        => $dbUser,
+        siteDatabasePassword    => $dbPassword,
         var0                    => $var0,
         var1                    => $var1,
         var2                    => $var2,
@@ -86,10 +87,10 @@ if (eval {$site->checkCreationSanity}) {
         var8                    => $var8,
         var9                    => $var9,
         });
-    print $site->getSitename." was created. Don't forget to restart the web servers and Spectre.\n";
+    print $site->sitename." was created. Don't forget to restart the web servers and Spectre.\n";
 } 
 else {
-    print $site->getSitename." could not be created because: ".$@."\n";
+    print $site->sitename." could not be created because: ".$@."\n";
 }
 
 
