@@ -1177,7 +1177,7 @@ sub www_setup {
 
         # mysql
         print $socket "<p>Configuring MySQL.</p>$crlf";
-        if ($collected->{mysqlHost} eq "localhost") {
+        if ($collected->{mysqlHost} eq "localhost" || $collected->{mysqlHost} eq "127.0.0.1") {
             print $socket "<blockquote>Writing config file</blockquote>";
             $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                 $config->getRoot("/etc/my.cnf"),

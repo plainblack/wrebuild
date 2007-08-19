@@ -54,9 +54,8 @@ sub ping {
     $userAgent->agent("wre/1.0");
     $userAgent->timeout($apache->{connectionTimeout});
     my $header = new HTTP::Headers;
-    my $request = new HTTP::Request(
-        GET => "http://".$apache->{defaultHostname}.":".$apache->{modproxyPort}."/", $header
-        );
+    my $url = "http://".$apache->{defaultHostname}.":".$apache->{modproxyPort}."/";
+    my $request = new HTTP::Request( GET => $url, $header); 
     my $response = $userAgent->request($request);
     if ($response->is_success || $response->code eq "401") {
         return 1;
@@ -107,16 +106,16 @@ Note: The process that runs this command must be either root or the user specifi
 sub stop {
     my $self = shift;
     my $count = 0;
-    my $success = 1;
+    my $success = 0;
     my $wreConfig = $self->wreConfig;
     my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
         ." -D WRE-modproxy -k stop";
     `$cmd`; # catch command line output
-    while ($count < 10 && $success == 1) {
-        eval {$success = $self->ping};
+    while ($count < 10 && $success == 0) {
+        $success = !(eval {$self->ping});
         $count++;
     }
-    return !$success;
+    return $success;
 }
 
 

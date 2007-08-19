@@ -21,7 +21,7 @@ our $rotateFiles = $config->get("logs/rotations") || 3;
 # locate log files to rotate
 our @logfiles = ();
 findLogFiles($config->getRoot("/var/logs"));
-findLogFiles($config->getDomainsRoot);
+findLogFiles($config->getDomainRoot);
 
 # now that we know what we are expected to do, we'll start
 for my $logfile (@logfiles) {
@@ -39,7 +39,7 @@ for my $logfile (@logfiles) {
         }
         # move current log into log.0
         if ( open my $newLog, '>>', $logfile . '.0' ) {
-            while ( my $line < $currentLog > ) {
+            while ( my $line = <$currentLog> ) {
                 print {$newLog} $line;
             }
             close $newLog;

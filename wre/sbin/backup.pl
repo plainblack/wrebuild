@@ -1,4 +1,4 @@
-#!/data/wre/prereqs/perl/bin/perl
+#!/data/wre/prereqs/bin/perl
 
 #-------------------------------------------------------------------
 # WRE is Copyright 2005-2007 Plain Black Corporation.
@@ -11,13 +11,17 @@
 #-------------------------------------------------------------------
 
 use strict;
-use lib '/data/wre/lib';
+use lib '../lib';
 use Net::FTP;
 use WRE::Config;
+use WRE::File;
 use WRE::Mysql;
 
 my $config  = WRE::Config->new;
 my $util    = WRE::File->new(wreConfig => $config);
+
+# are backups enabled
+exit unless $config->get("backup/enabled");
 
 rotateBackupFiles($config);
 backupMysql($config);
@@ -36,7 +40,7 @@ sub backupDomains {
     # should we run?
     return undef unless $config->get("backup/items/domainsFolder");
 
-    my $domainsRoot     = $config->getDomainsRoot;
+    my $domainsRoot     = $config->getDomainRoot;
 
     # get domains to backup
 	opendir(DIR, $domainsRoot);
@@ -138,6 +142,10 @@ sub compressBackups {
 #-------------------------------------------------------------------
 sub copyToFtp {
     my $config      = shift;
+
+    # should we run?
+    return undef unless $config->get("backup/ftp/enabled");
+
 	my $now         = time;
     my $passive     = $config->get("backup/ftp/usePassiveTransfers");
     my $host        = $config->get("backup/ftp/hostname");

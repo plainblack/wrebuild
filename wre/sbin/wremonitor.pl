@@ -13,7 +13,7 @@
 $| = 1;
 
 use strict;
-use lib '/data/wre/lib';
+use lib '../lib';
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;
@@ -53,23 +53,27 @@ exit;
 #-------------------------------------------------------------------
 sub monitor {
     my $service = shift;
-    if ($service->ping) {
+    if (eval{$service->ping} && !$@) {
         logEntry("All is well with ".$service->getName);
     }
     else {
         logEntry($service->getName." reported down. Starting critical monitor.");
 
         # wait an see if we had a false positive
-        sleep 10;
-        if ($service->ping) {
+        sleep 15;
+        if (eval{$service->ping} && !$@) {
             logEntry($service->getName." has recovered.");
         }
         else {
-            if ($service->restart) {
-                sendEmail($service->getName." on ".$config->get("apache/defaultHostname")." was down and has restarted.");
+            if (eval {$service->restart} && !$@) {
+                my $message = $service->getName." on ".$config->get("apache/defaultHostname")." was down and has restarted.";
+                logEntry($message);
+                sendEmail($message);
             }
             else {
-                sendEmail($service->getName." on ".$config->get("apache/defaultHostname")." is down and could not be restarted.");
+                my $message = $service->getName." on ".$config->get("apache/defaultHostname")." is down and could not be restarted.";
+                logEntry($message." ".$@);
+                sendEmail($message);
             }
         } 
     }
@@ -79,12 +83,13 @@ sub monitor {
 sub logEntry {
 	my $message = shift;
     $message = localtime()." - ".$message."\n";
-    WRE::File->new(wreConfig=>$config)->spit($config->getRoot("/var/log/wremonitor.log"), \$message, { append => 1});
+    WRE::File->new(wreConfig=>$config)->spit($config->getRoot("/var/logs/wremonitor.log"), \$message, { append => 1});
 }
 
 #-------------------------------------------------------------------
 sub sendEmail {
 	my $message = shift;
+return;
     my $smtp = Net::SMTP->new($config->get("smtp/hostname"));
     if (defined $smtp) {
         foreach my $notify (@{$config->get("wreMonitor/notify")}) {
@@ -104,7 +109,7 @@ sub sendEmail {
         $smtp->quit;
     } 
     else {
-        logEntry("Error: Cannot connect to mail server.");
+        logEntry("Cannot connect to mail server.");
     }
 }
 
