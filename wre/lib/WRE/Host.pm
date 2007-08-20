@@ -13,6 +13,7 @@ package WRE::Host;
 use strict;
 use Carp qw(croak);
 use Class::InsideOut qw(new public);
+use Net::hostent;
 use Socket;
 use Sys::Hostname;
 
@@ -37,8 +38,6 @@ Returns a reference to the WRE cconfig.
 public wreConfig => my %wreConfig;
 
 
-
-
 #-------------------------------------------------------------------
 
 =head2 getHostname ( )
@@ -56,13 +55,19 @@ sub getHostname {
 
 =head2 getIp ( )
 
-Gets the IP address of the box. Note that this isn't foolproof.
+Gets the IP address of the box. Note that this isn't foolproof. Croaks if it can't determine one.
 
 =cut
 
 sub getIp {
     my $self = shift;
-    return inet_ntoa(scalar gethostbyname( $self->getHostname )); 
+    my $hostname = $self->getHostname;
+    my $host = gethostbyname($hostname);  # object return
+    if (defined $host) {
+        return inet_ntoa($host->addr);
+    }
+    croak "Cannot determine IP address of $hostname.";
+    return undef;
 }
 
 #-------------------------------------------------------------------

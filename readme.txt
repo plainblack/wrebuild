@@ -7,7 +7,7 @@ can be found in the wre/wre/docs folder of this distribution.
 
 For more information about the WRE, visit:
 
-	http://www.plainblack.com/wre
+	http://wiki.webgui.org/
 
 
 REQUIREMENTS

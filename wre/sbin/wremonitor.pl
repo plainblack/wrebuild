@@ -89,7 +89,6 @@ sub logEntry {
 #-------------------------------------------------------------------
 sub sendEmail {
 	my $message = shift;
-return;
     my $smtp = Net::SMTP->new($config->get("smtp/hostname"));
     if (defined $smtp) {
         foreach my $notify (@{$config->get("wreMonitor/notify")}) {

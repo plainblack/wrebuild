@@ -25,7 +25,7 @@
 # of the server's control files begin with "/" (or "drive:/" for Win32), the
 # server will use that explicit path.  If the filenames do *not* begin
 # with "/", the value of ServerRoot is prepended -- so "logs/foo.log"
-# with ServerRoot set to "[% wreRoot %]/prereqs/apache" will be interpreted by the
+# with ServerRoot set to "[% wreRoot %]/prereqs" will be interpreted by the
 # server as "[% wreRoot %]/var/logs/foo.log".
 #
 
@@ -47,7 +47,7 @@
 #
 # Do NOT add a slash at the end of the directory path.
 #
-ServerRoot "[% wreRoot %]/prereqs/apache"
+ServerRoot "[% wreRoot %]/prereqs"
 
 #
 # The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
@@ -158,7 +158,7 @@ LoadModule perl_module modules/mod_perl.so
       PerlSetVar StatusDeparseOptions "-p -sC"
   </Location>
 PerlSetVar WebguiRoot [% webguiRoot %]
-PerlRequire [% wreRoot %]/prereqs/apache/conf/startup.pl
+PerlRequire [% wreRoot %]/etc/modperl.pl
 PerlCleanupHandler Apache2::SizeLimit
 PerlRequire [% webguiRoot %]/sbin/preload.perl
 
@@ -235,7 +235,7 @@ UseCanonicalName Off
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-DocumentRoot "[% wreRoot %]/prereqs/apache/htdocs"
+DocumentRoot "[% wreRoot %]/prereqs/htdocs"
 
 #
 # Each directory to which Apache has access can be configured with respect
@@ -261,7 +261,7 @@ Alias /extras [% webguiRoot %]/www/extras
 #
 # This should be changed to whatever you set DocumentRoot to.
 #
-<Directory "[% wreRoot %]/prereqs/apache/htdocs">
+<Directory "[% wreRoot %]/prereqs/htdocs">
 
 #
 # Possible values for the Options directive are "None", "All",
@@ -458,34 +458,13 @@ ServerSignature Off
 # We include the /icons/ alias for FancyIndexed directory listings.  If you
 # do not use FancyIndexing, you may comment this out.
 #
-Alias /icons/ "[% wreRoot %]/prereqs/apache/icons/"
+Alias /icons/ "[% wreRoot %]/prereqs/icons/"
 
-<Directory "[% wreRoot %]/prereqs/apache/icons">
+<Directory "[% wreRoot %]/prereqs/icons">
     Options Indexes MultiViews
     AllowOverride None
     Order allow,deny
     Allow from all
-</Directory>
-
-#
-# This should be changed to the ServerRoot/manual/.  The alias provides
-# the manual, even if you choose to move your DocumentRoot.  You may comment
-# this out if you do not care for the documentation.
-#
-AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "[% wreRoot %]/prereqs/apache/manual$1"
-
-<Directory "[% wreRoot %]/prereqs/apache/manual">
-    Options Indexes
-    AllowOverride None
-    Order allow,deny
-    Allow from all
-
-    <Files *.html>
-        SetHandler type-map
-    </Files>
-
-    SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|ru)/ prefer-language=$1
-    RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|ru)){2,}(/.*)?$ /manual/$1$2
 </Directory>
 
 #
@@ -496,7 +475,7 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "[% wreRoot %]/prereqs/
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "[% wreRoot %]/prereqs/apache/cgi-bin/"
+ScriptAlias /cgi-bin/ "[% wreRoot %]/prereqs/cgi-bin/"
 
 <IfModule mod_cgid.c>
 #
@@ -507,10 +486,10 @@ ScriptAlias /cgi-bin/ "[% wreRoot %]/prereqs/apache/cgi-bin/"
 </IfModule>
 
 #
-# "[% wreRoot %]/prereqs/apache/cgi-bin" should be changed to whatever your ScriptAliased
+# "[% wreRoot %]/prereqs/cgi-bin" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "[% wreRoot %]/prereqs/apache/cgi-bin">
+<Directory "[% wreRoot %]/prereqs/cgi-bin">
     AllowOverride None
     Options None
     Order allow,deny
@@ -687,7 +666,7 @@ AddHandler type-map var
 #   Alias /error/include/ "/your/include/path/"
 #
 # which allows you to create your own set of files by starting with the
-# [% wreRoot %]/prereqs/apache/error/include/ files and copying them to /your/include/path/, 
+# [% wreRoot %]/prereqs/error/include/ files and copying them to /your/include/path/, 
 # even on a per-VirtualHost basis.  The default include files will display
 # your Apache version number and your ServerAdmin email address regardless
 # of the setting of ServerSignature.
@@ -695,9 +674,9 @@ AddHandler type-map var
 # The internationalized error documents require mod_alias, mod_include
 # and mod_negotiation.  To activate them, uncomment the following 30 lines.
 
-#    Alias /error/ "[% wreRoot %]/prereqs/apache/error/"
+#    Alias /error/ "[% wreRoot %]/prereqs/error/"
 #
-#    <Directory "[% wreRoot %]/prereqs/apache/error">
+#    <Directory "[% wreRoot %]/prereqs/error">
 #        AllowOverride None
 #        Options IncludesNoExec
 #        AddOutputFilter Includes html

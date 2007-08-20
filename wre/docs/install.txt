@@ -81,6 +81,11 @@ will be using, including the AWStats site.
 
 8. Follow the on screen instructions to complete the configuration.
 
+    NOTE: Safari is not capable of displaying a page as it's being downloaded
+    so it is not the best browser you can use for the setup process, which is
+    a realtime process. Safari will work in most cases, but it is not ideal.
+    We recommend Firefox instead.
+
 
 9. Go to the "Services" tab and start MySQL.
 

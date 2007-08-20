@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------
 
 use strict;
-use lib '/data/wre/lib';
+use lib '../lib';
 use Carp qw(carp croak);
 use CGI;
 use Digest::MD5;
@@ -57,7 +57,12 @@ while (my $connection = $daemon->accept) {
         my $handler = $request->url->path;
         $handler =~ s{^/(.*)}{$1};
         if ($handler eq "" || $handler !~ m/^[A-Za-z]+$/) {
-            $handler = "listSites";
+            if ( -d $state->{config}->getWebguiRoot ) {
+                $handler = "listSites";
+            }
+            else {
+                $handler = "setup";
+            }
         }
         $handler = "www_".$handler;
         no strict;

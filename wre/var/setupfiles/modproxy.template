@@ -20,6 +20,10 @@
    	RewriteRule ^/extras/ - [L]
    	RewriteRule ^/uploads/ - [L]
 
+    # deal with port number in HTTP_HOST
+    RewriteCond %{HTTP_HOST} :[% modproxyPort %]
+    RewriteRule ^/(.*) http://%{SERVER_NAME}/$1 [P]
+
 	# proxy webgui pages
    	RewriteRule ^/(.*) http://%{HTTP_HOST}:[% modperlPort %]/$1 [P]
 </VirtualHost>
@@ -52,6 +56,10 @@
 #    RewriteRule ^/favicon.ico - [L]
 #    RewriteRule ^/extras/ - [L]
 #    RewriteRule ^/uploads/ - [L]
+#
+#    # deal with port number in HTTP_HOST
+#    RewriteCond %{HTTP_HOST} :443
+#    RewriteRule ^/(.*) http://%{SERVER_NAME}/$1 [P]
 #
 #	 # proxy webgui pages
 #    RewriteRule ^/(.*) http://%{HTTP_HOST}:[% modperlPort %]/$1 [P]
