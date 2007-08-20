@@ -73,8 +73,8 @@ sub createDemo {
 
     # manufacture stuff
     $params->{databaseName} = $demoId;
-    $params->{databaseUser} = "demo";
-    $params->{databasePassword} = random_string("cCncCncCncCn");
+    $params->{databaseUser} = random_string("ccccccccccccccc");
+    $params->{databasePassword} = random_string("cCncCnCCncCncCnnnCcccnnCnc");
     $params->{databaseHost} = $config->get("mysql")->{hostname};
     $params->{databasePort} = $config->get("mysql")->{port};
     $params->{sitename} = $demo->{hostname};

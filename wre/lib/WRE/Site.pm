@@ -79,8 +79,8 @@ sub create {
     my $sitename = $self->sitename;
     # manufacture stuff
     $params->{databaseName} = $self->makeDatabaseName;
-    $params->{databaseUser} ||= random_string("ccccccc");
-    $params->{databasePassword} ||= random_string("cCncCncCncCn");
+    $params->{databaseUser} ||= random_string("ccccccccccccccc");
+    $params->{databasePassword} ||= random_string("cCncCncCncCncccnnnCCnc");
     $params->{sitename} = $sitename;
     my $domain = $sitename;
     $domain =~ s/\w+\.(.*)/$1/;
@@ -259,9 +259,6 @@ sub delete {
     $db->do("drop database $databaseName");
     $db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'%'");
 
-    # webgui
-    $file->delete($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
-
     # web root
     $file->delete($wreConfig->getDomainRoot("/".$sitename));
 
@@ -274,6 +271,8 @@ sub delete {
     # awstats
     $file->delete($wreConfig->getRoot("/etc/".$sitename.".modproxy"));
 
+    # webgui
+    $file->delete($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
 }
 
 

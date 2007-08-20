@@ -1,13 +1,24 @@
-#!/data/wre/prereqs/perl/bin/perl -w
-use strict;
-use DBI;
-use Parse::PlainConfig;
-use File::Path;
-use Getopt::Long;
+#!/data/wre/prereqs/bin/perl
 
-my $all;
-my $help;
-my $verbose;
+#-------------------------------------------------------------------
+# WRE is Copyright 2005-2007 Plain Black Corporation.
+#-------------------------------------------------------------------
+# Please read the legal notices (docs/legal.txt) and the license
+# (docs/license.txt) that came with this distribution before using
+# this software.
+#-------------------------------------------------------------------
+# http://www.plainblack.com	            		info@plainblack.com
+#-------------------------------------------------------------------
+
+use strict;
+use lib '../lib';
+use Getopt::Long;
+use WRE::Config;
+use WRE::File;
+use WRE::Mysql;
+
+my ($all, $help, $verbose);
+$|=1;
 
 GetOptions(
 	'all'=>\$all,
@@ -33,43 +44,66 @@ STOP
 
 print "START UP.\n" if ($verbose);
 print "Reading demo config.\n" if ($verbose);
-my $config = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/wre/etc/demo.conf', 'PURGE' => 1);
-my $demos = $config->get('sites');
-print "Connecting to database.\n" if ($verbose);
-my $dsn = "DBI:mysql:test;host=" . $config->get('mysqlhost') ;
-if ($config->get('db-port')) {
-	$dsn .= ";port=" . $config->get('db-port') ;
+my $config = WRE::Config->new;
+my $file = WRE::File->new(wreConfig=>$config);
+print "Getting the list of demo sites.\n" if ($verbose);
+opendir(my $demodir, $config->getWebguiRoot("/etc"));
+my @demos = ();
+foreach my $file (readdir($demodir)) {
+    next unless $file =~ m/^demo/;
+    my $config = eval {Config::JSON->new($config->getWebguiRoot("/etc/".$file)) };
+    if ($@) {
+        print "Error reading $file\n" if ($verbose);
+    }
+    else {
+        push @demos, $config;
+    }
 }
-my $dbh = DBI->connect($dsn,$config->get("adminuser"),$config->get("adminpass"));
-my %newDemos = ();
-foreach my $demoId (keys %{$demos}) {
-	next unless ($demoId); # prevent empty strings from wreaking havoc
-	if ($all || time() - $demos->{$demoId} > $config->get("duration") * 60 * 60 * 24) {
-		print "OLD: ".$demoId."\n" if ($verbose);
-		print "\tDropping database.\n" if ($verbose);
-		eval{$dbh->do("drop database ".$demoId);};
-		print "Error: $@\n" if ($@ && $verbose);
-		print "\tRevoking database privileges.\n" if ($verbose);
-		eval{$dbh->do("revoke all privileges on ".$demoId.".* from demo\@localhost");};
-		print "Error: $@\n" if ($@ && $verbose);
-		my $siteConfig = Parse::PlainConfig->new('DELIM' => '=', 'FILE' => '/data/WebGUI/etc/'.$demoId.'.conf', 'PURGE' => 1);
-		my $cachePath = $siteConfig->get('fileCacheRoot') || "/tmp/WebGUICache";
-		print "\tDeleting /data/WebGUI/etc/".$demoId.".conf\n" if ($verbose);
-		unlink("/data/WebGUI/etc/".$demoId.".conf");
-		print "\tDeleting /data/domains/demo/".$demoId."\n" if ($verbose);
-		rmtree("/data/domains/demo/".$demoId);	
-		print "\tDeleting ".$cachePath."/".$demoId.".conf\n" if ($verbose);
-		rmtree($cachePath."/".$demoId.".conf");	
-		print "\tFinished deleting $demoId\n" if ($verbose);
-	} else {
-		print "NEW: ".$demoId."\n\tNot deleting.\n" if ($verbose);
-		$newDemos{$demoId} = $demos->{$demoId};
+closedir($demodir);
+
+print "Deleting demos.\n" if ($verbose);
+foreach my $demo (@demos) {
+    my $demoId = $demo->getFilename;
+    $demoId =~ s/(demo.*)\.conf/$1/;
+	if ($all || time() - $demo->get("demoCreated") > $config->get("demo/duration") * 60 * 60 * 24) {
+		print "Deleting Site: ".$demoId."\n" if ($verbose);
+
+        # database
+		print "\tConnecting to database.\n" if ($verbose);
+        my $databaseName = $demo->get("dsn");
+        $databaseName =~ s/^DBI\:mysql\:(\w+).*$/$1/i; 
+        my $databaseUser = $demo->get("dbuser");
+        my $mysql = WRE::Mysql->new(wreConfig=>$config);
+        my $db = eval{$mysql->getDatabaseHandle(
+            password=>$config->get("demo/password"),
+            username=>$config->get("demo/user")
+            )};
+        if ($@) {
+            print "\tCan't connect to database, so can't delete site.\n" if ($verbose);
+        }
+        else {
+		    print "\tDropping database.\n" if ($verbose);
+            eval{$db->do("drop database $databaseName")};
+		    print "\tError: $@\n" if ($@ && $verbose);
+		    print "\tRevoking database privileges.\n" if ($verbose);
+            eval{$db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'%'")};
+		    print "\tError: $@\n" if ($@ && $verbose);
+            $db->disconnect;
+
+            # web root
+            print "\tDeleting Web Root.\n" if ($verbose);
+            $file->delete($config->getDomainRoot("/demo/".$demoId));
+
+            # webgui
+            print "\tDeleting WebGUI Config.\n" if ($verbose);
+            $file->delete($demo->getFilePath);
+
+		    print "\tFinished deleting $demoId\n" if ($verbose);
+        }
+	}
+    else {
+		print "Skipping Site: ".$demoId."\n" if ($verbose);
 	}
 }
-print "Discoonnecting from database.\n" if ($verbose);
-$dbh->disconnect;
-print "Updating demo site list in demo config.\n" if ($verbose);
-$config->set('sites'=>\%newDemos);
-$config->write;
 print "COMPLETE.\n" if ($verbose);
 
