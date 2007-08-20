@@ -137,6 +137,9 @@ sub stop {
     my $count = 0;
     my $success = 1;
     my $config = $self->wreConfig;
+    unless ($config->get("apache/modperlPort") > 1024 || $config->isPrivilegedUser) {
+        croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
+    }
     my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
         ." -D WRE-modperl -k stop";
     `$cmd`; # catch command line output

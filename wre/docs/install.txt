@@ -87,19 +87,16 @@ will be using, including the AWStats site.
     We recommend Firefox instead.
 
 
-9. Go to the "Services" tab and start MySQL.
+9. Go to the "Sites" tab and add your first web site.
 
 
-10. Go to the "Sites" tab and add your first web site.
+10. Go to the "Services" tab and start mod_proxy, mod_perl, and S.P.E.C.T.R.E.
 
 
-11. Go to the "Services" tab and start mod_proxy, mod_perl, and S.P.E.C.T.R.E.
+11. Visit your new web site!
 
 
-12. Visit your new web site!
-
-
-13. Add the following cron jobs to your server's cron tab.
+12. Add the following cron jobs to your server's cron tab.
 
 	0 0 * * * /data/wre/sbin/logrotate.pl
 	*/3 * * * * /data/wre/sbin/wremonitor.pl

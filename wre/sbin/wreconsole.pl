@@ -791,7 +791,7 @@ sub www_listServices {
     $content .= '<div class="status">'.$status.'</div>';
     unless ($state->{config}->isPrivilegedUser) {
         $content .= q|<p class="status"><b>WARNING:</b> Because you are not an administrator on this machine, you
-            will not be able to start services on ports 1-1024.</p>|;
+            will not be able to start or stop services on ports 1-1024.</p>|;
     }
     $content .= '<table class="items">
     <tr>
@@ -1147,30 +1147,26 @@ sub www_setup {
         print $socket "<h1>Configuring Your WRE Server</h1>$crlf";
 
         # config file
-        print $socket "<p>Updating WRE config.</p>$crlf";
+        print $socket "<p>Updating WRE config.</p><blockquote>$crlf";
         $config->set("user", $collected->{wreUser});
         $config->set("tar", which("tar"));
         $config->set("gzip", which("gzip"));
         $config->set("gunzip", which("gunzip"));
         $config->set("ipcs", which("ipcs"));
         $config->set("grep", which("grep"));
-
         my $mysql                   = $config->get("mysql");
         $mysql->{adminUser}         = $collected->{mysqlAdminUser};
         $mysql->{hostname}          = $collected->{mysqlHost};
         $mysql->{port}              = $collected->{mysqlPort};
         $config->set("mysql", $mysql);
-
         my $backup                  = $config->get("backup");
         my $mysqlBackupPassword     = random_string("cCncCncCncCn");
         $backup->{mysql}{password}  = $mysqlBackupPassword;
         $config->set("backup", $backup);
-
         my $apache                  = $config->get("apache");
         $apache->{modperlPort}      = $collected->{modperlPort};
         $apache->{modproxyPort}     = $collected->{modproxyPort};
         $config->set("apache", $apache);
-
         my $webgui                  = $config->get("webgui");
         my $spectreSubnetsString    = $collected->{spectreSubnets};
         $spectreSubnetsString =~ s/\s+//g;
@@ -1178,30 +1174,30 @@ sub www_setup {
         push(@spectreSubnets, "127.0.0.1/32");
         $webgui->{configOverrides}{spectreSubnets} = \@spectreSubnets;
         $config->set("webgui", $webgui);
-        my $diff = "";
+        print $socket "</blockquote>$crlf";
 
         # mysql
-        print $socket "<p>Configuring MySQL.</p>$crlf";
+        print $socket "<p>Configuring MySQL.</p><blockquote>$crlf";
         if ($collected->{mysqlHost} eq "localhost" || $collected->{mysqlHost} eq "127.0.0.1") {
-            print $socket "<blockquote>Writing config file</blockquote>";
+            print $socket "<p>Writing config file</p>";
             $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                 $config->getRoot("/etc/my.cnf"),
                 { force => 1, processTemplate=>1 });
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
-            print $socket "<blockquote>Creating default databases</blockquote>";
+            print $socket "<p>Creating default databases</p>";
             $file->makePath($config->getRoot("/var/mysqldata"));
             chdir($config->getRoot("/prereqs"));
             system("./bin/mysql_install_db --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
-            print $socket "<blockquote>Starting MySQL</blockquote>";
+            print $socket "<p>Starting MySQL</p>";
             $mysql->start;
-            print $socket "<blockquote>Connecting</blockquote>";
+            print $socket "<p>Connecting</p>";
             my $db = eval{ $mysql->getDatabaseHandle(undef,"root")};
             if ($@) {
-                print $socket "Couldn't connect to MySQL to configure it. ".$@;
+                print $socket "<p>Couldn't connect to MySQL to configure it.</p>".$@;
             }
             else {
-                print $socket "<blockquote>Setting Privileges</blockquote>";
+                print $socket "<p>Setting Privileges</p>";
                 $db->do("use mysql");
                 $db->do("delete from user where user=''");
                 $db->do("delete from user where user='root'");
@@ -1209,31 +1205,30 @@ sub www_setup {
                 $db->do("grant all privileges on test.* to test\@'localhost' identified by 'test'");
                 $db->do("grant select, lock tables, show databases on *.* to backup\@'localhost' identified by '".$mysqlBackupPassword."'");
                 $db->do("flush privileges");
-                print $socket "<blockquote>Disconnecting</blockquote>";
+                print $socket "<p>Disconnecting</p>";
                 $db->disconnect;
              }
-            print $socket "<blockquote>Stopping MySQL</blockquote>";
-            $mysql->stop;
         }
         else {
             $config->set("wreMonitor/items/mysql", 0);
-            print $socket "<blockquote>Connecting</blockquote>";
+            print $socket "<p>Connecting</p>";
             my $db = eval { $mysql->getDatabaseHandle($collected->{mysqlAdminPassword}, $collected->{mysqlAdminUser})};
             if ($@) {
-                print $socket "Couldn't connect to remote MySQL server to configure it. ".$@;
+                print $socket "<p>Couldn't connect to remote MySQL server to configure it.</p>".$@;
             }
             else {
-                print $socket "<blockquote>Setting Privileges</blockquote>";
+                print $socket "<p>Setting Privileges</p>";
                 $db->do("grant all privileges on test.* to test\@'%' identified by 'test'");
                 $db->do("grant select, lock tables, show on *.* to backup\@'%' identified by '".$mysqlBackupPassword."'");
                 $db->do("flush privileges");
-                print $socket "<blockquote>Disconnecting</blockquote>";
+                print $socket "<p>Disconnecting</p>";
                 $db->disconnect;
             }            
         }
+        print $socket "</blockquote>$crlf";
 
         # apache
-        print $socket "<p>Configuring Apache.</p>$crlf";
+        print $socket "<p>Configuring Apache.</p><blockquote>$crlf";
         if ($collected->{devOnly}) {
             $file->copy($config->getRoot("/var/setupfiles/modperl.conf.dev"),
                     $config->getRoot("/etc/modperl.conf"),
@@ -1259,7 +1254,10 @@ sub www_setup {
         $file->copy($config->getRoot("/var/setupfiles/awstats.template"),
             $config->getRoot("/var/awstats.template"),
             { force => 1 });
+        print $socket "</blockquote>$crlf";
 
+        # configuring webgui
+        print $socket "<p>Configuring WebGUI.</p><blockquote>$crlf";
         unless ($collected->{manualWebguiInstall}) {
             my $update = WRE::WebguiUpdate->new(wreConfig=>$config);
 
@@ -1276,9 +1274,6 @@ sub www_setup {
             $update->extractArchive($download);
             
         }
-
-        # configuring webgui
-        print $socket "<p>Configuring WebGUI.</p>$crlf";
         $file->copy($config->getWebguiRoot("/etc/log.conf.original"), $config->getWebguiRoot("/etc/log.conf"),
             { force => 1 });
         system($config->getRoot("/prereqs/bin/perl")
@@ -1288,6 +1283,25 @@ sub www_setup {
         $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
             { force => 1 });
         $file->changeOwner($config->getWebguiRoot("/etc"));
+        print $socket "</blockquote>$crlf";
+
+        # dev server stuff
+        if ($collected->{devOnly}) {
+            print $socket "<p>Configuring Developer Site</p><blockquote>$crlf";
+            my $site = WRE::Site->new(
+                wreConfig       => $config,
+                sitename        => "dev.localhost.localdomain",
+                adminPassword   => $collected->{mysqlAdminPassword},
+                );
+            if (eval {$site->checkCreationSanity}) {
+                $site->create;
+                print $socket "<p>Please add <b>dev.localhost.localdomain</b> to your /etc/hosts file.</p>$crlf";
+            }
+            else {
+                print $socket "<p>Site couldn't be created because $@.</p>$crlf";
+            }
+            print $socket "</blockquote>$crlf";
+        }
 
         # status
         print $socket "<h1>Configuration Complete</h1>
@@ -1371,7 +1385,29 @@ sub www_startSpectre {
 #-------------------------------------------------------------------
 sub www_stopConsole {
     my $state = shift;
-    sendResponse($state, '<h1>WRE Console has shutdown.</h1>');
+    my $crlf = "\015\012";
+    my $socket = $state->{connection};
+        
+    # disable buffer caching
+    select $socket;
+    $| = 1; 
+
+    # header
+    $socket->send_basic_header; 
+    print $socket "Content-Type: text/html$crlf";
+    print $socket $crlf;
+    print $socket <<STOP;
+    <html><head>
+    <style type="text/css">
+    body { background-color: #5566cc; color: #ffffff; font-family: sans-serif; }
+    </style>
+    <title>WRE Console has shutdown.</title>
+    <body>
+    <h1>WRE Console has shutdown.</h1>
+    </body>
+    </html>
+    $crlf
+STOP
     exit;
 }
 

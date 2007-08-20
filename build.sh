@@ -401,7 +401,8 @@ installPerlModules(){
 	installPerlModule "UNIVERSAL-can-1.12"
 	installPerlModule "Class-MakeMethods-1.01"
 	installPerlModule "Locale-US-1.1"
-	installPerlModule "Weather-Com-0.5.1"
+    installPerlModule "Time-Format-1.02"
+	installPerlModule "Weather-Com-0.5.2"
 	installPerlModule "Text-Aspell-0.06" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
 	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"

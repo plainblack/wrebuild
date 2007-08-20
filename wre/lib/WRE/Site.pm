@@ -48,7 +48,7 @@ public wreConfig => my %config;
 
 #-------------------------------------------------------------------
 
-=head2 create ( params => $params)
+=head2 create ( params)
 
 Creates a site given the creation information.
 
@@ -72,7 +72,7 @@ A series of variables that will be added to the list of template variables used 
 
 sub create {
     my $self = shift;
-    my $params = shift;
+    my $params = shift || {};
     my $wreConfig = $self->wreConfig;
     my $file = WRE::File->new(wreConfig=>$wreConfig);
     my $refId = id $self;

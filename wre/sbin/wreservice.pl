@@ -86,7 +86,7 @@ my $config = WRE::Config->new;
 
 unless ($config->isPrivilegedUser || $quiet) {
     print "\nWARNING: Because you are not an administrator on this system, you will not be able to
-        start services on ports 1-1024.\n\n";
+        start or stop services on ports 1-1024.\n\n";
 }
 
 if (scalar(@stop)) {
