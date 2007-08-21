@@ -108,6 +108,7 @@ sub getNavigation {
 sub makeHtmlFormSafe {
     my $htmlRef = shift;
     ${$htmlRef} =~ s/\&/&amp;/xmsg;
+    ${$htmlRef} =~ s/\"/&quot;/xmsg;
     ${$htmlRef} =~ s/\>/&gt;/xmsg;
     ${$htmlRef} =~ s/\</&lt;/xmsg;
 }
@@ -300,6 +301,7 @@ sub www_deleteSiteSave {
 #-------------------------------------------------------------------
 sub www_editSettings {
     my $state = shift;
+    my $status = shift;
     my $config = $state->{config};
     my $content = getNavigation("settings");
     my $configOverrides = objToJson($config->get("webgui/configOverrides"), 
@@ -311,7 +313,7 @@ sub www_editSettings {
     my $backup = $config->get("backup");
     my $demo = $config->get("demo");
     makeHtmlFormSafe(\$configOverrides); 
-    $content .= '<form method="post" action="/editSettingsSave">
+    $content .= '<p class="status">'.$status.'</p><form method="post" action="/editSettingsSave">
         <p><input type="submit" class="saveButton" value="Save" /></p>
 
         <fieldset><legend>Apache</legend>
@@ -331,7 +333,7 @@ sub www_editSettings {
 
         <p>
         Max Memory<br />
-        <input type="text" name="apacheMaxMemoryPercent" value="'.$apache->{maxMemory}.'" /> 
+        <input type="text" name="apacheMaxMemory" value="'.$apache->{maxMemory}.'" /> 
         <span class="subtext">The amount of the servers memory (in bytes) that the WRE will allow Apache/mod_perl processes
         to use before killing them.</span>
         </p>
@@ -549,86 +551,74 @@ sub www_editSettingsSave {
     $config->set("logs/rotations", $cgi->param("logRotations"));
     
     # wre monitor
-    my $wreMonitor                      = $config->get("wreMonitor");
     my $notifyString                    = $cgi->param("wreMonitorNotify");
     $notifyString                       =~ s/\s+//g;
     my @notify                          = split(",", $notifyString); 
-    $wreMonitor->{notify}               = \@notify;
-    $wreMonitor->{secondsBetweenChecks} = $cgi->param("wreMonitorSecondsBetweenChecks");
-    $wreMonitor->{items}{modperl}       = $cgi->param("wreMonModperl");
-    $wreMonitor->{items}{modproxy}      = $cgi->param("wreMonModproxy");
-    $wreMonitor->{items}{mysql}         = $cgi->param("wreMonMysql");
-    $wreMonitor->{items}{runaway}       = $cgi->param("wreMonRunaway");
-    $wreMonitor->{items}{spectre}       = $cgi->param("wreMonSpectre");
-    $config->set("wreMonitor", $wreMonitor);
+    $config->set("wreMonitor/notify", \@notify);
+    $config->set("wreMonitor/items/modperl", $cgi->param("wreMonModperl"));
+    $config->set("wreMonitor/items/modproxy", $cgi->param("wreMonModproxy"));
+    $config->set("wreMonitor/items/mysql", $cgi->param("wreMonMysql"));
+    $config->set("wreMonitor/items/runaway", $cgi->param("wreMonRunaway"));
+    $config->set("wreMonitor/items/spectre", $cgi->param("wreMonSpectre"));
 
     # webstats
-    my $webstats            = $config->get("webstats");
-    $webstats->{hostname}   = $cgi->param("webstatsHost");
+    $config->set("webstats/hostname", $cgi->param("webstatsHost"));
     # have to enable web stats
-    if ($webstats->{enabled} == 0 && $cgi->param("enableWebstats") == 1) {
+    if ($config->set("webstats/enabled") == 0 && $cgi->param("enableWebstats") == 1) {
         $file->copy($config->getRoot("/var/setupfiles/stats.modproxy"), $config->getRoot("/etc/stats.modproxy"), 
-            { force => 1, templateVars=> { hostname=>$webstats->{hostname} } });
+            { force => 1, templateVars=> { sitename=>$config->set("webstats/hostname") } });
     }
     # have to disable webstats
-    elsif ($webstats->{enabled} == 1 && $cgi->param("enableWebstats") == 0) {
+    elsif ($config->set("webstats/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
         $file->delete($config->getRoot("/etc/stats.modproxy"));
     }
-    $webstats->{enabled}    = $cgi->param("enableWebstats");
-    $config->set("webstats", $webstats);
+    $config->set("webstats/enabled", $cgi->param("enableWebstats"));
 
     # backups
-    my $backup                          = $config->get("backup");
     my $externalScriptsString           = $cgi->param("externalScripts");
     my @externalScripts                 = split("\n", $externalScriptsString);
-    $backup->{externalScripts}          = \@externalScripts;
-    $backup->{path}                     = $cgi->param("backupPath");
-    $backup->{enabled}                  = $cgi->param("enableBackups");
-    $backup->{rotations}                = $cgi->param("backupRotations");
-    $backup->{compress}                 = $cgi->param("backupCompress");
-    $backup->{items}{fullWre}           = $cgi->param("backupFullWre");
-    $backup->{items}{smallWre}          = $cgi->param("backupSmallWre");
-    $backup->{items}{mysql}             = $cgi->param("backupMysql");
-    $backup->{items}{webgui}            = $cgi->param("backupWebgui");
-    $backup->{items}{domainsFolder}     = $cgi->param("backupDomains");
-    $backup->{ftp}{enabled}             = $cgi->param("backupFtpEnabled");
-    $backup->{ftp}{user}                = $cgi->param("backupFtpUser");
-    $backup->{ftp}{password}            = $cgi->param("backupFtpPassword");
-    $backup->{ftp}{usePassiveTransfers} = $cgi->param("backupFtpPassive");
-    $backup->{ftp}{path}                = $cgi->param("backupFtpPath");
-    $backup->{ftp}{hostname}            = $cgi->param("backupFtpHost");
-    $backup->{ftp}{rotations}           = $cgi->param("backupFtpRotations");
-    $config->set("backup", $backup);
+    $config->set("backup/externalScripts", \@externalScripts);
+    $config->set("backup/path", $cgi->param("backupPath"));
+    $config->set("backup/enabled", $cgi->param("enableBackups"));
+    $config->set("backup/rotations", $cgi->param("backupRotations"));
+    $config->set("backup/compress", $cgi->param("backupCompress"));
+    $config->set("backup/items/fullWre", $cgi->param("backupFullWre"));
+    $config->set("backup/items/smallWre", $cgi->param("backupSmallWre"));
+    $config->set("backup/items/mysql", $cgi->param("backupMysql"));
+    $config->set("backup/items/webgui", $cgi->param("backupWebgui"));
+    $config->set("backup/items/domainsFolder", $cgi->param("backupDomains"));
+    $config->set("backup/ftp/enabled", $cgi->param("backupFtpEnabled"));
+    $config->set("backup/ftp/user", $cgi->param("backupFtpUser"));
+    $config->set("backup/ftp/password", $cgi->param("backupFtpPassword"));
+    $config->set("backup/ftp/usePassiveTransfers", $cgi->param("backupFtpPassive"));
+    $config->set("backup/ftp/path", $cgi->param("backupFtpPath"));
+    $config->set("backup/ftp/hostname", $cgi->param("backupFtpHost"));
+    $config->set("backup/ftp/rotations", $cgi->param("backupFtpRotations"));
 
     # demo
-    my $demo            = $config->get("demo");
+    $config->set("demo/hostname", $cgi->param("demoHost"));
     # have to enable demos
-    $demo->{hostname}   = $cgi->param("demoHost");
-    if ($demo->{enabled} == 0 && $cgi->param("enableDemo") == 1) {
+    if ($config->set("demo/enabled") == 0 && $cgi->param("enableDemo") == 1) {
         $file->makePath($config->getDomainRoot("/demo"));
         $file->copy($config->getRoot("/var/setupfiles/demo.modproxy"), $config->getRoot("/etc/demo.modproxy"), 
-            { force => 1, templateVars=>{ hostname=>$demo->{hostname} } });
+            { force => 1, templateVars=>{ sitename=>$config->set("demo/hostname") } });
         $file->copy($config->getRoot("/var/setupfiles/demo.modperl"), $config->getRoot("/etc/demo.modperl"), 
-            { force => 1, templateVars=>{ hostname=>$demo->{hostname} } });
+            { force => 1, templateVars=>{ sitename=>$config->set("demo/hostname") } });
     }
     # have to disable demos
-    elsif ($webstats->{enabled} == 1 && $cgi->param("enableWebstats") == 0) {
+    elsif ($config->set("demo/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
         $file->delete($config->getRoot("/etc/demo.modproxy"));
         $file->delete($config->getRoot("/etc/demo.modperl"));
     }
-    $demo->{enabled}    = $cgi->param("enableDemo");
-    $demo->{duration}   = $cgi->param("demoDuration");
-    $config->set("demo", $demo);
+    $config->set("demo/enabled", $cgi->param("enableDemo"));
+    $config->set("demo/duration", $cgi->param("demoDuration"));
 
     # apache
-    my $apache                      = $config->get("apache");
-    $apache->{defaultHostname}      = $cgi->param("apacheDefaultHostname");
-    $apache->{modproxyPort}         = $cgi->param("apacheModproxyPort");
-    $apache->{modperlPort}          = $cgi->param("apacheModperlPort");
-    $apache->{connectionTimeout}    = $cgi->param("apacheConnectionTimeout");
-    $config->set("apache", $apache);
+    $config->set("apache/defaultHostname", $cgi->param("apacheDefaultHostname"));
+    $config->set("apache/maxMemory", $cgi->param("apacheMaxMemory"));
+    $config->set("apache/connectionTimeout", $cgi->param("apacheConnectionTimeout"));
 
-    return www_editSettings($state);
+    return www_editSettings($state, "Settings Saved");
 }
 
 
@@ -1020,6 +1010,7 @@ sub www_setup {
         $collected->{$key} = $cgi->param($key);
     }
     $collectedJson = JSON::objToJson($collected);
+    makeHtmlFormSafe(\$collectedJson);
 
     # apache stuff
     if ($cgi->param("step") eq "apache") {
@@ -1031,7 +1022,7 @@ sub www_setup {
         $out .= '<h1>Apache</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="mysql">
-            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
             mod_proxy Port <br />
             <input type="text" name="modproxyPort" value="'.($collected->{modproxyPort} || $apache->{modproxyPort}).'" />
@@ -1058,7 +1049,7 @@ sub www_setup {
         $out .= '<h1>MySQL</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="webgui">
-            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
             Host <br />
             <input type="text" name="mysqlHost" value="'.($collected->{mysqlHost} || $mysql->{hostname}).'" />
@@ -1088,7 +1079,7 @@ sub www_setup {
         $out .= '<h1>WebGUI</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="finish">
-            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
             What are the subnets WebGUI can expect Spectre to connect from? <br />
             <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || $host->getSubnet).'" />
@@ -1110,7 +1101,7 @@ sub www_setup {
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="install">
             <input type="hidden" name="manualWebguiInstall" value="0">
-            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p style="width: 60%;">
                 If you would like to modify settings before the installation press the button below.<br />
                 <input type="button" value="&laquo; Previous" class="deleteButton"
@@ -1321,7 +1312,7 @@ sub www_setup {
         $out .= '<h1>WRE</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="apache">
-            <input type="hidden" name="collected" value=\''.$collectedJson.'\' />
+            <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
             WRE Operating System User<br />
             <input type="text" name="wreUser" value="'.($collected->{wreUser} || $config->get("user")).'" />

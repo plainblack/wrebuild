@@ -461,7 +461,9 @@ installAwStats(){
 installWreUtils(){
 	printHeader "WebGUI Runtime Environment Core and Utilities"
 	cp -Rf wre /data/
-	mkdir $WRE_ROOT/etc
+    if [ ! -d "$WRE_ROOT/etc" ]; then
+	    mkdir $WRE_ROOT/etc
+    fi
     if [ "$WRE_BUILD_WDK" != 1 ]; then
         rm -f $WRE_ROOT/bin/apiindexer.pl   
         rm -f $WRW_ROOT/bin/apiwebserver.pl
