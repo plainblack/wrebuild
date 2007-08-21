@@ -3,5 +3,5 @@
 	DocumentRoot [% domainRoot %]/demo
     PerlRequire [% wreRoot %]/lib/WRE/WebguiDemo.pm
     SetHandler perl-script
-    PerlInitHandler Hoster::WebguiDemo
+    PerlInitHandler WRE::WebguiDemo
 </VirtualHost>

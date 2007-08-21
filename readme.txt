@@ -44,6 +44,8 @@ NOTE: The build process can take a really long time. Depending upon the
 speed of your system it can take anywhere from 2 to 6 hours.
 
 
+
+
 OPERATING SYSTEM SPECIFIC NOTES
 
 The following sections deal with specific notes about compiling the WRE on
@@ -52,11 +54,15 @@ will compile without having to install anything else, because most of them
 come with common utilities like gcc, make, binutils, etc. The following
 instructions will help you out when your OS doesn't come with those things.
 
+
+
 MAC OS X
 --------
 
 In order to compile the WRE you must have the developer tools including GCC.
 You can get them from http://connect.apple.com
+
+
 
 SOLARIS
 -------
@@ -89,5 +95,27 @@ pkg-get install ggrep
 ln -s /opt/csw/bin/gegrep /opt/csw/bin/egrep
 tar xvfz wrebuild-0.7.0-source.tar.gz
 ./build.sh
+
+
+
+UBUNTU
+------
+
+You'll need to install several packages by running the following commands:
+
+sudo apt-get install gcc
+sudo apt-get install g++
+sudo apt-get install make
+
+
+
+DEBIAN
+------
+
+You'll need to install several packages by running the following commands:
+
+sudo apt-get install g++
+sudo apt-get install make
+sudo apt-get install ncurses-dev
 
 

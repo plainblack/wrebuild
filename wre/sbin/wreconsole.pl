@@ -543,6 +543,7 @@ sub www_editSettingsSave {
     my $cgi             = $state->{cgi};
     my $config          = $state->{config};
     my $file            = WRE::File->new(wreConfig=>$config);
+    my $status          = "";
 
     # webgui 
     $config->set("webgui/configOverrides", JSON::jsonToObj($cgi->param("webguiConfigOverrides")));
@@ -564,13 +565,15 @@ sub www_editSettingsSave {
     # webstats
     $config->set("webstats/hostname", $cgi->param("webstatsHost"));
     # have to enable web stats
-    if ($config->set("webstats/enabled") == 0 && $cgi->param("enableWebstats") == 1) {
+    if ($config->get("webstats/enabled") == 0 && $cgi->param("enableWebstats") == 1) {
         $file->copy($config->getRoot("/var/setupfiles/stats.modproxy"), $config->getRoot("/etc/stats.modproxy"), 
-            { force => 1, templateVars=> { sitename=>$config->set("webstats/hostname") } });
+            { force => 1, templateVars=> { sitename=>$config->get("webstats/hostname") } });
+        $status .= "Webstats settings changed. You must restart modproxy for these changes to take effect.<br />";
     }
     # have to disable webstats
-    elsif ($config->set("webstats/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
+    elsif ($config->get("webstats/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
         $file->delete($config->getRoot("/etc/stats.modproxy"));
+        $status .= "Webstats settings changed. You must restart modproxy for these changes to take effect.<br />";
     }
     $config->set("webstats/enabled", $cgi->param("enableWebstats"));
 
@@ -598,17 +601,19 @@ sub www_editSettingsSave {
     # demo
     $config->set("demo/hostname", $cgi->param("demoHost"));
     # have to enable demos
-    if ($config->set("demo/enabled") == 0 && $cgi->param("enableDemo") == 1) {
+    if ($config->get("demo/enabled") == 0 && $cgi->param("enableDemo") == 1) {
         $file->makePath($config->getDomainRoot("/demo"));
         $file->copy($config->getRoot("/var/setupfiles/demo.modproxy"), $config->getRoot("/etc/demo.modproxy"), 
-            { force => 1, templateVars=>{ sitename=>$config->set("demo/hostname") } });
+            { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
         $file->copy($config->getRoot("/var/setupfiles/demo.modperl"), $config->getRoot("/etc/demo.modperl"), 
-            { force => 1, templateVars=>{ sitename=>$config->set("demo/hostname") } });
+            { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
+        $status .= "Demo settings changed. You must restart modproxy and modperl for these changes to take effect.<br />";
     }
     # have to disable demos
-    elsif ($config->set("demo/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
+    elsif ($config->get("demo/enabled") == 1 && $cgi->param("enableDemo") == 0) {
         $file->delete($config->getRoot("/etc/demo.modproxy"));
         $file->delete($config->getRoot("/etc/demo.modperl"));
+        $status .= "Demo settings changed. You must restart modproxy and modperl for these changes to take effect.<br />";
     }
     $config->set("demo/enabled", $cgi->param("enableDemo"));
     $config->set("demo/duration", $cgi->param("demoDuration"));
@@ -618,7 +623,8 @@ sub www_editSettingsSave {
     $config->set("apache/maxMemory", $cgi->param("apacheMaxMemory"));
     $config->set("apache/connectionTimeout", $cgi->param("apacheConnectionTimeout"));
 
-    return www_editSettings($state, "Settings Saved");
+    $status .= "Settings Saved.<br />";
+    return www_editSettings($state, $status);
 }
 
 
@@ -1031,8 +1037,8 @@ sub www_setup {
             mod_perl Port <br />
             <input type="text" name="modperlPort" value="'.($collected->{modperlPort} || $apache->{modperlPort}).'" />
             </p>
-            <input type="button" value="&laquo; Previous" onclick="this.form.step.value=\'\';this.form.submit()" />
-            <input type="submit" value="Next &raquo;" />
+            <input type="button" class="deleteButton" value="&laquo; Previous" onclick="this.form.step.value=\'\';this.form.submit()" />
+            <input type="submit" class="saveButton" value="Next &raquo;" />
             </form>
             ';
     }
@@ -1066,9 +1072,9 @@ sub www_setup {
             Admin Password <br />
             <input type="text" name="mysqlAdminPassword" value="'.($collected->{mysqlAdminPassword} || "123qwe").'" />
             </p>
-            <input type="button" value="&laquo; Previous"
+            <input type="button" class="deleteButton" value="&laquo; Previous"
             onclick="this.form.step.value=\'apache\';this.form.submit();" />
-            <input type="submit" value="Next &raquo;" />
+            <input type="submit" class="saveButton" value="Next &raquo;" />
             </form>
             ';
     }
@@ -1087,9 +1093,9 @@ sub www_setup {
                 here. If there are multiple IP addresses assigned to this machine, then do a comma separated list
                 like: 10.0.0.1/32,10.11.0.1/32,192.168.1.44/32
             </p>
-            <input type="button" value="&laquo; Previous"
+            <input type="button" class="deleteButton" value="&laquo; Previous"
             onclick="this.form.step.value=\'mysql\';this.form.submit();" />
-            <input type="submit" value="Next &raquo;" />
+            <input type="submit" class="saveButton" value="Next &raquo;" />
             </form>
             ';
     }
@@ -1104,7 +1110,7 @@ sub www_setup {
             <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p style="width: 60%;">
                 If you would like to modify settings before the installation press the button below.<br />
-                <input type="button" value="&laquo; Previous" class="deleteButton"
+                <input type="button" class="deleteButton" value="&laquo; Previous" class="deleteButton"
                     onclick="this.form.step.value=\'webgui\';this.form.submit();" />
             </p>
             <p style="width: 60%;">
@@ -1322,7 +1328,7 @@ sub www_setup {
             <input type="radio" name="devOnly" value="1" />Yes &nbsp;
             <input type="radio" name="devOnly" value="0" checked="1" />No
             </p>
-            <input type="submit" value="Next &raquo;" />
+            <input type="submit" class="saveButton" value="Next &raquo;" />
             </form>
             ';
     }

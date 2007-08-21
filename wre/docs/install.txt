@@ -133,3 +133,12 @@ some free user utilities from this site:
 
 http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
 
+Once you've installed the WRE you'll need to edit /data/wre/etc/modperl.conf
+and comment out the following lines, which should be around line number 155:
+
+#PerlRequire /data/wre/etc/modperl.pl
+#PerlCleanupHandler Apache2::SizeLimit
+
+The reason is that Apache2::SizeLimit is not supported on Darwin based
+systems.
+

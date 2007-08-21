@@ -14,10 +14,12 @@ use lib ('/data/wre/lib','/data/WebGUI/lib');
 use strict;
 use Apache2::Const;
 use DBI;
+use String::Random qw(random_string);
 use WebGUI;
 use WebGUI::Config;
 use WRE::Config;
 use WRE::File;
+use WRE::Mysql;
 
 #-------------------------------------------------------------------
 sub handler {   
@@ -26,7 +28,7 @@ sub handler {
 	$r->pnotes('wreConfig' => $config);
 	my $id = $r->uri;
 	$id =~ s/^\/(demo[0-9\_]+).*$/$1/;
-	if (-e $config->getWebguiRoot("/etc/demo".$id.".conf") {
+	if (-e $config->getWebguiRoot("/etc/".$id.".conf")) {
 		return WebGUI::handler($r,$id.".conf");
 	} 
     elsif ($r->uri =~ /^\/extras/) {
@@ -70,6 +72,7 @@ sub createDemo {
 	my $demoId = "demo".$now."_".int(rand(999));
     my $template = Template->new;
     my $params = {};
+    my $file = WRE::File->new(wreConfig=>$config);
 
     # manufacture stuff
     $params->{databaseName} = $demoId;
@@ -79,40 +82,38 @@ sub createDemo {
     $params->{databasePort} = $config->get("mysql")->{port};
     $params->{sitename} = $demo->{hostname};
 
+    # create webgui config
+    $file->copy($demo->{creation}{config}, $config->getWebguiRoot("/etc/".$demoId.".conf"), {force=>1});
+    my $webguiConfig = Config::JSON->new($config->getWebguiRoot("/etc/".$demoId.".conf"));
+    my $overridesAsTemplate = JSON::objToJson($config->get("webgui/configOverrides"));
+    my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate , $params);
+    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
+    foreach my $key (keys %{$overridesAsHashRef}) {
+        $webguiConfig->set($key, $overridesAsHashRef->{$key});
+    }
+    $webguiConfig->set("uploadsPath",$config->getDomainRoot('/demo/'.$demoId.'/uploads'));
+    $webguiConfig->set("uploadsURL", '/'.$demoId.'/uploads');
+    $webguiConfig->set("demoCreated", time());
+    $webguiConfig->set("gateway", "/".$demoId."/");
+
     # create database
-    my $mysql = WRE::Mysql->new($config);
-    my $db = $mysql->getDatabaseHandle($demo->{user}, $demo->{password});
+    my $mysql = WRE::Mysql->new(wreConfig=>$config);
+    my $db = $mysql->getDatabaseHandle(username=>$demo->{user}, password=>$demo->{password});
     $db->do("grant all privileges on ".$params->{databaseName}.".* to ".$params->{databaseUser}
-        ."@'%' identified by '".$params->{databasePassword}."'");
+        ."\@'%' identified by '".$params->{databasePassword}."'");
     $db->do("flush privileges");
     $db->do("create database ".$params->{databaseName});
     $db->disconnect;
-    system $wreConfig->getRoot('/prereqs/bin/mysql -u'.$params->{databaseUser}.' -p'
+    system $config->getRoot('/prereqs/bin/mysql -u'.$params->{databaseUser}.' -p'
         .$params->{databasePassword}.' --host='.$params->{databaseHost}.' --port='
         .$params->{databasePort}.' -e "source '.$demo->{creation}{database})
         .'" ' .$params->{databaseName};
 
     # create webroot
-    my $file = WRE::File->new(wreConfig=>$config);
-	$file->makePath($wreConfig->getDomainHome('/demo/'.$demoId.'/uploads/'));
-    $file->copy($demo->{creation}{uploads}.'/'),
-        $config->getDomainHome('/demo/'.$demoId.'/uploads/'),
+	$file->makePath($config->getDomainRoot('/demo/'.$demoId.'/uploads/'));
+    $file->copy($demo->{creation}{uploads}.'/',
+        $config->getDomainRoot('/demo/'.$demoId.'/uploads/'),
         { force=>1, recursive=>1}); 
-
-    # create webgui config
-    $file->copy($demo->{creation}{config}, $config->getWebguiRoot("/etc/".$demoId.".conf"), {force=>1});
-    $webguiConfig = Config::JSON->new($config->getWebguiRoot("/etc/".$demoId.".conf"));
-    my $overrides = $config->get("webgui")->{configOverrides};
-    my $overridesAsTemplate =  JSON::objToJson($overrides);
-    my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate , $params);
-    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
-    foreach my $key (%{$overridesAsHashRef}) {
-        $webguiConfig->set($key, $overridesAsHashRef->{$key});
-    }
-    $webguiConfig->set("uploadsPath",$config->getDomainHome('/demo/'.$demoId.'/uploads'));
-    $webguiConfig->set("uploadsURL", '/'.$demoId.'/uploads'));
-    $webguiConfig->set("demoCreated", time());
-    $webguiConfig->set("gateway", "/".$demoId);
 
     # send redirect
 	$r->headers_out->set(Location => "/".$demoId."/");
