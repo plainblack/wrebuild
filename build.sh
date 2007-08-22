@@ -219,8 +219,7 @@ buildGraphicsMagick(){
     buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # graphics magick
-    export WRE_CONFIGURE="--prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
-    buildProgram "GraphicsMagick-1.1.7" "$WRE_CONFIGURE"
+    buildProgram "GraphicsMagick-1.1.7" "--enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
 
 	cd $WRE_BUILDDIR
 }
@@ -261,7 +260,7 @@ installPerlModules(){
 	printHeader "Perl Modules"
 	cd source/perlmodules
 	installPerlModule "Net_SSLeay.pm-1.25" "$WRE_ROOT/prereqs"
-	installPerlModule "Compress-Zlib-1.39"
+	installPerlModule "Compress-Zlib-1.39"  # on upgrade modify config.in to point to our libs
 	installPerlModule "Proc-ProcessTable-0.40"
 	installPerlModule "BSD-Resource-1.25"
 	installPerlModule "URI-1.35"
@@ -289,11 +288,7 @@ installPerlModules(){
 	installPerlModule "DateTime-0.37"
 	installPerlModule "DateTime-Format-Strptime-1.0700"
 	installPerlModule "HTML-Template-2.9"
-    export CRYPT_VERSION="Crypt-SSLeay-0.54"
-    $WRE_ROOT/prereqs/bin/perl -i -p -e's[my \$network_tests = prompt][my \$network_tests = "y";]g' $CRYPT_VERSION/Makefile.PL
-    $WRE_ROOT/prereqs/bin/perl -i -p -e's["Do you want to run the live tests \(y/N\) \?",][]g' $CRYPT_VERSION/Makefile.PL
-    $WRE_ROOT/prereqs/bin/perl -i -p -e"s['N';][]g" $CRYPT_VERSION/Makefile.PL
-	installPerlModule $CRYPT_VERSION "--lib=$WRE_ROOT/prereqs"
+	installPerlModule "Crypt-SSLeay-0.54" "--lib=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include" # on upgrade mod Makefile.PL to remove network tests
 	buildPerlModule "String-Random-0.21"
 	installPerlModule "Time-HiRes-1.9707"
 	installPerlModule "Text-Balanced-1.97"

@@ -142,6 +142,7 @@ can compile the WRE:
 
 bash
 ncurses-devel
+libiconv
 
 You'll also need to run the following command:
 
