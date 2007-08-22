@@ -56,7 +56,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added the following components:
     - Oracle Berkeley DB 4.5.20 
     - Config::JSON 1.1.1
-    - Weather::Com::Finder 0.5.1
+    - Weather::Com::Finder 0.5.2
+    - Time::Format 1.02
     - BerkeleyDB 0.31
     - Search::QueryParser 0.91
     - Search::Indexer 0.74

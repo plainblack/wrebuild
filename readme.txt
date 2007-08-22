@@ -101,21 +101,49 @@ tar xvfz wrebuild-0.7.0-source.tar.gz
 UBUNTU
 ------
 
-You'll need to install several packages by running the following commands:
+From apt-get you'll need to install the following packages before you can
+compile the WRE:
 
-sudo apt-get install gcc
-sudo apt-get install g++
-sudo apt-get install make
+gcc
+g++
+make
+ncurses-dev
 
 
 
 DEBIAN
 ------
 
-You'll need to install several packages by running the following commands:
+From apt-get you'll need to install the following packages before you can
+compile the WRE:
 
-sudo apt-get install g++
-sudo apt-get install make
-sudo apt-get install ncurses-dev
+g++
+make
+ncurses-dev
 
+
+
+RHEL / CENTOS
+-------------
+
+You'll need to install the following RPMs to before you can compile:
+
+gcc
+gcc-c++
+ncurses-devel
+
+
+
+FREEBSD
+-------
+
+From the Ports system you'll need to install the following packages before you
+can compile the WRE:
+
+bash
+ncurses-devel
+
+You'll also need to run the following command:
+
+ln -s /usr/local/bin/bash /bin/bash
 

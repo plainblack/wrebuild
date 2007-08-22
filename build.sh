@@ -120,7 +120,7 @@ buildPerl(){
 	if [ "$WRE_CLEAN" == 1 ]; then
 		make distclean
   		make clean
-        fi	
+    fi	
 	./Configure -Dprefix=$WRE_ROOT/prereqs -des; checkError $? "Perl Configure" 
 	make; checkError $? "Perl make"
 	#make test; checkError $? "Perl make test"
@@ -140,21 +140,10 @@ buildApache(){
   		make clean
   		rm -Rf server/exports.c 
   		rm -Rf server/export_files
-        fi	
-	case $WRE_OSNAME in
-		Linux)
-			# insists upon using it's own zlib and ours, which won't work, so temporarily hiding ours
-			mv $WRE_ROOT/prereqs/include/zlib.h $WRE_ROOT/prereqs/include/zlib.h.ignore
-			;;
-	esac
-	./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
+    fi	
+	./configure --prefix=$WRE_ROOT/prereqs --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
 	make; checkError $? "Apache make"
 	make install; checkError $? "Apache make install"
-	case $WRE_OSNAME in
-		Linux)
-		mv $WRE_ROOT/prereqs/include/zlib.h.ignore $WRE_ROOT/prereqs/include/zlib.h
-			;;
-	esac
 	echo "webgui/package   wgpkg" >> $WRE_ROOT/etc/mime.types
     rm -f $WRE_ROOT/etc/highperformance-std.conf
     rm -f $WRE_ROOT/etc/highperformance.conf
@@ -171,15 +160,6 @@ buildApache(){
     fi	
 	perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
 	make; checkError $? "mod_perl make"
-# The tests fail on all systems even on good builds
-#	case $WRE_OSNAME in
-#		Darwin | SunOS)
-#			#tests fail for some reason even after a good build
-#			;;
-#		*)
-#			make test; checkError $? "mod_perl make test"
-#			;;
-#	esac
 	make install; checkError $? "mod_perl make install"
 
     if [ "$WRE_BUILD_WDK" == 1 ]; then
