@@ -194,47 +194,31 @@ buildMysql(){
 
 # Graphics Magick
 buildGraphicsMagick(){
-	printHeader "Graphics Magick"
+    printHeader "Graphics Magick"
     cd source
 
-	# lib jpeg
-	cd libjpeg-6b
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
+    # lib jpeg
+    cd libjpeg-6b
+    if [ "$WRE_CLEAN" == 1 ]; then
+        make distclean
+  	    make clean
     fi	
-	./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
-	$WRE_ROOT/prereqs/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
-	make; checkError $? "libjpeg make"
-	make install; checkError $? "libjpeg make install"
+    ./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
+    $WRE_ROOT/prereqs/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
+    make; checkError $? "libjpeg make"
+    make install; checkError $? "libjpeg make install"
     cd ..
 
-	# freetype
-	buildProgram "freetype-2.3.4" "--enable-shared"
+    # freetype
+    buildProgram "freetype-2.3.4" "--enable-shared"
 
-	# lib ungif
-	buildProgram "libungif-4.1.4" "--enable-shared"
+    # lib ungif
+    buildProgram "libungif-4.1.4" "--enable-shared"
 
-	# lib png
-	cd libpng-1.2.18
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
-    fi	
-	case $WRE_OSNAME in
-		SunOS)
-			cp scripts/makefile.solaris Makefile
-			;;
-		*)
-			cp scripts/makefile.`perl -e "print lc $WRE_OSNAME"` Makefile
-			;;
-	esac
-	$WRE_ROOT/prereqs/bin/perl -i -p -e"s[/usr/local][$WRE_ROOT/prereqs]g" Makefile
-	make; checkError $? "Graphics Magick libpng make"
-	make install; checkError $? "Graphics Magick libpng make install"
-    cd ..
+    # lib png
+    buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
-	# graphics magick
+    # graphics magick
     export WRE_CONFIGURE="--prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
     buildProgram "GraphicsMagick-1.1.7" "$WRE_CONFIGURE"
 
