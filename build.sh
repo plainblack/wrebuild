@@ -26,13 +26,13 @@ buildProgram() {
 	cd $1
     printHeader $1
 	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
     fi	
     echo "Configuring $1 with ./configure --prefix=$WRE_ROOT/prereqs $2"
 	./configure --prefix=$WRE_ROOT/prereqs $2; checkError $? "$1 configure"
-	make; checkError $? "$1 make"
-	make install $3; checkError $? "$1 make install"
+	$WRE_MAKE; checkError $? "$1 make"
+	$WRE_MAKE install $3; checkError $? "$1 make install"
 	cd ..	
 }
 
@@ -42,21 +42,18 @@ buildUtils(){
 	cd source
 	
 	# lftp
-	buildProgram "lftp-3.5.10" "" "exec_prefix=$WRE_ROOT/prereqs"
+    case "$WRE_OSNAME" in
+        FreeBSD)
+            export WRE_LFTPOPTIONS="--with-libiconv-prefix=/usr/local"
+        ;;
+        *)
+            export WRE_LFTPOPTIONS=""
+        ;;
+    esac
+	buildProgram "lftp-3.5.10" "" "$WRE_LFTPOPTIONS"
 
 	# zlib
 	buildProgram "zlib-1.2.3" "--shared"
-
-	# openssl
-	cd openssl-0.9.7m
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
-    fi	
-	./config --prefix=$WRE_ROOT/prereqs ; checkError $? "openssl configure"
-	make; checkError $? "openssl make"
-	make install; checkError $? "openssl make install"
-	cd ..	
 
 	# libtool
 	buildProgram "libtool-1.5.22"
@@ -66,28 +63,28 @@ buildUtils(){
         # berkeley db
 	    cd db-4.5.20.NC/build_unix
 	    if [ "$WRE_CLEAN" == 1 ]; then
-		    make realclean
+		    $WRE_MAKE realclean
         fi	
 	    ../dist/configure --prefix=$WRE_ROOT/prereqs ; checkError $? "Berkeley DB configure"
-	    make; checkError $? "Berkeley DB make"
-	    make install; checkError $? "Berkeley DB make install"
+	    $WRE_MAKE; checkError $? "Berkeley DB make"
+	    $WRE_MAKE install; checkError $? "Berkeley DB make install"
 	    cd ../..
     fi
 
 	# catdoc
 	cd catdoc-0.94.2
 	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
-        fi	
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
+     fi	
 	./configure --prefix=$WRE_ROOT/prereqs --disable-wordview --without-wish --with-input=utf-8 --with-output=utf-8 --disable-charset-check --disable-langinfo; checkError $? "catdoc Configure"
-	make; checkError $? "catdoc make"
+	$WRE_MAKE; checkError $? "catdoc make"
 	cd src
-	make install; checkError $? "catdoc make install src"
+	$WRE_MAKE install; checkError $? "catdoc make install src"
 	cd ../docs
-	make install; checkError $? "catdoc make install docs"
+	$WRE_MAKE install; checkError $? "catdoc make install docs"
 	cd ../charsets
-	make install; checkError $? "catdoc make install charsets"
+	$WRE_MAKE install; checkError $? "catdoc make install charsets"
 	cd ../..
 
 	# expat
@@ -99,17 +96,6 @@ buildUtils(){
 	# xpdf
 	buildProgram "xpdf-3.02" "--without-x"
 
-	# aspell
-	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
-	cd aspell-en-0.51-1
-	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
-    fi	
-	./configure --vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress; checkError $? "aspell-en configure"
-	make; checkError $? "aspell-en make"
-	make install ; checkError $? "aspell-en make install"
-
 	cd $WRE_BUILDDIR
 }
 
@@ -118,13 +104,12 @@ buildPerl(){
 	printHeader "Perl"
 	cd source/perl-5.8.8
 	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
     fi	
 	./Configure -Dprefix=$WRE_ROOT/prereqs -des; checkError $? "Perl Configure" 
-	make; checkError $? "Perl make"
-	#make test; checkError $? "Perl make test"
-	make install; checkError $? "Perl make install"
+	$WRE_MAKE; checkError $? "Perl make"
+	$WRE_MAKE install; checkError $? "Perl make install"
 	cd $WRE_BUILDDIR
 }
 
@@ -132,18 +117,31 @@ buildPerl(){
 # apache
 buildApache(){
 	printHeader "Apache"
+    cd source
+
+	# openssl
+	cd openssl-0.9.7m
+    printHeader "openssl"
+	if [ "$WRE_CLEAN" == 1 ]; then
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
+    fi	
+	./configure --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
+	$WRE_MAKE; checkError $? "openssl make"
+	$WRE_MAKE install; checkError $? "openssl make install"
+	cd ..	
 
 	# apache
-	cd source/httpd-2.0.59
+	cd httpd-2.0.59
 	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
   		rm -Rf server/exports.c 
   		rm -Rf server/export_files
     fi	
 	./configure --prefix=$WRE_ROOT/prereqs --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
-	make; checkError $? "Apache make"
-	make install; checkError $? "Apache make install"
+	$WRE_MAKE; checkError $? "Apache make"
+	$WRE_MAKE install; checkError $? "Apache make install"
 	echo "webgui/package   wgpkg" >> $WRE_ROOT/etc/mime.types
     rm -f $WRE_ROOT/etc/highperformance-std.conf
     rm -f $WRE_ROOT/etc/highperformance.conf
@@ -155,12 +153,12 @@ buildApache(){
 	# modperl
 	cd ../mod_perl-2.0.3
 	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
-  		make clean
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
     fi	
 	perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
-	make; checkError $? "mod_perl make"
-	make install; checkError $? "mod_perl make install"
+	$WRE_MAKE; checkError $? "mod_perl make"
+	$WRE_MAKE install; checkError $? "mod_perl make install"
 
     if [ "$WRE_BUILD_WDK" == 1 ]; then
         # neon
@@ -180,14 +178,14 @@ buildMysql(){
 	printHeader "MySQL"
 	cd source/mysql-5.0.45
 	if [ "$WRE_CLEAN" == 1 ]; then
-		make distclean
+		$WRE_MAKE distclean
     fi	
     if [ "$WRE_BUILD_WDK" != 1 ]; then
         WRE_MYSQL_EXTRAS="--without-docs --without-man --without-bench"
     fi
 	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-innodb $WRE_MYSQL_EXTRAS; checkError $? "MySQL Configure"
-	make; checkError $? "MySQL make"
-	make install; checkError $? "MySQL make install"
+	$WRE_MAKE; checkError $? "MySQL make"
+	$WRE_MAKE install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR
 }
 
@@ -200,13 +198,13 @@ buildGraphicsMagick(){
     # lib jpeg
     cd libjpeg-6b
     if [ "$WRE_CLEAN" == 1 ]; then
-        make distclean
-  	    make clean
+        $WRE_MAKE distclean
+  	    $WRE_MAKE clean
     fi	
     ./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
     $WRE_ROOT/prereqs/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
-    make; checkError $? "libjpeg make"
-    make install; checkError $? "libjpeg make install"
+    $WRE_MAKE; checkError $? "libjpeg make"
+    $WRE_MAKE install; checkError $? "libjpeg make install"
     cd ..
 
     # freetype
@@ -219,6 +217,10 @@ buildGraphicsMagick(){
     buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # graphics magick
+    if [ "$WRE_OSNAME" == "Darwin"]; then
+        # technically this is only for Darwin i386, but i don't know how to detect that
+        $WRE_ROOT/prereqs/bin/perl -i -p -e's[#if defined\(PNG_USE_PNGGCCRD\) && defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' GraphicsMagick-1.1.7/coders/png.c
+    fi
     buildProgram "GraphicsMagick-1.1.7" "--enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no"
 
 	cd $WRE_BUILDDIR
@@ -231,12 +233,12 @@ installPerlModule() {
 	cd $1
     printHeader "PM $1"
     if [ "$WRE_CLEAN" == 1 ]; then
-        make distclean
-        make clean
+        $WRE_MAKE distclean
+        $WRE_MAKE clean
     fi   
 	perl Makefile.PL $2; checkError $? "$1 Makefile.PL"
-	make; checkError $? "$1 make"
-	make install; checkError $? "$1 make install"
+	$WRE_MAKE; checkError $? "$1 make"
+	$WRE_MAKE install; checkError $? "$1 make install"
 	cd ..
 }
 
@@ -334,8 +336,8 @@ installPerlModules(){
     printHeader "libaqpreq2"
 	cd libapreq2-2.08
 	./configure --with-apache2-apxs=$WRE_ROOT/prereqs/bin/apxs --enable-perl-glue; checkError $? "libapreq2 configure"
-	make; checkError $? "libapreq2 make"
-	make install; checkError $? "libapreq2 make install"
+	$WRE_MAKE; checkError $? "libapreq2 make"
+	$WRE_MAKE install; checkError $? "libapreq2 make install"
 	cd ..
 	installPerlModule "Net-Subnets-0.21"
 	installPerlModule "MailTools-1.74"
@@ -362,11 +364,18 @@ installPerlModules(){
 	installPerlModule "Locale-US-1.1"
     installPerlModule "Time-Format-1.02"
 	installPerlModule "Weather-Com-0.5.2"
+
+	# aspell
+    cd ..
+	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
+	buildProgram "aspell-en-0.51-1" "--vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress"
+    cd perlmodules
 	installPerlModule "Text-Aspell-0.06" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
+
 	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
-	make; checkError $? "MySQL::Diff make"
-	make install; checkError $? "MySQL::Diff make install"
+	$WRE_MAKE; checkError $? "MySQL::Diff make"
+	$WRE_MAKE install; checkError $? "MySQL::Diff make install"
 	cp -f mysqldiff $WRE_ROOT/sbin/
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
@@ -457,21 +466,25 @@ wrehelp() {
 cat <<_WREHELP
  \`build.sh' builds the WebGUI Runtime Environment.
   
-  Usage: $0 [OPTION]... [OPTION=ARGUMENT]
-  
-  Defaults for the options are specified in brackets.
-  
-  Configuration:
-  -h, --help, -?      display this help and exit
+  Usage: $0 [OPTIONS] [PACKAGES]
 
-  Build switches cause only selecte applications to build.
+  Build switches cause only select applications to build.
   They can be combined to build only certain apps.
   
-  Example: ./build.sh --perl           # only perl will be built
-           ./build.sh --perl --apache  # only perl and apache will build
-           ./build.sh --all            # build all (except wdk)
+  Example: ./build.sh --perl            # only perl will be built
+           ./build.sh --perl --apache   # only perl and apache will build
+           ./build.sh --all             # build all (except wdk)
+           ./build.sh --all --wdk       # build all including wdk 
 
+  Options:
+
+  --all             builds all packages
   --clean           cleans all pre-req folders for a new build
+  --help            displays this screen
+
+
+  Packages:         (must be built in the order shown below)
+
   --utilities	    compiles and installs shared utilities
   --perl            compiles and installs perl
   --apache          compiles and installs apache
@@ -480,17 +493,11 @@ cat <<_WREHELP
   --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
-  --wdk             insalls WebGUI Developmment Kit tools
+  --wdk             compiles and installs WebGUI Developmment Kit tools
                                
 _WREHELP
 
 }
-
-# vars
-. wre/sbin/setenvironment.sh
-export WRE_BUILDDIR=`pwd`
-export WRE_OSNAME=`uname -s`
-export WRE_ROOT=/data/wre
 
 #Evaluate options passed by command line
 for opt in "$@"
@@ -586,6 +593,24 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ -d /data ]; then
+
+    # configure environment
+    . wre/sbin/setenvironment.sh
+    export WRE_BUILDDIR=`pwd`
+    export WRE_ROOT=/data/wre
+
+    # deal with operating system inconsistencies
+    export WRE_OSNAME=`uname -s`
+    case $WRE_OSNAME in
+        FreeBSD)
+            export WRE_MAKE=gmake
+        ;;
+        *)
+            export WRE_MAKE=make
+        ;;
+    esac
+
+    # made folders than don't exist
 	mkdir -p $WRE_ROOT/prereqs/man/man1
 	mkdir -p $WRE_ROOT/prereqs/conf
 	mkdir -p $WRE_ROOT/prereqs/lib
@@ -593,6 +618,8 @@ if [ -d /data ]; then
 	mkdir -p $WRE_ROOT/prereqs/include
 	mkdir -p $WRE_ROOT/prereqs/var
 	mkdir -p $WRE_ROOT/prereqs/bin
+
+    # build stuff
     if [ "$WRE_BUILD_UTILS" == 1 ]; then
  		buildUtils
     fi

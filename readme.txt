@@ -64,40 +64,6 @@ You can get them from http://connect.apple.com
 
 
 
-SOLARIS
--------
-
-You need to get GCC and bash installed on your Solaris box, and then the
-following command line instructions will get you the other build prereqs. Note
-that during the "pkg-get" commands just select "y" or "all" whenever it asks
-you any questions.
-
-bash
-export PATH=/opt/csw/bin:/usr/sfw/bin:/opt/sfw/bin:/usr/local/bin:/opt/bin:$PATH
-export LD_LIBRARY_PATH=/opt/csw/lib:/usr/sfw/lib:/opt/sfw/lib:/usr/local/lib:/opt/lib:/usr/lib:/usr/lib/sparcv9:$LD_LIBRARY_PATH
-export TERM=vt100
-mkdir -p /data/downloads
-cd /data/downloads
-wget http://easynews.dl.sourceforge.net/sourceforge/pbwebgui/wrebuild-0.7.0-source.tar.gz
-wget http://www.blastwave.org/pkg_get.pkg
-pkgadd -d pkg_get.pkg
-pkg-get -U install textutils
-pkg-get -U install gnupg
-wget http://www.blastwave.org/mirrors.html
-gpg --import mirrors.html
-pkg-get install vim
-pkg-get install glib
-pkg-get install binutils
-ln -s /opt/csw/bin/gar /opt/csw/bin/ar
-ln -s /opt/csw/bin/granlib /opt/csw/bin/ranlib
-ln -s /opt/csw/bin/gld  /opt/csw/bin/ld
-pkg-get install ggrep
-ln -s /opt/csw/bin/gegrep /opt/csw/bin/egrep
-tar xvfz wrebuild-0.7.0-source.tar.gz
-./build.sh
-
-
-
 UBUNTU
 ------
 
@@ -138,13 +104,51 @@ FREEBSD
 -------
 
 From the Ports system you'll need to install the following packages before you
-can compile the WRE:
+can compile:
 
 bash
 ncurses-devel
 libiconv
+gmake
 
 You'll also need to run the following command:
 
 ln -s /usr/local/bin/bash /bin/bash
+
+
+
+SOLARIS
+-------
+
+You need to get GCC and bash installed on your Solaris box, and then the
+following command line instructions will get you the other build prereqs. Note
+that during the "pkg-get" commands just select "y" or "all" whenever it asks
+you any questions.
+
+bash
+export PATH=/opt/csw/bin:/usr/sfw/bin:/opt/sfw/bin:/usr/local/bin:/opt/bin:$PATH
+export LD_LIBRARY_PATH=/opt/csw/lib:/usr/sfw/lib:/opt/sfw/lib:/usr/local/lib:/opt/lib:/usr/lib:/usr/lib/sparcv9:$LD_LIBRARY_PATH
+export TERM=vt100
+mkdir -p /data/downloads
+cd /data/downloads
+wget http://easynews.dl.sourceforge.net/sourceforge/pbwebgui/wrebuild-0.8.0-source.tar.gz
+wget http://www.blastwave.org/pkg_get.pkg
+pkgadd -d pkg_get.pkg
+pkg-get -U install textutils
+pkg-get -U install gnupg
+wget http://www.blastwave.org/mirrors.html
+gpg --import mirrors.html
+pkg-get install vim
+pkg-get install glib
+pkg-get install binutils
+ln -s /opt/csw/bin/gar /opt/csw/bin/ar
+ln -s /opt/csw/bin/granlib /opt/csw/bin/ranlib
+ln -s /opt/csw/bin/gld  /opt/csw/bin/ld
+pkg-get install ggrep
+ln -s /opt/csw/bin/gegrep /opt/csw/bin/egrep
+tar xvfz wrebuild-0.8.0-source.tar.gz
+./build.sh --all
+
+
+
 
