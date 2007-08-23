@@ -50,7 +50,7 @@ buildUtils(){
             export WRE_LFTPOPTIONS=""
         ;;
     esac
-	buildProgram "lftp-3.5.10" "" "$WRE_LFTPOPTIONS"
+	buildProgram "lftp-3.5.10" "$WRE_LFTPOPTIONS"
 
 	# zlib
 	buildProgram "zlib-1.2.3" "--shared"
