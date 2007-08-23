@@ -126,7 +126,7 @@ buildApache(){
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-	./configure --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
+	./config --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
 	$WRE_MAKE; checkError $? "openssl make"
 	$WRE_MAKE install; checkError $? "openssl make install"
 	cd ..	
