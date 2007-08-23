@@ -224,9 +224,9 @@ buildGraphicsMagick(){
   		$WRE_MAKE clean
     fi	
     GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no; checkError $? "Graphics Magick configure"
-    if [ "$WRE_OSNAME" == "Darwin"]; then
+    if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
-        $WRE_ROOT/prereqs/bin/perl -i -p -e's[#if defined\(PNG_USE_PNGGCCRD\) && defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' GraphicsMagick-1.1.7/coders/png.c
+        $WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
     fi
     $WRE_MAKE; checkError $? "Graphics Magick make"
     $WRE_MAKE install; checkError $? "Graphics Magick make install"
