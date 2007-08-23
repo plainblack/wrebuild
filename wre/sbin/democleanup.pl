@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------
 
 use strict;
-use lib '../lib';
+use lib '/data/wre/lib';
 use Getopt::Long;
 use WRE::Config;
 use WRE::File;

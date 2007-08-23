@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------
 
 use strict;
-use lib '../lib';
+use lib '/data/wre/lib';
 use Carp qw(carp croak);
 use CGI;
 use Digest::MD5;

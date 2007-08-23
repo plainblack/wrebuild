@@ -13,7 +13,7 @@
 $| = 1;
 
 use strict;
-use lib '../lib';
+use lib '/data/wre/lib';
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;

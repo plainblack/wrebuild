@@ -10,7 +10,7 @@
 # http://www.plainblack.com	            		info@plainblack.com
 #-------------------------------------------------------------------
 
-use lib '../lib';
+use lib '/data/wre/lib';
 use strict;
 use Getopt::Long;
 use WRE::Config;
