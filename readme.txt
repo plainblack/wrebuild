@@ -110,6 +110,7 @@ bash
 ncurses-devel
 libiconv
 gmake
+autoconf261
 
 You'll also need to run the following command:
 

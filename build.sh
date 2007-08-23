@@ -30,7 +30,7 @@ buildProgram() {
   		$WRE_MAKE clean
     fi	
     echo "Configuring $1 with ./configure --prefix=$WRE_ROOT/prereqs $2"
-	./configure --prefix=$WRE_ROOT/prereqs $2; checkError $? "$1 configure"
+	GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs $2; checkError $? "$1 configure"
 	$WRE_MAKE; checkError $? "$1 make"
 	$WRE_MAKE install $3; checkError $? "$1 make install"
 	cd ..	
@@ -368,8 +368,16 @@ installPerlModules(){
 	# aspell
     cd ..
 	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
-	buildProgram "aspell-en-0.51-1" "--vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress"
-    cd perlmodules
+    cd aspell-en-0.51-1
+    if [ "$WRE_CLEAN" == 1 ]; then
+        $WRE_MAKE distclean
+        $WRE_MAKE clean
+    fi  
+    ./configure --vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress; checkError $? "aspell-en configure"
+    $WRE_MAKE; checkError $? "aspell-en make"
+    $WRE_MAKE install ; checkError $? "aspell-en make install"
+
+    cd ../perlmodules
 	installPerlModule "Text-Aspell-0.06" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
 
 	cd MySQL-Diff-0.33
