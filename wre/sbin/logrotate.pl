@@ -13,6 +13,7 @@
 
 use strict;
 use lib '/data/wre/lib';
+use Path::Class;
 use WRE::Config;
 
 my $config = WRE::Config->new;
@@ -20,8 +21,8 @@ our $rotateFiles = $config->get("logs/rotations") || 3;
 
 # locate log files to rotate
 our @logfiles = ();
-findLogFiles($config->getRoot("/var/logs"));
-findLogFiles($config->getDomainRoot);
+findLogFiles(dir($config->getRoot("/var/logs")));
+findLogFiles(dir($config->getDomainRoot));
 
 # now that we know what we are expected to do, we'll start
 for my $logfile (@logfiles) {
@@ -76,20 +77,14 @@ if ($config->get("awstats/enabled")) {
 #-------------------------------------------------------------------
 sub findLogFiles {
     my $path = shift;
-    if ( opendir( DIR, $path ) ) {
-        my @filelist = readdir(DIR);
-        closedir(DIR);
-        foreach my $file (@filelist) {
-            if ( $file =~ /\.log$/ ) {
-                push( @logfiles, $path . "/" . $file );
-            }
-            else {
-                unless ( $file =~ /public$/ 
-                    || $file eq ".." 
-                    || $file eq "." 
-                    || $file =~ /setupfiles/ ) {
-                    findLogFiles( $path . "/" . $file );
-                }
+    my @filelist = $path->children;
+    foreach my $file (@filelist) {
+        if ( $file =~ /\.log$/ ) {
+            push @logfiles, $path->file($file)->stringify;
+        }
+        else {
+            unless ( $file =~ /public$/ || $file eq ".." || $file eq "." || $file =~ /setupfiles/ ) {
+                findLogFiles( $path->subdir($file) );
             }
         }
     }

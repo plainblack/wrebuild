@@ -1,19 +1,20 @@
 #!/data/wre/prereqs/bin/perl
 
-#----------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------
 # WRE is Copyright 2005-2007 Plain Black Corporation.
-#----------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------
 # Please read the legal notices (docs/legal.txt) and the license
 # (docs/license.txt) that came with this distribution before using
 # this software.
-#----------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------
 # http://www.plainblack.com	            		info@plainblack.com
-#----------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------
 
 use strict;
 use lib '/data/wre/lib';
 use CPAN;
 use List::Util;
+use Path::Class;
 use WRE::Config;
 use WRE::File;
 use WRE::WebguiUpdate;
@@ -61,11 +62,11 @@ sub deployNewVersion {
 sub doBackup {
 	my $answer = prompt("Would you like to back up your existing files before we do the update?","y","y","n");
 	if ($answer eq "y") {
-        my $backupPath = promptWithPref("backupPath", "Where would you like to store your backups?");
+        my $backupPath = dir(promptWithPref("backupPath", "Where would you like to store your backups?"));
 		printTest("Backing up files");
-        $file->makePath($backupPath);
+        $file->makePath($backupPath->stringify);
         eval { $file->tar(
-            file    => $backupPath."/webgui-".time().".tar.gz",
+            file    => $backupPath->file("webgui-".time().".tar.gz")->stringify,
             stuff   => [ $config->getWebguiRoot ],
             gzip    => 1,
             )};
@@ -200,7 +201,9 @@ sub whereFrom {
 
 #-------------------------------------------------------------------
 sub whereIsIt {
-	my $path = prompt("Please type the path to the WebGUI file (/path/to/webgui-x.x.x-stable.tar.gz):");
+	my $path = file(
+        prompt("Please type the path to the WebGUI file (/path/to/webgui-x.x.x-stable.tar.gz):")
+        )->stringify;
 	if (-f $path) {
 		return $path;
 	}

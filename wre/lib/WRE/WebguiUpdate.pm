@@ -17,11 +17,11 @@ use HTTP::Headers;
 use HTTP::Request;
 use JSON;
 use LWP::UserAgent;
+use Path::Class;
 use WRE::File;
 use WRE::Host;
 
 
-{ # begin inside out object
 
 
 #-------------------------------------------------------------------
@@ -56,7 +56,7 @@ sub downloadFile {
         return -1;
     }
     my $file = WRE::File->new(wreConfig=>$self->wreConfig);
-    my $path = $file->makeTempPath."/webgui.tar.gz";
+    my $path = file($file->makeTempPath,"/webgui.tar.gz")->stringify;
     if (open(my $fh, ">", $path)) {
         binmode $fh;
         print {$fh} $response->content;
@@ -87,11 +87,11 @@ sub extractArchive {
     my $path = shift;
     my $config = $self->wreConfig;
     my $file = WRE::File->new(wreConfig => $config);
-    $file->makePath($config->getWebguiRoot);
-    my @webguiRoot = split("/", $config->getWebguiRoot);
-    pop @webguiRoot;
+    my $root = dir($config->getWebguiRoot);
+    $file->makePath($root->stringify);
+    my $rootParent = $root->parent;
     eval{$file->untar(
-            path    => join("/", @webguiRoot),
+            path    => $rootParent->stringify,
             file    => $path,
             gunzip  => 1,
             )};
@@ -178,6 +178,5 @@ A reference to a WRE Configuration object.
 
 
 
-} # end inside out object
 
 1;

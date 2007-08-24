@@ -24,7 +24,7 @@ use WRE::Mysql;
 #-------------------------------------------------------------------
 sub handler {   
     my $r = shift;
-    my $config = WRE::Config->new("/data/wre/etc/wre.conf");
+    my $config = WRE::Config->new;
 	$r->pnotes('wreConfig' => $config);
 	my $id = $r->uri;
 	$id =~ s/^\/(demo[0-9\_]+).*$/$1/;
@@ -104,10 +104,12 @@ sub createDemo {
     $db->do("flush privileges");
     $db->do("create database ".$params->{databaseName});
     $db->disconnect;
-    system $config->getRoot('/prereqs/bin/mysql -u'.$params->{databaseUser}.' -p'
-        .$params->{databasePassword}.' --host='.$params->{databaseHost}.' --port='
-        .$params->{databasePort}.' -e "source '.$demo->{creation}{database})
-        .'" ' .$params->{databaseName};
+    $mysql->load(
+        database    => $params->{databaseName},
+        path        => $demo->{creation}{database},
+        username    => $params->{databaseUser},
+        password    => $params->{databasePassword},
+        );
 
     # create webroot
 	$file->makePath($config->getDomainRoot('/demo/'.$demoId.'/uploads/'));
@@ -122,27 +124,6 @@ sub createDemo {
 }
 
 
-#-------------------------------------------------------------------
-sub createDatabase {
-	my $r = shift;
-        my $demoId = shift;
-	my $config = $r->pnotes('wreConfig');
-	my $dsn = "DBI:mysql:test;host=".$config->get("mysqlhost");
-	if ($config->get("db-port")) {
-		$dsn .= ";port=".$config->get("db-port") ;
-	}
-        my $dbh = DBI->connect($dsn,$config->get("adminuser"),$config->get("adminpass"));
-        $dbh->do("create database ".$demoId);
-        $dbh->do("grant all privileges on ".$demoId.".* to demo\@localhost identified by 'demo'");
-        $dbh->do("flush privileges");
-        $dbh->disconnect;
-	my $cmd = "/data/wre/prereqs/mysql/bin/mysql --host=".$config->get("mysqlhost");
-	if ($config->get('db-port')) {
-		$cmd .= ' --port='.$config->get('db-port');
-	}
-	$cmd .= " -udemo -pdemo ".$demoId." < ".$config->get("createScript");
-	system($cmd);
-}
 
 
 1;

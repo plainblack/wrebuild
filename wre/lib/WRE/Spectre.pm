@@ -23,7 +23,6 @@ WRE::Service
 
 =cut
 
-{ # begin inside out object
 
 #-------------------------------------------------------------------
 
@@ -168,6 +167,5 @@ sub stop {
 
 
 
-} # end inside out object
 
 1;

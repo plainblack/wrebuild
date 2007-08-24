@@ -37,13 +37,17 @@ use WRE::WebguiUpdate;
 
 #-------------------------------------------------------------------
 # server daemon
-my $daemon = HTTP::Daemon->new(
-    ReusePort   => 1,
+my %serverProperties = (
     ReuseAddr   => 1,
     MultiHomed  => 1,
     LocalAddr   => undef,
     LocalPort   => 60834,
-    ) || croak "Couldn't start server.";
+    );
+unless ($^O eq "MSWin32") {
+    $serverProperties{ReusePort} = 1;
+}
+
+my $daemon = HTTP::Daemon->new(%serverProperties) || croak "Couldn't start server.";
 print "Please contact me at:\n\t", $daemon->url, "\n";
 while (my $connection = $daemon->accept) {
     while (my $request = $connection->get_request) {
@@ -552,9 +556,9 @@ sub www_editSettingsSave {
     $config->set("logs/rotations", $cgi->param("logRotations"));
     
     # wre monitor
-    my $notifyString                    = $cgi->param("wreMonitorNotify");
-    $notifyString                       =~ s/\s+//g;
-    my @notify                          = split(",", $notifyString); 
+    my $notifyString    = $cgi->param("wreMonitorNotify");
+    $notifyString       =~ s/\s+//g;
+    my @notify          = split(",", $notifyString); 
     $config->set("wreMonitor/notify", \@notify);
     $config->set("wreMonitor/items/modperl", $cgi->param("wreMonModperl"));
     $config->set("wreMonitor/items/modproxy", $cgi->param("wreMonModproxy"));
@@ -578,8 +582,7 @@ sub www_editSettingsSave {
     $config->set("webstats/enabled", $cgi->param("enableWebstats"));
 
     # backups
-    my $externalScriptsString           = $cgi->param("externalScripts");
-    my @externalScripts                 = split("\n", $externalScriptsString);
+    my @externalScripts         = split("\n", $cgi->param("externalScripts"));
     $config->set("backup/externalScripts", \@externalScripts);
     $config->set("backup/path", $cgi->param("backupPath"));
     $config->set("backup/enabled", $cgi->param("enableBackups"));
@@ -1184,7 +1187,7 @@ sub www_setup {
             print $socket "<p>Creating default databases</p>";
             $file->makePath($config->getRoot("/var/mysqldata"));
             chdir($config->getRoot("/prereqs"));
-            system("./bin/mysql_install_db --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
+            system(file("bin/mysql_install_db")->stringify." --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
             print $socket "<p>Starting MySQL</p>";
             $mysql->start;
@@ -1323,14 +1326,22 @@ sub www_setup {
             WRE Operating System User<br />
             <input type="text" name="wreUser" value="'.($collected->{wreUser} || $config->get("user")).'" />
             </p>
-            <p>
-            Do you want to configure this WRE as a development only environment?<br />
+            <p>';
+
+        # windows can't do dev only environment
+        if ($^O eq "MSWin32") {
+            $out .= '<input type="hidden" name="devOnly" value="0" />';
+        }
+
+        # but unix platforms have the choice
+        else {
+            $out .= 'Do you want to configure this WRE as a development only environment?<br />
             <input type="radio" name="devOnly" value="1" />Yes &nbsp;
             <input type="radio" name="devOnly" value="0" checked="1" />No
             </p>
             <input type="submit" class="saveButton" value="Next &raquo;" />
-            </form>
-            ';
+            </form> ';
+        }
     }
     sendResponse($state, $out);
 }

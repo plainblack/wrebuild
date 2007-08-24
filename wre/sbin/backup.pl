@@ -13,6 +13,7 @@
 use strict;
 use lib '/data/wre/lib';
 use Net::FTP;
+use Path::Class;
 use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
@@ -40,23 +41,23 @@ sub backupDomains {
     # should we run?
     return undef unless $config->get("backup/items/domainsFolder");
 
-    my $domainsRoot     = $config->getDomainRoot;
+    my $domainsRoot     = dir($config->getDomainRoot);
 
     # get domains to backup
-	opendir(DIR, $domainsRoot);
+	opendir(DIR, $domainsRoot->stringify);
 	my @domains = readdir(DIR);
 	closedir(DIR);
 
     # create tarballs
 	my $tar         = $config->get("tar");
-	my $backupDir   = $config->get("backup/path");
+	my $backupDir   = dir($config->get("backup/path"));
     my $excludes    = $config->getRoot("/etc/backup.exclude");
 	foreach my $domain (@domains) {
 		next if ($domain eq "." || $domain eq ".." || $domain eq "demo");
         eval {$util->tar(
             exclude     => $excludes,
-            file        => "$backupDir/$domain.tar",
-            stuff       => ["$domainsRoot/$domain"],
+            file        => $backupDir->file($domain.".tar")->stringify,
+            stuff       => [$domainsRoot->subdir($domain)->stringify],
             )};
         print $@."\n" if ($@);
 	}
@@ -71,10 +72,10 @@ sub backupMysql {
 
     my $mysql       = WRE::Mysql->new(wreConfig=>$config);
     my $db          = $mysql->getDatabaseHandle( 
-        password=>$config->get("backup/mysql/password"), 
-        username=>$config->get("backup/mysql/user"),
+        password    => $config->get("backup/mysql/password"), 
+        username    => $config->get("backup/mysql/user"),
         );
-    my $backupDir   = $config->get("backup/path");
+    my $backupDir   = dir($config->get("backup/path"));
 
     # find databases to back up 
 	my $databases = $db->prepare("show databases");
@@ -86,7 +87,10 @@ sub backupMysql {
 		next if ($name =~ /^test$/);
 
         # create dump
-        $mysql->dump(database=>$name, path=>$backupDir."/".$name.".sql");
+        $mysql->dump(
+            database    => $name, 
+            path        => $backupDir->file($name.".sql")->stringify
+            );
 	}
 	$db->disconnect;
 }
@@ -101,7 +105,7 @@ sub backupWebgui {
     # create tarball
     eval {$util->tar(
         exclude     => $config->getRoot("/etc/backup.exclude"),
-        file        => $config->get("backup/path")."/webgui.tar",
+        file        => file($config->get("backup/path"), "webgui.tar")->stringify,
         stuff       => [$config->getWebguiRoot],
         )};
     print $@."\n" if ($@);
@@ -122,7 +126,7 @@ sub backupWre {
     # create tarball
     eval {$util->tar(
         exclude     => $config->getRoot("/etc/backup.exclude"),
-        file        => $config->get("backup/path")."/wre.tar",
+        file        => file($config->get("backup/path"), "wre.tar")->stringify,
         stuff       => [$pathToBackup],
         )};
     print $@."\n" if ($@);
@@ -131,12 +135,12 @@ sub backupWre {
 #-------------------------------------------------------------------
 sub compressBackups {
     my $config      = shift;
-	my $gzip        = $config->get("gzip");
-	my $backupDir   = $config->get("backup/path");
+	my $gzip        = file($config->get("gzip"))->stringify;
+	my $backupDir   = dir($config->get("backup/path"));
 
     # compress files
-	system("$gzip -f $backupDir/*.sql");
-	system("$gzip -f $backupDir/*.tar");
+	system("$gzip -f ".$backupDir->file("*.sql")->stringify);
+	system("$gzip -f ".$backupDir->file("*.tar")->stringify);
 }
 
 #-------------------------------------------------------------------
@@ -174,17 +178,17 @@ sub copyToFtp {
     # do transfer
 	my $passivecmd = $passive ? "" : "set ftp:passive-mode off; ";
 	system($config->getRoot('/prereqs/bin/lftp').' -e "'.$passivecmd.'mput -O '.$now.' '
-        .$config->get("backup/path").'/*.gz; exit" -u '.$user.','.$pass.' ftp://'.$host.$path);
+        .file($config->get("backup/path"),'/*.gz')->stringify.'; exit" -u '.$user.','.$pass.' ftp://'.$host.$path);
 }
 
 #-------------------------------------------------------------------
 sub rotateBackupFiles {
     my $config      = shift;
-    my $backupDir   = $config->get("backup/path");
+    my $backupDir   = dir($config->get("backup/path"));
     my $rotations   = $config->get("backup/rotations") - 1; # .gz counts as 1
 
     # get the list of files
-	opendir(DIR,$backupDir);
+	opendir(DIR,$backupDir->stringify);
 	my @files = readdir(DIR);
 	closedir(DIR);
 
@@ -198,12 +202,12 @@ sub rotateBackupFiles {
 
                 # get rid of oldest files
 				if ($i == $rotations) {
-					unlink "$backupDir/".$file;
+					$backupDir->file($file)->remove;
 				} 
 
                 # rotate younger files
                 else {
-					rename "$backupDir/".$file, "$backupDir/".$filefront.($i+1);
+					rename $backupDir->file($file)->stringify, $backupDir->file($filefront.($i+1))->stringify;
 				}
 			}
 		}
@@ -212,7 +216,7 @@ sub rotateBackupFiles {
     # rotate new files
 	foreach my $file (@files) {
 		if ($file =~ /\.gz$/) {
-			rename "$backupDir/".$file, "$backupDir/".$file.".1";
+			rename $backupDir->file($file)->stringify, $backupDir->file($file.".1")->stringify;
 		}
 	}
 }

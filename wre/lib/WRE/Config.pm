@@ -14,6 +14,7 @@ use strict;
 use base 'Config::JSON';
 use Class::InsideOut qw ( register );
 use File::Copy qw(cp);
+use Path::Class;
 
 { # begin inside out object
 
@@ -54,16 +55,12 @@ necessary.
 =cut
 
 sub getRoot {
-    my $class = shift;
-    my $root = "/data/wre";
-    my $path = shift;
+    my ($self,$path) = @_;
+    my $root = dir("/data/wre");
     if (defined $path) {
-        unless ($path =~ m{^/}) {
-            $path = "/".$path;
-        }       
-        return $root.$path;
+        return $root->file($path)->stringify;    
     }
-    return $root;
+    return $root->stringify;
 }
 
 #-------------------------------------------------------------------
@@ -80,16 +77,12 @@ necessary.
 =cut
 
 sub getDomainRoot {
-    my $self = shift;
-    my $root = $self->get("domainRoot");
-    my $path = shift;
+    my ($self,$path) = @_;
+    my $root = dir($self->get("domainRoot"));
     if (defined $path) {
-        unless ($path =~ m{^/}) {
-            $path = "/".$path;
-        }       
-        return $root.$path;
+        return $root->file($path)->stringify;    
     }
-    return $root;
+    return $root->stringify;
 }
 
 #-------------------------------------------------------------------
@@ -106,16 +99,12 @@ necessary.
 =cut
 
 sub getWebguiRoot {
-    my $self = shift;
-    my $root = $self->get("webgui")->{root};
-    my $path = shift;
+    my ($self,$path) = @_;
+    my $root = dir($self->get("webgui")->{root});
     if (defined $path) {
-        unless ($path =~ m{^/}) {
-            $path = "/".$path;
-        }       
-        return $root.$path;
+        return $root->file($path)->stringify;    
     }
-    return $root;
+    return $root->stringify;
 }
 
 #-------------------------------------------------------------------

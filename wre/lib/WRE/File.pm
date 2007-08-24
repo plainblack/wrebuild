@@ -19,6 +19,7 @@ use File::Find qw(find);
 use File::Path qw(mkpath rmtree);
 use File::Slurp qw(read_file write_file);
 use File::Temp qw(tempfile tempdir);
+use Path::Class;
 use Template;
 
 
@@ -128,28 +129,27 @@ a list of template variables to process.
 
 sub copy {
     my $self = shift;
-	my $from = shift;
-	my $to = shift;
+	my $from = dir(shift);
+	my $to = dir(shift);
     my $options = shift;
 
     # handle recursion
     if ($options->{recursive}) {
-        $from.'/' unless ($from =~ m{/$});
-        $to.'/' unless ($to =~ m{/$});
         delete $options->{recursive};
         my @diff = ();
         find({ 
             no_chdir=>1, 
             wanted=> sub { 
                     my $newPath = $File::Find::name;
-                    $newPath =~ s/$from(.*)/$1/;
-                    $newPath = $to.$newPath;
-                    my $returnValue = $self->copy($File::Find::name, $newPath, $options);
+                    my $match = $from->stringify;
+                    $newPath =~ s/$match(.*)/$1/;
+                    $newPath = $to->file($newPath);
+                    my $returnValue = $self->copy($File::Find::name, $newPath->stringify, $options);
                     if ($returnValue ne "1") {
                         push(@diff, $returnValue);
                     }
                 } 
-            }, $from);
+            }, $from->stringify);
         return (scalar(@diff) > 0) ? join("\n", @diff) : 1;
     }
 
@@ -158,32 +158,32 @@ sub copy {
         my $out = 1;
         # copy a folder
         if (-d $from) {
-            $self->makePath($to) unless (-d $to);
+            $self->makePath($to->stringify) unless (-d $to->stringify);
         }
         # copy a file
         else {
             # process a template
             if ($options->{processTemplate} || exists $options->{templateVars}) {
-                my $temp = $to.".tmp";
-                $self->spit($temp, $self->processTemplate($from, $options->{templateVars}));
-                if ($options->{force} || !(-f $to) || $self->compare($temp, $to)) {
-                    cp($temp, $to);
+                my $temp = $to->stringify.".tmp";
+                $self->spit($temp, $self->processTemplate($from->stringify, $options->{templateVars}));
+                if ($options->{force} || !(-f $to->stringify) || $self->compare($temp, $to->stringify)) {
+                    cp($temp, $to->stringify);
                 }
                 else {
-                    $out = "diff $to $from";
+                    $out = "diff ".$to->stringify." ".$from->stringify;
                 }
                 $self->delete($temp);
             }
             # not dealing with a template
             else {
-                if ($options->{force} || !(-f $to) || $self->compare($from, $to)) {
-                    cp($from, $to);
+                if ($options->{force} || !(-f $to->stringify) || $self->compare($from->stringify, $to->stringify)) {
+                    cp($from->stringify, $to->stringify);
                 }
                 else {
-                    $out = "diff $to $from";
+                    $out = "diff ".$to->stringify." ".$from->stringify;
                 }
 	        }
-            $self->changeOwner($to);
+            $self->changeOwner($to->stringify);
         }
         return $out;
     }
@@ -233,7 +233,7 @@ sub getMd5sum {
     my $md5 = Digest::MD5->new;
     ## i am the filehandle.
     my $fh;
-    if (open($fh, "< $file")) {
+    if (open($fh, "<", $file)) {
         ## load the file.
         $md5->addfile($fh);
         my $digest = $md5->hexdigest;
@@ -431,16 +431,24 @@ sub tar {
     if ($options{gzip}) {
         $args .= " --gzip";
     }
-    if (exists $options{exclude}) {
-        $args .= " --exclude-from=".$options{exclude};
+    if (exists $options{exclude}) {A
+        $args .= " --exclude-from=".dir($options{exclude})->stringify;
     }
-    if (scalar(@{$options{stuff}}) == 1 && -d $options{stuff}->[0]) {
-        chdir $options{stuff}->[0];
+    my $firstThing = dir($options{stuff}->[0])->stringify;
+    if (scalar(@{$options{stuff}}) == 1 && -d $firstThing) {
+        chdir $firstThing;
         $options{stuff}->[0] = ".";
     }
+    my $file = file($options{file})->stringify;
+    my @stuff = ();
+    foreach my $location (@{$options{stuff}}) {
+        my $path = dir($location);
+        push @stuff, $path->stringify;
+    }
     # use real tar cuz Archive::Tar is sloooooowwwww
-    if (system($self->wreConfig->get("tar")." --create $args --file ".$options{file}." ".join(" ", @{$options{stuff}}))) {
-        croak "Couldn't create ".$options{file}.".";
+    my $tar = file($self->wreConfig->get("tar"))->stringify;
+    if (system($tar." --create $args --file ".$file." ".join(" ", @stuff))) {
+        croak "Couldn't create ".$file.".";
     }
 }
 
@@ -471,10 +479,12 @@ sub untar {
     if ($options{gunzip}) {
         $args .= " --gunzip";
     }
-    chdir $options{path};
+    chdir dir($options{path})->stringify;
+    my $file = file($options{file})->stringify;
     # use real tar cuz Archive::Tar is sloooooowwwww
-    if (system($self->wreConfig->get("tar")." --extract $args --file ".$options{file})) {
-        croak "Couldn't extract ".$options{file}.".";
+    my $tar = file($self->wreConfig->get("tar"))->stringify;
+    if (system($tar." --extract $args --file ".$file)) {
+        croak "Couldn't extract ".$file.".";
     }
 }
 

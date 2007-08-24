@@ -19,7 +19,6 @@ use String::Random qw(random_string);
 use WRE::File;
 use WRE::Mysql;
 
-{ # begin inside out object
 
 private adminPassword => my %adminPassword;
 
@@ -106,10 +105,12 @@ sub create {
     $db->do("flush privileges");
     $db->do("create database ".$params->{databaseName});
     $db->disconnect;
-    system $wreConfig->getRoot('/prereqs/bin/mysql').' -u'.$params->{databaseUser}.' -p'
-        .$params->{databasePassword}.' --host='.$params->{databaseHost}.' --port='
-        .$params->{databasePort}.' -e "source '.$wreConfig->getWebguiRoot("/docs/create.sql")
-        .'" ' .$params->{databaseName};
+    $mysql->load(
+        database    => $params->{databaseName},
+        path        => $wreConfig->getWebguiRoot("/docs/create.sql"),
+        username    => $params->{databaseUser},
+        password    => $params->{databasePassword},
+        );
 
     # create webroot
 	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/awstats'));
@@ -315,6 +316,5 @@ The password for the WRE database "root" user.
 # auto generated
 
 
-} # end inside out object
 
 1;

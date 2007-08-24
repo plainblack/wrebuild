@@ -15,6 +15,7 @@ use base 'WRE::Service';
 use Carp qw(croak);
 use Class::InsideOut qw(new);
 use DBI;
+use Path::Class;
 
 =head1 ISA
 
@@ -45,12 +46,13 @@ sub dump {
     my $self    = shift;
     my %options = @_;    
     my $config  = $self->wreConfig;
+    my $path = file($options{path});
     my $command = $config->get("/prereqs/bin/mysqldump")
         ." --user=".$config->get("backup/mysql/user")
         ." --password=".$config->get("backup/mysql/password")
         ." --host=".$config->get("mysql/hostname")
         ." --port=".$config->get("mysql/port")
-        ." --result-file=".$options{path}
+        ." --result-file=".$path->stringify
         ." --opt" # increased dump and load performance
         ." ".$options{database};
     system($command);
@@ -129,6 +131,47 @@ sub isAdmin {
     }
     return 0;
 }
+
+#-------------------------------------------------------------------
+
+=head2 load ( database => $database, path => $path, username=> $user,  password=> $password )
+
+Loads a dump file into a database.
+
+=head3 database
+
+The name of the database you want to load the file into.
+
+=head3 path
+
+The path to the dump file you want loaded.
+
+=head3 username
+
+A username that has the privileges to import a dump.
+
+=head3 password
+
+The password that goes with username.
+
+=cut
+
+sub load {
+    my $self    = shift;
+    my %options = @_;    
+    my $config  = $self->wreConfig;
+    my $path = file($options{path});
+    my $command = $config->get("/prereqs/bin/mysql")
+        ." --batch" # disables interactive mode
+        ." --user=".$options{username}
+        ." --password=".$options{password}
+        ." --host=".$config->get("mysql/hostname")
+        ." --port=".$config->get("mysql/port")
+        ." --execute='source ".$path->stringify."'"
+        ." ".$options{database};
+    system($command);
+}
+
 
 #-------------------------------------------------------------------
 
