@@ -14,6 +14,7 @@ use lib '/data/wre/lib';
 use strict;
 use Getopt::Long;
 use WRE::Config;
+use WRE::Host;
 use WRE::Modperl;
 use WRE::Modproxy;
 use WRE::Mysql;
@@ -83,8 +84,9 @@ STOP
 }
 
 my $config = WRE::Config->new;
+my $host = WRE::Host->new(wreConfig => $config);
 
-unless ($config->isPrivilegedUser || $quiet) {
+unless ($host->isPrivilegedUser || $quiet) {
     print "\nWARNING: Because you are not an administrator on this system, you will not be able to
         start or stop services on ports 1-1024.\n\n";
 }

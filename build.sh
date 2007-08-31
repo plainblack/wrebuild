@@ -621,6 +621,33 @@ if [ -d /data ]; then
         FreeBSD)
             export WRE_MAKE=gmake
         ;;
+        Linux)
+            export WRE_MAKE=make
+            if [ -f /etc/redhat-release ]; then
+                export WRE_OSTYPE="RedHat"
+            fi
+            if [ -f /etc/fedora-release ]; then
+                export WRE_OSTYPE="Fedora"
+            fi
+            if [ -f /etc/slackware-release || -f /etc/slackware-version ]; then
+                export WRE_OSTYPE="Slackware"
+            fi
+            if [ -f /etc/debian_release || -f /etc/debian_version ]; then
+                export WRE_OSTYPE="Debian"
+            fi
+            if [ -f /etc/mandrake-release ]; then
+                export WRE_OSTYPE="Mandrake"
+            fi
+            if [ -f /etc/yellowdog-release ]; then
+                export WRE_OSTYPE="YellowDog"
+            fi
+            if [ -f /etc/gentoo-release ]; then
+                export WRE_OSTYPE="Gentoo"
+            fi
+            if [ -f /etc/lsb-release ]; then
+                export WRE_OSTYPE="Ubuntu"
+            fi
+        ;;
         *)
             export WRE_MAKE=make
         ;;

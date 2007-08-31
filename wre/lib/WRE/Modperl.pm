@@ -17,6 +17,7 @@ use Class::InsideOut qw(new);
 use HTTP::Request;
 use HTTP::Headers;
 use LWP::UserAgent;
+use WRE::Host;
 
 =head1 ISA
 
@@ -108,7 +109,8 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
-    unless ($config->get("apache/modperlPort") > 1024 || $config->isPrivilegedUser) {
+    my $host = WRE::Host->new(wreConfig=>$config);
+    unless ($config->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
     my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf") 
@@ -137,7 +139,8 @@ sub stop {
     my $count = 0;
     my $success = 1;
     my $config = $self->wreConfig;
-    unless ($config->get("apache/modperlPort") > 1024 || $config->isPrivilegedUser) {
+    my $host = WRE::Host->new(wreConfig=>$config);
+    unless ($config->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
     }
     my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")

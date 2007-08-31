@@ -17,6 +17,7 @@ use Class::InsideOut qw(new);
 use HTTP::Request;
 use HTTP::Headers;
 use LWP::UserAgent;
+use WRE::Host;
 
 =head1 ISA
 
@@ -77,7 +78,8 @@ Note: The process that runs this command must be either root or the user specifi
 sub start {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
-    unless ($wreConfig->get("apache/modproxyPort") > 1024 || $wreConfig->isPrivilegedUser) {
+    my $host = WRE::Host->new(wreConfig=>$wreConfig);
+    unless ($wreConfig->get("apache/modproxyPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
     my $count = 0;
@@ -108,7 +110,8 @@ sub stop {
     my $count = 0;
     my $success = 0;
     my $wreConfig = $self->wreConfig;
-    unless ($wreConfig->get("apache/modproxyPort") > 1024 || $wreConfig->isPrivilegedUser) {
+    my $host = WRE::Host->new(wreConfig=>$wreConfig);
+    unless ($wreConfig->get("apache/modproxyPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
     }
     my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")

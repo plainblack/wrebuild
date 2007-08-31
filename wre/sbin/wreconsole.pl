@@ -37,13 +37,16 @@ use WRE::WebguiUpdate;
 
 #-------------------------------------------------------------------
 # server daemon
+my $wreConfig = WRE::Config->new;
+my $host = WRE::Host->new(wreConfig => $wreConfig);
+my $osname = $host->getOsName;
 my %serverProperties = (
     ReuseAddr   => 1,
     MultiHomed  => 1,
     LocalAddr   => undef,
     LocalPort   => 60834,
     );
-unless ($^O eq "MSWin32") {
+if ($osname ne "MSWin32" || ($osname eq "Linux" && $host->getOsType ne "Gentoo")) {
     $serverProperties{ReusePort} = 1;
 }
 
@@ -55,13 +58,13 @@ while (my $connection = $daemon->accept) {
             request     => $request,
             connection  => $connection,
             daemon      => $daemon,
-            config      => WRE::Config->new,
+            config      => $wreConfig,
             cgi         => parseRequest($request),
         };
         my $handler = $request->url->path;
         $handler =~ s{^/(.*)}{$1};
         if ($handler eq "" || $handler !~ m/^[A-Za-z]+$/) {
-            if ( -d $state->{config}->getWebguiRoot ) {
+            if ( -d $wreConfig->getWebguiRoot ) {
                 $handler = "listSites";
             }
             else {
@@ -460,29 +463,22 @@ sub www_editSettings {
         </p>
 
         <p>
-        Compress<br />
-        <input type="radio" name="backupCompress" value="1" '.(($backup->{compress} == 1) ? 'checked="1"' : '').' />Yes 
-        <input type="radio" name="backupCompress" value="0" '.(($backup->{compress} != 1) ? 'checked="1"' : '').' />No
-        <span class="subtext">Should the backup be compressed.</span>
-        </p>
-
-        <p>
         Items To Backup<br />
         <input type="radio" name="backupFullWre" value="1" '.(($backup->{items}{fullWre} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="backupFullWre" value="0" '.(($backup->{items}{fullWre} != 1) ? 'checked="1"' : '').' />No
-        - modproxy<br />
+        - Full WRE<br />
         <input type="radio" name="backupSmallWre" value="1" '.(($backup->{items}{smallWre} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="backupSmallWre" value="0" '.(($backup->{items}{smallWre} != 1) ? 'checked="1"' : '').' />No
-        - modperl<br />
+        - Only WRE Configuration Information<br />
         <input type="radio" name="backupDomains" value="1" '.(($backup->{items}{domainsFolder} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="backupDomains" value="0" '.(($backup->{items}{domainsFolder} != 1) ? 'checked="1"' : '').' />No
-        - MySQL<br />
+        - Domains Folders<br />
         <input type="radio" name="backupWebgui" value="1" '.(($backup->{items}{webgui} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="backupWebgui" value="0" '.(($backup->{items}{webgui} != 1) ? 'checked="1"' : '').' />No
-        - Spectre<br />
+        - WebGUI<br />
         <input type="radio" name="backupMysql" value="1" '.(($backup->{items}{mysql} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="backupMysql" value="0" '.(($backup->{items}{mysql} != 1) ? 'checked="1"' : '').' />No
-        - Runaway Processes<br />
+        - MySQL Data<br />
         </p>
 
         <p>
@@ -788,7 +784,8 @@ sub www_listServices {
     my $status = shift;
     my $content = getNavigation("services");
     $content .= '<div class="status">'.$status.'</div>';
-    unless ($state->{config}->isPrivilegedUser) {
+    my $host = WRE::Host->new(wreConfig => $state->{config});
+    unless ($host->isPrivilegedUser) {
         $content .= q|<p class="status"><b>WARNING:</b> Because you are not an administrator on this machine, you
             will not be able to start or stop services on ports 1-1024.</p>|;
     }
@@ -1004,6 +1001,7 @@ sub www_setup {
     my $state = shift;
     my $out = qq| <div id="tabsWrapper"> <div id="logo">WRE Console</div> <div id="navUnderline"></div> </div> |;
     my $config = $state->{config};
+    my $host = WRE::Host->new(wreConfig=>$config);
     my $cgi = $state->{cgi};
     my $file = WRE::File->new(wreConfig=>$config);
 
@@ -1084,7 +1082,6 @@ sub www_setup {
 
     # webgui stuff
     elsif ($cgi->param("step") eq "webgui") {
-        my $host = WRE::Host->new(wreConfig=>$config);
         $out .= '<h1>WebGUI</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="finish">
@@ -1329,7 +1326,7 @@ sub www_setup {
             <p>';
 
         # windows can't do dev only environment
-        if ($^O eq "MSWin32") {
+        if ($host->getOsName eq "windows") {
             $out .= '<input type="hidden" name="devOnly" value="0" />';
         }
 

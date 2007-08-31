@@ -72,6 +72,64 @@ sub getIp {
 
 #-------------------------------------------------------------------
 
+=head2 getOsName ( )
+
+Returns the operating system's name.
+
+=cut
+
+sub getOsName {
+    my $os = $^O;
+    if ($os =~ /MSWin32/i || $os =~ /^Win/i) {
+        return "windows";
+    }
+    return $os;
+}
+
+
+#-------------------------------------------------------------------
+
+=head2 getOsType ( )
+
+Returns the type of operating system. So for example, for linux OSes, it will return "RedHat" or "Gentoo" or
+"Ubuntu".
+
+=cut
+
+sub getOsType {
+    my $self = shift;
+    if ($self->getOsName eq "linux") {
+        if ( -f "/etc/redhat-release" ) {
+            return "RedHat";
+        }
+        elsif ( -f "/etc/fedora-release" ) {
+            return "Fedora";
+        } 
+        elsif ( -f "/etc/slackware-release" || -f "/etc/slackware-version" ) {
+            return "Slackware";
+        }
+        elsif ( -f "/etc/debian_release" || -f "/etc/debian_version" ) {
+            return "Debian";
+        }
+        elsif ( -f "/etc/mandrake-release" ) {
+            return "Mandrake";
+        }
+        elsif ( -f "/etc/yellowdog-release" ) {
+            return "YellowDog";
+        }
+        elsif ( -f "/etc/gentoo-release" ) {
+            return "Gentoo";
+        }
+        elsif ( -f "/etc/lsb-release" ) {
+            return "Ubuntu";
+        }
+    }
+    return undef; 
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 getSubnet ( )
 
 Returns the subnet (in CIDR) of the primary inteface for this box. Note that this is not 100% foolproof. It's more of an
@@ -82,6 +140,22 @@ educated guess.
 sub getSubnet {
     my $self = shift;
     return $self->getIp . '/32' ; 
+}
+
+#-------------------------------------------------------------------
+
+=head2 isPrivilegedUser ()
+
+Returns a boolean indicating whether the current user is a privileged user for the operating system.
+
+=cut
+
+sub isPrivilegedUser {
+    my $self = shift;
+    if ($self->getOsName eq "windows" || $< == 0) {
+        return 1;
+    }
+    return 0;
 }
 
 #-------------------------------------------------------------------

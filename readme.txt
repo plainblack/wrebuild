@@ -118,6 +118,15 @@ ln -s /usr/local/bin/bash /bin/bash
 
 
 
+GENTOO
+------
+
+You need to run the following command:
+
+ln -s /usr/src/linux/include/asm/page.h /usr/include/asm/
+
+
+
 SOLARIS
 -------
 

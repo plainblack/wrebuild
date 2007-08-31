@@ -109,21 +109,6 @@ sub getWebguiRoot {
 
 #-------------------------------------------------------------------
 
-=head2 isPrivilegedUser ()
-
-Returns a boolean indicating whether the current user is a privileged user for the operating system.
-
-=cut
-
-sub isPrivilegedUser {
-    if ($^O =~ /MSWin32/i || $^O =~ /^Win/i || $< == 0) {
-        return 1;
-    }
-    return 0;
-}
-
-#-------------------------------------------------------------------
-
 =head2 new (  )
 
 Constructor.
