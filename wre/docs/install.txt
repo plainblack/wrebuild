@@ -142,3 +142,10 @@ and comment out the following lines, which should be around line number 155:
 The reason is that Apache2::SizeLimit is not supported on Darwin based
 systems.
 
+
+FreeBSD
+
+You must install and use the bash shell while using the WRE. The WRE also
+assumes that the bash shell is installed or linked at /bin/bash.
+
+

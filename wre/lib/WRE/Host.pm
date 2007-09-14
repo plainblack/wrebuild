@@ -18,8 +18,6 @@ use Socket;
 use Sys::Hostname;
 
 
-{ # begin inside out object
-
 
 =head1 METHODS
 
@@ -173,7 +171,5 @@ A reference to a WRE Configuration object.
 # auto created by Class::InsideOut
 
 
-
-} # end inside out object
 
 1;

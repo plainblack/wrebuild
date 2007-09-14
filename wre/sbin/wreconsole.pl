@@ -46,7 +46,7 @@ my %serverProperties = (
     LocalAddr   => undef,
     LocalPort   => 60834,
     );
-if ($osname ne "MSWin32" || ($osname eq "Linux" && $host->getOsType ne "Gentoo")) {
+if ($osname eq "darwin" || $osname eq "freebsd") {
     $serverProperties{ReusePort} = 1;
 }
 
