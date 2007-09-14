@@ -130,6 +130,7 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $wreConfig = $self->wreConfig;
+    $wreConfig->set("wreMonitor/spectreAdministrativelyDown", 0);
     chdir $wreConfig->getWebguiRoot("/sbin");
     my $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon";
     system($cmd);
@@ -154,6 +155,7 @@ sub stop {
     my $count = 0;
     my $success = 1;
     my $wreConfig = $self->wreConfig;
+    $wreConfig->set("wreMonitor/spectreAdministrativelyDown", 1);
     chdir($wreConfig->getWebguiRoot("/sbin"));
     my $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown";
     `$cmd`; # catch command line output

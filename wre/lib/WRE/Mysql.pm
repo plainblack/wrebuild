@@ -208,6 +208,7 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
+    $config->set("wreMonitor/mysqlAdministrativelyDown", 0);
     my $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." start --user=".$config->get("user");
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
@@ -232,7 +233,9 @@ sub stop {
     my $self = shift;
     my $count = 0;
     my $success = 1;
-    my $cmd = $self->wreConfig->getRoot("/prereqs/share/mysql/mysql.server")." stop";
+    my $config = $self->wreConfig;
+    $config->set("wreMonitor/mysqlAdministrativelyDown", 1);
+    my $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." stop";
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         sleep(1);

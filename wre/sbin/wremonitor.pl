@@ -24,12 +24,12 @@ use WRE::Spectre;
 
 my $config = WRE::Config->new;
 
-if ($config->get("wreMonitor/items/mysql")) {
+if ($config->get("wreMonitor/items/mysql") && !$config->get("wreMonitor/mysqlAdministrativelyDown")) {
     my $mysql = WRE::Mysql->new(wreConfig=>$config);
     monitor($mysql);
 }
 
-if ($config->get("wreMonitor/items/modperl")) {
+if ($config->get("wreMonitor/items/modperl") && !$config->get("wreMonitor/modperlAdministrativelyDown")) {
     my $modperl = WRE::Modperl->new(wreConfig=>$config);
     monitor($modperl);
     if ($config->get("wreMonitor/items/runaway")) {
@@ -38,12 +38,12 @@ if ($config->get("wreMonitor/items/modperl")) {
     }
 }
 
-if ($config->get("wreMonitor/items/modproxy")) {
+if ($config->get("wreMonitor/items/modproxy") && !$config->get("wreMonitor/modproxyAdministrativelyDown")) {
     my $modproxy = WRE::Modproxy->new(wreConfig=>$config);
     monitor($modproxy);
 }
 
-if ($config->get("wreMonitor/items/spectre")) {
+if ($config->get("wreMonitor/items/spectre") && !$config->get("wreMonitor/spectreAdministrativelyDown")) {
     my $spectre = WRE::Spectre->new(wreConfig=>$config);
     monitor($spectre);
 }

@@ -109,6 +109,7 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
+    $config->set("wreMonitor/modperlAdministrativelyDown", 0);
     my $host = WRE::Host->new(wreConfig=>$config);
     unless ($config->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
@@ -139,6 +140,7 @@ sub stop {
     my $count = 0;
     my $success = 1;
     my $config = $self->wreConfig;
+    $config->set("wreMonitor/modperlAdministrativelyDown", 1);
     my $host = WRE::Host->new(wreConfig=>$config);
     unless ($config->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
