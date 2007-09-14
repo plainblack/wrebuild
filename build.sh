@@ -217,7 +217,8 @@ buildGraphicsMagick(){
     buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # graphics magick
-    cd GraphicsMagick-1.1.7
+    WRE_GM_VERSION="GraphicsMagick-1.1.7"
+    cd $WRE_GM_VERSION
     printHeader "Graphics Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -230,6 +231,9 @@ buildGraphicsMagick(){
     fi
     $WRE_MAKE; checkError $? "Graphics Magick make"
     $WRE_MAKE install; checkError $? "Graphics Magick make install"
+    echo "<?xml version=\"1.0\"?>" > /data/wre/prereqs/lib/$WRE_GM_VERSION/config/magic.mgk
+    echo "  <magicmap>" >> /data/wre/prereqs/lib/$WRE_GM_VERSION/config/magic.mgk
+    echo "  </magicmap>" >> /data/wre/prereqs/lib/$WRE_GM_VERSION/config/magic.mgk
 
     cd $WRE_BUILDDIR
 }
