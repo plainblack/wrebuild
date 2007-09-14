@@ -1,0 +1,24 @@
+W R E   U P G R A D E   G O T C H A S
+-------------------------------------
+
+This file contains a list of gotchas that you should be aware of that will
+affect your upgrade from one version of the WRE to another. Before upgrading
+the WRE you should always read this file in the new version you wish to
+upgrade to.
+
+
+WRE 0.8.0
+
+This version of the WRE is a complete rewrite of the WRE from the ground up.
+All templates, file locations, APIs, etc have been changed in this release.
+Therefore there is no direct upgrade path from previous WRE versions to WRE
+0.8.0. A migration document has been created in the WebGUI community wiki. You
+should follow the advice in that document to migrate your configurations from
+a previous version of the WRE to this new version. Here's the URL:
+
+http://www.webgui.org/community-wiki/migration-to-wre-0.8
+
+
+
+
+

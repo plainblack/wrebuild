@@ -5,6 +5,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Rewrote the entire WRE system to be easier to configure, have a more
    robust API, and work the same on Windows and Unix.
  - Added the WRE Console.
+ - Added gotcha.txt file just like WebGUI.
  - WRE Monitor no longer panics.
  - WRE Monitor can now check for modperl runaways on all Unix platforms.
  - WRE Monitor can now notify multiple email addresses.
@@ -108,6 +109,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: WRE needs newer version of openssl to build on OS X intel
  - fix: mysql.server --defaults-file doesn't work with newer versions of MySQL
  - fix: WRE sudo problem
+ - fix: HTTP Compression not configured correctly for javascript files
  - fix: libpng doesn't build on OS X intel
  - fix: Cron Jobs in setup not being output
  - fix: wrong shell called on ubuntu
