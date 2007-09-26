@@ -1236,6 +1236,29 @@ sub www_setup {
                     $config->getRoot("/etc/modperl.conf"),
                     { force => 1, processTemplate=>1 });
         }
+       my %modperlVars = (
+            StartServers        => 5,
+            MinSpareServers     => 5,
+            MaxSpareServers     => 10,
+            MaxClients          => 20, 
+            MaxRequestsPerChild => 1000,
+            ServerTokens        => "Minor",
+            );
+        if ($collected->{devOnly}) {
+            %modperlVars = (
+                StartServers            => 2,
+                MinSpareServers         => 2,
+                MaxSpareServers         => 5,
+                MaxClients              => 5, 
+                MaxRequestsPerChild     => 100,
+                ServerTokens            => "Full",
+                );
+        }
+        $modperlVars{osName} = $host->getOsName;
+        $modperlVars{devOnly} = $collected->{devOnly};
+        $file->copy($config->getRoot("/var/setupfiles/modperl.conf.dev"),
+            $config->getRoot("/etc/modperl.conf"),
+            { force => 1, templateVars=>%modperlVars });
         $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
             $config->getRoot("/etc/modproxy.conf"),
             { force => 1, processTemplate=>1 });

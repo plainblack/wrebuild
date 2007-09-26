@@ -2,7 +2,7 @@
 
 sleep=15 # how many seconds are we tolerant?
 
-nice -n 20 /data/wre/prereqs/utils/bin/catdoc $1 $1.txt &
+nice -n 20 /data/wre/prereqs/bin/catdoc -s us-ascii $1 $1.txt &
 
 # are we running?
 while ps $! | grep -c $! >/dev/null 2>&1; do
