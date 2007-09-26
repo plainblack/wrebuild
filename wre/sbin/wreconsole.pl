@@ -1223,20 +1223,10 @@ sub www_setup {
             }            
         }
         print $socket "</blockquote>$crlf";
-
+        
         # apache
         print $socket "<p>Configuring Apache.</p><blockquote>$crlf";
-        if ($collected->{devOnly}) {
-            $file->copy($config->getRoot("/var/setupfiles/modperl.conf.dev"),
-                    $config->getRoot("/etc/modperl.conf"),
-                    { force => 1, processTemplate=>1 });
-        }
-        else {
-            $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
-                    $config->getRoot("/etc/modperl.conf"),
-                    { force => 1, processTemplate=>1 });
-        }
-       my %modperlVars = (
+        my %modperlVars = (
             StartServers        => 5,
             MinSpareServers     => 5,
             MaxSpareServers     => 10,
@@ -1256,7 +1246,7 @@ sub www_setup {
         }
         $modperlVars{osName} = $host->getOsName;
         $modperlVars{devOnly} = $collected->{devOnly};
-        $file->copy($config->getRoot("/var/setupfiles/modperl.conf.dev"),
+        $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
             $config->getRoot("/etc/modperl.conf"),
             { force => 1, templateVars=>%modperlVars });
         $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
