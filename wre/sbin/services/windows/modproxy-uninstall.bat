@@ -1,0 +1,1 @@
+c:\data\wre\prereqs\bin\Apache.exe -k uninstall -n WREmodproxy

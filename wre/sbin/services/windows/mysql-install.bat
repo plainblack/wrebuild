@@ -1,0 +1,1 @@
+c:\data\wre\prereqs\bin\mysqld-nt -install WREmysql --basedir=c:\data\wre\prereqs
