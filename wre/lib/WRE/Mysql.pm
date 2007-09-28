@@ -16,6 +16,7 @@ use Carp qw(croak);
 use Class::InsideOut qw(new);
 use DBI;
 use Path::Class;
+use WRE::Host;
 
 =head1 ISA
 
@@ -209,7 +210,14 @@ sub start {
     my $success = 0;
     my $config = $self->wreConfig;
     $config->set("wreMonitor/mysqlAdministrativelyDown", 0);
-    my $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." start --user=".$config->get("user");
+    my $host = WRE::Host->new(wreConfig => $config);
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net start WREmysql";
+    }
+    else {
+        $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." start --user=".$config->get("user");
+    }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -235,7 +243,14 @@ sub stop {
     my $success = 1;
     my $config = $self->wreConfig;
     $config->set("wreMonitor/mysqlAdministrativelyDown", 1);
-    my $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." stop";
+    my $host = WRE::Host->new(wreConfig => $config);
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net stop WREmysql";
+    }
+    else {
+        $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." stop";
+    }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         sleep(1);

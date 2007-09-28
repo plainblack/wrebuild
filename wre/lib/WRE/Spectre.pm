@@ -131,8 +131,15 @@ sub start {
     my $success = 0;
     my $wreConfig = $self->wreConfig;
     $wreConfig->set("wreMonitor/spectreAdministrativelyDown", 0);
-    chdir $wreConfig->getWebguiRoot("/sbin");
-    my $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon";
+    my $host = WRE::Host->new(wreConfig => $wreConfig);
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net start WREspectre";
+    }
+    else {
+        chdir $wreConfig->getWebguiRoot("/sbin");
+        $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon";
+    }
     system($cmd);
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -156,8 +163,15 @@ sub stop {
     my $success = 1;
     my $wreConfig = $self->wreConfig;
     $wreConfig->set("wreMonitor/spectreAdministrativelyDown", 1);
-    chdir($wreConfig->getWebguiRoot("/sbin"));
-    my $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown";
+    my $host = WRE::Host->new(wreConfig => $wreConfig);
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net stop WREspectre";
+    }
+    else {
+        chdir($wreConfig->getWebguiRoot("/sbin"));
+        $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --shutdown";
+    }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         sleep(1);

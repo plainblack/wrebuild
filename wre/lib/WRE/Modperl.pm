@@ -114,8 +114,14 @@ sub start {
     unless ($config->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
-    my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf") 
-        ." -D WRE-modperl -E ".$config->getRoot("/var/logs/modperl.error.log")." -k start";
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net start WREmodperl";
+    }
+    else {
+        $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf") 
+            ." -D WRE-modperl -E ".$config->getRoot("/var/logs/modperl.error.log")." -k start";
+    }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -145,8 +151,14 @@ sub stop {
     unless ($config->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
     }
-    my $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
-        ." -D WRE-modperl -k stop";
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net stop WREmodperl";
+    }
+    else {
+        $cmd = $config->getRoot("/prereqs/bin/apachectl")." -f ".$config->getRoot("/etc/modperl.conf")
+            ." -D WRE-modperl -k stop";
+    }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         eval { $success = $self->ping };

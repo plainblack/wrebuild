@@ -897,25 +897,27 @@ sub www_listSites {
         <table class="items">|;
     $content .= '<div class="status">'.$status.'</div>';
     my $folder = dir($state->{config}->getWebguiRoot('/etc')) || carp "Couldn't open WebGUI configs folder.";
-    while (my $file = $folder->next) {
-        next if $file->is_dir;
-        my $filename = $file->basename;
-        next unless $filename =~ m/\.conf$/;
-        next if $filename eq "spectre.conf";
-        next if $filename eq "log.conf";
-        my $sitename = $filename;
-        $sitename =~ s/^(.*)\.conf$/$1/;
-        $content .= qq|<tr><td>$sitename</td> <td>
-             <form action="/editSite" method="post">
-                <input type="hidden" name="filename" value="$filename" />
-                <input type="submit" value="Edit" />
-             </form>
-             <form action="/deleteSite" method="post">
-                <input type="hidden" name="filename" value="$filename" />
-                <input type="submit" class="deleteButton" value="Delete" />
-             </form>
-            </td></tr>|;
-    }
+    if (-e $folder) {
+        while (my $file = $folder->next) {
+            next if $file->is_dir;
+            my $filename = $file->basename;
+            next unless $filename =~ m/\.conf$/;
+            next if $filename eq "spectre.conf";
+            next if $filename eq "log.conf";
+            my $sitename = $filename;
+            $sitename =~ s/^(.*)\.conf$/$1/;
+            $content .= qq|<tr><td>$sitename</td> <td>
+                 <form action="/editSite" method="post">
+                    <input type="hidden" name="filename" value="$filename" />
+                    <input type="submit" value="Edit" />
+                 </form>
+                 <form action="/deleteSite" method="post">
+                    <input type="hidden" name="filename" value="$filename" />
+                    <input type="submit" class="deleteButton" value="Delete" />
+                 </form>
+                </td></tr>|;
+        }  
+    } 
     $content .= q|</table>|;
     sendResponse($state, $content);
 }
@@ -1021,7 +1023,7 @@ sub www_setup {
 
     # apache stuff
     if ($cgi->param("step") eq "apache") {
-        unless (getpwnam $collected->{wreUser}) {
+        if ($host->getOsName ne "windows" && !(getpwnam $collected->{wreUser})) {
             $out .= qq|<p class="status">There is no user $collected->{wreUser} on this system, please create it or go
                 back and change the user you'd like to run the WRE under.</p>|;
         }
@@ -1176,16 +1178,25 @@ sub www_setup {
         # mysql
         print $socket "<p>Configuring MySQL.</p><blockquote>$crlf";
         if ($collected->{mysqlHost} eq "localhost" || $collected->{mysqlHost} eq "127.0.0.1") {
-            print $socket "<p>Writing config file</p>";
-            $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
-                $config->getRoot("/etc/my.cnf"),
-                { force => 1, processTemplate=>1 });
             my $mysql = WRE::Mysql->new(wreConfig=>$config);
             print $socket "<p>Creating default databases</p>";
             $file->makePath($config->getRoot("/var/mysqldata"));
             chdir($config->getRoot("/prereqs"));
-            system(file("bin/mysql_install_db")->stringify." --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
-            my $mysql = WRE::Mysql->new(wreConfig=>$config);
+            if ($host->getOsName eq "windows") {
+                $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
+                    $config->getRoot("/prereqs/my.ini"),
+                    { force => 1, templateVars=>{osName=>$host->getOsName} });
+                $file->copy($config->getRoot("/prereqs/data"),
+                    $config->getRoot("/var/mysqldata"),
+                    { force => 1, recursive => 1 });
+                system($config->getRoot("/sbin/services/windows/mysql-install.bat"));
+            }
+            else {
+                $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
+                    $config->getRoot("/etc/my.cnf"),
+                    { force => 1, processTemplate=>1 });
+                system(file("bin/mysql_install_db")->stringify." --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
+            }
             print $socket "<p>Starting MySQL</p>";
             $mysql->start;
             print $socket "<p>Connecting</p>";
@@ -1248,7 +1259,7 @@ sub www_setup {
         $modperlVars{devOnly} = $collected->{devOnly};
         $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
             $config->getRoot("/etc/modperl.conf"),
-            { force => 1, templateVars=>%modperlVars });
+            { force => 1, templateVars=>\%modperlVars });
         $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
             $config->getRoot("/etc/modproxy.conf"),
             { force => 1, processTemplate=>1 });
@@ -1313,6 +1324,14 @@ sub www_setup {
             print $socket "</blockquote>$crlf";
         }
 
+        # windows service stuff
+        if ($host->getOsName eq "windows") {
+            print $socket "<p>Installing Windows services.</p>$crlf";
+            system($config->getRoot("/sbin/services/windows/modperl-install.bat"));
+            system($config->getRoot("/sbin/services/windows/modproxy-install.bat"));
+            system($config->getRoot("/sbin/services/windows/spectre-install.bat"));
+        }
+
         # status
         print $socket "<h1>Configuration Complete</h1>
             <p>Please add the following maintenance scripts to your crontab:</p>
@@ -1336,22 +1355,13 @@ sub www_setup {
             WRE Operating System User<br />
             <input type="text" name="wreUser" value="'.($collected->{wreUser} || $config->get("user")).'" />
             </p>
-            <p>';
-
-        # windows can't do dev only environment
-        if ($host->getOsName eq "windows") {
-            $out .= '<input type="hidden" name="devOnly" value="0" />';
-        }
-
-        # but unix platforms have the choice
-        else {
-            $out .= 'Do you want to configure this WRE as a development only environment?<br />
+            <p>
+            Do you want to configure this WRE as a development only environment?<br />
             <input type="radio" name="devOnly" value="1" />Yes &nbsp;
             <input type="radio" name="devOnly" value="0" checked="1" />No
             </p>
             <input type="submit" class="saveButton" value="Next &raquo;" />
             </form> ';
-        }
     }
     sendResponse($state, $out);
 }

@@ -83,10 +83,16 @@ sub start {
     unless ($wreConfig->get("apache/modproxyPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net start WREmodproxy";
+    }
+    else {
+        $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
+            ." -D WRE-modproxy -E ".$wreConfig->getRoot("/var/logs/modproxy.error.log")." -k start";
+    }
     my $count = 0;
     my $success = 0;
-    my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
-        ." -D WRE-modproxy -E ".$wreConfig->getRoot("/var/logs/modproxy.error.log")." -k start";
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -116,8 +122,14 @@ sub stop {
     unless ($wreConfig->get("apache/modproxyPort") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
     }
-    my $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
-        ." -D WRE-modproxy -k stop";
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net stop WREmodproxy";
+    }
+    else {
+        $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf")
+            ." -D WRE-modproxy -k stop";
+    }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         $success = !(eval {$self->ping});
