@@ -1186,8 +1186,8 @@ sub www_setup {
                 $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                     $config->getRoot("/prereqs/my.ini"),
                     { force => 1, templateVars=>{osName=>$host->getOsName} });
-                $file->copy($config->getRoot("/prereqs/data"),
-                    $config->getRoot("/var/mysqldata"),
+                $file->copy($config->getRoot("/prereqs/data/"),
+                    $config->getRoot("/var/mysqldata/"),
                     { force => 1, recursive => 1 });
                 system($config->getRoot("/sbin/services/windows/mysql-install.bat"));
             }
