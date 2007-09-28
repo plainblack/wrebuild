@@ -1292,8 +1292,13 @@ sub www_setup {
             my $download = $update->downloadFile($mirrors->{plainblack}{url});
 
             print $socket "<p>Extracting WebGUI. Please be patient, this can take a while.</p>$crlf";
-            $update->extractArchive($download);
-            
+            eval { $update->extractArchive($download) };
+            if ($@ && $host->getOsName ne "windows") {
+                print $socket "<p>Had some errors extracting WebGUI. $@</p>$crlf";
+            }
+            elsif ($@ && $host->getOsName eq "windows") {
+                print "\nNOTICE:\nYou can safely ignore all the tar extraction errors above. They\nare do to the differences between *nix and Windows file systems.\n";
+            }
         }
         $file->copy($config->getWebguiRoot("/etc/log.conf.original"), $config->getWebguiRoot("/etc/log.conf"),
             { force => 1 });
