@@ -1263,6 +1263,9 @@ sub www_setup {
         $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
             $config->getRoot("/etc/modproxy.conf"),
             { force => 1, processTemplate=>1 });
+        $file->copy($config->getRoot("/var/setupfiles/mime.types"),
+            $config->getRoot("/etc/mime.types"),
+            { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
             $config->getRoot("/etc/modperl.pl"),
             { force => 1 });
@@ -1297,7 +1300,7 @@ sub www_setup {
                 print $socket "<p>Had some errors extracting WebGUI. $@</p>$crlf";
             }
             elsif ($@ && $host->getOsName eq "windows") {
-                print "\nNOTICE:\nYou can safely ignore all the tar extraction errors above. They\nare do to the differences between *nix and Windows file systems.\n";
+                print STDERR "\nNOTICE:\nYou can safely ignore all the tar extraction errors above. They\nare do to the differences between *nix and Windows file systems.\n";
             }
         }
         $file->copy($config->getWebguiRoot("/etc/log.conf.original"), $config->getWebguiRoot("/etc/log.conf"),

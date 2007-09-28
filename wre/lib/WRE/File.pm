@@ -326,10 +326,10 @@ sub processTemplate {
     }
 
     # add in some template template variables
-    $var->{databaseHost}  = $config->get("mysql")->{hostname};
-    $var->{databasePort}  = $config->get("mysql")->{port};
-    $var->{modproxyPort}  = $config->get("apache")->{modproxyPort};
-    $var->{modperlPort}   = $config->get("apache")->{modperlPort};
+    $var->{databaseHost}  = $config->get("mysql/hostname");
+    $var->{databasePort}  = $config->get("mysql/port");
+    $var->{modproxyPort}  = $config->get("apache/modproxyPort");
+    $var->{modperlPort}   = $config->get("apache/modperlPort");
     $var->{domainRoot}    = $config->getDomainRoot;
     $var->{wreRoot}       = $config->getRoot;
     $var->{wreUser}       = $config->get("user");
