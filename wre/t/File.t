@@ -37,8 +37,7 @@ $file->changeOwner($testFile);
 my $user = $config->get("user");
 if ($^O eq "MSWin32") {
     SKIP: {
-        skip("skip change owner user on windows");
-        skip("skip change owner group on windows");
+        skip("skip change owner on windows", 2);
     }
 }
 else {
@@ -50,7 +49,6 @@ else {
     else {
         SKIP: {
             skip("changeOwner() user because user $user isn't in password file", 2);
-            skip("changeOwner() group because user $user isn't in password file", 2);
         }
     }
 }
