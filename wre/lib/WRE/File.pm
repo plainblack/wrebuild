@@ -16,7 +16,6 @@ use Class::InsideOut qw(private public new id);
 use Digest::MD5;
 use File::Copy qw(cp);
 use File::Find qw(find);
-use File::Path qw(mkpath rmtree);
 use File::Slurp qw(read_file write_file);
 use File::Temp qw(tempfile tempdir);
 use Path::Class;
@@ -205,10 +204,10 @@ sub delete {
     my $self = shift;
     my $path = file(shift)->stringify;
     if (-d $path) {
-        rmtree($path);
+        dir($path)->rmtree;
     }
     elsif (-f $path) {
-        unlink $path
+        file($path)->remove;
     }
 }
 
