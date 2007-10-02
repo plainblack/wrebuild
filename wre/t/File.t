@@ -4,6 +4,7 @@ use Test::More tests => 17;
 use WRE::Config;
 use WRE::File;
 use Path::Class;
+use File::Temp qw(tempfile);
 
 my $config = WRE::Config->new();
 my $file = WRE::File->new(wreConfig=>$config);
@@ -12,7 +13,9 @@ isa_ok($file->wreConfig, "WRE::Config");
 
 # test slurp
 my $content = "This\nthat\nfoo\nbar";
-my $testFile = dir("/tmp/wrefiletest")->stringify;
+
+my ($testFileHandle, $testFile) = tempfile();
+$testFile = dir("/tmp/wrefiletest")->stringify;
 open(my $f, ">", $testFile);
 print {$f} $content;
 close($f);
