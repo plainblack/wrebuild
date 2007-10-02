@@ -1,10 +1,12 @@
 use lib '../lib';
 use strict;
-use Test::More tests => 17;
+use Test::More tests => 21;
 use WRE::Config;
 use WRE::File;
 use Path::Class;
-use File::Temp qw(tempfile);
+use File::Temp qw(tempfile tempdir);
+use File::Path;
+use File::Slurp;
 
 my $config = WRE::Config->new();
 my $file = WRE::File->new(wreConfig=>$config);
@@ -53,8 +55,10 @@ else {
     }
 }
 
+
 # md5
 is($file->getMd5sum($testFile), "250be89ccf439ab7c048fcbc6a65bd58", "getMd5sum()");
+
 
 # compare
 $file->spit($testFile."2", \$content);
@@ -62,10 +66,24 @@ isnt($file->compare($testFile, $testFile."2"), 1, "compare() different");
 $file->spit($testFile."2", \$append, { append => 1 });
 is($file->compare($testFile, $testFile."2"), 1, "compare() same");
 
+
 # copy
 is($file->copy($testFile, $testFile."3"), "1", "copy() straight");
 $file->spit($testFile, \$append, { append => 1 });
 is($file->copy($testFile, $testFile."2"), "diff ".$testFile."2 ".$testFile, "copy() diff");
+my $recursiveDir1 = tempdir( CLEANUP => 1 );
+my $subDir = $recursiveDir1."/ab";
+mkpath(dir($subDir)->stringify);
+write_file(file($subDir."/a")->stringify, "AAAAAA");
+write_file(file($subDir."/b")->stringify, "BBBBBB");
+write_file(file($recursiveDir1."/x")->stringify, "XXXXXX");
+write_file(file($recursiveDir1."/y")->stringify, "YYYYYY");
+my $recursiveDir2 = tempdir( CLEANUP => 1 );
+$file->copy($recursiveDir1, $recursiveDir2, {force=>1, recursive=>1});
+is(-f file($recursiveDir2."/y")->stringify, 1, "recursive copy() main level file");
+is(-d dir($recursiveDir2."/ab")->stringify, 1, "recursive copy() subdirectory");
+is(-f file($recursiveDir2."/ab/a")->stringify, 1, "recursive copy() subdirectory file");
+
 
 # processTemplate
 my $content = "This is my modperl port: [% modperlPort %].";
@@ -78,10 +96,17 @@ $file->spit($testFile, \$content);
 $file->copy($testFile, $testFile."2", {force=>1, processTemplate=>1});
 my $contentRef = $file->slurp($testFile."2");
 is($$contentRef, $evaluatedContent, "copy() as template");
+$content = "A custom variable [% xy1 %].";
+$file->spit($testFile, \$content);
+$file->copy($testFile, $testFile."2", {force=>1, templateVars=>{xy1=>"YUMMY"}});
+$contentRef = $file->slurp($testFile."2");
+is($$contentRef, "A custom variable YUMMY.", "copy() as template with custom vars");
+
 
 # path
 $file->makePath("/tmp/foo/bar");
 is(-d dir("/tmp/foo/bar")->stringify, 1, "makePath()");
+
 
 # delete
 $file->delete($testFile);
