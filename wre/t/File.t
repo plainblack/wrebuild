@@ -15,7 +15,7 @@ isa_ok($file->wreConfig, "WRE::Config");
 my $content = "This\nthat\nfoo\nbar";
 
 my ($testFileHandle, $testFile) = tempfile();
-$testFile = dir("/tmp/wrefiletest")->stringify;
+$testFile = dir($testFile)->stringify;
 open(my $f, ">", $testFile);
 print {$f} $content;
 close($f);
