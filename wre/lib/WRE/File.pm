@@ -141,19 +141,17 @@ sub copy {
     if ($options->{recursive}) {
         delete $options->{recursive};
         my @diff = ();
-        find({ 
-            no_chdir=>1, 
-            wanted=> sub { 
-                    my $newPath = $File::Find::name;
-                    my $match = $from->stringify;
-                    $newPath =~ s/$match(.*)/$1/;
-                    $newPath = $to->file($newPath);
-                    my $returnValue = $self->copy($File::Find::name, $newPath->stringify, $options);
-                    if ($returnValue ne "1") {
-                        push(@diff, $returnValue);
-                    }
-                } 
-            }, $from->stringify);
+        find({
+            no_chdir => 1, 
+            wanted   => sub { 
+                my $newPath = file($File::Find::name);
+                $newPath = $to->file($newPath->relative($from));
+                my $returnValue = $self->copy($File::Find::name, $newPath->stringify, $options);
+                if ($returnValue ne "1") {
+                    push(@diff, $returnValue);
+                }
+            },
+        }, $from->stringify);
         return (scalar(@diff) > 0) ? join("\n", @diff) : 1;
     }
 
