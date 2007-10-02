@@ -21,6 +21,7 @@ use File::Slurp qw(read_file write_file);
 use File::Temp qw(tempfile tempdir);
 use Path::Class;
 use Template;
+use WRE::Host;
 
 
 
@@ -61,13 +62,16 @@ Change the path's privileges to be owned by the WRE user.
 sub changeOwner {
     my $self = shift;
     my $path = shift;
-    my $refId = id $self;
-    unless ($groupId{$refId} eq "" || $userId{$refId} eq "") {
-        my $crap = "";
-        my $user = $self->wreConfig->get("user");
-        ($crap, $crap, $userId{$refId}, $groupId{$refId}) = getpwnam $user or carp $user." not in passwd file";
+    my $host = WRE::Host->new(wreConfig=>$self->wreConfig);
+    if ($host->getOsName ne "windows") {
+        my $refId = id $self;
+        unless ($groupId{$refId} eq "" || $userId{$refId} eq "") {
+            my $crap = "";
+            my $user = $self->wreConfig->get("user");
+            ($crap, $crap, $userId{$refId}, $groupId{$refId}) = getpwnam $user or carp $user." not in passwd file";
+        }
+        chown $userId{$refId}, $groupId{$refId}, $path;
     }
-    chown $userId{$refId}, $groupId{$refId}, $path;
 }
 
 
@@ -260,9 +264,9 @@ THe path of the folder to create.
 
 sub makePath {
     my $self = shift;
-    my $path = shift;
-    mkpath($path);
-    $self->changeOwner($path);
+    my $path = dir(shift);
+    $path->mkpath;
+    $self->changeOwner($path->stringify);
 }
 
 
