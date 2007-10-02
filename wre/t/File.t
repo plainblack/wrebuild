@@ -3,6 +3,7 @@ use strict;
 use Test::More tests => 17;
 use WRE::Config;
 use WRE::File;
+use Path::Class;
 
 my $config = WRE::Config->new();
 my $file = WRE::File->new(wreConfig=>$config);
@@ -11,7 +12,7 @@ isa_ok($file->wreConfig, "WRE::Config");
 
 # test slurp
 my $content = "This\nthat\nfoo\nbar";
-my $testFile = "/tmp/wrefiletest";
+my $testFile = dir("/tmp/wrefiletest")->stringify;
 open(my $f, ">", $testFile);
 print {$f} $content;
 close($f);
@@ -58,7 +59,7 @@ is($file->copy($testFile, $testFile."2"), "diff /tmp/wrefiletest2 /tmp/wrefilete
 
 # processTemplate
 my $content = "This is my modperl port: [% modperlPort %].";
-my $evaluatedContent = "This is my modperl port: 81.";
+my $evaluatedContent = "This is my modperl port: 8081.";
 is(${$file->processTemplate(\$content)}, $evaluatedContent, "processTemplate() with scalarref");
 
 
@@ -70,7 +71,7 @@ is($$contentRef, $evaluatedContent, "copy() as template");
 
 # path
 $file->makePath("/tmp/foo/bar");
-is(-d "/tmp/foo/bar", 1, "makePath()");
+is(-d dir("/tmp/foo/bar")->stringify, 1, "makePath()");
 
 # delete
 $file->delete($testFile);
@@ -78,5 +79,5 @@ $file->delete($testFile."2");
 $file->delete($testFile."3");
 isnt(-f $testFile, 1, "delete() file");
 $file->delete("/tmp/foo");
-isnt(-d "/tmp/foo", 1, "delete() folder");
+isnt(-d dir("/tmp/foo")->stringify, 1, "delete() folder");
 
