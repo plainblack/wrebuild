@@ -1262,7 +1262,7 @@ sub www_setup {
             { force => 1, templateVars=>\%modperlVars });
         $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
             $config->getRoot("/etc/modproxy.conf"),
-            { force => 1, processTemplate=>1 });
+            { force => 1, templateVars=>{osName=>$host->getOsName} });
         $file->copy($config->getRoot("/var/setupfiles/mime.types"),
             $config->getRoot("/etc/mime.types"),
             { force => 1 });
