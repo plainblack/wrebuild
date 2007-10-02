@@ -35,14 +35,23 @@ is(${$read}, $content.$append, "spit() append");
 # chown
 $file->changeOwner($testFile);
 my $user = $config->get("user");
-if (my ($j, $j, $u, $g) = getpwnam $user) {
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks) = stat($testFile);
-    is($uid, $u, "changeOwner() user");
-    is($gid, $u, "changeOwner() group");
+if ($^O eq "MSWin32") {
+    SKIP: {
+        skip("skip change owner user on windows");
+        skip("skip change owner group on windows");
+    }
 }
 else {
-    SKIP: {
-        skip("changeOwner() because user $user isn't in password file", 2);
+    if (my ($j, $j, $u, $g) = getpwnam $user) {
+        my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks) = stat($testFile);
+        is($uid, $u, "changeOwner() user");
+        is($gid, $u, "changeOwner() group");
+    }
+    else {
+        SKIP: {
+            skip("changeOwner() user because user $user isn't in password file", 2);
+            skip("changeOwner() group because user $user isn't in password file", 2);
+        }
     }
 }
 
@@ -58,7 +67,7 @@ is($file->compare($testFile, $testFile."2"), 1, "compare() same");
 # copy
 is($file->copy($testFile, $testFile."3"), "1", "copy() straight");
 $file->spit($testFile, \$append, { append => 1 });
-is($file->copy($testFile, $testFile."2"), "diff /tmp/wrefiletest2 /tmp/wrefiletest", "copy() diff");
+is($file->copy($testFile, $testFile."2"), "diff ".$testFile."2 ".$testFile, "copy() diff");
 
 # processTemplate
 my $content = "This is my modperl port: [% modperlPort %].";
