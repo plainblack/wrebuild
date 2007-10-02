@@ -112,7 +112,7 @@ is(-d dir("/tmp/foo/bar")->stringify, 1, "makePath()");
 $file->delete($testFile);
 $file->delete($testFile."2");
 $file->delete($testFile."3");
-isnt(-f $testFile, 1, "delete() file");
+isnt(-f ($testFile."2"), 1, "delete() file");
 $file->delete("/tmp/foo");
 isnt(-d dir("/tmp/foo")->stringify, 1, "delete() folder");
 
