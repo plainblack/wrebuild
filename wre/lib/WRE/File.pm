@@ -142,7 +142,13 @@ sub copy {
         my @diff = ();
         $from->recurse(callback=> sub {
                 my $foundPath = shift;
-                my $newPath = $to->file($foundPath->relative($from));
+                my $newPath;
+				if ($foundPath->stringify eq $from->stringify) {
+					$newPath = $to;
+				}
+				else {
+					$newPath = $to->file($foundPath->relative($from));
+				}
                 my $returnValue = $self->copy($foundPath->stringify, $newPath->stringify, $options);
                 if ($returnValue ne "1") {
                     push(@diff, $returnValue);
