@@ -147,7 +147,10 @@ sub copy {
 					$newPath = $to;
 				}
 				else {
-					$newPath = $to->file($foundPath->relative($from));
+                    my $relativePath = $foundPath->relative($from);
+                    my $volume = $relativePath->volume;
+                    $relativePath =~ s/$volume(.*)/$1/; # remove the volume, fucking windows
+					$newPath = $to->file($relativePath);
 				}
                 my $returnValue = $self->copy($foundPath->stringify, $newPath->stringify, $options);
                 if ($returnValue ne "1") {
