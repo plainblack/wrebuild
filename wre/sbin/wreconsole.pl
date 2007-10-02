@@ -22,8 +22,6 @@ use HTTP::Status;
 use JSON qw(objToJson jsonToObj);
 use Path::Class;
 use String::Random qw(random_string);
-use Sys::Hostname;
-use Socket;
 use WRE::Config;
 use WRE::File;
 use WRE::Host;
