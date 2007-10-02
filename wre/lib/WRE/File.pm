@@ -204,7 +204,7 @@ The path to a file or folder to delete.
 
 sub delete {
     my $self = shift;
-    my $path = shift;
+    my $path = file(shift)->stringify;
     if (-d $path) {
         rmtree($path);
     }
