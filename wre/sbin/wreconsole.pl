@@ -1182,7 +1182,7 @@ sub www_setup {
             chdir($config->getRoot("/prereqs"));
             if ($host->getOsName eq "windows") {
                 $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
-                    $config->getRoot("/prereqs/my.ini"),
+                    $config->getRoot("/etc/my.ini"),
                     { force => 1, templateVars=>{osName=>$host->getOsName} });
                 $file->copy($config->getRoot("/prereqs/data/"),
                     $config->getRoot("/var/mysqldata/"),
