@@ -1142,6 +1142,7 @@ sub www_setup {
         print $socket "Content-Type: text/html$crlf";
         print $socket $crlf;
         print $socket "<h1>Configuring Your WRE Server</h1>$crlf";
+        $file->makePath($config->getRoot("/var/logs"));
 
         # config file
         print $socket "<p>Updating WRE config.</p><blockquote>$crlf";
