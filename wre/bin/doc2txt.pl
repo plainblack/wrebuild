@@ -1,32 +1,29 @@
 #!/data/wre/prereqs/bin/perl
 use strict;
-use POSIX ':sys_wait_h';
+use lib '/data/wre/lib';
 
-my $wreRoot = '/data/wre/';
+use POSIX ':sys_wait_h';
+use WRE::Config;
+
+my $wreConfig = WRE::Config->new;
 my $waitFor = 5;
 
 my $file = shift @ARGV;
 my $endTime = time() + $waitFor;
+$| = 1;
 
-my $childPid = open my $fh, "-|", "${wreRoot}prereqs/bin/catdoc -s us-ascii $file" or die "Error calling catdoc!";
-my $rin = '';
-vec($rin, fileno($fh), 1) = 1;
-while (1) {
+my $childPid = fork();
+unless ($childPid) {
+    my $ret = system "c:\\ff.bat -s us-ascii $file";
+    #my $ret = system $wreConfig->getRoot('prereqs/bin/catdoc') . " -s us-ascii $file";
+	die "Error calling catdoc! $!"
+		if $ret;
+    exit;
+}
+while (time() < $endTime) {
     if (waitpid(-1, WNOHANG)) {
-        if ($?) {
-            die "catdoc returned an error!";
-        }
-        last;
-    }
-    my $ret = select(my $rout = $rin, undef, undef, $endTime - time());
-    if (time() > $endTime) {
-        kill 9, $childPid;
-        close $fh;
-        die "Timed out while running catdoc!";
-    }
-    if ($ret) {
-        sysread($fh, my $data, 1024);
-        print $data;
+        exit $?;
     }
 }
-
+kill 9, $childPid;
+die "Timeout!";
