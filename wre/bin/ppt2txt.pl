@@ -1,32 +1,36 @@
 #!/data/wre/prereqs/bin/perl
 use strict;
-use POSIX ':sys_wait_h';
+use lib '/data/wre/lib';
 
-my $wreRoot = '/data/wre/';
-my $waitFor = 5;
+use POSIX ':sys_wait_h';
+use WRE::Config;
+
+my $wreConfig = WRE::Config->new;
+my $waitFor = 15;
 
 my $file = shift @ARGV;
 my $endTime = time() + $waitFor;
 
-my $childPid = open my $fh, "-|", "${wreRoot}prereqs/bin/catppt $file" or die "Error calling catppt!";
-my $rin = '';
-vec($rin, fileno($fh), 1) = 1;
-while (1) {
+# use open to get the pid, we won't be giving it any input
+my $childPid = open my $fh, "|-", $wreConfig->getRoot('prereqs/bin/catppt') . " $file"
+    or die "Error calling catppt! $!";
+
+while (time() < $endTime) {
+    # check if child exited
     if (waitpid(-1, WNOHANG)) {
+        # there was an error
         if ($?) {
-            die "catppt returned an error!";
+            warn "catppt returned an error!\n";
+            exit $?;
         }
-        last;
-    }
-    my $ret = select(my $rout = $rin, undef, undef, $endTime - time());
-    if (time() > $endTime) {
-        kill 9, $childPid;
         close $fh;
-        die "Timed out while running catppt!";
+        exit;
     }
-    if ($ret) {
-        sysread($fh, my $data, 1024);
-        print $data;
-    }
+    # sleep for 50ms
+    select(undef, undef, undef, 0.050);
 }
 
+# There was a timeout, kill child and bail
+kill 9, $childPid;
+close $fh;
+die "Timed out while running catppt!\n";

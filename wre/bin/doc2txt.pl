@@ -6,24 +6,31 @@ use POSIX ':sys_wait_h';
 use WRE::Config;
 
 my $wreConfig = WRE::Config->new;
-my $waitFor = 5;
+my $waitFor = 15;
 
 my $file = shift @ARGV;
 my $endTime = time() + $waitFor;
-$| = 1;
 
-my $childPid = fork();
-unless ($childPid) {
-    my $ret = system "c:\\ff.bat -s us-ascii $file";
-    #my $ret = system $wreConfig->getRoot('prereqs/bin/catdoc') . " -s us-ascii $file";
-	die "Error calling catdoc! $!"
-		if $ret;
-    exit;
-}
+# use open to get the pid, we won't be giving it any input
+my $childPid = open my $fh, "|-", $wreConfig->getRoot('prereqs/bin/catdoc') . " -s us-ascii $file"
+    or die "Error calling catdoc! $!";
+
 while (time() < $endTime) {
+    # check if child exited
     if (waitpid(-1, WNOHANG)) {
-        exit $?;
+        # there was an error
+        if ($?) {
+            warn "catdoc returned an error!\n";
+            exit $?;
+        }
+        close $fh;
+        exit;
     }
+    # sleep for 50ms
+    select(undef, undef, undef, 0.050);
 }
+
+# There was a timeout, kill child and bail
 kill 9, $childPid;
-die "Timeout!";
+close $fh;
+die "Timed out while running catdoc!\n";
