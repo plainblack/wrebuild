@@ -112,7 +112,7 @@ will be using, including the AWStats site.
 PLATFORM SPECIFIC NOTES
 -----------------------
 
-Red Hat Linux
+* Red Hat Linux
 
 This note applies to all linux' that use chkconfig to setup services. These
 include RHEL, Fedora, Mandrake, SuSE, CentOS, and others. You can set up the
@@ -124,7 +124,7 @@ chkconfig --add webgui
 chkconfig webgui on
 
 
-Mac OS X
+* Mac OS X
 
 There is no command line user add script on Mac OSX. Therefore you can either
 use the graphical "Accounts" manager in "System Preferences", or the really
@@ -142,10 +142,15 @@ and comment out the following lines, which should be around line number 155:
 The reason is that Apache2::SizeLimit is not supported on Darwin based
 systems.
 
-
-FreeBSD
+* FreeBSD
 
 You must install and use the bash shell while using the WRE. The WRE also
 assumes that the bash shell is installed or linked at /bin/bash.
+
+You can set up the WRE to start automatically at system boot by running the
+following commands after the WRE is installed
+
+ ln -s /data/wre/sbin/services/freebsd/webgui /usr/local/etc/rc.d/webgui
+ echo "webgui_enable=YES" >> /etc/rc.conf.local
 
 
