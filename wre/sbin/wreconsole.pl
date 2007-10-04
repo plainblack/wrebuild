@@ -1088,7 +1088,7 @@ sub www_setup {
             <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
             What are the subnets WebGUI can expect Spectre to connect from? <br />
-            <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || $host->getSubnet).'" />
+            <input type="text" name="spectreSubnets" value="'.($collected->{spectreSubnets} || eval{$host->getSubnet}).'" />
             <div class="subtext">We have guessed for you, so you can accept that if you do not know what to put
                 here. If there are multiple IP addresses assigned to this machine, then do a comma separated list
                 like: 10.0.0.1/32,10.11.0.1/32,192.168.1.44/32
