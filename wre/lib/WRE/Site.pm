@@ -92,6 +92,10 @@ sub create {
     my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
     my $overridesAsTemplate =  JSON::objToJson($wreConfig->get("webgui/configOverrides"));
     my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate, $params);
+    # webgui wants the paths a certain way regardless of windows
+    ${$overridesAsJson} =~ s{\\data}{/data}xsg;
+    ${$overridesAsJson} =~ s{\\wre}{/wre}xsg;
+    ${$overridesAsJson} =~ s{\\domains}{/domains}xsg;
     my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
     foreach my $key (keys %{$overridesAsHashRef}) {
         $webguiConfig->set($key, $overridesAsHashRef->{$key});

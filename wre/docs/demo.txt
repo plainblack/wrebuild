@@ -1,0 +1,30 @@
+W E B G U I   D E M O   S E R V E R
+-----------------------------------
+
+So you want to run a WebGUI demo server. That's great news. There are a couple
+of setup steps to go through to enable it.
+
+1) Configure the database, by logging in as the administrative user and run
+the following command:
+
+    grant all privileges on *.* to demoadmin@localhost identified by
+        'demoadmin' with grant option;
+
+Feel free to change the password, but if you do, also edit the password in
+your /data/wre/etc/wre.conf.
+
+
+2) Change the owner of your /data/WebGUI/etc folder to be your web user. So if
+you've created a user called "webgui" then the command on *nix environments
+would be:
+
+    chown webgui /data/WebGUI/etc
+
+3) Optionally edit the demo/creation section of wre.conf.
+
+
+4) Go into the WRE console and enable the demo. Do not attempt to do this from
+the config file. It will fail.
+
+
+That's it. You should now be ready to run your demo server.

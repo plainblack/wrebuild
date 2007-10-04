@@ -48,7 +48,7 @@ sub dump {
     my %options = @_;    
     my $config  = $self->wreConfig;
     my $path = file($options{path});
-    my $command = $config->get("/prereqs/bin/mysqldump")
+    my $command = $config->getRoot("/prereqs/bin/mysqldump")
         ." --user=".$config->get("backup/mysql/user")
         ." --password=".$config->get("backup/mysql/password")
         ." --host=".$config->get("mysql/hostname")
@@ -162,13 +162,13 @@ sub load {
     my %options = @_;    
     my $config  = $self->wreConfig;
     my $path = file($options{path});
-    my $command = $config->get("/prereqs/bin/mysql")
+    my $command = $config->getRoot("/prereqs/bin/mysql")
         ." --batch" # disables interactive mode
         ." --user=".$options{username}
         ." --password=".$options{password}
         ." --host=".$config->get("mysql/hostname")
         ." --port=".$config->get("mysql/port")
-        ." --execute='source ".$path->stringify."'"
+        ." --execute=\"source ".$path->stringify."\""
         ." ".$options{database};
     system($command);
 }

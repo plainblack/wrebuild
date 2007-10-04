@@ -132,7 +132,7 @@ buildApache(){
 	cd ..	
 
 	# apache
-	cd httpd-2.0.59
+	cd httpd-2.0.61
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
@@ -216,7 +216,7 @@ buildGraphicsMagick(){
     buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # graphics magick
-    WRE_GM_VERSION="GraphicsMagick-1.1.7"
+    WRE_GM_VERSION="GraphicsMagick-1.1.10"
     cd $WRE_GM_VERSION
     printHeader "Graphics Magick"
     if [ "$WRE_CLEAN" == 1 ]; then

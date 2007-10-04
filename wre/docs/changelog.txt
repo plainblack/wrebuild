@@ -24,6 +24,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added a Perl / WebGUI API documentation server (WDK only).
  - Added the subversion version control system with SVN::Web browsing (WDK only).
  - Upgraded the following components:
+    - Apache 2.0.61
 	- MySQL 5.0.45
 	- mod_perl 2.0.3
  	- AW Stats 6.6
@@ -95,7 +96,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     - DateTime::Set 0.25
     - Set::Infinite 0.61
     - DateTime::Event::ICal 0.09
- - Replaced Image Magick with Graphics Magick 1.1.7
+ - Replaced Image Magick with Graphics Magick 1.1.10
  - Removed the following components since they are no longer used by WebGUI:
 	- Memcached 
  	- Cache::Cache 

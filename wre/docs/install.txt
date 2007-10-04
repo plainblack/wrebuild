@@ -124,6 +124,7 @@ chkconfig --add webgui
 chkconfig webgui on
 
 
+
 * Mac OS X
 
 There is no command line user add script on Mac OSX. Therefore you can either
@@ -133,14 +134,7 @@ some free user utilities from this site:
 
 http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
 
-Once you've installed the WRE you'll need to edit /data/wre/etc/modperl.conf
-and comment out the following lines, which should be around line number 155:
 
-#PerlRequire /data/wre/etc/modperl.pl
-#PerlCleanupHandler Apache2::SizeLimit
-
-The reason is that Apache2::SizeLimit is not supported on Darwin based
-systems.
 
 * FreeBSD
 
@@ -153,4 +147,16 @@ following commands after the WRE is installed
  ln -s /data/wre/sbin/services/freebsd/webgui /usr/local/etc/rc.d/webgui
  echo "webgui_enable=YES" >> /etc/rc.conf.local
 
+
+
+* Microsoft Windows
+
+To use the .pl commands (like wreconsole.pl) you need to double-click on  
+the "Command Prompt.bat" icon in your /data/wre/sbin folder, and then run
+the commands by prefixing them with "perl ", like this:
+
+    perl wreconsole.pl
+
+Before you install the WRE, make sure that you have disabled IIS or
+during the install choose a port other than 80 for mod_proxy to run on.
 
