@@ -330,6 +330,7 @@ installPerlModules(){
     installPerlModule "Path-Class-0.16"
 	installPerlModule "Config-JSON-1.1.1"
 	installPerlModule "IO-Socket-SSL-0.97"
+	installPerlModule "Authen-SASL-2.10"
     export LDAP_VERSION="perl-ldap-0.33"
     $WRE_ROOT/prereqs/bin/perl -i -p -e"s[check_module\('Authen::SASL', 2.00\) or print <<\"EDQ\",\"\\\n\";][print <<\"EDQ\",\"\\\n\";]g" $LDAP_VERSION/Makefile.PL
     $WRE_ROOT/prereqs/bin/perl -i -nl -e"print unless /'SASL authentication' => \[/../\],/" $LDAP_VERSION/Makefile.PL
