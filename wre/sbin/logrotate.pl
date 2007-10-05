@@ -66,7 +66,7 @@ for my $logfile (@logfiles) {
 
 # if stats are enabled let's compile them
 
-if ($config->get("awstats/enabled")) {
+if ($config->get("webstats/enabled")) {
     system($config->getRoot("/prereqs/tools/awstats_updateall.pl")
         ." now -awstatsprog=".$config->getRoot("/prereqs/wwwroot/awstats.pl")
         ." -configdir=".$config->getRoot("/etc")
@@ -80,11 +80,13 @@ sub findLogFiles {
     my @filelist = $path->children;
     foreach my $file (@filelist) {
         if ( $file =~ /\.log$/ ) {
-            push @logfiles, $path->file($file)->stringify;
+            push @logfiles, $file->stringify;
         }
         else {
             unless ( $file =~ /public$/ || $file eq ".." || $file eq "." || $file =~ /setupfiles/ ) {
-                findLogFiles( $path->subdir($file) );
+		if (-d $file->stringify) {
+                	findLogFiles( dir($file->stringify) );
+		}
             }
         }
     }

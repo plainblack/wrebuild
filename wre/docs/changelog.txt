@@ -1,6 +1,14 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.8.1
+ - fix: pathing problems in log rotation system.
+ - fix: web stats don't generate
+ - fix: stats doc root is wrong
+ - fix: web stats site name is blank
+ - fix: awstats is missing on windows
+
+
 0.8.0
  - Rewrote the entire WRE system to be easier to configure, have a more
    robust API, and work the same on Windows and Unix.

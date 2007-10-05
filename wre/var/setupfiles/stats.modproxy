@@ -1,5 +1,5 @@
 <VirtualHost *:[% modproxyPort %]>
-ServerName [% hostname %]
-DocumentRoot [% domainRoot %]/prereqs/wwwroot
+ServerName [% sitename %]
+DocumentRoot [% wreRoot %]/prereqs/wwwroot
 DirectoryIndex awstats.pl
 </VirtualHost>
