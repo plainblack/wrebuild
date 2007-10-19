@@ -438,7 +438,7 @@ sub tar {
     if ($options{gzip}) {
         $args .= " --gzip";
     }
-    if (exists $options{exclude}) {A
+    if (exists $options{exclude}) {
         $args .= " --exclude-from=".dir($options{exclude})->stringify;
     }
     my $firstThing = dir($options{stuff}->[0])->stringify;
