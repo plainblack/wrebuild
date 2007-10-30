@@ -8,6 +8,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: web stats site name is blank
  - fix: awstats is missing on windows
  - Added missing Authen::SASL module.
+ - MySQL set to use 2+ character words for searches instead of 4+.
 
 
 0.8.0
