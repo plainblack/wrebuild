@@ -89,6 +89,18 @@ ncurses-dev
 
 
 
+SuSE / SLES
+-----------
+
+You'll need the following RPMs before you can compile:
+
+gcc
+gcc-c++
+ncurses-devel
+autoconf
+
+
+
 RHEL / CENTOS
 -------------
 

@@ -633,10 +633,10 @@ if [ -d /data ]; then
             if [ -f /etc/fedora-release ]; then
                 export WRE_OSTYPE="Fedora"
             fi
-            if [ -f /etc/slackware-release || -f /etc/slackware-version ]; then
+            if [ -f /etc/slackware-release ] || [ -f /etc/slackware-version ]; then
                 export WRE_OSTYPE="Slackware"
             fi
-            if [ -f /etc/debian_release || -f /etc/debian_version ]; then
+            if [ -f /etc/debian_release ] || [ -f /etc/debian_version ]; then
                 export WRE_OSTYPE="Debian"
             fi
             if [ -f /etc/mandrake-release ]; then
