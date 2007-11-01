@@ -3,6 +3,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 
 0.8.1
  - fix: pathing problems in log rotation system.
+ - fix: awstats errors in wre-sles-10-sp1-ia32.tar.gz
  - fix: web stats don't generate
  - fix: stats doc root is wrong
  - fix: web stats site name is blank
@@ -10,6 +11,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added missing Authen::SASL module.
  - MySQL set to use 2+ character words for searches instead of 4+.
  - fix: if syntax not correct ofr slackware and debian WRE_OSTYPE
+ - fix: WRE 0.8 Services Controller screen lists apache's in the wrong order.
 
 
 0.8.0

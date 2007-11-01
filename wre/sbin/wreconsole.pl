@@ -789,23 +789,23 @@ sub www_listServices {
     }
     $content .= '<table class="items">
     <tr>
-        <td>Apache Modproxy</td>
+        <td>MySQL</td>
         <td>';
-    my $modproxy = WRE::Modproxy->new(wreConfig=>$state->{config});
-    if (eval{$modproxy->ping}) {
+    my $mysql = WRE::Mysql->new(wreConfig=>$state->{config});
+    if (eval{$mysql->ping}) {
         $content .= '
-             <form action="/stopModproxy" method="post">
+             <form action="/stopMysql" method="post">
                 <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
-             <form action="/startModproxy" method="post">
+             <form action="/startMysql" method="post">
                 <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
              </form>';
     }
     $content .= '
-             <form action="/restartModproxy" method="post">
+             <form action="/restartMysql" method="post">
                 <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
@@ -833,23 +833,23 @@ sub www_listServices {
          </td>
     </tr>
     <tr>
-        <td>MySQL</td>
+        <td>Apache Modproxy</td>
         <td>';
-    my $mysql = WRE::Mysql->new(wreConfig=>$state->{config});
-    if (eval{$mysql->ping}) {
+    my $modproxy = WRE::Modproxy->new(wreConfig=>$state->{config});
+    if (eval{$modproxy->ping}) {
         $content .= '
-             <form action="/stopMysql" method="post">
+             <form action="/stopModproxy" method="post">
                 <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
-             <form action="/startMysql" method="post">
-                <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
+             <form action="/startModproxy" method="post">
+                <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" /> (Requires Modperl in order to start.)
              </form>';
     }
     $content .= '
-             <form action="/restartMysql" method="post">
+             <form action="/restartModproxy" method="post">
                 <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
