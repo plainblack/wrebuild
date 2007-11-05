@@ -1,12 +1,13 @@
 use lib '../lib';
 use strict;
-use Test::More tests => 21;
+use Test::More tests => 28;
 use WRE::Config;
 use WRE::File;
 use Path::Class;
 use File::Temp qw(tempfile tempdir);
 use File::Path;
 use File::Slurp;
+use File::Spec;
 
 my $config = WRE::Config->new();
 my $file = WRE::File->new(wreConfig=>$config);
@@ -116,3 +117,33 @@ isnt(-f ($testFile."2"), 1, "delete() file");
 $file->delete("/tmp/foo");
 isnt(-d dir("/tmp/foo")->stringify, 1, "delete() folder");
 
+## tar
+my $backup_dir = File::Spec->catfile($config->getWebguiRoot(),'lib/Spectre');
+my $tarFile = '/tmp/foo-tar.tar';
+$file->tar(file=> $tarFile, stuff=>[$backup_dir], gzip=>0);
+is(-e $tarFile, 1, 'tar() creates an archive file');
+## untar
+$file->untar(file=>$tarFile, path=> '/tmp', gunzip=>0);
+is(-e "$backup_dir/Admin.pm", 1, 'untar() opens an archive file');
+# cleanup
+$file->delete($tarFile);
+is(-f ($tarFile), undef, "delete() tar test file");
+rmtree(['/tmp/data'],0,1);
+
+## tar exclude test
+my $exclude_file = '/tmp/tar-exclude';
+open (OUT,">$exclude_file") or die "Count not open $exclude_file for writing: $!";
+print OUT 'data/WebGUI/lib/Spectre/Cron.pm';
+close OUT;
+# run tar and untar
+$file->tar(file=> $tarFile, stuff=>[$backup_dir], gzip=>0, exclude=>$exclude_file);
+is(-e $tarFile, 1, 'tar() creates an archive file');
+$file->untar(file=>$tarFile, path=> '/tmp', gunzip=>0);
+is(-e "$backup_dir/Admin.pm", 1, 'untar() opens an archive file');
+# check for excluded file
+is(-f (substr("$backup_dir/Cron.pm", 1)), undef, "Check for excluded file");
+# cleanup
+$file->delete($exclude_file);
+rmtree(['/tmp/data'],0,1);
+$file->delete($tarFile);
+is(-f ($tarFile), undef, "delete() tar test file");
