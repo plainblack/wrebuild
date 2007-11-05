@@ -1199,7 +1199,7 @@ sub www_setup {
             print $socket "<p>Starting MySQL</p>";
             $mysql->start;
             print $socket "<p>Connecting</p>";
-            my $db = eval{ $mysql->getDatabaseHandle(undef,"root")};
+            my $db = eval{ $mysql->getDatabaseHandle(username=>"root", password=>undef)};
             if ($@) {
                 print $socket "<p>Couldn't connect to MySQL to configure it.</p>".$@;
             }
@@ -1219,7 +1219,7 @@ sub www_setup {
         else {
             $config->set("wreMonitor/items/mysql", 0);
             print $socket "<p>Connecting</p>";
-            my $db = eval { $mysql->getDatabaseHandle($collected->{mysqlAdminPassword}, $collected->{mysqlAdminUser})};
+            my $db = eval { $mysql->getDatabaseHandle(password=>$collected->{mysqlAdminPassword}, username=>$collected->{mysqlAdminUser})};
             if ($@) {
                 print $socket "<p>Couldn't connect to remote MySQL server to configure it.</p>".$@;
             }
