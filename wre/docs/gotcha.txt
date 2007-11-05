@@ -7,6 +7,15 @@ the WRE you should always read this file in the new version you wish to
 upgrade to.
 
 
+WRE 0.8.1
+
+We made a change to the MySQL config so that it will index search terms as
+small as two characters. Previously they had to be at least four. If you'd
+like to retroactively apply this change to your site, you must reindex your
+WebGUI sites with the search.pl utility that comes with WebGUI.
+
+
+
 WRE 0.8.0
 
 This version of the WRE is a complete rewrite of the WRE from the ground up.

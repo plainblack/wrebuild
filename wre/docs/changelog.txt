@@ -12,6 +12,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - MySQL set to use 2+ character words for searches instead of 4+.
  - fix: if syntax not correct ofr slackware and debian WRE_OSTYPE
  - fix: WRE 0.8 Services Controller screen lists apache's in the wrong order.
+ - Added wreupgrade.pl script.
 
 
 0.8.0

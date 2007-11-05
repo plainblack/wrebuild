@@ -1,0 +1,14 @@
+#!/data/wre/prereqs/bin/perl
+
+use strict;
+use lib '/data/wre/lib';
+use WRE::Config;
+use WRE::File;
+use WRE::Mysql;
+
+my $config = WRE::Config->new;
+my $file = WRE::File->new(wreConfig=>$config);
+my $mysql = WRE::Mysql->new(wreConfig=>$config);
+
+Add ft_min_word_len=2 to my.cnf
+
