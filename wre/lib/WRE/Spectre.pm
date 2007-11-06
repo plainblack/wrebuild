@@ -26,7 +26,7 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
-=head getName () 
+=head2 getName () 
 
 Returns human readable name.
 
@@ -181,7 +181,123 @@ sub stop {
     return $success;
 }
 
+#-------------------------------------------------------------------
 
+=head2 getStatusReport
+
+Connect to spectre using IKC, get the status report in JSON format, parse it,
+and return it. Croaks on error.
+
+=cut
+
+sub getStatusReport {
+
+    my $self = shift;
+    my $spectreConfig = $self->spectreConfig;
+
+    # connect to spectre
+    my $remote = create_ikc_client(
+        port=>$spectreConfig->get("port"),
+        ip=>$spectreConfig->get("ip"),
+        name=>rand(100000),
+        timeout=>10
+    );
+
+    # log an error if we can't
+    unless($remote) {
+        croak "Couldn't connect to spectre: " . $POE::Component::IKC::ClientLite::error;
+    }
+
+    # call the event that'll get us our data, store it.
+    my $result = $remote->post_respond('workflow/getJsonStatus');
+
+    # if it's undef, something went wrong.
+    unless(defined $result) {
+        croak "Couldn't call workflow/getJsonStatus via IKC: " . $POE::Component::IKC::ClientLite::error;
+    }
+
+    # Disconnect and delete the connection object.
+    $remote->disconnect;
+    undef $remote;
+
+    # Finally, return the data in a Perl data structure.
+    return jsonToObj($result);
+}
+
+#-------------------------------------------------------------------
+
+=head2 getWorkflowsPerSite ( [ statusReport ] )
+
+Processes a status report as returned by B<getStatusReport> and returns a data
+structure representing the number of workflows each site is currently
+managing. The data structure is a hashref, with the keys being site names and
+the values being the number of workflows, across all queues, that site is
+currently managing.
+
+=head3 statusReport
+
+The report as returned from B<getStatusReport>.
+
+=cut
+
+sub getWorkflowsPerSite {
+    my $report = shift;
+    my $workflowsPerSite = {};
+
+    # for each site...
+    foreach my $site(keys %{$report}) {
+
+        # initialise the hashref we're about to use.
+        $workflowsPerSite->{$site} = {};
+
+        # for each queue...
+        foreach my $queue(keys %{$report->{$site}}) {
+
+            # record its workflow count
+            $workflowsPerSite->{$site}{$queue} = @{$report->{$site}{$queue}};
+        }
+
+        # overwrite the hashref we no longer need with the maximum number of
+        # workflows across all queues
+        $workflowsPerSite->{$site} = sum values %{$workflowsPerSite->{$site}};
+    }
+    return $workflowsPerSite;
+}
+
+#-------------------------------------------------------------------
+
+=head2 getPriorities ( [ statusReport ] )
+
+Processes a status report as returned by B<getStatusReport>, and report on the
+highest priority workflow across all sites. Returns a scalar numeric value of
+the highest priority workflow across all sites.
+
+=head3 statusReport
+
+The report as returned from B<getStatusReport>.
+
+=cut
+
+sub getPriorities {
+    my $report = shift;
+    my $priorities = {};
+    my $maxes = {};
+
+    # for each site...
+    foreach my $site (keys %{$report}) {
+
+        # for each queue...
+        foreach my $queue(keys %{$report->{$site}}) {
+
+            # record the highest priority of all of its running instances.
+            $maxes->{$queue} = max map { $_->{priority} } $report->{$site}{$queue};
+        }
+    }
+
+    # finally, get the highest of all of the values.
+    my $maxPriority = max values %{$maxes};
+    return $maxPriority;
+}
 
 
 1;
