@@ -29,13 +29,10 @@ my $config = WRE::Config->new;
 if ($config->get("wreMonitor/items/mysql") && !$config->get("wreMonitor/mysqlAdministrativelyDown")) {
     my $mysql = WRE::Mysql->new(wreConfig=>$config);
     monitor($mysql);
-    monitorMysql($mysql);
 }
 
 if ($config->get("wreMonitor/items/modperl") && !$config->get("wreMonitor/modperlAdministrativelyDown")) {
     my $modperl = WRE::Modperl->new(wreConfig=>$config);
-    monitor($modperl);
-    monitorModperl($modperl);
     if ($config->get("wreMonitor/items/runaway")) {
         my $killed = $modperl->killRunaways;
         logEntry("Killed $killed ".$modperl->getName." processes that were using too much memory.");
@@ -45,7 +42,6 @@ if ($config->get("wreMonitor/items/modperl") && !$config->get("wreMonitor/modper
 if ($config->get("wreMonitor/items/modproxy") && !$config->get("wreMonitor/modproxyAdministrativelyDown")) {
     my $modproxy = WRE::Modproxy->new(wreConfig=>$config);
     monitor($modproxy);
-    monitorModproxy($modproxy);
 }
 
 if ($config->get("wreMonitor/items/spectre") && !$config->get("wreMonitor/spectreAdministrativelyDown")) {
@@ -84,21 +80,6 @@ sub monitor {
             sendEmail($subject, $message);
         } 
     }
-}
-
-#-------------------------------------------------------------------
-sub monitorMysql {
-    my $mysql = shift;
-}
-
-#-------------------------------------------------------------------
-sub monitorModperl {
-    my $modPerl = shift;
-}
-
-#-------------------------------------------------------------------
-sub monitorModproxy {
-    my $modProxy = shift;
 }
 
 #-------------------------------------------------------------------
