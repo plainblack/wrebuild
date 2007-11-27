@@ -590,7 +590,6 @@ sub www_editSettingsSave {
     }
     $config->set("backup/enabled", $cgi->param("enableBackups"));
     $config->set("backup/rotations", $cgi->param("backupRotations"));
-    $config->set("backup/compress", $cgi->param("backupCompress"));
     $config->set("backup/items/fullWre", $cgi->param("backupFullWre"));
     $config->set("backup/items/smallWre", $cgi->param("backupSmallWre"));
     $config->set("backup/items/mysql", $cgi->param("backupMysql"));
@@ -600,7 +599,9 @@ sub www_editSettingsSave {
     $config->set("backup/ftp/user", $cgi->param("backupFtpUser"));
     $config->set("backup/ftp/password", $cgi->param("backupFtpPassword"));
     $config->set("backup/ftp/usePassiveTransfers", $cgi->param("backupFtpPassive"));
-    $config->set("backup/ftp/path", $cgi->param("backupFtpPath"));
+    my $path = $cgi->param("backupFtpPath");
+    $path = ($path eq "/") ? "." : $path;
+    $config->set("backup/ftp/path", $path);
     $config->set("backup/ftp/hostname", $cgi->param("backupFtpHost"));
     $config->set("backup/ftp/rotations", $cgi->param("backupFtpRotations"));
 

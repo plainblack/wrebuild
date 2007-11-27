@@ -18,9 +18,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: Can't install with non-default MySQL User on Windows
  - fix: backup.exclude may not be copied
  - fix: backup creates false positives in wre monitor
-
-
-
+ - fix: logrotate.pl
+ - fix: backup eats memory
 
 
 0.8.0

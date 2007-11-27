@@ -166,6 +166,9 @@ sub copyToFtp {
     my $user        = $config->get("backup/ftp/user");
     my $pass        = $config->get("backup/ftp/password");
 
+    # a little massage
+    $path = ($path eq "/") ? "." : $path; # never let it look at the root of the server
+
     # do rotations
 	my $ftp = Net::FTP->new($host,Passive=>$passive);
 	$ftp->login($user,$pass) or die "Could not connect to FTP server: $@\n";
