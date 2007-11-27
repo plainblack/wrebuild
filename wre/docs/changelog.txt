@@ -2,6 +2,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.8.1
+ - fix: ownership of files not changed properly
  - fix: pathing problems in log rotation system.
  - fix: awstats errors in wre-sles-10-sp1-ia32.tar.gz
  - fix: web stats don't generate
