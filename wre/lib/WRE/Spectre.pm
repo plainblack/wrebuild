@@ -16,6 +16,7 @@ use Carp qw(croak);
 use Class::InsideOut qw(register id public);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
+use List::Util qw(sum max);
 
 =head1 ISA
 
