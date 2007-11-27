@@ -17,6 +17,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Added more WRE::File tests. (William McKee / Knowmad)
  - fix: Can't install with non-default MySQL User on Windows
  - fix: backup.exclude may not be copied
+ - fix: backup creates false positives in wre monitor
 
 
 

@@ -70,6 +70,11 @@ sub backupMysql {
     # should we run?
     return undef unless $config->get("backup/items/mysql");
 
+    # disable wremonitor to prevent false positives
+    $config->set("wreMonitor/modproxyAdministrativelyDown", 1);
+    $config->set("wreMonitor/modperlAdministrativelyDown", 1);
+
+
     my $mysql       = WRE::Mysql->new(wreConfig=>$config);
     my $db          = $mysql->getDatabaseHandle( 
         password    => $config->get("backup/mysql/password"), 
@@ -93,6 +98,10 @@ sub backupMysql {
             );
 	}
 	$db->disconnect;
+
+    # re-enable WRE monitor
+    $config->set("wreMonitor/modperlAdministrativelyDown", 0);
+    $config->set("wreMonitor/modproxyAdministrativelyDown", 0);
 }
 
 #-------------------------------------------------------------------
