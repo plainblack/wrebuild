@@ -579,6 +579,15 @@ sub www_editSettingsSave {
     my @externalScripts         = split("\n", $cgi->param("externalScripts"));
     $config->set("backup/externalScripts", \@externalScripts);
     $config->set("backup/path", $cgi->param("backupPath"));
+    # have to enable 
+    if ($config->get("backup/enabled") == 0 && $cgi->param("enableBackups") == 1) {
+        $file->copy($config->getRoot("/var/setupfiles/backup.exclude"), $config->getRoot("/etc/backup.exclude"), 
+            { force => 1 });
+    }
+    # have to disable 
+    elsif ($config->get("webstats/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
+        $file->delete($config->getRoot("/etc/backup.exclude"));
+    }
     $config->set("backup/enabled", $cgi->param("enableBackups"));
     $config->set("backup/rotations", $cgi->param("backupRotations"));
     $config->set("backup/compress", $cgi->param("backupCompress"));
