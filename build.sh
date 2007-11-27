@@ -189,9 +189,9 @@ buildMysql(){
 }
 
 
-# Graphics Magick
-buildGraphicsMagick(){
-    printHeader "Graphics Magick"
+# Image Magick
+buildImageMagick(){
+    printHeader "Image Magick"
     cd source
 
     # lib jpeg
@@ -215,24 +215,23 @@ buildGraphicsMagick(){
     # lib png
     buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
-    # graphics magick
-    WRE_GM_VERSION="GraphicsMagick-1.1.10"
-    cd $WRE_GM_VERSION
-    printHeader "Graphics Magick"
+    # image magick
+    cd ImageMagick-6.3.7
+    printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no; checkError $? "Graphics Magick configure"
+    if [ "$WRE_OSNAME" == "FreeBSD" ]; then
+        $IM_OPTION="--without-threads"
+    fi
+    GNUMAKE=$WRE_MAKE ./configure $IM_OPTION --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
         $WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
     fi
-    $WRE_MAKE; checkError $? "Graphics Magick make"
-    $WRE_MAKE install; checkError $? "Graphics Magick make install"
-    echo "<?xml version=\"1.0\"?>" > /data/wre/prereqs/lib/$WRE_GM_VERSION/config/magic.mgk
-    echo "  <magicmap>" >> /data/wre/prereqs/lib/$WRE_GM_VERSION/config/magic.mgk
-    echo "  </magicmap>" >> /data/wre/prereqs/lib/$WRE_GM_VERSION/config/magic.mgk
+    $WRE_MAKE; checkError $? "Image Magick make"
+    $WRE_MAKE install; checkError $? "Image Magick make install"
 
     cd $WRE_BUILDDIR
 }
@@ -470,7 +469,7 @@ makeItSmall(){
     rm -Rf $WRE_ROOT/prereqs/share/doc
     rm -Rf $WRE_ROOT/prereqs/share/gtk-doc
     rm -Rf $WRE_ROOT/prereqs/share/man
-    rm -Rf $WRE_ROOT/prereqs/share/GraphicsMagick*
+    rm -Rf $WRE_ROOT/prereqs/share/ImageMagick*
 }
 
 #gooey
@@ -509,7 +508,7 @@ cat <<_WREHELP
   --perl            compiles and installs perl
   --apache          compiles and installs apache
   --mysql	        compiles and installs mysql
-  --graphicsmagick  compiles and installs graphicsmagick
+  --imagemagick     compiles and installs image magick
   --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
@@ -537,7 +536,7 @@ do
         export WRE_BUILD_PERL=1
         export WRE_BUILD_APACHE=1
         export WRE_BUILD_MYSQL=1
-        export WRE_BUILD_GRAPHICSMAGICK=1
+        export WRE_BUILD_IMAGEMAGICK=1
         export WRE_BUILD_AWSTATS=1
         export WRE_BUILD_WRE=1
         export WRE_BUILD_PM=1
@@ -566,8 +565,8 @@ do
         export WRE_BUILD_MYSQL=1
     ;;
     
-    --graphicsMagick | --graphicsmagick)
-        export WRE_BUILD_GRAPHICSMAGICK=1
+    --imageMagick | --imagemagick)
+        export WRE_BUILD_IMAGEMAGICK=1
     ;;
     
     --awstats)
@@ -679,8 +678,8 @@ if [ -d /data ]; then
     if [ "$WRE_BUILD_MYSQL" == 1 ]; then
  		buildMysql
     fi
-    if [ "$WRE_BUILD_GRAPHICSMAGICK" == 1 ]; then
- 		buildGraphicsMagick
+    if [ "$WRE_BUILD_IMAGEMAGICK" == 1 ]; then
+ 		buildImageMagick
     fi
     if [ "$WRE_BUILD_PM" == 1 ]; then
  		installPerlModules

@@ -20,6 +20,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: backup creates false positives in wre monitor
  - fix: logrotate.pl
  - fix: backup eats memory
+ - Now that we can make Image Magick work on all platforms, we're ditching
+   Graphics Magick in favor of Image Magick. This release uses Image Magick
+   6.3.7-1 and eliminates Graphics Magick.
 
 
 0.8.0
