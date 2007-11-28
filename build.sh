@@ -664,6 +664,7 @@ if [ -d /data ]; then
             if [ `uname -r` == "8.11.1" ]; then
                 export WRE_OSTYPE="Tiger"
             fi 
+        ;;
         *)
             export WRE_MAKE=make
         ;;
