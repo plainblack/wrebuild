@@ -140,6 +140,9 @@ buildApache(){
   		rm -Rf server/export_files
     fi	
 	./configure --prefix=$WRE_ROOT/prereqs --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions; checkError $? "Apache Configure"
+    if [ "$WRE_OSNAME" == "Darwin" ] && [ "$WRE_OSTYPE" == "Leopard" ]; then
+        $WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h
+    fi
 	$WRE_MAKE; checkError $? "Apache make"
 	$WRE_MAKE install; checkError $? "Apache make install"
     rm -f $WRE_ROOT/etc/highperformance-std.conf
@@ -225,7 +228,7 @@ buildImageMagick(){
     if [ "$WRE_OSNAME" == "FreeBSD" ]; then
         $IM_OPTION="--without-threads"
     fi
-    GNUMAKE=$WRE_MAKE ./configure $IM_OPTION --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no; checkError $? "Image Magick configure"
+    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
         $WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
@@ -273,7 +276,9 @@ installPerlModules(){
 	cd source/perlmodules
 	installPerlModule "Net_SSLeay.pm-1.25" "$WRE_ROOT/prereqs"
 	installPerlModule "Compress-Zlib-1.39"  # on upgrade modify config.in to point to our libs
-	installPerlModule "Proc-ProcessTable-0.40"
+    if [ "$WRE_OSTYPE" != "Leopard" ]; then
+	    installPerlModule "Proc-ProcessTable-0.40"
+    fi
 	installPerlModule "BSD-Resource-1.25"
 	installPerlModule "URI-1.35"
 	installPerlModule "IO-Zlib-1.04"
@@ -651,6 +656,14 @@ if [ -d /data ]; then
                 export WRE_OSTYPE="Ubuntu"
             fi
         ;;
+        Darwin)
+            export WRE_MAKE=make
+            if [ `uname -r` == "9.1.0" ]; then
+                export WRE_OSTYPE="Leopard"
+            fi 
+            if [ `uname -r` == "8.11.1" ]; then
+                export WRE_OSTYPE="Tiger"
+            fi 
         *)
             export WRE_MAKE=make
         ;;
