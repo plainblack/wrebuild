@@ -20,19 +20,21 @@ removeGraphicsMagick($config);
 
 sub removeGraphicsMagick {
     my $config = shift;
+    print "\tRemoving Graphics Magick.";
     my $file = WRE::File->new(wreConfig=>$config);
-    opendir my $dir, $file->getRoot("/prereqs/lib");
-    my @files = readdir($dir);
+    opendir my $dir, $config->getRoot("/prereqs/lib");
+    my @nodes = readdir($dir);
     closedir($dir);
-    foreach my $file (@files) {
-        next unless $file =~ m/^libGraphicsMagick/;
-        $file->delete($file->getRoot("/prereqs/lib/".$file));
+    foreach my $node (@nodes) {
+        next unless $node =~ m/^libGraphicsMagick/;
+        $file->delete($config->getRoot("/prereqs/lib/".$node));
     }
-    $file->delete($file->getRoot("/prereqs/include/GraphicsMagick"));
-    $file->delete($file->getRoot("/prereqs/bin/gm"));
-    $file->delete($file->getRoot("/prereqs/lib/GraphicsMagick-1.1.10"));
-    $file->delete($file->getRoot("/prereqs/lib/perl5/site_perl/5.8.8/i686-linux/Graphics"));
-    $file->delete($file->getRoot("/prereqs/lib/perl5/site_perl/5.8.8/darwin-2level/Graphics"));
+    $file->delete($config->getRoot("/prereqs/include/GraphicsMagick"));
+    $file->delete($config->getRoot("/prereqs/bin/gm"));
+    $file->delete($config->getRoot("/prereqs/lib/GraphicsMagick-1.1.10"));
+    $file->delete($config->getRoot("/prereqs/lib/perl5/site_perl/5.8.8/i686-linux/Graphics"));
+    $file->delete($config->getRoot("/prereqs/lib/perl5/site_perl/5.8.8/darwin-2level/Graphics"));
+    print "\tOK\n";
 }
 
 sub updateMysql {
