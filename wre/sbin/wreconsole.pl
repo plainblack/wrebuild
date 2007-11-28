@@ -1312,12 +1312,21 @@ sub www_setup {
                 print STDERR "\nNOTICE:\nYou can safely ignore all the tar extraction errors above. They\nare do to the differences between *nix and Windows file systems.\n";
             }
         }
-        $file->copy($config->getWebguiRoot("/etc/log.conf.original"), $config->getWebguiRoot("/etc/log.conf"),
-            { force => 1 });
-        system($config->getRoot("/prereqs/bin/perl")
-            ." -i -p -e's[/var/log/webgui.log][".$config->getRoot("/var/logs/webgui.log")."]g' "
-            .$config->getWebguiRoot("/etc/log.conf")
-            );
+        eval {
+            open my $in, '<', $config->getWebguiRoot("/etc/log.conf.original")
+                or die "Unable to open '" . $config->getWebguiRoot("/etc/log.conf.original") . "': $!\n";
+            open my $out, '>', $config->getWebguiRoot("/etc/log.conf")
+                or die "Unable to open '" . $config->getWebguiRoot("/etc/log.conf") . "': $!\n";
+            while (my $line = <$in>) {
+                $line =~ s{/var/log/webgui\.log}{ $config->getRoot("/var/logs/webgui.log") }ge;
+                print {$out} $line;
+            }
+            close $out;
+            close $in;
+        };
+        print $socket "Error: $@<br />"
+            if $@;
+        
         $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
             { force => 1 });
         $file->changeOwner($config->getWebguiRoot("/etc"));

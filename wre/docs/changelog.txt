@@ -2,6 +2,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.8.1
+ - fix: Image::Magick doesn't work on Windows command line
+ - fix: log path not set properly on Windows / Spectre won't start
  - WRE now suppports Mac OS X Leopard
  - fix: ownership of files not changed properly
  - fix: pathing problems in log rotation system.
