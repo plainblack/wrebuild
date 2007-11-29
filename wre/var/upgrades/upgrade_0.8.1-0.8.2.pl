@@ -8,7 +8,7 @@ my $config = WRE::Config->new;
 
 
 # changing version number
-my $version = "x.x.x";
+my $version = "0.8.2";
 print "\tUpdating version number to $version.";
 $config->set("version",$version);
 print "\tOK\n";
