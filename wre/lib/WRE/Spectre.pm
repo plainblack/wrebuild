@@ -14,6 +14,7 @@ use strict;
 use base 'WRE::Service';
 use Carp qw(croak);
 use Class::InsideOut qw(register id public);
+use JSON;
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 use List::Util qw(sum max);
@@ -222,7 +223,7 @@ sub getStatusReport {
     undef $remote;
 
     # Finally, return the data in a Perl data structure.
-    return jsonToObj($result);
+    return JSON::jsonToObj($result);
 }
 
 #-------------------------------------------------------------------
@@ -241,7 +242,8 @@ The report as returned from B<getStatusReport>.
 
 =cut
 
-sub getWorkflowsPerSite {
+sub getWorkflowsPerSite { 
+    my $self = shift;
     my $report = shift;
     my $workflowsPerSite = {};
 
@@ -280,6 +282,7 @@ The report as returned from B<getStatusReport>.
 =cut
 
 sub getPriorities {
+    my $self = shift;
     my $report = shift;
     my $priorities = {};
     my $maxes = {};

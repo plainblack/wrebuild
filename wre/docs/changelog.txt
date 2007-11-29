@@ -2,9 +2,19 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.8.1
+ - WRE Monitor now attempts to monitor and alert admins of problems with
+   running workflows as long as you're using WebGUI 7.4.17 or higher.
+ - WRE now suppports Mac OS X Leopard
+ - MySQL set to use 2+ character words for searches instead of 4+. You'll need
+   to reindex your sites to take advantage of this.
+ - Added wreupgrade.pl script.
+ - Added more WRE::File tests. (William McKee / Knowmad)
+ - Added missing Authen::SASL module.
+ - Now that we can make Image Magick work on all platforms, we're ditching
+   Graphics Magick in favor of Image Magick. This release uses Image Magick
+   6.3.7-1 and eliminates Graphics Magick.
  - fix: Image::Magick doesn't work on Windows command line
  - fix: log path not set properly on Windows / Spectre won't start
- - WRE now suppports Mac OS X Leopard
  - fix: ownership of files not changed properly
  - fix: pathing problems in log rotation system.
  - fix: awstats errors in wre-sles-10-sp1-ia32.tar.gz
@@ -12,21 +22,14 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: stats doc root is wrong
  - fix: web stats site name is blank
  - fix: awstats is missing on windows
- - Added missing Authen::SASL module.
- - MySQL set to use 2+ character words for searches instead of 4+.
  - fix: if syntax not correct ofr slackware and debian WRE_OSTYPE
  - fix: WRE 0.8 Services Controller screen lists apache's in the wrong order.
- - Added wreupgrade.pl script.
  - fix: backup problems due to error in the WRE::File class.
- - Added more WRE::File tests. (William McKee / Knowmad)
  - fix: Can't install with non-default MySQL User on Windows
  - fix: backup.exclude may not be copied
  - fix: backup creates false positives in wre monitor
  - fix: logrotate.pl
  - fix: backup eats memory
- - Now that we can make Image Magick work on all platforms, we're ditching
-   Graphics Magick in favor of Image Magick. This release uses Image Magick
-   6.3.7-1 and eliminates Graphics Magick.
  - fix: WRE on Leopard
 
 

@@ -90,10 +90,9 @@ sub monitorSpectre {
     # address has a default.
     my ($maxTotalWorkflows, $maxWorkflowsPerSite, $maxPriority, $personToEmail);
 
-
-    $maxTotalWorkflows      = $config->get('wremonitor/items/maxTotalWorkflows')                || 1000;
-    $maxWorkflowsPerSite    = $config->get('wreMonitor/items/spectre/maxWorkflowsPerSite')      || 100;
-    $maxPriority            = $config->get('wreMonitor/items/spectre/maxPriority')              || 100;
+    $maxTotalWorkflows      = $config->get('wreMonitor/items/maxTotalWorkflows')                || 1000;
+    $maxWorkflowsPerSite    = $config->get('wreMonitor/items/maxWorkflowsPerSite')      || 100;
+    $maxPriority            = $config->get('wreMonitor/items/maxWorkflowPriority')              || 100;
 
     # mapping of exceptional events to email bodies and subjects.
     my $emailParts = {

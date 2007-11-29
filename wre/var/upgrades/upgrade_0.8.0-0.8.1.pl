@@ -17,6 +17,16 @@ print "\tOK\n";
 
 updateMysql($config);
 removeGraphicsMagick($config);
+addWorkflowMonitoring($config);
+
+sub addWorkflowMonitoring {
+    my $config = shift;
+    print "\tAdding Workflow monitoring to WRE monitor.";
+    $config->set("wreMonitor/items/maxTotalWorkflows","1000");
+    $config->set("wreMonitor/items/maxWorkflowsPerSite","100");
+    $config->set("wreMonitor/items/maxWorkflowPriority","100");
+    print "\tOK\n";
+}
 
 sub removeGraphicsMagick {
     my $config = shift;
