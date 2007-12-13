@@ -134,6 +134,10 @@ some free user utilities from this site:
 
 http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
 
+To get the WRE to start automatically at boot run the following commands:
+
+ln -s /data/wre/sbin/services/osx/org.webgui.wre.plist /Library/LaunchDaemons/
+
 
 
 * FreeBSD

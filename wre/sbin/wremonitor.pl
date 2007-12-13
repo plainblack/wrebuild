@@ -67,7 +67,6 @@ sub monitor {
             logEntry($service->getName." has recovered.");
         }
         else {
-            my $subject = "Subject: ".$config->get("apache/defaultHostname")." WRE Service DOWN!\n";
             my $message;
             if (eval {$service->restart} && !$@) {
                 $message = $service->getName." on ".$config->get("apache/defaultHostname")." was down and has restarted.";
@@ -77,7 +76,7 @@ sub monitor {
                 $message = $service->getName." on ".$config->get("apache/defaultHostname")." is down and could not be restarted.";
                 logEntry($message." ".$@);
             }
-            sendEmail($subject, $message);
+            sendEmail($message);
         } 
     }
 }
@@ -94,32 +93,6 @@ sub monitorSpectre {
     $maxWorkflowsPerSite    = $config->get('wreMonitor/items/maxWorkflowsPerSite')      || 100;
     $maxPriority            = $config->get('wreMonitor/items/maxWorkflowPriority')              || 100;
 
-    # mapping of exceptional events to email bodies and subjects.
-    my $emailParts = {
-        bodies => {
-            'workflowsPerSite' => <<EOTEXT,
-    This is the $0 program, running as part of WebGUI. You are receiving this
-    email because one of your sites has exceeded the maximum number of available
-    workflows per site.
-EOTEXT
-            'totalWorkflows' => <<EOTEXT,
-    This is the $0 program, running as part of WebGUI. You are receiving this
-    email because the total number of workflows running for all of your sites
-    has exceeded the maximum number of total available workflows.
-EOTEXT
-            'priority' => <<EOTEXT,
-    This is the $0 program, running as part of WebGUI. You are receiving this
-    email because the priority of one of your workflow activities has exceeded
-    the maximum priority threshold.
-EOTEXT
-        },
-        subjects => {
-            'workflowsPerSite'  => 'Max workflows per site exceeded',
-            'totalWorkflows'    => 'Max total workflows exceeded',
-            'priority'          => 'Workflow priority threshold exceeded',
-        }
-    };
-
     # Get the data from Spectre.
     my $report              = $spectre->getStatusReport();
 
@@ -130,19 +103,19 @@ EOTEXT
     # Run our checks on the processed data.
     # If any sites have more workflows than they're allowed to have, send email.
     if(first { $_ >= $maxWorkflowsPerSite } values %$workflowsPerSite ) {
-        sendEmail($emailParts->{subjects}{workflowsPerSite}, $emailParts->{bodies}{workflowsPerSite});
+        sendEmail(qq|A site has too many workflows running.|);
     }
 
     # Else, if the total number of workflows across all sites is higher than the
     # relevant threshold, send mail.
     elsif(sum values %{$workflowsPerSite} >= $maxTotalWorkflows) {
-        sendEmail($emailParts->{subjects}{totalWorkflows}, $emailParts->{bodies}{totalWorkflows});
+        sendEmail(qq|This server has too many workflows running.|);
     }
 
     # Else, if the highest workflow priority across all sites is higher than the
     # relevant threshold, send mail.
     elsif($highestPriority >= $maxPriority) {
-        sendEmail($emailParts->{subjects}{priority}, $emailParts->{bodies}{priority});
+        sendEmail(qq|A workflow activity has a priority that is too high.|);
     }
 
 }
@@ -156,7 +129,6 @@ sub logEntry {
 
 #-------------------------------------------------------------------
 sub sendEmail {
-    my $subject = shift;
 	my $message = shift;
     my $smtp = Net::SMTP->new($config->get("smtp/hostname"));
     if (defined $smtp) {
@@ -166,7 +138,7 @@ sub sendEmail {
             $smtp->data();
             $smtp->datasend("To: ".$notify."\n");
             $smtp->datasend("From: WRE Monitor <".$notify.">\n");
-            $smtp->datasend("Subject: $subject");
+            $smtp->datasend("Subject: ".$config->get("apache/defaultHostname")." WRE Service Alert\n");
             $smtp->datasend("\n");
             $smtp->datasend($message);
 		    $smtp->datasend("\n");

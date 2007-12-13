@@ -396,6 +396,7 @@ installPerlModules(){
     cd ../perlmodules
 	installPerlModule "Text-Aspell-0.06" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
 
+    # back to perl modules
 	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
 	$WRE_MAKE; checkError $? "MySQL::Diff make"
@@ -403,7 +404,7 @@ installPerlModules(){
 	cp -f mysqldiff $WRE_ROOT/sbin/
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
-    if [ "$WRE_BUILD_WDK" == 1 ]; then
+    if [ "$WRE_BUILD_WDK" == 1 ]; then # wdk only perl modules
         buildPerlModule "Alien-GvaScript-1.03"
         installPerlModule "List-MoreUtils-0.22"
         installPerlModule "Module-CoreList-2.11"
@@ -428,6 +429,7 @@ installPerlModules(){
         installPerlModule "WWW-Mechanize-1.30"
         installPerlModule "YAML-0.65"
         installPerlModule "SVN-Web-0.53"
+        installPerlModule "Devel-Cover-0.63"
     fi
 	installPerlModule "File-Slurp-9999.12"
 	installPerlModule "Text-CSV_XS-0.26"
