@@ -284,8 +284,7 @@ The report as returned from B<getStatusReport>.
 sub getPriorities {
     my $self = shift;
     my $report = shift;
-    my $priorities = {};
-    my $maxes = {};
+    my $highestPriority = 0;
 
     # for each site...
     foreach my $site (keys %{$report}) {
@@ -293,14 +292,17 @@ sub getPriorities {
         # for each queue...
         foreach my $queue(keys %{$report->{$site}}) {
 
-            # record the highest priority of all of its running instances.
-            $maxes->{$queue} = max map { $_->{priority} } $report->{$site}{$queue};
+            # for each workflow in this queue...
+            foreach my $workFlow(@{$report->{$site}{$queue}}) {
+                
+                # if the priority of this workflow is higher than the highest seen, set the new watermark.
+                if($workFlow->{priority} > $highestPriority) {
+                    $highestPriority = $workFlow->{priority};
+                }
+            }
         }
     }
-
-    # finally, get the highest of all of the values.
-    my $maxPriority = max values %{$maxes};
-    return $maxPriority;
+    return $highestPriority;
 }
 
 
