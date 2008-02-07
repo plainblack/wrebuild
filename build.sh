@@ -329,10 +329,11 @@ installPerlModules(){
 	installPerlModule "Convert-ASN1-0.20"
 	installPerlModule "HTML-TableExtract-2.07"
 	installPerlModule "Finance-Quote-1.13"
-	installPerlModule "JSON-1.11"
+	installPerlModule "JSON-XS-2.01"
+	installPerlModule "JSON-2.05"
     installPerlModule "version-0.7203"
     installPerlModule "Path-Class-0.16"
-	installPerlModule "Config-JSON-1.1.1"
+	installPerlModule "Config-JSON-1.1.4"
 	installPerlModule "IO-Socket-SSL-0.97"
 	installPerlModule "Authen-SASL-2.10"
     export LDAP_VERSION="perl-ldap-0.33"
@@ -380,7 +381,16 @@ installPerlModules(){
 	installPerlModule "Locale-US-1.1"
     installPerlModule "Time-Format-1.02"
 	installPerlModule "Weather-Com-0.5.2"
-
+	installPerlModule "File-Slurp-9999.12"
+	installPerlModule "Text-CSV_XS-0.26"
+	installPerlModule "File-Temp-0.18"
+	installPerlModule "File-Which-0.05"
+	installPerlModule "Class-InsideOut-1.06"
+	installPerlModule "HTML-TagCloud-0.34"
+	installPerlModule "Set-Infinite-0.61"
+	installPerlModule "DateTime-Set-0.25"
+	installPerlModule "DateTime-Event-Recurrence-0.16"
+	installPerlModule "DateTime-Event-ICal-0.09"
 	# aspell
     cd ..
 	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
@@ -392,10 +402,8 @@ installPerlModules(){
     ./configure --vars ASPELL=$WRE_ROOT/prereqs/bin/aspell WORD_LIST_COMPRESS=$WRE_ROOT/prereqs/bin/word-list-compress; checkError $? "aspell-en configure"
     $WRE_MAKE; checkError $? "aspell-en make"
     $WRE_MAKE install ; checkError $? "aspell-en make install"
-
     cd ../perlmodules
 	installPerlModule "Text-Aspell-0.06" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
-
     # back to perl modules
 	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
@@ -430,17 +438,8 @@ installPerlModules(){
         installPerlModule "YAML-0.65"
         installPerlModule "SVN-Web-0.53"
         installPerlModule "Devel-Cover-0.63"
+        installPerlModule "SMTP-Server-1.1"
     fi
-	installPerlModule "File-Slurp-9999.12"
-	installPerlModule "Text-CSV_XS-0.26"
-	installPerlModule "File-Temp-0.18"
-	installPerlModule "File-Which-0.05"
-	installPerlModule "Class-InsideOut-1.06"
-	installPerlModule "HTML-TagCloud-0.34"
-	installPerlModule "Set-Infinite-0.61"
-	installPerlModule "DateTime-Set-0.25"
-	installPerlModule "DateTime-Event-Recurrence-0.16"
-	installPerlModule "DateTime-Event-ICal-0.09"
 	cd $WRE_BUILDDIR
 }
 

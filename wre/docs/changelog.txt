@@ -7,8 +7,16 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fix: workflow monitor messages too long
  - fix: workflow monitor subject non-standard
  - fix: mac launchd script for WRE
- - Added the following Perl Modules for the WDK version of the WRE:
-        Devel-Cover-0.63
+ - fix: pdf2txt.pl points to non-existing prereqs/bin/pdf2txt
+ - Updated the following modules:
+    Config::JSON 1.1.4
+    JSON 2.05
+ - Added the following modules:
+    JSON-XS 2.01
+ - Added the following modules for the WDK:
+    Devel-Cover-0.63
+    SMTP-Server 1.1
+
 
 0.8.1
  - WRE Monitor now attempts to monitor and alert admins of problems with
