@@ -226,7 +226,7 @@ buildImageMagick(){
   		$WRE_MAKE clean
     fi	
     if [ "$WRE_OSNAME" == "FreeBSD" ]; then
-        $IM_OPTION="--without-threads"
+        export IM_OPTION="--without-threads"
     fi
     GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
