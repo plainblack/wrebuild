@@ -7,6 +7,15 @@ the WRE you should always read this file in the new version you wish to
 upgrade to.
 
 
+WRE 0.8.2
+
+This version will only work with WebGUI 7.4.22 and 7.5.1 or higher. This is
+because of a massive change to JSON, which is used heavily by both WRE and
+WebGUI. Unfortunately there's no way around this. If you need a WRE for WebGUI
+7.4.21 or below, please use WRE 0.8.1. 
+
+
+
 WRE 0.8.1
 
 We made a change to the MySQL config so that it will index search terms as
