@@ -14,7 +14,6 @@ use strict;
 use base 'WRE::Service';
 use Carp qw(croak);
 use Class::InsideOut qw(register id public);
-use JSON;
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 use List::Util qw(sum max);
@@ -223,7 +222,7 @@ sub getStatusReport {
     undef $remote;
 
     # Finally, return the data in a Perl data structure.
-    return JSON::jsonToObj($result);
+    return jsonToObj($result);
 }
 
 #-------------------------------------------------------------------
@@ -242,8 +241,7 @@ The report as returned from B<getStatusReport>.
 
 =cut
 
-sub getWorkflowsPerSite { 
-    my $self = shift;
+sub getWorkflowsPerSite {
     my $report = shift;
     my $workflowsPerSite = {};
 
@@ -282,9 +280,9 @@ The report as returned from B<getStatusReport>.
 =cut
 
 sub getPriorities {
-    my $self = shift;
     my $report = shift;
-    my $highestPriority = 0;
+    my $priorities = {};
+    my $maxes = {};
 
     # for each site...
     foreach my $site (keys %{$report}) {
@@ -292,17 +290,14 @@ sub getPriorities {
         # for each queue...
         foreach my $queue(keys %{$report->{$site}}) {
 
-            # for each workflow in this queue...
-            foreach my $workFlow(@{$report->{$site}{$queue}}) {
-                
-                # if the priority of this workflow is higher than the highest seen, set the new watermark.
-                if($workFlow->{priority} > $highestPriority) {
-                    $highestPriority = $workFlow->{priority};
-                }
-            }
+            # record the highest priority of all of its running instances.
+            $maxes->{$queue} = max map { $_->{priority} } $report->{$site}{$queue};
         }
     }
-    return $highestPriority;
+
+    # finally, get the highest of all of the values.
+    my $maxPriority = max values %{$maxes};
+    return $maxPriority;
 }
 
 

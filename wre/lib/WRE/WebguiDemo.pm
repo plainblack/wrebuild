@@ -13,7 +13,11 @@ package WRE::WebguiDemo;
 use lib ('/data/wre/lib','/data/WebGUI/lib');
 use strict;
 use Apache2::Const;
+use Apache2::RequestRec;
+use Apache2::RequestUtil;
+use Apache2::RequestIO;
 use DBI;
+use JSON;
 use String::Random qw(random_string);
 use WebGUI;
 use WebGUI::Config;
@@ -85,9 +89,9 @@ sub createDemo {
     # create webgui config
     $file->copy($demo->{creation}{config}, $config->getWebguiRoot("/etc/".$demoId.".conf"), {force=>1});
     my $webguiConfig = Config::JSON->new($config->getWebguiRoot("/etc/".$demoId.".conf"));
-    my $overridesAsTemplate = JSON::objToJson($config->get("webgui/configOverrides"));
+    my $overridesAsTemplate = JSON::to_json($config->get("webgui/configOverrides"));
     my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate , $params);
-    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
+    my $overridesAsHashRef = JSON->new->relaxed(1)->decode(${$overridesAsJson});
     foreach my $key (keys %{$overridesAsHashRef}) {
         $webguiConfig->set($key, $overridesAsHashRef->{$key});
     }

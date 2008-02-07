@@ -19,7 +19,7 @@ use File::Which qw(which);
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
-use JSON qw(objToJson jsonToObj);
+use JSON qw(from_json to_json);
 use Path::Class;
 use String::Random qw(random_string);
 use WRE::Config;
@@ -309,8 +309,7 @@ sub www_editSettings {
     my $status = shift;
     my $config = $state->{config};
     my $content = getNavigation("settings");
-    my $configOverrides = objToJson($config->get("webgui/configOverrides"), 
-        {pretty => 1, indent => 4, autoconv=>0, skipinvalid=>1}); 
+    my $configOverrides = JSON->new->pretty(1)->encode($config->get("webgui/configOverrides"));
     my $logs = $config->get("logs");
     my $apache = $config->get("apache");
     my $wreMonitor = $config->get("wreMonitor");
@@ -544,7 +543,7 @@ sub www_editSettingsSave {
     my $status          = "";
 
     # webgui 
-    $config->set("webgui/configOverrides", JSON::jsonToObj($cgi->param("webguiConfigOverrides")));
+    $config->set("webgui/configOverrides", JSON::from_json($cgi->param("webguiConfigOverrides")));
     
     # logs
     $config->set("logs/rotations", $cgi->param("logRotations"));
@@ -1021,12 +1020,12 @@ sub www_setup {
 
     # deal with data form posted
     my $collectedJson = $cgi->param("collected");
-    my $collected = JSON::jsonToObj($collectedJson);
+    my $collected = JSON::from_json($collectedJson);
     foreach my $key ($cgi->param) {
         next if $key eq "collected" || $key eq "step";
         $collected->{$key} = $cgi->param($key);
     }
-    $collectedJson = JSON::objToJson($collected);
+    $collectedJson = JSON::to_json($collected);
     makeHtmlFormSafe(\$collectedJson);
 
     # apache stuff
