@@ -161,14 +161,32 @@ buildApache(){
 	perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
 	$WRE_MAKE; checkError $? "mod_perl make"
 	$WRE_MAKE install; checkError $? "mod_perl make install"
+    cd ..
 
     if [ "$WRE_BUILD_WDK" == 1 ]; then
         # neon
-        buildProgram "neon-0.26.4" "--with-zlib=$WRE_ROOT/prereqs --with-ssl=$WRE_ROOT/prereqs"
+        buildProgram "neon-0.26.4" "--with-libs=$WRE_ROOT/prereqs --with-ssl=openssl --with-zlib"
+
+        # swig
+        buildProgram "swig-1.3.29" "--with-perl5=$WRE_ROOT/prereqs/bin/perl"
 
         # subversion 
-        buildProgram "subversion-1.4.4" "--with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs"
-
+        SVN_VERSION="subversion-1.4.6"
+	    cd $SVN_VERSION
+        printHeader $SVN_VERSION
+	    if [ "$WRE_CLEAN" == 1 ]; then
+		    $WRE_MAKE distclean
+  		    $WRE_MAKE clean
+        fi	
+        SVN_CONFIG="--with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs --with-ssl --with-apxs=$WRE_ROOT/prereqs/bin/apxs --disable-mod-activation --with-swig=$WRE_ROOT/prereqs"
+        echo "Configuring $SVN_VERSION with ./configure --prefix=$WRE_ROOT/prereqs $SVN_CONFIG"
+	    GNUMAKE=$WRE_MAKE PERL=$WRE_ROOT/bin/perl ./configure --prefix=$WRE_ROOT/prereqs $SVN_CONFIG; checkError $? "$SVN_VERSION configure"
+	    $WRE_MAKE; checkError $? "$SVN_VERSION make"
+	    $WRE_MAKE install; checkError $? "$SVN_VERSION make install"
+	    $WRE_MAKE swig-pl; checkError $? "$SVN_VERSION make swig-pl"
+	    $WRE_MAKE check-swig-pl; checkError $? "$SVN_VERSION make check-swig-pl"
+	    $WRE_MAKE install-swig-pl; checkError $? "$SVN_VERSION make install-swig-pl"
+	    cd ..	
     fi
 
 	cd $WRE_BUILDDIR
@@ -333,7 +351,7 @@ installPerlModules(){
 	installPerlModule "JSON-2.05"
     installPerlModule "version-0.7203"
     installPerlModule "Path-Class-0.16"
-	installPerlModule "Config-JSON-1.1.4"
+	installPerlModule "Config-JSON"
 	installPerlModule "IO-Socket-SSL-0.97"
 	installPerlModule "Authen-SASL-2.10"
     export LDAP_VERSION="perl-ldap-0.33"
@@ -345,6 +363,7 @@ installPerlModules(){
 	installPerlModule "POE-Component-IKC-0.1904"
 	installPerlModule "String-CRC32-1.4"
 	installPerlModule "ExtUtils-XSBuilder-0.28"
+    installPerlModule "ExtUtils-MakeMaker-6.42"
 	installPerlModule "trace-0.51"
 	installPerlModule "Clone-0.20"
 	installPerlModule "Test-Pod-1.24"
@@ -432,7 +451,7 @@ installPerlModules(){
         installPerlModule "Locale-Maketext-1.10"
         installPerlModule "Locale-Maketext-Lexicon-0.64"
         installPerlModule "Template-Plugin-Clickable-0.06"
-        installPerlModule "Template-Plugin-Clickable-Email-0.01"
+        buildPerlModule "Template-Plugin-Clickable-Email-0.01"
         installPerlModule "Template-Plugin-Number-Format-1.01"
         installPerlModule "WWW-Mechanize-1.30"
         installPerlModule "YAML-0.65"

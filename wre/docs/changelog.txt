@@ -11,11 +11,13 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Updated the following modules:
     Config::JSON 1.1.4
     JSON 2.05
+    Subversion 1.4.6
  - Added the following modules:
+    SWIG 1.3.29
     JSON-XS 2.01
- - Added the following modules for the WDK:
     Devel-Cover-0.63
     SMTP-Server 1.1
+    ExtUtils-MakeMaker 6.42
 
 
 0.8.1
