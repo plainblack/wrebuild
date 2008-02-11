@@ -18,7 +18,10 @@
 	# leave static stuff to be served directly by modproxy
    	RewriteRule ^/favicon.ico - [L]
    	RewriteRule ^/extras/ - [L]
-   	RewriteRule ^/uploads/ - [L]
+
+    # For speed, serve uploaded files directly, bypassing WebGUI's security.
+    # Comment out this line to enforce WebGUI's security on uploads.
+    RewriteRule ^/uploads/ - [L]
 
     # deal with port number in HTTP_HOST
     RewriteCond %{HTTP_HOST} :[% modproxyPort %]
