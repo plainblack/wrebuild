@@ -43,7 +43,7 @@ buildUtils(){
 	
 	# lftp
     case "$WRE_OSNAME" in
-        FreeBSD)
+        FreeBSD | OpenBSD)
             export WRE_LFTPOPTIONS="--with-libiconv-prefix=/usr/local"
         ;;
         *)
@@ -243,9 +243,11 @@ buildImageMagick(){
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-    if [ "$WRE_OSNAME" == "FreeBSD" ]; then
-        export IM_OPTION="--without-threads"
-    fi
+    case "$WRE_OSNAME" in
+        FreeBSD | OpenBSD)
+            export IM_OPTION="--without-threads"
+        ;;
+    esac 
     GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
@@ -646,7 +648,7 @@ if [ -d /data ]; then
     # deal with operating system inconsistencies
     export WRE_OSNAME=`uname -s`
     case $WRE_OSNAME in
-        FreeBSD)
+        FreeBSD | OpenBSD)
             export WRE_MAKE=gmake
         ;;
         Linux)
