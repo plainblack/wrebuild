@@ -124,7 +124,7 @@ buildApache(){
     printHeader "openssl"
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
-  		$WRE_MAKE clean
+ 		$WRE_MAKE clean
     fi	
 	./config --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
 	$WRE_MAKE; checkError $? "openssl make"
@@ -135,7 +135,7 @@ buildApache(){
 	cd httpd-2.0.61
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
-  		$WRE_MAKE clean
+ 		$WRE_MAKE clean
   		rm -Rf server/exports.c 
   		rm -Rf server/export_files
     fi	
@@ -168,9 +168,12 @@ buildApache(){
         buildProgram "neon-0.26.4" "--with-libs=$WRE_ROOT/prereqs --with-ssl=openssl --with-zlib"
 
         # swig
-        buildProgram "swig-1.3.29" "--with-perl5=$WRE_ROOT/prereqs/bin/perl"
+        buildProgram "swig-1.3.29" "--with-perl5=$WRE_ROOT/prereqs/bin/perl --without-ruby --without-php4 --without-python"
 
         # subversion 
+export LD_LIBRARY_PATH=/data/wrebuild/source/perl-5.8.8:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=/data/wrebuild/source/perl-5.8.8:$DYLD_LIBRARY_PATH
+
         SVN_VERSION="subversion-1.4.6"
 	    cd $SVN_VERSION
         printHeader $SVN_VERSION
@@ -178,9 +181,9 @@ buildApache(){
 		    $WRE_MAKE distclean
   		    $WRE_MAKE clean
         fi	
-        SVN_CONFIG="--with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs --with-ssl --with-apxs=$WRE_ROOT/prereqs/bin/apxs --disable-mod-activation --with-swig=$WRE_ROOT/prereqs"
+        SVN_CONFIG="LDFLAGS=-L/data/wrebuild/source/perl-5.8.8 --with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs --with-ssl --with-apxs=$WRE_ROOT/prereqs/bin/apxs --disable-mod-activation --with-swig=$WRE_ROOT/prereqs"
         echo "Configuring $SVN_VERSION with ./configure --prefix=$WRE_ROOT/prereqs $SVN_CONFIG"
-	    GNUMAKE=$WRE_MAKE PERL=$WRE_ROOT/bin/perl ./configure --prefix=$WRE_ROOT/prereqs $SVN_CONFIG; checkError $? "$SVN_VERSION configure"
+	    GNUMAKE=$WRE_MAKE PERL=$WRE_ROOT/bin/perl ./configure CPPFLAGS="-I/data/wrebuild/source/perl-5.8.8 -I./source/subversion-1.4.6/subversion/bindings/swig/proxy/" --prefix=$WRE_ROOT/prereqs $SVN_CONFIG; checkError $? "$SVN_VERSION configure"
 	    $WRE_MAKE; checkError $? "$SVN_VERSION make"
 	    $WRE_MAKE install; checkError $? "$SVN_VERSION make install"
 	    $WRE_MAKE swig-pl; checkError $? "$SVN_VERSION make swig-pl"
@@ -520,7 +523,7 @@ cat <<_WREHELP
   Example: ./build.sh --perl            # only perl will be built
            ./build.sh --perl --apache   # only perl and apache will build
            ./build.sh --all             # build all (except wdk)
-           ./build.sh --all --wdk       # build all including wdk 
+           ./build.sh --all --with-wdk  # build all including wdk 
 
   Options:
 
@@ -539,7 +542,7 @@ cat <<_WREHELP
   --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
-  --wdk             compiles and installs WebGUI Developmment Kit tools
+  --with-wdk        compiles and installs WebGUI Developmment Kit tools
                                
 _WREHELP
 
@@ -604,7 +607,7 @@ do
         export WRE_BUILD_WRE=1
     ;;
     
-    --wdk)
+    --with-wdk | --wdk)
         export WRE_BUILD_WDK=1
     ;;
     
