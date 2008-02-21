@@ -19,9 +19,10 @@
    	RewriteRule ^/favicon.ico - [L]
    	RewriteRule ^/extras/ - [L]
 
-    # For speed, serve uploaded files directly, bypassing WebGUI's security.
-    # Comment out this line to enforce WebGUI's security on uploads.
-    RewriteRule ^/uploads/ - [L]
+    # For speed we only pass on uploads if there is a .wgaccess file
+    RewriteCond %{REQUEST_FILENAME}             ^(.*/)     # Match up to the last /  - save the directory in %1
+    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f        # if (root + directory + .wgaccess) doesn't exist,
+    RewriteRule ^/uploads/                      - [L]      # serve directly
 
     # deal with port number in HTTP_HOST
     RewriteCond %{HTTP_HOST} :[% modproxyPort %]
@@ -58,7 +59,11 @@
 #	 # leave static stuff to be served directly by modproxy
 #    RewriteRule ^/favicon.ico - [L]
 #    RewriteRule ^/extras/ - [L]
-#    RewriteRule ^/uploads/ - [L]
+#
+#    # For speed we only pass on uploads if there is a .wgaccess file
+#    RewriteCond %{REQUEST_FILENAME}             ^(.*/)     # Match up to the last /  - save the directory in %1
+#    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f        # if (root + directory + .wgaccess) doesn't exist,
+#    RewriteRule ^/uploads/                      - [L]      # serve directly
 #
 #    # deal with port number in HTTP_HOST
 #    RewriteCond %{HTTP_HOST} :443
