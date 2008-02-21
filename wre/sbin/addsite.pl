@@ -20,7 +20,7 @@ $| = 1;
 
 my $config = WRE::Config->new();
 my ($var1, $var2, $var3, $var4, $var5, $var6, $var7, $var8, $var9, $var0, $sitename, $adminPassword, 
-    $dbUser, $dbPassword, $help) = "";
+    $dbUser, $dbPassword, $dbName, $help) = "";
 GetOptions(
     "help"                  => \$help,
     "var1=s"                => \$var1,    
@@ -37,6 +37,7 @@ GetOptions(
     "adminPassword=s"       => \$adminPassword,
     "databaseUser=s"        => \$dbUser,
     "databasePassword=s"    => \$dbPassword, 
+    "databaseName=s"       => \$dbName,
     );
 
 my $dbAdminUser = $config->get("mysql/adminUser");
@@ -52,6 +53,8 @@ Options:
  --databaseUser     The username you'd like created to access this site's database.
 
  --databasePassword The password you'd like created to access this site's database.
+
+ --databaseName        The name of the database to create in MySQL (defaults to www_site_com for the domain www.site.com).
 
  --help             This message.
 
@@ -71,6 +74,7 @@ my $site = WRE::Site->new(
     wreConfig       => $config,
     sitename        => $sitename,
     adminPassword   => $adminPassword,
+    databaseName    => $dbName,
     );
 if (eval {$site->checkCreationSanity}) {
     $site->create({

@@ -21,6 +21,7 @@ use WRE::Mysql;
 
 
 private adminPassword => my %adminPassword;
+public  databaseName => my %databaseName;
 
 #-------------------------------------------------------------------
 
@@ -41,8 +42,6 @@ Returns a reference to the WRE cconfig.
 =cut
 
 public wreConfig => my %config;
-
-
 
 
 #-------------------------------------------------------------------
@@ -76,8 +75,11 @@ sub create {
     my $file = WRE::File->new(wreConfig=>$wreConfig);
     my $refId = id $self;
     my $sitename = $self->sitename;
+    if (!defined $self->databaseName || length($self->databaseName) == 0) {
+        $self->databaseName = $self->makeDatabaseName;
+    }
     # manufacture stuff
-    $params->{databaseName} = $self->makeDatabaseName;
+    $params->{databaseName} = $self->databaseName;
     $params->{databaseUser} ||= random_string("ccccccccccccccc");
     $params->{databasePassword} ||= random_string("cCncCncCncCncccnnnCCnc");
     $params->{sitename} = $sitename;
@@ -179,7 +181,7 @@ sub checkCreationSanity {
     # check for the existence of a database with this name
     my $db = $mysql->getDatabaseHandle(password=>$password);
     my $sth = $db->prepare("show databases like ?");
-    my $databaseName = $self->makeDatabaseName;
+    my $databaseName = $self->databaseName;
     $sth->execute($databaseName);
     my ($databaseExists) = $sth->fetchrow_array;
     $sth->finish;
@@ -279,7 +281,6 @@ sub delete {
     # webgui
     $file->delete($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
 }
-
 
 #-------------------------------------------------------------------
 
