@@ -683,10 +683,10 @@ if [ -d /data ]; then
         ;;
         Darwin)
             export WRE_MAKE=make
-            if [ `uname -r` == "9.1.0" ]; then
+            if [ `uname -r | cut -c 1` == "9" ]; then
                 export WRE_OSTYPE="Leopard"
             fi 
-            if [ `uname -r` == "8.11.1" ]; then
+            if [ `uname -r | cut -c 1` == "8" ]; then
                 export WRE_OSTYPE="Tiger"
             fi 
         ;;
