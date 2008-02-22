@@ -11,7 +11,7 @@ my $config = WRE::Config->new;
 # changing version number
 my $version = "0.8.2";
 print "\tUpdating version number to $version.";
-#$config->set("version",$version);
+$config->set("version",$version);
 print "\tOK\n";
 
 enablingFilePrivilegeChecking($config);
