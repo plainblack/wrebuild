@@ -1019,7 +1019,7 @@ sub www_setup {
         $config->getRoot("/var/wreconsole.css"));
 
     # deal with data form posted
-    my $collectedJson = $cgi->param("collected");
+    my $collectedJson = ($cgi->param("collected") eq "") ? "{}" : $cgi->param("collected");
     my $collected = JSON::from_json($collectedJson);
     foreach my $key ($cgi->param) {
         next if $key eq "collected" || $key eq "step";

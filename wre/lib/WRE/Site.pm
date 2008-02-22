@@ -76,7 +76,7 @@ sub create {
     my $refId = id $self;
     my $sitename = $self->sitename;
     if (!defined $self->databaseName || length($self->databaseName) == 0) {
-        $self->databaseName = $self->makeDatabaseName;
+        $databaseName{$refId} = $self->makeDatabaseName;
     }
     # manufacture stuff
     $params->{databaseName} = $self->databaseName;
@@ -92,13 +92,13 @@ sub create {
         $wreConfig->getWebguiRoot("/etc/".$sitename.".conf"),
         { force => 1 });
     my $webguiConfig = Config::JSON->new($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
-    my $overridesAsTemplate =  JSON::objToJson($wreConfig->get("webgui/configOverrides"));
+    my $overridesAsTemplate =  JSON::to_json($wreConfig->get("webgui/configOverrides"));
     my $overridesAsJson = $file->processTemplate(\$overridesAsTemplate, $params);
     # webgui wants the paths a certain way regardless of windows
     ${$overridesAsJson} =~ s{\\data}{/data}xsg;
     ${$overridesAsJson} =~ s{\\wre}{/wre}xsg;
     ${$overridesAsJson} =~ s{\\domains}{/domains}xsg;
-    my $overridesAsHashRef = JSON::jsonToObj(${$overridesAsJson});
+    my $overridesAsHashRef = JSON::from_json(${$overridesAsJson});
     foreach my $key (keys %{$overridesAsHashRef}) {
         $webguiConfig->set($key, $overridesAsHashRef->{$key});
     }
@@ -181,7 +181,7 @@ sub checkCreationSanity {
     # check for the existence of a database with this name
     my $db = $mysql->getDatabaseHandle(password=>$password);
     my $sth = $db->prepare("show databases like ?");
-    my $databaseName = $self->databaseName;
+    my $databaseName = $self->databaseName || $self->makeDatabaseName;
     $sth->execute($databaseName);
     my ($databaseExists) = $sth->fetchrow_array;
     $sth->finish;
