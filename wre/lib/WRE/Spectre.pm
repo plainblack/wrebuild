@@ -17,6 +17,7 @@ use Class::InsideOut qw(register id public);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 use List::Util qw(sum max);
+use WRE::Host;
 
 =head1 ISA
 

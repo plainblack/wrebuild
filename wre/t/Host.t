@@ -6,7 +6,7 @@ use WRE::Host;
 
 my $config = WRE::Config->new();
 my $host = WRE::Host->new(wreConfig=>$config);
-isa_ok($host, "WRE::Host")
+isa_ok($host, "WRE::Host");
 isa_ok($host->wreConfig, "WRE::Config");
 
 my $hostname = `hostname`;

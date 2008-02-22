@@ -26,9 +26,9 @@ sub enablingFilePrivilegeChecking {
         my $contents = $file->slurp("/data/wre/etc/".$filename);
         ${$contents} =~ s{RewriteRule\s+\^/uploads/\s+-\s+\[L\]}{
             # For speed we only pass on uploads if there is a .wgaccess file
-            RewriteCond %\{REQUEST_FILENAME\}             ^(.*/)     # Match up to the last /  - save the directory in %1
-            RewriteCond \$\{DOCUMENT_ROOT\}%1.wgaccess     !-f        # if (root + directory + .wgaccess) doesn't exist,
-            RewriteRule ^/uploads/                      - [L]      # serve directly
+            RewriteCond %\{REQUEST_FILENAME\}             ^(.*/)
+            RewriteCond \$\{DOCUMENT_ROOT\}%1.wgaccess     !-f 
+            RewriteRule ^/uploads/                      - [L]
         }xmsg;
         $file->spit("/data/wre/etc/".$filename, $contents);
     }

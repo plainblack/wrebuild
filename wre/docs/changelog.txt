@@ -3,6 +3,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 
 0.8.3
  - Fixed a bug created by a contributed patch.
+ - Fixed some tests that weren't working properly.
 
 0.8.2
  - Added an option when creating sites to specify a custom database name.

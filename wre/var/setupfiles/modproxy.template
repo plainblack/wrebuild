@@ -20,9 +20,9 @@
    	RewriteRule ^/extras/ - [L]
 
     # For speed we only pass on uploads if there is a .wgaccess file
-    RewriteCond %{REQUEST_FILENAME}             ^(.*/)     # Match up to the last /  - save the directory in %1
-    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f        # if (root + directory + .wgaccess) doesn't exist,
-    RewriteRule ^/uploads/                      - [L]      # serve directly
+    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
+    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f     
+    RewriteRule ^/uploads/                      - [L] 
 
     # deal with port number in HTTP_HOST
     RewriteCond %{HTTP_HOST} :[% modproxyPort %]
@@ -61,9 +61,9 @@
 #    RewriteRule ^/extras/ - [L]
 #
 #    # For speed we only pass on uploads if there is a .wgaccess file
-#    RewriteCond %{REQUEST_FILENAME}             ^(.*/)     # Match up to the last /  - save the directory in %1
-#    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f        # if (root + directory + .wgaccess) doesn't exist,
-#    RewriteRule ^/uploads/                      - [L]      # serve directly
+#    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
+#    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f 
+#    RewriteRule ^/uploads/                      - [L] 
 #
 #    # deal with port number in HTTP_HOST
 #    RewriteCond %{HTTP_HOST} :443

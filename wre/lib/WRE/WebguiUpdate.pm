@@ -156,7 +156,7 @@ sub getMirrors {
         croak "Couldn't fetch mirrors list for version $version because ".$response->error_as_HTML;
     }
     my $mirrors = $response->content;
-    return jsonToObj($mirrors);
+    return JSON::from_json($mirrors);
 }
 
 
