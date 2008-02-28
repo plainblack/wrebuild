@@ -109,7 +109,7 @@ sub doUpgrade {
 	my $answer = prompt("Do you want me to start the upgrade script?","n","y","n");
 	if ($answer eq "y") {
 		chdir($config->getWebguiRoot("/sbin"));
-		system($config->getRoot("/bin/perl")." upgrade.pl --doit");
+		system($config->getRoot("/prereqs/bin/perl")." upgrade.pl --doit");
 	}
 }
 
