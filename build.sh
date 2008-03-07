@@ -171,8 +171,8 @@ buildApache(){
         buildProgram "swig-1.3.29" "--with-perl5=$WRE_ROOT/prereqs/bin/perl --without-ruby --without-php4 --without-python"
 
         # subversion 
-export LD_LIBRARY_PATH=/data/wrebuild/source/perl-5.8.8:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=/data/wrebuild/source/perl-5.8.8:$DYLD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$WRE_BUILDDIR/source/perl-5.8.8:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$WRE_BUILDDIR/source/perl-5.8.8:$DYLD_LIBRARY_PATH
 
         SVN_VERSION="subversion-1.4.6"
 	    cd $SVN_VERSION
@@ -181,9 +181,9 @@ export DYLD_LIBRARY_PATH=/data/wrebuild/source/perl-5.8.8:$DYLD_LIBRARY_PATH
 		    $WRE_MAKE distclean
   		    $WRE_MAKE clean
         fi	
-        SVN_CONFIG="LDFLAGS=-L/data/wrebuild/source/perl-5.8.8 --with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs --with-ssl --with-apxs=$WRE_ROOT/prereqs/bin/apxs --disable-mod-activation --with-swig=$WRE_ROOT/prereqs"
+        SVN_CONFIG="LDFLAGS=-L$WRE_BUILDDIR/source/perl-5.8.8 --with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs --with-ssl --with-apxs=$WRE_ROOT/prereqs/bin/apxs --disable-mod-activation --with-swig=$WRE_ROOT/prereqs"
         echo "Configuring $SVN_VERSION with ./configure --prefix=$WRE_ROOT/prereqs $SVN_CONFIG"
-	    GNUMAKE=$WRE_MAKE PERL=$WRE_ROOT/bin/perl ./configure CPPFLAGS="-I/data/wrebuild/source/perl-5.8.8 -I./source/subversion-1.4.6/subversion/bindings/swig/proxy/" --prefix=$WRE_ROOT/prereqs $SVN_CONFIG; checkError $? "$SVN_VERSION configure"
+	    GNUMAKE=$WRE_MAKE PERL=$WRE_ROOT/prereqs/bin/perl ./configure CPPFLAGS="-I$WRE_BUILDDIR/source/perl-5.8.8 -I$WRE_BUILDDIR/source/subversion-1.4.6/subversion/bindings/swig/proxy/" --prefix=$WRE_ROOT/prereqs $SVN_CONFIG; checkError $? "$SVN_VERSION configure"
 	    $WRE_MAKE; checkError $? "$SVN_VERSION make"
 	    $WRE_MAKE install; checkError $? "$SVN_VERSION make install"
 	    $WRE_MAKE swig-pl; checkError $? "$SVN_VERSION make swig-pl"

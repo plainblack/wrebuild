@@ -15,6 +15,7 @@ use base 'Config::JSON';
 use Class::InsideOut qw ( register );
 use File::Copy qw(cp);
 use Path::Class;
+use WRE::Host;
 
 { # begin inside out object
 
@@ -56,6 +57,7 @@ necessary.
 
 sub getRoot {
     my ($self,$path) = @_;
+    my $volume = WRE::Host->new(wreConfig => $self)->getOsName eq 'windows' ? 'c:' : '';
     my $root = dir("/data/wre");
     if (defined $path) {
         return $root->file($path)->stringify;    
