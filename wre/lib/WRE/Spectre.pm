@@ -17,6 +17,7 @@ use Class::InsideOut qw(register id public);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 use List::Util qw(sum max);
+use JSON qw(from_json);
 use WRE::Host;
 
 =head1 ISA
@@ -223,7 +224,7 @@ sub getStatusReport {
     undef $remote;
 
     # Finally, return the data in a Perl data structure.
-    return jsonToObj($result);
+    return from_json($result);
 }
 
 #-------------------------------------------------------------------
@@ -243,6 +244,7 @@ The report as returned from B<getStatusReport>.
 =cut
 
 sub getWorkflowsPerSite {
+    my $self = shift;
     my $report = shift;
     my $workflowsPerSite = {};
 
@@ -281,6 +283,7 @@ The report as returned from B<getStatusReport>.
 =cut
 
 sub getPriorities {
+    my $self = shift;
     my $report = shift;
     my $priorities = {};
     my $maxes = {};
@@ -301,5 +304,5 @@ sub getPriorities {
     return $maxPriority;
 }
 
-
 1;
+

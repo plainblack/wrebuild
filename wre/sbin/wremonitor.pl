@@ -89,9 +89,9 @@ sub monitorSpectre {
     # address has a default.
     my ($maxTotalWorkflows, $maxWorkflowsPerSite, $maxPriority, $personToEmail);
 
-    $maxTotalWorkflows      = $config->get('wreMonitor/items/maxTotalWorkflows')                || 1000;
+    $maxTotalWorkflows      = $config->get('wreMonitor/items/maxTotalWorkflows')        || 1000;
     $maxWorkflowsPerSite    = $config->get('wreMonitor/items/maxWorkflowsPerSite')      || 100;
-    $maxPriority            = $config->get('wreMonitor/items/maxWorkflowPriority')              || 100;
+    $maxPriority            = $config->get('wreMonitor/items/maxWorkflowPriority')      || 100;
 
     # Get the data from Spectre.
     my $report              = $spectre->getStatusReport();
