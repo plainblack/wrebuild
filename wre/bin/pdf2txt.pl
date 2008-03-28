@@ -12,7 +12,7 @@ my $file = shift @ARGV;
 my $endTime = time() + $waitFor;
 
 # use open to get the pid, we won't be giving it any input
-my $childPid = open my $fh, "|-", $wreConfig->getRoot('prereqs/bin/pdftotxt') . " $file $file.txt"
+my $childPid = open my $fh, "|-", $wreConfig->getRoot('prereqs/bin/pdftotext') . " $file $file.txt"
     or die "Error calling pdf2txt! $!";
 
 while (time() < $endTime) {
