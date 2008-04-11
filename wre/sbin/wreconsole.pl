@@ -195,6 +195,11 @@ sub www_addSite {
         left blank.</td>
     </tr>
     <tr>
+        <td>Site Database Name</td>
+        <td><input type="text" name="databaseName" value="'.$cgi->param("databaseName").'" /> <span class="subtext">Will be auto generated if
+        left blank.</td>
+    </tr>
+    <tr>
         <td>Custom Variables</td>
         <td>
             var0 <input type="text" name="var0" value="'.$cgi->param("var0").'" /><br />
@@ -223,7 +228,8 @@ sub www_addSiteSave {
     my $site = WRE::Site->new(
         wreConfig       => $state->{config}, 
         sitename        => $cgi->param("sitename"), 
-        adminPassword   => $cgi->param("adminPassword")
+        adminPassword   => $cgi->param("adminPassword"),
+        databaseName	=> $cgi->param("databaseName"),
         );
     if (eval {$site->checkCreationSanity}) {
         $site->create({
