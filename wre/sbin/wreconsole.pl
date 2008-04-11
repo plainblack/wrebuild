@@ -233,8 +233,8 @@ sub www_addSiteSave {
         );
     if (eval {$site->checkCreationSanity}) {
         $site->create({
-            siteDatabaseUser        => $cgi->param("siteDatabaseUser"),
-            siteDatabasePassword    => $cgi->param("siteDatabasePassword"),
+            databaseUser            => $cgi->param("siteDatabaseUser"),
+            databasePassword        => $cgi->param("siteDatabasePassword"),
             var0                    => $cgi->param("var0"),
             var1                    => $cgi->param("var1"),
             var2                    => $cgi->param("var2"),
