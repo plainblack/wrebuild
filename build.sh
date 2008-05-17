@@ -436,9 +436,9 @@ installPerlModules(){
 	cp -f mysqldiff $WRE_ROOT/sbin/
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
+    installPerlModule "List-MoreUtils-0.22"
     if [ "$WRE_BUILD_WDK" == 1 ]; then # wdk only perl modules
         buildPerlModule "Alien-GvaScript-1.03"
-        installPerlModule "List-MoreUtils-0.22"
         installPerlModule "Module-CoreList-2.11"
         installPerlModule "Pod-POM-0.17"
         installPerlModule "Search-Indexer-0.74"
