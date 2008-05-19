@@ -19,7 +19,7 @@ use File::Which qw(which);
 use HTTP::Daemon;
 use HTTP::Response;
 use HTTP::Status;
-use JSON qw(from_json to_json);
+use JSON qw(decode_json encode_json);
 use Path::Class;
 use String::Random qw(random_string);
 use WRE::Config;
@@ -549,7 +549,7 @@ sub www_editSettingsSave {
     my $status          = "";
 
     # webgui 
-    $config->set("webgui/configOverrides", JSON::from_json($cgi->param("webguiConfigOverrides")));
+    $config->set("webgui/configOverrides", JSON::decode_json($cgi->param("webguiConfigOverrides")));
     
     # logs
     $config->set("logs/rotations", $cgi->param("logRotations"));
@@ -1026,12 +1026,12 @@ sub www_setup {
 
     # deal with data form posted
     my $collectedJson = ($cgi->param("collected") eq "") ? "{}" : $cgi->param("collected");
-    my $collected = JSON::from_json($collectedJson);
+    my $collected = JSON::decode_json($collectedJson);
     foreach my $key ($cgi->param) {
         next if $key eq "collected" || $key eq "step";
         $collected->{$key} = $cgi->param($key);
     }
-    $collectedJson = JSON::to_json($collected);
+    $collectedJson = JSON::encode_json($collected);
     makeHtmlFormSafe(\$collectedJson);
 
     # apache stuff

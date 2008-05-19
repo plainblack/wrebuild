@@ -17,7 +17,7 @@ use Class::InsideOut qw(register id public);
 use Config::JSON;
 use POE::Component::IKC::ClientLite;
 use List::Util qw(sum max);
-use JSON qw(from_json);
+use JSON qw(decode_json);
 use WRE::Host;
 
 =head1 ISA
@@ -224,7 +224,7 @@ sub getStatusReport {
     undef $remote;
 
     # Finally, return the data in a Perl data structure.
-    return from_json($result);
+    return decode_json($result);
 }
 
 #-------------------------------------------------------------------
@@ -249,21 +249,12 @@ sub getWorkflowsPerSite {
     my $workflowsPerSite = {};
 
     # for each site...
-    foreach my $site(keys %{$report}) {
+    foreach my $site (keys %{$report}) {
+        $workflowsPerSite->{$site} = 0;
 
-        # initialise the hashref we're about to use.
-        $workflowsPerSite->{$site} = {};
-
-        # for each queue...
-        foreach my $queue(keys %{$report->{$site}}) {
-
-            # record its workflow count
-            $workflowsPerSite->{$site}{$queue} = @{$report->{$site}{$queue}};
+        foreach my $queue (values %{ $report->{$site} }) {
+            $workflowsPerSite += scalar @$queue;
         }
-
-        # overwrite the hashref we no longer need with the maximum number of
-        # workflows across all queues
-        $workflowsPerSite->{$site} = sum values %{$workflowsPerSite->{$site}};
     }
     return $workflowsPerSite;
 }
@@ -286,21 +277,18 @@ sub getPriorities {
     my $self = shift;
     my $report = shift;
     my $priorities = {};
-    my $maxes = {};
+    my $maxPriority;
 
     # for each site...
-    foreach my $site (keys %{$report}) {
+    foreach my $site (values %$report) {
 
         # for each queue...
-        foreach my $queue(keys %{$report->{$site}}) {
-
-            # record the highest priority of all of its running instances.
-            $maxes->{$queue} = max map { $_->{priority} } $report->{$site}{$queue};
+        foreach my $queue (values %$site) {
+            my $queueMax = max map { $_->{workingPriority} } @$queue;
+            $maxPriority = $queueMax
+                if $maxPriority > $queueMax;
         }
     }
-
-    # finally, get the highest of all of the values.
-    my $maxPriority = max values %{$maxes};
     return $maxPriority;
 }
 
