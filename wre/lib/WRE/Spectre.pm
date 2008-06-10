@@ -253,7 +253,7 @@ sub getWorkflowsPerSite {
         $workflowsPerSite->{$site} = 0;
 
         foreach my $queue (values %{ $report->{$site} }) {
-            $workflowsPerSite += scalar @$queue;
+            $workflowsPerSite->{$site} += scalar @$queue;
         }
     }
     return $workflowsPerSite;
