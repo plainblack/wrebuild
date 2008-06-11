@@ -590,7 +590,7 @@ sub www_editSettingsSave {
             { force => 1 });
     }
     # have to disable 
-    elsif ($config->get("webstats/enabled") == 1 && $cgi->param("enableWebstats") == 0) {
+    elsif ($config->get("backup/enabled") == 1 && $cgi->param("enableBackups") == 0) {
         $file->delete($config->getRoot("/etc/backup.exclude"));
     }
     $config->set("backup/enabled", $cgi->param("enableBackups"));

@@ -438,7 +438,10 @@ sub tar {
         $args .= " --gzip";
     }
     if (exists $options{exclude}) {
-        $args .= " --exclude-from=".dir($options{exclude})->stringify;
+        my $exFile = file($options{exclude});
+        if (-e $exFile) {
+            $args .= " --exclude-from=" . $exFile->stringify;
+        }
     }
     my $firstThing = dir($options{stuff}->[0])->stringify;
     if (scalar(@{$options{stuff}}) == 1 && -d $firstThing) {
