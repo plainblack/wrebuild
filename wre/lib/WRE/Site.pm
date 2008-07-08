@@ -84,7 +84,7 @@ sub create {
     $params->{databasePassword} ||= random_string("cCncCncCncCncccnnnCCnc");
     $params->{sitename} = $sitename;
     my $domain = $sitename;
-    $domain =~ s/\w+\.(.*)/$1/;
+    $domain =~ s/[^.]+\.//;
     $params->{domain} = $domain;
 
     # create webgui config
