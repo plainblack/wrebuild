@@ -408,6 +408,7 @@ installPerlModules(){
 	installPerlModule "File-Slurp-9999.12"
 	installPerlModule "Text-CSV_XS-0.26"
 	installPerlModule "File-Temp-0.18"
+	installPerlModule "File-Path-2.04"
 	installPerlModule "File-Which-0.05"
 	installPerlModule "Class-InsideOut-1.06"
 	installPerlModule "HTML-TagCloud-0.34"
