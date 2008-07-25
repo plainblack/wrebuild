@@ -16,20 +16,21 @@
 	RewriteRule ^/_mem_bin - [L] 
 
 	# leave static stuff to be served directly by modproxy
-   	RewriteRule ^/favicon.ico - [L]
-   	RewriteRule ^/extras/ - [L]
+    RewriteRule ^/favicon.ico - [L]
+    RewriteRule ^/extras/ - [L]
 
     # For speed we only pass on uploads if there is a .wgaccess file
-    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
-    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f     
-    RewriteRule ^/uploads/                      - [L] 
+    RewriteCond %{REQUEST_FILENAME}             ^(.*/)
+    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f
+    RewriteRule ^/uploads/                      - [L]
 
     # deal with port number in HTTP_HOST
     RewriteCond %{HTTP_HOST} :[% modproxyPort %]
     RewriteRule ^/(.*) http://%{SERVER_NAME}/$1 [P]
 
 	# proxy webgui pages
-   	RewriteRule ^/(.*) http://%{HTTP_HOST}:[% modperlPort %]/$1 [P]
+    ProxyPreserveHost On
+    RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
 </VirtualHost>
 
 # Uncomment the following lines to enable SSL for this host. Also,
