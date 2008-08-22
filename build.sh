@@ -41,6 +41,18 @@ buildUtils(){
     printHeader "Utilities"
 	cd source
 	
+	# openssl
+	cd openssl-0.9.7m
+    printHeader "openssl"
+	if [ "$WRE_CLEAN" == 1 ]; then
+		$WRE_MAKE distclean
+ 		$WRE_MAKE clean
+    fi	
+	./config --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
+	$WRE_MAKE; checkError $? "openssl make"
+	$WRE_MAKE install; checkError $? "openssl make install"
+	cd ..	
+
 	# lftp
     case "$WRE_OSNAME" in
         FreeBSD | OpenBSD)
@@ -50,7 +62,7 @@ buildUtils(){
             export WRE_LFTPOPTIONS=""
         ;;
     esac
-	buildProgram "lftp-3.5.10" "$WRE_LFTPOPTIONS"
+	buildProgram "lftp-3.5.10" "$WRE_LFTPOPTIONS --with-openssl=$WRE_ROOT/prereqs"
 
 	# zlib
 	buildProgram "zlib-1.2.3" "--shared"
@@ -119,20 +131,8 @@ buildApache(){
 	printHeader "Apache"
     cd source
 
-	# openssl
-	cd openssl-0.9.7m
-    printHeader "openssl"
-	if [ "$WRE_CLEAN" == 1 ]; then
-		$WRE_MAKE distclean
- 		$WRE_MAKE clean
-    fi	
-	./config --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
-	$WRE_MAKE; checkError $? "openssl make"
-	$WRE_MAKE install; checkError $? "openssl make install"
-	cd ..	
-
 	# apache
-	cd httpd-2.0.61
+	cd httpd-2.0.63
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
@@ -153,7 +153,7 @@ buildApache(){
     rm -f $WRE_ROOT/etc/ssl.conf
 
 	# modperl
-	cd ../mod_perl-2.0.3
+	cd ../mod_perl-2.0.4
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
@@ -199,7 +199,7 @@ export DYLD_LIBRARY_PATH=$WRE_BUILDDIR/source/perl-5.8.8:$DYLD_LIBRARY_PATH
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.0.45
+	cd source/mysql-5.0.67
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
@@ -240,7 +240,7 @@ buildImageMagick(){
     buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # image magick
-    cd ImageMagick-6.3.7
+    cd ImageMagick-6.4.3
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -406,7 +406,7 @@ installPerlModules(){
     installPerlModule "Time-Format-1.02"
 	installPerlModule "Weather-Com-0.5.2"
 	installPerlModule "File-Slurp-9999.12"
-	installPerlModule "Text-CSV_XS-0.26"
+	installPerlModule "Text-CSV_XS-0.52"
 	installPerlModule "File-Temp-0.18"
 	installPerlModule "File-Path-2.04"
 	installPerlModule "File-Which-0.05"
@@ -416,6 +416,12 @@ installPerlModules(){
 	installPerlModule "DateTime-Set-0.25"
 	installPerlModule "DateTime-Event-Recurrence-0.16"
 	installPerlModule "DateTime-Event-ICal-0.09"
+	installPerlModule "MIME-Types-1.24"
+	installPerlModule "File-MMagic-1.27"
+    buildPerlModule "PathTools-3.2701"
+	installPerlModule "Module-Find-0.06"
+    buildPerlModule "Archive-Any-0.0932"
+	installPerlModule "Image-ExifTool-7.30"
 	# aspell
     cd ..
 	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
@@ -438,6 +444,7 @@ installPerlModules(){
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
     installPerlModule "List-MoreUtils-0.22"
+    installPerlModule "Exception-Class-1.23"
     if [ "$WRE_BUILD_WDK" == 1 ]; then # wdk only perl modules
         buildPerlModule "Alien-GvaScript-1.03"
         installPerlModule "Module-CoreList-2.11"
@@ -449,7 +456,6 @@ installPerlModules(){
         installPerlModule "BerkeleyDB-0.31"
         installPerlModule "Search-QueryParser-0.91"
         installPerlModule "Pod-POM-Web-1.04"
-        installPerlModule "Exception-Class-1.23"
 	    installPerlModule "XML-RSS-Parser-4"
         installPerlModule "HTTP-Server-Simple-0.27"
         installPerlModule "TimeDate-1.16"

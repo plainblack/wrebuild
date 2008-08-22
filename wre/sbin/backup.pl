@@ -12,7 +12,6 @@
 
 use strict;
 use lib '/data/wre/lib';
-use Net::FTP;
 use Path::Class;
 use WRE::Config;
 use WRE::File;
@@ -31,7 +30,7 @@ backupWebgui($config);
 backupWre($config);
 runExternalScripts($config);
 compressBackups($config);
-copyToFtp($config);
+copyToRemote($config);
 
 
 #-------------------------------------------------------------------
@@ -153,44 +152,75 @@ sub compressBackups {
 }
 
 #-------------------------------------------------------------------
-sub copyToFtp {
+sub copyToRemote {
     my $config      = shift;
-
     # should we run?
     return undef unless $config->get("backup/ftp/enabled");
+    my $protocol    = $config->get("backup/ftp/protocol") || "ftp";
 
-	my $now         = time;
+    my $now         = time;
     my $passive     = $config->get("backup/ftp/usePassiveTransfers");
     my $host        = $config->get("backup/ftp/hostname");
     my $path        = $config->get("backup/ftp/path");
     my $user        = $config->get("backup/ftp/user");
     my $pass        = $config->get("backup/ftp/password");
+    my $rotations   = $config->get("backup/ftp/rotations");
+    my $extraCommands = '';
+    # don't validate local cert
+    if ($protocol eq 'https') {
+	$extraCommands .= 'set ssl:verify-certificate off; ';
+    }
 
     # a little massage
     $path = ($path eq "/") ? "." : $path; # never let it look at the root of the server
 
-    # do rotations
-	my $ftp = Net::FTP->new($host,Passive=>$passive);
-	$ftp->login($user,$pass) or die "Could not connect to FTP server: $@\n";
-	if ($path) {
-		$ftp->cwd($path) or die "Could not change to $path directory: $@\n";
-	}
-	my @dirs = $ftp->ls;
-	@dirs = sort(@dirs);
-	my $i = scalar(@dirs);
-    my $copiesToKeep = $config->get("backup/ftp/rotations");
-	foreach my $dir (@dirs) {
-		last if ($i < $copiesToKeep);
-		$ftp->rmdir($dir,1);
-		$i--;
-	}
-	$ftp->mkdir($now);
-	$ftp->quit;
+    # get old versions 
+    if ($rotations > 1) {
+        my $cmd = $config->getRoot('/prereqs/bin/lftp').' -e "ls; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.$path;
+        my @dirs = ();
+	    if (open my $pipe, $cmd.'|') {
+            while (my $line = <$pipe>) {
+                chomp $line;
+                if ($line =~ m/^([drxws-]+)\s+\d+\s+(\w+)\s+(\w+)\s+(\d+\s+\w+\s+\d+\s+\d+:\d{2}\s+(\w+))/) {
+                    my ($privs, $user, $group, $date, $name) = ($1, $2, $3, $4, $5, $6);
+                    # skip non-backup directories
+                    next unless ($privs =~ m/^d/);
+                    next unless ($name =~ m/^\d+$/);
+                    push @dirs, $name;
+                }
+            }
+            close $pipe;
+        }
+        else {
+            die "Couldn't connect to backup server.";
+	    }
+
+        # do rotations
+	    @dirs = sort(@dirs);
+	    my $i = scalar(@dirs);
+	    foreach my $dir (@dirs) {
+	        last if ($i < $rotations);
+            system($config->getRoot('/prereqs/bin/lftp').' -e "rm -r -f '.$dir.'; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.$path);
+	        $i--;
+	    }
+    }
+
+    # deal with passive transfers
+    if ($protocol eq 'ftp' && !$passive) {
+        $extraCommands .= "set ftp:passive-mode off; ";
+    }
+
+    # don't do the rotations folder if we aren't using rotations
+    if ($rotations > 1) {
+        $extraCommands .= 'mkdir '.$now.'; mput -O '.$path.'/'.$now;
+    }
+    else {
+        $extraCommands .= 'mput -O '.$path;
+    }
 
     # do transfer
-	my $passivecmd = $passive ? "" : "set ftp:passive-mode off; ";
-	system($config->getRoot('/prereqs/bin/lftp').' -e "'.$passivecmd.'mput -O '.$now.' '
-        .file($config->get("backup/path"),'/*.gz')->stringify.'; exit" -u '.$user.','.$pass.' ftp://'.$host.$path);
+    my $cmd = $config->getRoot('/prereqs/bin/lftp').' -e "'.$extraCommands.' '.file($config->get("backup/path"),'/*.gz')->stringify.'; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host;
+    system($cmd);
 }
 
 #-------------------------------------------------------------------

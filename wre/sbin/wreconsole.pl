@@ -491,12 +491,24 @@ sub www_editSettings {
             process. One per line.</span>
         </p>
 
-        <fieldset><legend>FTP</legend>
+        <fieldset><legend>Copy To Remote Server</legend>
         <p>
         Enabled<br />
         <input type="radio" name="backupFtpEnabled" value="1" '.(($backup->{ftp}{enabled} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="backupFtpEnabled" value="0" '.(($backup->{ftp}{enabled} != 1) ? 'checked="1"' : '').' />No
         <span class="subtext">Should the backup be pushed to an FTP server.</span>
+        </p>
+
+        <p>
+        Protocol<br />
+        <select name="backupFtpProtocol" /> 
+            <option value="ftp"'.(($backup->{ftp}{protocol} eq 'ftp') ? ' selected="1"' : '').'>FTP</option>
+            <option value="sftp"'.(($backup->{ftp}{protocol} eq 'sftp') ? ' selected="1"' : '').'>SFTP</option>
+            <option value="http"'.(($backup->{ftp}{protocol} eq 'http') ? ' selected="1"' : '').'>WebDAV (over HTTP)</option>
+            <option value="https"'.(($backup->{ftp}{protocol} eq 'https') ? ' selected="1"' : '').'>WebDAV (over HTTPS)</option>
+            <option value="fish"'.(($backup->{ftp}{protocol} eq 'fish') ? ' selected="1"' : '').'>FISH (over SSH)</option>
+        </select>
+        <span class="subtext">Which protocol would you like to use to connect to the remote server?</span>
         </p>
 
         <p>
@@ -607,6 +619,7 @@ sub www_editSettingsSave {
     my $path = $cgi->param("backupFtpPath");
     $path = ($path eq "/") ? "." : $path;
     $config->set("backup/ftp/path", $path);
+    $config->set("backup/ftp/protocol", $cgi->param("backupFtpProtocol"));
     $config->set("backup/ftp/hostname", $cgi->param("backupFtpHost"));
     $config->set("backup/ftp/rotations", $cgi->param("backupFtpRotations"));
 

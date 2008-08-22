@@ -3,10 +3,43 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 
 0.8.4
  - Fixed Spectre workflow monitor
+ - Adjusted modproxy.conf prefork defaults, compare yours to see if changes
+   are warranted in your environment.
+ - Backups can now be copied to remote servers using SFTP, WebDAV, and FISH in
+   addition to FTP.
+ - Added OpenBSD support.
+ - Quiet modperl SSL Cache warnings.
+ - Improved domain name calculation.
+ - fixed handling of backup.exclude.
+ - Fixed pdftotext
+ - Fixed image magick on Windows.
+ - Fixed drive letter handling on Windows.
+ - Fixed a pathing problem in webguiupdate.pl.
+ - Fixed stats path on Windows.
+ - Always proxy to localhost to eliminate need for DNS lookup and prevent
+   proxy abuse.
+ - Updated or added the following modules:
+    File::Path 2.04
+    List::MoreUtils 0.22
+    Text::CSV_XS 0.52
+    Archive-Any-0.0932
+    Exception::Class 1.23
+    Path::Class 0.16
+    Image-ExifTool-7.30
+    MIME-Types-1.24
+    File-MMagic-1.27
+    PathTools-3.2701
+    Module-Find-0.06
+    Apache 2.0.63
+    Image Magick 6.4.3-1
+    mod_perl 2.0.4
+    mysql-5.0.67
+
 
 0.8.3
  - Fixed a bug created by a contributed patch.
  - Fixed some tests that weren't working properly.
+
 
 0.8.2
  - Added an option when creating sites to specify a custom database name.
