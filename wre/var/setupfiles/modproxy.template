@@ -24,10 +24,6 @@
     RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f
     RewriteRule ^/uploads/                      - [L]
 
-    # deal with port number in HTTP_HOST
-    RewriteCond %{HTTP_HOST} :[% modproxyPort %]
-    RewriteRule ^/(.*) http://%{SERVER_NAME}/$1 [P]
-
 	# proxy webgui pages
     ProxyPreserveHost On
     RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
