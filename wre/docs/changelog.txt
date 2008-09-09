@@ -1,6 +1,16 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.8.5
+- added innodb support to mysql
+  http://www.webgui.org/rfe/request-for-enhancement/innodb-in-wre
+- updated changelog and gotcha file
+- added max_join_size=4294967295 to my.cnf to fix warnings at db_install
+  script as quoted in this bug in mysql http://bugs.mysql.com/bug.php?id=35346
+- no longer need requite rule to deal with port in host
+- Fixed http://www.webgui.org/bugs/tracker/incorrect-thread_cache-in-my.cnf
+- SASL-Authen removed human interaction
+
 0.8.4
  - Fixed Spectre workflow monitor
  - Adjusted modproxy.conf prefork defaults, compare yours to see if changes
