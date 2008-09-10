@@ -446,6 +446,9 @@ installPerlModules(){
 	perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
     installPerlModule "List-MoreUtils-0.22"
+    installPerlModule "Scalar-List-Utils-1.19"
+    buildPerlModule "Devel-StackTrace-1.1902"
+    installPerlModule "Class-Data-Inheritable-0.08"
     installPerlModule "Exception-Class-1.23"
     if [ "$WRE_BUILD_WDK" == 1 ]; then # wdk only perl modules
         buildPerlModule "Alien-GvaScript-1.03"

@@ -69,11 +69,11 @@ sub monitor {
         else {
             my $message;
             if (eval {$service->restart} && !$@) {
-                $message = $service->getName." on ".$config->get("apache/defaultHostname")." was down and has restarted.";
+                $message = $service->getName." was restarted.";
                 logEntry($message);
             }
             else {
-                $message = $service->getName." on ".$config->get("apache/defaultHostname")." is down and could not be restarted.";
+                $message = $service->getName." could NOT be restarted.";
                 logEntry($message." ".$@);
             }
             sendEmail($message);
@@ -102,14 +102,16 @@ sub monitorSpectre {
 
     # Run our checks on the processed data.
     # If any sites have more workflows than they're allowed to have, send email.
-    if(first { $_ >= $maxWorkflowsPerSite } values %$workflowsPerSite ) {
-        sendEmail(qq|A site has too many workflows running.|);
+    if(my @sites = grep { $workflowsPerSite->{$_} >= $maxWorkflowsPerSite } keys %$workflowsPerSite ) { 
+        foreach my $site (@sites) {
+            sendEmail(qq|Too many workflows on | .$site);
+        }
     }
 
     # Else, if the total number of workflows across all sites is higher than the
     # relevant threshold, send mail.
     elsif(sum values %{$workflowsPerSite} >= $maxTotalWorkflows) {
-        sendEmail(qq|This server has too many workflows running.|);
+        sendEmail(qq|Too many total workflows running.|);
     }
 
     # Else, if the highest workflow priority across all sites is higher than the
