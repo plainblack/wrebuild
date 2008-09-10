@@ -62,7 +62,7 @@ while ($upgrade{$currentVersion}{to}) {
     chdir $upgradesPath;
     # lets run it and see what happens
     print "Attempting upgrade from $currentVersion to $upgrade{$currentVersion}{to}.\n";
-    print $^X." ".$upgrade{$currentVersion}{pl}."\n";
+    #print $^X." ".$upgrade{$currentVersion}{pl}."\n";
     unless (system($^X." ".$upgrade{$currentVersion}{pl})) {
         print "Upgrade from $currentVersion to $upgrade{$currentVersion}{to} completed successfully.\n";
         $currentVersion = $upgrade{$currentVersion}{to};
