@@ -176,13 +176,13 @@ sub copyToRemote {
 
     # get old versions 
     if ($rotations > 1) {
-        my $cmd = $config->getRoot('/prereqs/bin/lftp').' -e "ls; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.$path;
+        my $cmd = $config->getRoot('/prereqs/bin/lftp').' -e "ls; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.$path.'/';
         my @dirs = ();
 	    if (open my $pipe, $cmd.'|') {
             while (my $line = <$pipe>) {
                 chomp $line;
-                if ($line =~ m/^([drxws-]+)\s+\d+\s+(\w+)\s+(\w+)\s+(\d+\s+\w+\s+\d+\s+\d+:\d{2}\s+(\w+))/) {
-                    my ($privs, $user, $group, $date, $name) = ($1, $2, $3, $4, $5, $6);
+                if ($line =~ m/^([drxws-]+)\s+\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\d+\s+\d+:\d{2}\s+(\w+)/ || $line =~ m/^([drxws-]+)\s+--\s+(\w+)/) {
+                    my ($privs, $name) = ($1, $2);
                     # skip non-backup directories
                     next unless ($privs =~ m/^d/);
                     next unless ($name =~ m/^\d+$/);
@@ -200,7 +200,7 @@ sub copyToRemote {
 	    my $i = scalar(@dirs);
 	    foreach my $dir (@dirs) {
 	        last if ($i < $rotations);
-            system($config->getRoot('/prereqs/bin/lftp').' -e "rm -r -f '.$dir.'; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.$path);
+            system($config->getRoot('/prereqs/bin/lftp').' -e "rm -r -f '.$path.'/'.$dir.'; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host);
 	        $i--;
 	    }
     }
@@ -212,7 +212,7 @@ sub copyToRemote {
 
     # don't do the rotations folder if we aren't using rotations
     if ($rotations > 1) {
-        $extraCommands .= 'mkdir '.$now.'; mput -O '.$path.'/'.$now;
+        $extraCommands .= 'mkdir '.$path.'/'.$now.'; mput -O '.$path.'/'.$now;
     }
     else {
         $extraCommands .= 'mput -O '.$path;
