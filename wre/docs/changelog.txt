@@ -16,7 +16,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - fixed: http://www.plainblack.com/bugs/tracker/updates-to-conf-files
  - fixed: http://www.plainblack.com/bugs/tracker/wremonitor-doesnt-say-which-site-generated-an-error
  - fixed: http://www.plainblack.com/bugs/tracker/perl-module-module-exceptionclass-is-not-included-in-wre
-
+ - added: Sitename can no longer contain spaces
 
 0.8.4
  - Fixed Spectre workflow monitor

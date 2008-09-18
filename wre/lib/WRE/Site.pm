@@ -178,6 +178,9 @@ sub checkCreationSanity {
         return 0;
     }
 
+    # check that the sitename does not contain spaces
+    croak "The sitename ($sitename) must not contain spaces." if($sitename =~ /\s+/);
+
     # check for the existence of a database with this name
     my $db = $mysql->getDatabaseHandle(password=>$password);
     my $sth = $db->prepare("show databases like ?");
