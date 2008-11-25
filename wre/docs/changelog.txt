@@ -1,6 +1,9 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.8.6
+ - fixed #4171: Javascript compression currently broken
+
 0.8.5
  - Added the following modules:
     Class-Data-Inheritable-0.08
