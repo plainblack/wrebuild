@@ -1,7 +1,31 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
-0.8.6
+1.0.0
+ - Removed ill-fated WDK option.
+ - Removed the following components:
+    Alien-GvaScript-1.03
+    Module-CoreList-2.11
+    Pod-POM-0.17
+    Search-Indexer-0.74
+    PPI-HTML-1.07
+    BerkeleyDB-0.31
+    Search-QueryParser-0.91
+    Pod-POM-Web-1.04
+    XML-RSS-Parser-4
+    HTTP-Server-Simple-0.27
+    TimeDate-1.16
+    Number-Format-1.52
+    Locale-Maketext-1.10
+    Locale-Maketext-Lexicon-0.64
+    Template-Plugin-Clickable-0.06
+    Template-Plugin-Clickable-Email-0.01
+    Template-Plugin-Number-Format-1.01
+    WWW-Mechanize-1.30
+    YAML-0.65
+    SVN-Web-0.53
+    Devel-Cover-0.63
+    SMTP-Server-1.1
  - fixed #4171: Javascript compression currently broken
 
 0.8.5

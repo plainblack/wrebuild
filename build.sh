@@ -70,19 +70,6 @@ buildUtils(){
 	# libtool
 	buildProgram "libtool-1.5.22"
 
-    if [ "$WRE_BUILD_WDK" == 1 ]; then
-
-        # berkeley db
-	    cd db-4.5.20.NC/build_unix
-	    if [ "$WRE_CLEAN" == 1 ]; then
-		    $WRE_MAKE realclean
-        fi	
-	    ../dist/configure --prefix=$WRE_ROOT/prereqs ; checkError $? "Berkeley DB configure"
-	    $WRE_MAKE; checkError $? "Berkeley DB make"
-	    $WRE_MAKE install; checkError $? "Berkeley DB make install"
-	    cd ../..
-    fi
-
 	# catdoc
 	cd catdoc-0.94.2
 	if [ "$WRE_CLEAN" == 1 ]; then
@@ -163,35 +150,6 @@ buildApache(){
 	$WRE_MAKE install; checkError $? "mod_perl make install"
     cd ..
 
-    if [ "$WRE_BUILD_WDK" == 1 ]; then
-        # neon
-        buildProgram "neon-0.26.4" "--with-libs=$WRE_ROOT/prereqs --with-ssl=openssl --with-zlib"
-
-        # swig
-        buildProgram "swig-1.3.29" "--with-perl5=$WRE_ROOT/prereqs/bin/perl --without-ruby --without-php4 --without-python"
-
-        # subversion 
-export LD_LIBRARY_PATH=$WRE_BUILDDIR/source/perl-5.8.8:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=$WRE_BUILDDIR/source/perl-5.8.8:$DYLD_LIBRARY_PATH
-
-        SVN_VERSION="subversion-1.4.6"
-	    cd $SVN_VERSION
-        printHeader $SVN_VERSION
-	    if [ "$WRE_CLEAN" == 1 ]; then
-		    $WRE_MAKE distclean
-  		    $WRE_MAKE clean
-        fi	
-        SVN_CONFIG="LDFLAGS=-L$WRE_BUILDDIR/source/perl-5.8.8 --with-apr=$WRE_ROOT/prereqs --with-apr-util=$WRE_ROOT/prereqs --with-neon=$WRE_ROOT/prereqs --with-ssl --with-apxs=$WRE_ROOT/prereqs/bin/apxs --disable-mod-activation --with-swig=$WRE_ROOT/prereqs"
-        echo "Configuring $SVN_VERSION with ./configure --prefix=$WRE_ROOT/prereqs $SVN_CONFIG"
-	    GNUMAKE=$WRE_MAKE PERL=$WRE_ROOT/prereqs/bin/perl ./configure CPPFLAGS="-I$WRE_BUILDDIR/source/perl-5.8.8 -I$WRE_BUILDDIR/source/subversion-1.4.6/subversion/bindings/swig/proxy/" --prefix=$WRE_ROOT/prereqs $SVN_CONFIG; checkError $? "$SVN_VERSION configure"
-	    $WRE_MAKE; checkError $? "$SVN_VERSION make"
-	    $WRE_MAKE install; checkError $? "$SVN_VERSION make install"
-	    $WRE_MAKE swig-pl; checkError $? "$SVN_VERSION make swig-pl"
-	    $WRE_MAKE check-swig-pl; checkError $? "$SVN_VERSION make check-swig-pl"
-	    $WRE_MAKE install-swig-pl; checkError $? "$SVN_VERSION make install-swig-pl"
-	    cd ..	
-    fi
-
 	cd $WRE_BUILDDIR
 }
 
@@ -203,10 +161,7 @@ buildMysql(){
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
-    if [ "$WRE_BUILD_WDK" != 1 ]; then
-        WRE_MYSQL_EXTRAS="--without-docs --without-man --without-bench"
-    fi
-	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock $WRE_MYSQL_EXTRAS; checkError $? "MySQL Configure"
+	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-large-files=yes --enable-largefile=yes --with-openssl=$WRE_ROOT/prereqs --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man --without-bench; checkError $? "MySQL Configure"
 	$WRE_MAKE; checkError $? "MySQL make"
 	$WRE_MAKE install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR
@@ -450,32 +405,6 @@ installPerlModules(){
     buildPerlModule "Devel-StackTrace-1.1902"
     installPerlModule "Class-Data-Inheritable-0.08"
     installPerlModule "Exception-Class-1.23"
-    if [ "$WRE_BUILD_WDK" == 1 ]; then # wdk only perl modules
-        buildPerlModule "Alien-GvaScript-1.03"
-        installPerlModule "Module-CoreList-2.11"
-        installPerlModule "Pod-POM-0.17"
-        installPerlModule "Search-Indexer-0.74"
-        installPerlModule "PPI-HTML-1.07"
-        WRE_BERKLEY_VERSION="BerkeleyDB-0.31"
-        perl -i -p -e"s[/usr/local/BerkeleyDB][$WRE_ROOT/prereqs]g" $WRE_BERKLEY_VERSION/config.in
-        installPerlModule "BerkeleyDB-0.31"
-        installPerlModule "Search-QueryParser-0.91"
-        installPerlModule "Pod-POM-Web-1.04"
-	    installPerlModule "XML-RSS-Parser-4"
-        installPerlModule "HTTP-Server-Simple-0.27"
-        installPerlModule "TimeDate-1.16"
-        installPerlModule "Number-Format-1.52"
-        installPerlModule "Locale-Maketext-1.10"
-        installPerlModule "Locale-Maketext-Lexicon-0.64"
-        installPerlModule "Template-Plugin-Clickable-0.06"
-        buildPerlModule "Template-Plugin-Clickable-Email-0.01"
-        installPerlModule "Template-Plugin-Number-Format-1.01"
-        installPerlModule "WWW-Mechanize-1.30"
-        installPerlModule "YAML-0.65"
-        installPerlModule "SVN-Web-0.53"
-        installPerlModule "Devel-Cover-0.63"
-        installPerlModule "SMTP-Server-1.1"
-    fi
 	cd $WRE_BUILDDIR
 }
 
@@ -492,10 +421,6 @@ installWreUtils(){
 	cp -Rf wre /data/
     if [ ! -d "$WRE_ROOT/etc" ]; then
 	    mkdir $WRE_ROOT/etc
-    fi
-    if [ "$WRE_BUILD_WDK" != 1 ]; then
-        rm -f $WRE_ROOT/bin/apiindexer.pl   
-        rm -f $WRW_ROOT/bin/apiwebserver.pl
     fi
 }
 
@@ -542,6 +467,7 @@ cat <<_WREHELP
   --all             builds all packages
   --clean           cleans all pre-req folders for a new build
   --help            displays this screen
+  --ia64            turns on special flags for building on 64-bit systems
 
 
   Packages:         (must be built in the order shown below)
@@ -554,7 +480,6 @@ cat <<_WREHELP
   --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
-  --with-wdk        compiles and installs WebGUI Developmment Kit tools
                                
 _WREHELP
 
@@ -569,6 +494,10 @@ do
 
   case "$opt" in
  
+    --ia64)
+      export WRE_IA64=1
+    ;;
+
     --clean)
       export WRE_CLEAN=1
     ;;
@@ -617,10 +546,6 @@ do
     
     --wre)
         export WRE_BUILD_WRE=1
-    ;;
-    
-    --with-wdk | --wdk)
-        export WRE_BUILD_WDK=1
     ;;
     
     --wre=revolutionary)
@@ -741,9 +666,7 @@ if [ -d /data ]; then
     if [ "$WRE_BUILD_WRE" == 1 ]; then
  		installWreUtils
     fi
-    if [ "$WRE_BUILD_WDK" != 1 ]; then
-        makeItSmall
-    fi
+    makeItSmall
     printHeader "Complete And Successful"
 else
   	echo "You must create a writable /data folder to begin."
