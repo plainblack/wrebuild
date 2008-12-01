@@ -53,22 +53,26 @@ buildUtils(){
 	$WRE_MAKE install; checkError $? "openssl make install"
 	cd ..	
 
+    # libiconv
+    buildProgram "libiconv-1.12"
+
 	# lftp
-    case "$WRE_OSNAME" in
-        FreeBSD | OpenBSD)
-            export WRE_LFTPOPTIONS="--with-libiconv-prefix=/usr/local"
-        ;;
-        *)
-            export WRE_LFTPOPTIONS=""
-        ;;
-    esac
-	buildProgram "lftp-3.5.10" "$WRE_LFTPOPTIONS --with-openssl=$WRE_ROOT/prereqs"
+	buildProgram "lftp-3.5.10" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
 
 	# zlib
 	buildProgram "zlib-1.2.3" "--shared"
 
 	# libtool
 	buildProgram "libtool-1.5.22"
+
+    # libgpg-error
+    buildProgram "libgpg-error-1.7"
+
+    # libgcrypt
+    buildProgram "libgcrypt-1.4.3"
+
+    # gnutls
+    buildProgram "gnutls-2.6.2"
 
 	# catdoc
 	cd catdoc-0.94.2
@@ -106,7 +110,11 @@ buildPerl(){
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-	./Configure -Dprefix=$WRE_ROOT/prereqs -des; checkError $? "Perl Configure" 
+    if [ "$WRE_IA64" == 1]; then
+        # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
+        PERLCFGOPTS="-Accflags=\"-fPIC\""
+    fi
+	./Configure -Dprefix=$WRE_ROOT/prereqs -des $PERLCFGOPTS; checkError $? "Perl Configure" 
 	$WRE_MAKE; checkError $? "Perl make"
 	$WRE_MAKE install; checkError $? "Perl make install"
 	cd $WRE_BUILDDIR

@@ -3,6 +3,11 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 
 1.0.0
  - Removed ill-fated WDK option.
+ - Added the following components:
+    gnutils-2.6.2
+    libgcrypt-1.4.3
+    libgpg-error-1.7
+    libiconv-1.12
  - Removed the following components:
     Alien-GvaScript-1.03
     Module-CoreList-2.11
