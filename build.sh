@@ -42,7 +42,7 @@ buildUtils(){
 	cd source
 	
 	# openssl
-	cd openssl-0.9.7m
+	cd openssl-0.9.8i 
     printHeader "openssl"
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -57,13 +57,13 @@ buildUtils(){
     buildProgram "libiconv-1.12"
 
 	# lftp
-	buildProgram "lftp-3.5.10" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
+	buildProgram "lftp-3.7.6" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
 
 	# zlib
 	buildProgram "zlib-1.2.3" "--shared"
 
 	# libtool
-	buildProgram "libtool-1.5.22"
+	buildProgram "libtool-2.2.6"
 
     # libgpg-error
     buildProgram "libgpg-error-1.7"
@@ -91,10 +91,10 @@ buildUtils(){
 	cd ../..
 
 	# expat
-	buildProgram "expat-2.0.0"
+	buildProgram "expat-2.0.1"
 
 	# lib xml
-	buildProgram "libxml2-2.6.27"
+	buildProgram "libxml2-2.7.2"
 
 	# xpdf
 	buildProgram "xpdf-3.02" "--without-x"
@@ -105,7 +105,7 @@ buildUtils(){
 # perl
 buildPerl(){
 	printHeader "Perl"
-	cd source/perl-5.8.8
+	cd source/perl-5.10.0
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
@@ -127,7 +127,7 @@ buildApache(){
     cd source
 
 	# apache
-	cd httpd-2.0.63
+	cd httpd-2.2.10
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
@@ -194,16 +194,16 @@ buildImageMagick(){
     cd ..
 
     # freetype
-    buildProgram "freetype-2.3.4" "--enable-shared"
+    buildProgram "freetype-2.3.7" "--enable-shared"
 
     # lib ungif
-    buildProgram "libungif-4.1.4" "--enable-shared"
+    buildProgram "giflib-4.1.6" "--enable-shared"
 
     # lib png
-    buildProgram "libpng-1.2.18" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
+    buildProgram "libpng-1.2.33" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # image magick
-    cd ImageMagick-6.4.3
+    cd ImageMagick-6.4.6-8
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -261,17 +261,20 @@ installPerlModules(){
 	printHeader "Perl Modules"
 	cd source/perlmodules
 	installPerlModule "Net_SSLeay.pm-1.25" "$WRE_ROOT/prereqs"
-	installPerlModule "Compress-Zlib-1.39"  # on upgrade modify config.in to point to our libs
+    installPerlModule "Compress-Raw-Zlib-2.015" # on upgrade modify config.in to point to our libs
+    installPerlModule "IO-Compress-Base-2.015"
+    installPerlModule "IO-Compress-Zlib-2.015"
+	installPerlModule "Compress-Zlib-2.015"  
     if [ "$WRE_OSTYPE" != "Leopard" ]; then
 	    installPerlModule "Proc-ProcessTable-0.40"
     fi
-	installPerlModule "BSD-Resource-1.25"
+	installPerlModule "BSD-Resource-1.2901"
 	installPerlModule "URI-1.35"
 	installPerlModule "IO-Zlib-1.04"
 	installPerlModule "HTML-Tagset-3.10"
 	installPerlModule "HTML-Parser-3.54"
 	installPerlModule "libwww-perl-5.805" "-n"
-	installPerlModule "CGI.pm-3.20"
+	installPerlModule "CGI.pm-3.42"
 	installPerlModule "Digest-HMAC-1.01"
 	installPerlModule "Digest-MD5-2.36"
 	installPerlModule "Digest-SHA1-2.11"
@@ -291,7 +294,7 @@ installPerlModules(){
 	installPerlModule "DateTime-0.37"
 	installPerlModule "DateTime-Format-Strptime-1.0700"
 	installPerlModule "HTML-Template-2.9"
-	installPerlModule "Crypt-SSLeay-0.54" "--lib=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include" # on upgrade mod Makefile.PL to remove network tests
+	installPerlModule "Crypt-SSLeay-0.57" "--lib=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include" # on upgrade mod Makefile.PL to remove network tests
 	buildPerlModule "String-Random-0.21"
 	installPerlModule "Time-HiRes-1.9707"
 	installPerlModule "Text-Balanced-1.97"
@@ -301,8 +304,8 @@ installPerlModules(){
 	installPerlModule "HTML-Highlight-0.20"
 	installPerlModule "HTML-TagFilter-1.03"
 	installPerlModule "IO-String-1.08"
-	installPerlModule "Archive-Tar-1.29"
-	installPerlModule "Archive-Zip-1.16"
+	installPerlModule "Archive-Tar-1.40"
+	installPerlModule "Archive-Zip-1.26"
 	installPerlModule "XML-NamespaceSupport-1.09"
     installPerlModule "XML-Parser-2.34" "EXPATLIBPATH=$WRE_ROOT/prereqs/lib EXPATINCPATH=$WRE_ROOT/prereqs/include"
 	installPerlModule "XML-SAX-0.14"
@@ -312,16 +315,16 @@ installPerlModules(){
 	installPerlModule "SOAP-Lite-0.67" "--noprompt"
 	installPerlModule "DBI-1.54"
 	installPerlModule "DBD-mysql-4.004"
-	installPerlModule "Convert-ASN1-0.20"
+	installPerlModule "Convert-ASN1-0.22"
 	installPerlModule "HTML-TableExtract-2.07"
 	installPerlModule "Finance-Quote-1.13"
 	installPerlModule "JSON-XS-2.01"
-	installPerlModule "JSON-2.05"
+	installPerlModule "JSON-2.12"
     installPerlModule "version-0.7203"
     installPerlModule "Path-Class-0.16"
 	installPerlModule "Config-JSON"
 	installPerlModule "IO-Socket-SSL-0.97"
-    export AUTHEN_SASL_VERSION="Authen-SASL-2.10"
+    export AUTHEN_SASL_VERSION="Authen-SASL-2.12"
     $WRE_ROOT/prereqs/bin/perl -ni -e 'print unless /GSSAPI mechanism/ .. /\],/' $AUTHEN_SASL_VERSION/Makefile.PL
 	installPerlModule $AUTHEN_SASL_VERSION
     export LDAP_VERSION="perl-ldap-0.33"
@@ -335,7 +338,7 @@ installPerlModules(){
 	installPerlModule "ExtUtils-XSBuilder-0.28"
     installPerlModule "ExtUtils-MakeMaker-6.42"
 	installPerlModule "trace-0.51"
-	installPerlModule "Clone-0.20"
+	installPerlModule "Clone-0.29"
 	installPerlModule "Test-Pod-1.24"
 	installPerlModule "Data-Structure-Util-0.11"
 	installPerlModule "Parse-RecDescent-1.94"
@@ -354,7 +357,7 @@ installPerlModules(){
 	installPerlModule "Scalar-List-Utils-1.18"
 	installPerlModule "Graphics-ColorNames-1.06"
 	installPerlModule "Module-Load-0.10"
-	installPerlModule "Color-Calc-1.00"
+	installPerlModule "Color-Calc-1.05"
 	installPerlModule "DateTime-Format-Mail-0.2901"
 	installPerlModule "Digest-BubbleBabble-0.01"
 	installPerlModule "Net-IP-1.25"
@@ -375,7 +378,7 @@ installPerlModules(){
 	installPerlModule "File-Temp-0.18"
 	installPerlModule "File-Path-2.04"
 	installPerlModule "File-Which-0.05"
-	installPerlModule "Class-InsideOut-1.06"
+	installPerlModule "Class-InsideOut-1.09"
 	installPerlModule "HTML-TagCloud-0.34"
 	installPerlModule "Set-Infinite-0.61"
 	installPerlModule "DateTime-Set-0.25"
@@ -389,8 +392,8 @@ installPerlModules(){
 	installPerlModule "Image-ExifTool-7.30"
 	# aspell
     cd ..
-	buildProgram "aspell-0.60.5" "" "exec_prefix=$WRE_ROOT/prereqs"
-    cd aspell-en-0.51-1
+	buildProgram "aspell-0.60.6" "" "exec_prefix=$WRE_ROOT/prereqs"
+    cd aspell6-en-6.0-0
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
@@ -420,7 +423,7 @@ installPerlModules(){
 #awstats
 installAwStats(){
 	printHeader "AWStats"
-	cp -RL source/awstats-6.6/* $WRE_ROOT/prereqs/
+	cp -RL source/awstats-6.8/* $WRE_ROOT/prereqs/
 }
 
 #wre utils
