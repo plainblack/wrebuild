@@ -67,7 +67,8 @@
 #    RewriteRule ^/(.*) http://%{SERVER_NAME}/$1 [P]
 #
 #	 # proxy webgui pages
-#    RewriteRule ^/(.*) http://%{HTTP_HOST}:[% modperlPort %]/$1 [P]
+#    ProxyPreserveHost On
+#    RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
 #
 #    # enable SSL 
 #    SSLEngine on

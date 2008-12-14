@@ -14,6 +14,8 @@ $| = 1;
 
 use strict;
 use lib '/data/wre/lib';
+use Fcntl qw(:flock);
+use List::Util qw/first sum max/;
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;
@@ -22,7 +24,12 @@ use WRE::Modproxy;
 use WRE::Mysql;
 use WRE::Spectre;
 
-use List::Util qw/first sum max/;
+# don't want two copies of this to run simultaneously
+unless (flock(DATA, LOCK_EX|LOCK_NB)) {
+    print "$0 is already running. Exiting.\n";
+    exit(1);
+}
+
 
 my $config = WRE::Config->new;
 
@@ -154,5 +161,9 @@ sub sendEmail {
         logEntry("Cannot connect to mail server.");
     }
 }
+
+__DATA__
+This exists so flock() code above works.
+DO NOT REMOVE THIS DATA SECTION.
 
 

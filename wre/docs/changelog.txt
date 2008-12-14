@@ -2,6 +2,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 1.0.0
+ - Multiple copies of WRE Monitor can no longer run simultaneously, this
+   eliminates the possibility of WRE Monitor panic.
  - Removed ill-fated WDK option.
  - Upgraded the following components to these new versions:
     aspell6-en-6.0-0
@@ -19,7 +21,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     openssl-0.9.8i
     JSON-2.12
     JSON-XS-2.231
-    Config-JSON-1.3.0
+    Config-JSON-1.3.1
     Archive-Tar-1.40
     Archive-Zip-1.26
     Authen-SASL-2.12
