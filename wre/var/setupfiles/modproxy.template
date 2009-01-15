@@ -1,30 +1,30 @@
 <VirtualHost *:[% modproxyPort %]>
-	ServerName [% sitename %]
-	ServerAlias [% domain %]
-	CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
-	DocumentRoot [% domainRoot %]/[% sitename %]/public
+    ServerName [% sitename %]
+    ServerAlias [% domain %]
+    CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
+    DocumentRoot [% domainRoot %]/[% sitename %]/public
 
     # turn on mod_rewrite
-	RewriteEngine On
-	RewriteLog "[% wreRoot %]/var/logs/modrewrite.log"
-	RewriteLogLevel 0
+    RewriteEngine On
+    RewriteLog "[% wreRoot %]/var/logs/modrewrite.log"
+    RewriteLogLevel 0
 
-	# block IIS related attacks from getting to WebGUI
-	RewriteRule ^/scripts/ - [L]
-	RewriteRule ^/default.ida - [L]
-	RewriteRule ^/_vti_bin - [L]
-	RewriteRule ^/_mem_bin - [L] 
+    # block IIS related attacks from getting to WebGUI
+    RewriteRule ^/scripts/ - [L]
+    RewriteRule ^/default.ida - [L]
+    RewriteRule ^/_vti_bin - [L]
+    RewriteRule ^/_mem_bin - [L]
 
-	# leave static stuff to be served directly by modproxy
+    # leave static stuff to be served directly by modproxy
     RewriteRule ^/favicon.ico - [L]
     RewriteRule ^/extras/ - [L]
 
     # For speed we only pass on uploads if there is a .wgaccess file
     RewriteCond %{REQUEST_FILENAME}             ^(.*/)
-    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f
+    RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f
     RewriteRule ^/uploads/                      - [L]
 
-	# proxy webgui pages
+    # proxy webgui pages
     ProxyPreserveHost On
     RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
 </VirtualHost>
@@ -35,38 +35,34 @@
 
 #Listen 10.0.0.1:443
 #<VirtualHost 10.0.0.1:443>
-#	 ServerName [% sitename %]
-#	 CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
-#	 DocumentRoot [% domainRoot %]/[% sitename %]/public
+#    ServerName [% sitename %]
+#    CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
+#    DocumentRoot [% domainRoot %]/[% sitename %]/public
 #
 #    # let modperl know we're using SSL
 #    RequestHeader add SSLPROXY "1"
 #
 #    # turn on mod_rewrite
-#	 RewriteEngine On
-#	 RewriteLog "[% wreRoot %]/var/logs/modrewrite.log"
-#	 RewriteLogLevel 0
+#    RewriteEngine On
+#    RewriteLog "[% wreRoot %]/var/logs/modrewrite.log"
+#    RewriteLogLevel 0
 #
-#	 # block IIS related attacks from getting to WebGUI
-#	 RewriteRule ^/scripts/ - [L]
-#	 RewriteRule ^/default.ida - [L]
-#	 RewriteRule ^/_vti_bin - [L]
-#	 RewriteRule ^/_mem_bin - [L] 
+#    # block IIS related attacks from getting to WebGUI
+#    RewriteRule ^/scripts/ - [L]
+#    RewriteRule ^/default.ida - [L]
+#    RewriteRule ^/_vti_bin - [L]
+#    RewriteRule ^/_mem_bin - [L]
 #
-#	 # leave static stuff to be served directly by modproxy
+#    # leave static stuff to be served directly by modproxy
 #    RewriteRule ^/favicon.ico - [L]
 #    RewriteRule ^/extras/ - [L]
 #
 #    # For speed we only pass on uploads if there is a .wgaccess file
 #    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
-#    RewriteCond ${DOCUMENT_ROOT}%1.wgaccess     !-f 
+#    RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f 
 #    RewriteRule ^/uploads/                      - [L] 
 #
-#    # deal with port number in HTTP_HOST
-#    RewriteCond %{HTTP_HOST} :443
-#    RewriteRule ^/(.*) http://%{SERVER_NAME}/$1 [P]
-#
-#	 # proxy webgui pages
+#    # proxy webgui pages
 #    ProxyPreserveHost On
 #    RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
 #
