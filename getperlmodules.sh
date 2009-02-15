@@ -202,7 +202,171 @@ tar zxf XML-SAX-Expat-0.40.tar.gz
 wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-Simple-2.18.tar.gz
 tar zxf XML-Simple-2.18.tar.gz
 
-# ... more to come
+# http://search.cpan.org/dist/XML-RSSLite/
+wget http://search.cpan.org/CPAN/authors/id/J/JP/JPIERCE/XML-RSSLite-0.11.tgz
+tar zxf XML-RSSLite-0.11.tgz
+
+# http://search.cpan.org/dist/SOAP-Lite/
+wget http://search.cpan.org/CPAN/authors/id/M/MK/MKUTTER/SOAP-Lite-0.710.08.tar.gz
+tar zxf SOAP-Lite-0.710.08.tar.gz
+
+# http://search.cpan.org/dist/DBI/
+wget http://search.cpan.org/CPAN/authors/id/T/TI/TIMB/DBI-1.607.tar.gz
+tar zxf DBI-1.607.tar.gz
+
+# http://search.cpan.org/dist/DBD-mysql/
+wget http://search.cpan.org/CPAN/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.010.tar.gz
+tar zxf DBD-mysql-4.010.tar.gz
+
+# http://search.cpan.org/dist/Convert-ASN1/
+wget http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/Convert-ASN1-0.22.tar.gz
+tar zxf Convert-ASN1-0.22.tar.gz
+
+# http://search.cpan.org/dist/HTML-TableExtract/
+wget http://search.cpan.org/CPAN/authors/id/M/MS/MSISK/HTML-TableExtract-2.10.tar.gz
+tar zxf HTML-TableExtract-2.10.tar.gz
+
+# http://search.cpan.org/dist/Finance-Quote/
+wget http://search.cpan.org/CPAN/authors/id/E/EC/ECOCODE/Finance-Quote-1.15.tar.gz
+tar zxf Finance-Quote-1.15.tar.gz
+
+# http://search.cpan.org/dist/JSON-XS/
+wget http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/JSON-XS-2.231.tar.gz
+tar zxf JSON-XS-2.231.tar.gz
+
+# http://search.cpan.org/dist/JSON/
+wget http://search.cpan.org/CPAN/authors/id/M/MA/MAKAMAKA/JSON-2.12.tar.gz
+tar zxf JSON-2.12.tar.gz
+
+# http://search.cpan.org/dist/version/
+wget http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK/version-0.76.tar.gz
+tar zxf version-0.76.tar.gz
+
+# http://search.cpan.org/dist/Path-Class/
+wget http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/Path-Class-0.16.tar.gz
+tar zxf Path-Class-0.16.tar.gz
+
+# http://search.cpan.org/dist/Config-JSON/
+wget http://search.cpan.org/CPAN/authors/id/R/RI/RIZEN/Config-JSON-1.3.1.tar.gz
+tar zxf Config-JSON-1.3.1.tar.gz
+
+# http://search.cpan.org/dist/IO-Socket-SSL/
+wget http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/IO-Socket-SSL-1.22.tar.gz
+tar zxf IO-Socket-SSL-1.22.tar.gz
+
+# http://search.cpan.org/dist/Authen-SASL/
+wget http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/Authen-SASL-2.12.tar.gz
+tar zxf Authen-SASL-2.12.tar.gz
+
+# http://search.cpan.org/dist/perl-ldap/
+wget http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/perl-ldap-0.39.tar.gz
+tar zxf perl-ldap-0.39.tar.gz
+
+# http://search.cpan.org/dist/Log-Log4perl/
+wget http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.20.tar.gz
+tar zxf Log-Log4perl-1.20.tar.gz
+
+# http://search.cpan.org/dist/POE/
+wget http://search.cpan.org/CPAN/authors/id/R/RC/RCAPUTO/POE-1.003.tar.gz
+tar zxf POE-1.003.tar.gz
+
+# http://search.cpan.org/dist/POE-Component-IKC/
+wget http://search.cpan.org/CPAN/authors/id/G/GW/GWYN/POE-Component-IKC-0.2002.tar.gz
+tar zxf POE-Component-IKC-0.2002.tar.gz
+
+# http://search.cpan.org/dist/String-CRC32/
+wget http://search.cpan.org/CPAN/authors/id/S/SO/SOENKE/String-CRC32-1.4.tar.gz
+tar zxf String-CRC32-1.4.tar.gz
+
+# http://search.cpan.org/dist/ExtUtils-XSBuilder/
+wget http://search.cpan.org/CPAN/authors/id/G/GR/GRICHTER/ExtUtils-XSBuilder-0.28.tar.gz
+tar zxf ExtUtils-XSBuilder-0.28.tar.gz
+
+# http://search.cpan.org/dist/ExtUtils-MakeMaker/
+wget http://search.cpan.org/CPAN/authors/id/M/MS/MSCHWERN/ExtUtils-MakeMaker-6.48.tar.gz
+tar zxf ExtUtils-MakeMaker-6.48.tar.gz
+
+# TODO trace to be replaced by: Devel::XRay http://search.cpan.org/dist/Devel-XRay/
+wget http://backpan.perl.org/authors/id/J/JB/JBISBEE/trace-0.551.tar.gz
+tar zxf trace-0.551.tar.gz
+
+# http://search.cpan.org/dist/Clone/
+wget http://search.cpan.org/CPAN/authors/id/R/RD/RDF/Clone-0.31.tar.gz
+tar zxf Clone-0.31.tar.gz
+
+# http://search.cpan.org/dist/Test-Pod/
+wget http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/Test-Pod-1.26.tar.gz
+tar zxf Test-Pod-1.26.tar.gz
+
+# http://search.cpan.org/dist/Data-Structure-Util/
+wget http://search.cpan.org/CPAN/authors/id/A/AN/ANDYA/Data-Structure-Util-0.15.tar.gz
+tar zxf Data-Structure-Util-0.15.tar.gz
+
+# http://search.cpan.org/dist/Parse-RecDescent/
+wget http://search.cpan.org/CPAN/authors/id/D/DC/DCONWAY/Parse-RecDescent-1.96.0.tar.gz
+tar zxf Parse-RecDescent-1.96.0.tar.gz
+
+# http://search.cpan.org/dist/libapreq2/
+wget http://search.cpan.org/CPAN/authors/id/J/JO/JOESUF/libapreq2-2.08.tar.gz
+tar zxf libapreq2-2.08.tar.gz
+
+# http://search.cpan.org/dist/Net-Subnets/
+wget http://search.cpan.org/CPAN/authors/id/S/SR/SRI/Net-Subnets-0.21.tar.gz
+tar zxf Net-Subnets-0.21.tar.gz
+
+# http://search.cpan.org/dist/MailTools/
+wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/MailTools-2.04.tar.gz
+tar zxf MailTools-2.04.tar.gz
+
+# http://search.cpan.org/dist/IO-stringy/
+wget http://search.cpan.org/CPAN/authors/id/D/DS/DSKOLL/IO-stringy-2.110.tar.gz
+tar zxf IO-stringy-2.110.tar.gz
+
+# http://search.cpan.org/dist/MIME-tools/
+wget http://search.cpan.org/CPAN/authors/id/D/DO/DONEILL/MIME-tools-5.427.tar.gz
+tar zxf MIME-tools-5.427.tar.gz
+
+# http://search.cpan.org/dist/HTML-Template-Expr/
+wget http://search.cpan.org/CPAN/authors/id/S/SA/SAMTREGAR/HTML-Template-Expr-0.07.tar.gz
+tar zxf HTML-Template-Expr-0.07.tar.gz
+
+# http://search.cpan.org/dist/Template-Toolkit/
+wget http://search.cpan.org/CPAN/authors/id/A/AB/ABW/Template-Toolkit-2.20.tar.gz
+tar zxf Template-Toolkit-2.20.tar.gz
+
+# http://search.cpan.org/dist/Scalar-List-Utils/
+wget http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/Scalar-List-Utils-1.19.tar.gz
+tar zxf Scalar-List-Utils-1.19.tar.gz
+
+# http://search.cpan.org/dist/Graphics-ColorNames/
+wget http://search.cpan.org/CPAN/authors/id/R/RR/RRWO/Graphics-ColorNames-2.11.tar.gz
+tar zxf Graphics-ColorNames-2.11.tar.gz
+
+# http://search.cpan.org/dist/Module-Load/
+wget http://search.cpan.org/CPAN/authors/id/K/KA/KANE/Module-Load-0.16.tar.gz
+tar zxf Module-Load-0.16.tar.gz
+
+# http://search.cpan.org/dist/Color-Calc/
+wget http://search.cpan.org/CPAN/authors/id/C/CF/CFAERBER/Color-Calc-1.05.tar.gz
+tar zxf Color-Calc-1.05.tar.gz
+
+# http://search.cpan.org/dist/DateTime-Format-Mail/
+wget http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/DateTime-Format-Mail-0.3001.tar.gz
+tar zxf DateTime-Format-Mail-0.3001.tar.gz
+
+# http://search.cpan.org/dist/Digest-BubbleBabble/
+wget http://search.cpan.org/CPAN/authors/id/B/BT/BTROTT/Digest-BubbleBabble-0.01.tar.gz
+tar zxf Digest-BubbleBabble-0.01.tar.gz
+
+# http://search.cpan.org/dist/Net-IP/
+wget http://search.cpan.org/CPAN/authors/id/M/MA/MANU/Net-IP-1.25.tar.gz
+tar zxf Net-IP-1.25.tar.gz
+
+# http://search.cpan.org/dist/Net-DNS/
+wget http://search.cpan.org/CPAN/authors/id/O/OL/OLAF/Net-DNS-0.65.tar.gz
+tar zxf Net-DNS-0.65.tar.gz
+
+# almost there ...
 
 
 
