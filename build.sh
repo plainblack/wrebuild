@@ -42,7 +42,7 @@ buildUtils(){
 	cd source
 	
 	# openssl
-	cd openssl-0.9.8i 
+	cd openssl-0.9.8j 
     printHeader "openssl"
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -56,23 +56,23 @@ buildUtils(){
     # libiconv
     buildProgram "libiconv-1.12"
 
-	# lftp
-	buildProgram "lftp-3.7.6" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
+    # lftp
+    buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
 
-	# zlib
-	buildProgram "zlib-1.2.3" "--shared"
+    # zlib
+    buildProgram "zlib-1.2.3" "--shared"
 
-	# libtool
-	buildProgram "libtool-2.2.6"
+    # libtool
+    buildProgram "libtool-2.2.6a"
 
     # libgpg-error
     buildProgram "libgpg-error-1.7"
 
     # libgcrypt
-    buildProgram "libgcrypt-1.4.3"
+    buildProgram "libgcrypt-1.4.4"
 
     # gnutls
-    buildProgram "gnutls-2.6.2"
+    buildProgram "gnutls-2.6.4"
 
 	# catdoc
 	cd catdoc-0.94.2
@@ -94,7 +94,7 @@ buildUtils(){
 	buildProgram "expat-2.0.1"
 
 	# lib xml
-	buildProgram "libxml2-2.7.2"
+	buildProgram "libxml2-2.7.3"
 
 	# xpdf
 	buildProgram "xpdf-3.02" "--without-x"
@@ -127,7 +127,7 @@ buildApache(){
     cd source
 
 	# apache
-	cd httpd-2.2.10
+	cd httpd-2.2.11
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
@@ -194,16 +194,16 @@ buildImageMagick(){
     cd ..
 
     # freetype
-    buildProgram "freetype-2.3.7" "--enable-shared"
+    buildProgram "freetype-2.3.8" "--enable-shared"
 
     # lib ungif
     buildProgram "giflib-4.1.6" "--enable-shared"
 
     # lib png
-    buildProgram "libpng-1.2.33" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
+    buildProgram "libpng-1.2.34" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
   
     # image magick
-    cd ImageMagick-6.4.6-8
+    cd ImageMagick-6.4.9-4
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
