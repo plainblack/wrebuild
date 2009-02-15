@@ -1245,6 +1245,7 @@ sub www_setup {
              }
         }
         else {
+            my $mysql = WRE::Mysql->new(wreConfig=>$config);
             $config->set("wreMonitor/items/mysql", 0);
             print $socket "<p>Connecting</p>";
             my $db = eval { $mysql->getDatabaseHandle(password=>$collected->{mysqlAdminPassword}, username=>$collected->{mysqlAdminUser})};
