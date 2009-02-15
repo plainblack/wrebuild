@@ -59,7 +59,7 @@ tar zxf libiconv-1.12.tar.gz
 # libjpeg image manipulation
 wget http://freshmeat.net/redir/libjpeg/5665/url_tgz/jpegsrc.v6b.tar.gz
 tar zxf jpegsrc.v6b.tar.gz
-
+mv jpeg-6b libjpeg-6b
 
 # libpng image manipulation
 wget http://surfnet.dl.sourceforge.net/sourceforge/libpng/libpng-1.2.34.tar.bz2

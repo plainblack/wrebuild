@@ -96,6 +96,7 @@ build-essential
 g++
 make
 ncurses-dev
+libreadline5-dev
 
 
 

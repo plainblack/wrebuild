@@ -63,7 +63,7 @@ buildUtils(){
     buildProgram "zlib-1.2.3" "--shared"
 
     # libtool
-    buildProgram "libtool-2.2.6a"
+    buildProgram "libtool-2.2.6"
 
     # libgpg-error
     buildProgram "libgpg-error-1.7"
