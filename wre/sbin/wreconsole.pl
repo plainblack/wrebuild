@@ -1254,7 +1254,7 @@ sub www_setup {
             else {
                 print $socket "<p>Setting Privileges</p>";
                 $db->do("grant all privileges on test.* to test\@'%' identified by 'test'");
-                $db->do("grant select, lock tables, show on *.* to backup\@'%' identified by '".$mysqlBackupPassword."'");
+                $db->do("grant select, lock tables, show databases on *.* to backup\@'%' identified by '".$mysqlBackupPassword."'");
                 $db->do("flush privileges");
                 print $socket "<p>Disconnecting</p>";
                 $db->disconnect;
