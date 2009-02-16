@@ -366,7 +366,145 @@ tar zxf Net-IP-1.25.tar.gz
 wget http://search.cpan.org/CPAN/authors/id/O/OL/OLAF/Net-DNS-0.65.tar.gz
 tar zxf Net-DNS-0.65.tar.gz
 
-# almost there ...
+# http://search.cpan.org/dist/POE-Component-Client-DNS/
+wget http://search.cpan.org/CPAN/authors/id/R/RC/RCAPUTO/POE-Component-Client-DNS-1.02.tar.gz
+tar zxf POE-Component-Client-DNS-1.02.tar.gz
+
+# http://search.cpan.org/dist/POE-Component-Client-Keepalive/
+wget http://search.cpan.org/CPAN/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive-0.25.tar.gz
+tar zxf POE-Component-Client-Keepalive-0.25.tar.gz
+
+# http://search.cpan.org/dist/POE-Component-Client-HTTP/
+wget http://search.cpan.org/CPAN/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.87.tar.gz
+tar zxf POE-Component-Client-HTTP-0.87.tar.gz
+
+# http://search.cpan.org/dist/Test-Deep/
+wget http://search.cpan.org/CPAN/authors/id/F/FD/FDALY/Test-Deep-0.103.tar.gz
+tar zxf Test-Deep-0.103.tar.gz
+
+# http://search.cpan.org/dist/Test-MockObject/
+wget http://search.cpan.org/CPAN/authors/id/C/CH/CHROMATIC/Test-MockObject-1.09.tar.gz
+tar zxf Test-MockObject-1.09.tar.gz
+
+# http://search.cpan.org/dist/UNIVERSAL-isa/
+wget http://search.cpan.org/CPAN/authors/id/C/CH/CHROMATIC/UNIVERSAL-isa-1.01.tar.gz
+tar zxf UNIVERSAL-isa-1.01.tar.gz
+
+# http://search.cpan.org/dist/UNIVERSAL-can/
+wget http://search.cpan.org/CPAN/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.12.tar.gz
+tar zxf UNIVERSAL-can-1.12.tar.gz
+
+# http://search.cpan.org/~evo/Class-MakeMethods-1.01/
+wget http://search.cpan.org/CPAN/authors/id/E/EV/EVO/Class-MakeMethods-1.01.tar.gz
+tar zxf Class-MakeMethods-1.01.tar.gz
+
+# http://search.cpan.org/dist/Locale-US/
+wget http://search.cpan.org/CPAN/authors/id/T/TB/TBONE/Locale-US-1.2.tar.gz
+tar zxf Locale-US-1.2.tar.gz
+
+# http://search.cpan.org/dist/Time-Format/
+wget http://search.cpan.org/CPAN/authors/id/R/RO/ROODE/Time-Format-1.09.tar.gz
+tar zxf Time-Format-1.09.tar.gz
+
+# http://search.cpan.org/dist/Weather-Com/
+wget http://search.cpan.org/CPAN/authors/id/S/SC/SCHNUECK/Weather-Com-0.5.3.tar.gz
+tar zxf Weather-Com-0.5.3.tar.gz
+
+# http://search.cpan.org/dist/File-Slurp/
+wget http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/File-Slurp-9999.13.tar.gz
+tar zxf File-Slurp-9999.13.tar.gz
+
+# http://search.cpan.org/dist/Text-CSV_XS/
+wget http://search.cpan.org/CPAN/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.60.tgz
+tar zxf Text-CSV_XS-0.60.tgz
+
+# http://search.cpan.org/dist/File-Temp/
+wget http://search.cpan.org/CPAN/authors/id/T/TJ/TJENNESS/File-Temp-0.21.tar.gz
+tar zxf File-Temp-0.21.tar.gz
+
+# http://search.cpan.org/dist/File-Path/
+wget http://search.cpan.org/CPAN/authors/id/D/DL/DLAND/File-Path-2.07.tar.gz
+tar zxf File-Path-2.07.tar.gz
+
+# http://search.cpan.org/dist/File-Which/
+wget http://search.cpan.org/CPAN/authors/id/P/PE/PEREINAR/File-Which-0.05.tar.gz
+tar zxf File-Which-0.05.tar.gz
+
+# http://search.cpan.org/dist/Class-InsideOut/
+wget http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/Class-InsideOut-1.09.tar.gz
+tar zxf Class-InsideOut-1.09.tar.gz
+
+# http://search.cpan.org/dist/HTML-TagCloud/
+wget http://search.cpan.org/CPAN/authors/id/L/LB/LBROCARD/HTML-TagCloud-0.34.tar.gz
+tar zxf HTML-TagCloud-0.34.tar.gz
+
+# http://search.cpan.org/dist/Set-Infinite/
+wget http://search.cpan.org/CPAN/authors/id/F/FG/FGLOCK/Set-Infinite-0.63.tar.gz
+tar zxf Set-Infinite-0.63.tar.gz
+
+# http://search.cpan.org/dist/DateTime-Set/
+wget http://search.cpan.org/CPAN/authors/id/F/FG/FGLOCK/DateTime-Set-0.26.tar.gz
+tar zxf DateTime-Set-0.26.tar.gz
+
+# http://search.cpan.org/dist/DateTime-Event-Recurrence/
+wget http://search.cpan.org/CPAN/authors/id/F/FG/FGLOCK/DateTime-Event-Recurrence-0.16.tar.gz
+tar zxf DateTime-Event-Recurrence-0.16.tar.gz
+
+# http://search.cpan.org/dist/DateTime-Event-ICal/
+wget http://search.cpan.org/CPAN/authors/id/F/FG/FGLOCK/DateTime-Event-ICal-0.09.tar.gz
+tar zxf DateTime-Event-ICal-0.09.tar.gz
+
+# http://search.cpan.org/dist/MIME-Types/
+wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/MIME-Types-1.27.tar.gz
+tar zxf MIME-Types-1.27.tar.gz
+
+# http://search.cpan.org/dist/File-MMagic/
+wget http://search.cpan.org/CPAN/authors/id/K/KN/KNOK/File-MMagic-1.27.tar.gz
+tar zxf File-MMagic-1.27.tar.gz
+
+# http://search.cpan.org/dist/PathTools/
+wget http://search.cpan.org/CPAN/authors/id/S/SM/SMUELLER/PathTools-3.29.tar.gz
+tar zxf PathTools-3.29.tar.gz
+
+# http://search.cpan.org/dist/Module-Find/
+wget http://search.cpan.org/CPAN/authors/id/C/CR/CRENZ/Module-Find-0.06.tar.gz
+tar zxf Module-Find-0.06.tar.gz
+
+# http://search.cpan.org/dist/Archive-Any/
+wget http://search.cpan.org/CPAN/authors/id/C/CM/CMOORE/Archive-Any-0.0932.tar.gz
+tar zxf Archive-Any-0.0932.tar.gz
+
+# http://search.cpan.org/dist/Image-ExifTool/
+wget http://search.cpan.org/CPAN/authors/id/E/EX/EXIFTOOL/Image-ExifTool-7.67.tar.gz
+tar zxf Image-ExifTool-7.67.tar.gz
+
+# http://search.cpan.org/dist/Text-Aspell/
+wget http://search.cpan.org/CPAN/authors/id/H/HA/HANK/Text-Aspell-0.09.tar.gz
+tar zxf Text-Aspell-0.09.tar.gz
+
+# http://search.cpan.org/dist/MySQL-Diff/
+wget http://search.cpan.org/CPAN/authors/id/A/AS/ASPIERS/MySQL-Diff-0.33.tar.gz
+tar zxf MySQL-Diff-0.33.tar.gz
+
+# http://search.cpan.org/dist/List-MoreUtils/
+wget http://search.cpan.org/CPAN/authors/id/V/VP/VPARSEVAL/List-MoreUtils-0.22.tar.gz
+tar zxf List-MoreUtils-0.22.tar.gz
+
+# http://search.cpan.org/dist/Scalar-List-Utils/
+wget http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/Scalar-List-Utils-1.19.tar.gz
+tar zxf Scalar-List-Utils-1.19.tar.gz
+
+# http://search.cpan.org/dist/Devel-StackTrace/
+wget http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Devel-StackTrace-1.20.tar.gz
+tar zxf Devel-StackTrace-1.20.tar.gz
+
+# http://search.cpan.org/dist/Class-Data-Inheritable/
+wget http://search.cpan.org/CPAN/authors/id/T/TM/TMTM/Class-Data-Inheritable-0.08.tar.gz
+tar zxf Class-Data-Inheritable-0.08.tar.gz
+
+# http://search.cpan.org/dist/Exception-Class/
+wget http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Exception-Class-1.26.tar.gz
+tar zxf Exception-Class-1.26.tar.gz
 
 
 
