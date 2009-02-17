@@ -428,7 +428,7 @@ installPerlModules(){
 #awstats
 installAwStats(){
 	printHeader "AWStats"
-	cp -RL source/awstats-6.8/* $WRE_ROOT/prereqs/
+	cp -RL source/awstats-6.9/* $WRE_ROOT/prereqs/
 }
 
 #wre utils
