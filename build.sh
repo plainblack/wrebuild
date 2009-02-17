@@ -317,6 +317,7 @@ installPerlModules(){
 	installPerlModule "DBD-mysql-4.010"
 	installPerlModule "Convert-ASN1-0.22"
 	installPerlModule "HTML-TableExtract-2.10"
+	installPerlModule "HTML-Tree-3.23"
 	installPerlModule "Finance-Quote-1.15"
 	installPerlModule "JSON-XS-2.231"
 	installPerlModule "JSON-2.12"

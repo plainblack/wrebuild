@@ -71,6 +71,10 @@ tar zxf IO-Zlib-1.09.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
 tar zxf HTML-Tagset-3.20.tar.gz
 
+# http://search.cpan.org/dist/HTML-Tree/
+wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETEK/HTML-Tree-3.23.tar.gz
+tar zxf HTML-Tree-3.23.tar.gz
+
 # http://search.cpan.org/dist/HTML-Parser/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/HTML-Parser-3.60.tar.gz
 tar zxf HTML-Parser-3.60.tar.gz
