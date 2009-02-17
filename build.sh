@@ -416,6 +416,11 @@ installPerlModules(){
     buildPerlModule "Devel-StackTrace-1.20"
     installPerlModule "Class-Data-Inheritable-0.08"
     installPerlModule "Exception-Class-1.26"
+    installPerlModule "Algorithm-C3-0.07"
+    installPerlModule "Class-C3-XS-0.08"
+    installPerlModule "Class-C3-0.20"
+    installPerlModule "XML-TreePP-0.37"
+    installPerlModule "XML-FeedPP-0.37"
 	cd $WRE_BUILDDIR
 }
 
