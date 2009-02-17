@@ -416,8 +416,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-isa-1.01.tar.gz
 tar zxf UNIVERSAL-isa-1.01.tar.gz
 
 # http://search.cpan.org/dist/UNIVERSAL-can/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.12.tar.gz
-tar zxf UNIVERSAL-can-1.12.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.13_001.tar.gz
+tar zxf UNIVERSAL-can-1.13_001.tar.gz
 
 # http://search.cpan.org/~evo/Class-MakeMethods-1.01/
 wget -t 4 -nv $CPANMIRROR/authors/id/E/EV/EVO/Class-MakeMethods-1.01.tar.gz

@@ -368,7 +368,7 @@ installPerlModules(){
 	installPerlModule "Test-Deep-0.103"
 	installPerlModule "Test-MockObject-1.09"
 	buildPerlModule "UNIVERSAL-isa-1.01"
-	installPerlModule "UNIVERSAL-can-1.12"
+	installPerlModule "UNIVERSAL-can-1.13_001"
 	installPerlModule "Class-MakeMethods-1.01"
 	installPerlModule "Locale-US-1.2"
 	installPerlModule "Time-Format-1.09"
