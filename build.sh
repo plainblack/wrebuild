@@ -422,6 +422,7 @@ installPerlModules(){
     installPerlModule "Class-C3-0.20"
     installPerlModule "XML-TreePP-0.37"
     installPerlModule "XML-FeedPP-0.37"
+    installPerlModule "Sub-Uplevel-0.2002"
 	cd $WRE_BUILDDIR
 }
 

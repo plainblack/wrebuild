@@ -534,3 +534,7 @@ tar zxf Class-Data-Inheritable-0.08.tar.gz
 # http://search.cpan.org/dist/Exception-Class/
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Exception-Class-1.26.tar.gz
 tar zxf Exception-Class-1.26.tar.gz
+
+# http://search.cpan.org/dist/Sub-Uplevel/
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DA/DAGOLDEN/Sub-Uplevel-0.2002.tar.gz
+tar zxf Sub-Uplevel-0.2002.tar.gz
