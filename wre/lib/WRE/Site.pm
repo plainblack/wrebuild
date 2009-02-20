@@ -267,7 +267,13 @@ sub delete {
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
     $db->do("drop database $databaseName");
-    $db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'%'");
+
+    my $sth = $db->prepare("select Host from `mysql`.`db` where User=? and Db=?");
+    $sth->execute($databaseUser, $databaseName);
+    while (my $row = $sth->fetchrow_arrayref ){
+        my $host = $row->[0];
+        $db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'" . $host . "'");
+    }
 
     # web root
     $file->delete($wreConfig->getDomainRoot("/".$sitename));
