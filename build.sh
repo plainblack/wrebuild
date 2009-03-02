@@ -53,11 +53,14 @@ buildUtils(){
 	$WRE_MAKE install; checkError $? "openssl make install"
 	cd ..	
 
+    # ncurses
+    buildProgram "ncurses-5.7"
+
+    # readline
+    buildProgram "readline-6.0"
+
     # libiconv
     buildProgram "libiconv-1.12"
-
-    # lftp
-    buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
 
     # zlib
     buildProgram "zlib-1.2.3" "--shared"
@@ -74,6 +77,18 @@ buildUtils(){
     # gnutls
     buildProgram "gnutls-2.6.4"
 
+	# expat
+	buildProgram "expat-2.0.1"
+
+	# lib xml
+	buildProgram "libxml2-2.7.3"
+
+    # lftp
+    buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
+
+    # rsync
+    buildProgram "rsync-3.0.5"
+
 	# catdoc
 	cd catdoc-0.94.2
 	if [ "$WRE_CLEAN" == 1 ]; then
@@ -89,12 +104,6 @@ buildUtils(){
 	cd ../charsets
 	$WRE_MAKE install; checkError $? "catdoc make install charsets"
 	cd ../..
-
-	# expat
-	buildProgram "expat-2.0.1"
-
-	# lib xml
-	buildProgram "libxml2-2.7.3"
 
 	# xpdf
 	buildProgram "xpdf-3.02" "--without-x"
@@ -363,9 +372,9 @@ installPerlModules(){
 	installPerlModule "Digest-BubbleBabble-0.01"
 	installPerlModule "Net-IP-1.25"
 	installPerlModule "Net-DNS-0.65" "--noonline-tests"
-	installPerlModule "POE-Component-Client-DNS-1.02"
+	installPerlModule "POE-Component-Client-DNS-1.03"
 	installPerlModule "POE-Component-Client-Keepalive-0.25"
-	installPerlModule "POE-Component-Client-HTTP-0.87"
+	installPerlModule "POE-Component-Client-HTTP-0.88"
 	installPerlModule "Test-Deep-0.103"
 	installPerlModule "Test-MockObject-1.09"
 	buildPerlModule "UNIVERSAL-isa-1.01"

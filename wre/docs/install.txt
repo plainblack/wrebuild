@@ -123,6 +123,8 @@ ln -s /data/wre/sbin/services/redhat/webgui /etc/init.d/webgui
 chkconfig --add webgui
 chkconfig webgui on
 
+On RHEL 5 or higher you need to install the libgomp RPM.
+
 
 
 * Mac OS X
@@ -152,15 +154,4 @@ following commands after the WRE is installed
  echo "webgui_enable=YES" >> /etc/rc.conf.local
 
 
-
-* Microsoft Windows
-
-To use the .pl commands (like wreconsole.pl) you need to double-click on  
-the "Command Prompt.bat" icon in your /data/wre/sbin folder, and then run
-the commands by prefixing them with "perl ", like this:
-
-    perl wreconsole.pl
-
-Before you install the WRE, make sure that you have disabled IIS or
-during the install choose a port other than 80 for mod_proxy to run on.
 

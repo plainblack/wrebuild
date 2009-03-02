@@ -396,16 +396,16 @@ wget -t 4 -nv $CPANMIRROR/authors/id/O/OL/OLAF/Net-DNS-0.65.tar.gz
 tar zxf Net-DNS-0.65.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-DNS/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-DNS-1.02.tar.gz
-tar zxf POE-Component-Client-DNS-1.02.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-DNS-1.03.tar.gz
+tar zxf POE-Component-Client-DNS-1.03.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-Keepalive/
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive-0.25.tar.gz
 tar zxf POE-Component-Client-Keepalive-0.25.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-HTTP/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.87.tar.gz
-tar zxf POE-Component-Client-HTTP-0.87.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.88.tar.gz
+tar zxf POE-Component-Client-HTTP-0.88.tar.gz
 
 # http://search.cpan.org/dist/Test-Deep/
 wget -t 4 -nv $CPANMIRROR/authors/id/F/FD/FDALY/Test-Deep-0.103.tar.gz

@@ -7,6 +7,13 @@
 mkdir source
 cd source
 
+# ncurses
+wget -t 4 -nv http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
+tar xfz ncurses-5.7.tar.gz
+# readline
+wget -t 4 -nv ftp://ftp.cwru.edu/pub/bash/readline-6.0.tar.gz
+tar xfz readline-6.0.tar.gz
+
 # imagemagick
 wget -t 4 -nv ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-6.4.9-4.tar.bz2
 tar jxf ImageMagick-6.4.9-4.tar.bz2
@@ -93,10 +100,6 @@ tar zxf mod_perl-2.0-current.tar.gz
 wget -t 4 -nv http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.31.tar.gz/from/http://mirror.leaseweb.com/mysql/
 tar zxf mysql-5.1.31.tar.gz
 
-# neon http and webdav client
-wget -t 4 -nv http://www.webdav.org/neon/neon-0.28.3.tar.gz
-tar zxf neon-0.28.3.tar.gz
-
 # openssl ssl toolkit
 wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8j.tar.gz
 tar zxf openssl-0.9.8j.tar.gz
@@ -107,14 +110,6 @@ tar zxf perl-5.10.0.tar.gz
 
 # perlmodules
 # SEE SEPARATE SCRIPT
-
-# subversion source code revision system
-wget -t 4 -nv http://subversion.tigris.org/downloads/subversion-1.5.5.tar.bz2
-tar jxf subversion-1.5.5.tar.bz2
-
-# swig script wrapper
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/swig/swig-1.3.38.tar.gz
-tar zxf swig-1.3.38.tar.gz
 
 # xpdf pdf generator
 wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02.tar.gz
@@ -127,5 +122,9 @@ wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl2.patch
 # zlib compression library
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.tar.bz2
 tar jxf zlib-1.2.3.tar.bz2
+
+# rsync
+wget -t 4 -nv http://rsync.samba.org/ftp/rsync/rsync-3.0.5.tar.gz
+tar xfz rsync-3.0.5
 
 

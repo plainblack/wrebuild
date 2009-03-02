@@ -81,7 +81,6 @@ compile the WRE:
 gcc
 g++
 make
-ncurses-dev
 
 
 
@@ -95,8 +94,6 @@ compile the WRE:
 build-essential
 g++
 make
-ncurses-dev
-libreadline5-dev
 
 
 
@@ -108,7 +105,6 @@ You'll need the following RPMs before you can compile:
 
 gcc
 gcc-c++
-ncurses-devel
 autoconf
 
 
@@ -121,7 +117,10 @@ You'll need to install the following RPMs to before you can compile:
 
 gcc
 gcc-c++
-ncurses-devel
+
+On RHEL 5 or higher you also need to install:
+
+libgomp
 
 
 -----------------------------------------------------------------------------
@@ -132,8 +131,6 @@ From the Ports system you'll need to install the following packages before
 you can compile:
 
 bash
-ncurses-devel
-libiconv
 gmake
 autoconf261
 
@@ -148,8 +145,6 @@ ln -s /usr/local/bin/bash /bin/bash
 
 From the OpenBSD Packages you'll need the following items:
 	* bash
-	* ncurses-devel
-	* libiconv
 	* gmake
 	* autoconf-2.61p1
 
