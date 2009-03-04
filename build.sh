@@ -48,16 +48,16 @@ buildUtils(){
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
     fi	
-	./config --prefix=$WRE_ROOT/prereqs; checkError $? "openssl configure"
+	./config --prefix=$WRE_ROOT/prereqs shared; checkError $? "openssl configure"
 	$WRE_MAKE; checkError $? "openssl make"
 	$WRE_MAKE install; checkError $? "openssl make install"
 	cd ..	
 
     # ncurses
-    buildProgram "ncurses-5.7"
+    buildProgram "ncurses-5.7" "--with-shared"
 
     # readline
-    buildProgram "readline-6.0"
+    buildProgram "readline-6.0" "--with-curses"
 
     # libiconv
     buildProgram "libiconv-1.12"
@@ -87,7 +87,7 @@ buildUtils(){
     buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs"
 
     # rsync
-    buildProgram "rsync-3.0.5"
+#    buildProgram "rsync-3.0.5"
 
 	# catdoc
 	cd catdoc-0.94.2
