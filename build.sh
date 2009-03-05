@@ -192,7 +192,7 @@ buildApache(){
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.1.31
+	cd source/mysql-5.1.32
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
