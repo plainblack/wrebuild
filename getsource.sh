@@ -98,7 +98,7 @@ tar zxf mod_perl-2.0-current.tar.gz
 
 # mysql database server
 wget -t 4 -nv http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.32.tar.gz/from/http://mirror.leaseweb.com/mysql/
-tar zxf mysql-5.1.31.tar.gz
+tar zxf mysql-5.1.32.tar.gz
 
 # openssl ssl toolkit
 wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8j.tar.gz
