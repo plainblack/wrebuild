@@ -125,6 +125,6 @@ tar jxf zlib-1.2.3.tar.bz2
 
 # rsync
 wget -t 4 -nv http://rsync.samba.org/ftp/rsync/rsync-3.0.5.tar.gz
-tar xfz rsync-3.0.5
+tar xfz rsync-3.0.5.tar.gz
 
 
