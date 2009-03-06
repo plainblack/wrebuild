@@ -57,11 +57,16 @@ buildUtils(){
     # ncurses
     buildProgram "ncurses-5.7" "--with-shared"
 
-    # libiconv
-    buildProgram "libiconv-1.12"
-
     # zlib
     buildProgram "zlib-1.2.3" "--shared"
+
+    # rsync
+    buildProgram "rsync-3.0.5"
+
+    # libiconv
+    if [ "$WRE_OSNAME" != "Darwin" ] && [ "$WRE_OSTYPE" != "Leopard" ]; then
+        buildProgram "libiconv-1.12"
+    fi
 
     # libtool
     buildProgram "libtool-2.2.6"
@@ -84,29 +89,26 @@ buildUtils(){
     # lftp
     # lftp requires a recent reeadline, which is not available on all systems
     # in addition, readline casues compile issues with lots of other things like apache and rsync, so we compile into it's own directory
-    printHeader "readline"
-    cd readline-6.0
-    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs/lftp; checkError $? "readline configure"
-    $WRE_MAKE; checkError $? "readline make"
-    $WRE_MAKE install; checkError $? "readline make install"
-    cd ..
-    printHeader "lftp"
-    cd lftp-3.7.8 
-    GNUMAKE=$WRE_MAKE env CFLAGS=-I$WRE_ROOT/prereqs/lftp/include CPPFLAGS=-I$WRE_ROOT/prereqs/lftp/include LDFLAGS=-L$WRE_ROOT/prereqs/lftp/lib ./configure --prefix=$WRE_ROOT/prereqs/lftp --with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs; checkError $? "lftp configure"
-    #buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/readline/include CPPFLAGS=-I$WRE_ROOT/prereqs/readline/include LDFLAGS=-L$WRE_ROOT/prereqs/readline/lib"
-    $WRE_MAKE; checkError $? "lftp make"
-    $WRE_MAKE install; checkError $? "lftp make install"
-    cd ..
-    echo "#!/bin/bash" > $WRE_ROOT/prereqs/bin/lftp
-    echo "export LD_LIBRARY_PATH=/data/wre/prereqs/lftp/lib:/data/wre/prereqs/lib:$LD_LIBRARY_PATH" > $WRE_ROOT/prereqs/bin/lftp
-    echo "export DYLD_LIBRARY_PATH=/data/wre/prereqs/lftp/lib:/data/wre/prereqs/lib:$DYLD_LIBRARY_PATH"  > $WRE_ROOT/prereqs/bin/lftp
-    echo "/data/wre/prereqs/lftp/bin/lftp $@" > $WRE_ROOT/prereqs/bin/lftp
-    chmod 755 $WRE_ROOT/prereqs/bin/lftp
-
+  #  printHeader "readline"
+  #  cd readline-6.0
+  #  GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs/lftp; checkError $? "readline configure"
+  #  $WRE_MAKE; checkError $? "readline make"
+  #  $WRE_MAKE install; checkError $? "readline make install"
+  #  cd ..
+  #  printHeader "lftp"
+  #  cd lftp-3.7.8 
+  #  GNUMAKE=$WRE_MAKE env CFLAGS=-I$WRE_ROOT/prereqs/lftp/include CPPFLAGS=-I$WRE_ROOT/prereqs/lftp/include LDFLAGS=-L$WRE_ROOT/prereqs/lftp/lib ./configure --prefix=$WRE_ROOT/prereqs/lftp --with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs; checkError $? "lftp configure"
+    buildProgram "readline-6.0"
+    buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
+ #   $WRE_MAKE; checkError $? "lftp make"
+ #   $WRE_MAKE install; checkError $? "lftp make install"
+ #   cd ..
+ #   echo "#!/bin/bash" > $WRE_ROOT/prereqs/bin/lftp
+ #   echo "export LD_LIBRARY_PATH=/data/wre/prereqs/lftp/lib:/data/wre/prereqs/lib:$LD_LIBRARY_PATH" >> $WRE_ROOT/prereqs/bin/lftp
+ #   echo "export DYLD_LIBRARY_PATH=/data/wre/prereqs/lftp/lib:/data/wre/prereqs/lib:$DYLD_LIBRARY_PATH"  >> $WRE_ROOT/prereqs/bin/lftp
+ #   echo "/data/wre/prereqs/lftp/bin/lftp $@" >> $WRE_ROOT/prereqs/bin/lftp
+ #   chmod 755 $WRE_ROOT/prereqs/bin/lftp
     
-    # rsync
-    buildProgram "rsync-3.0.5"
-
 	# catdoc
 	cd catdoc-0.94.2
 	if [ "$WRE_CLEAN" == 1 ]; then
@@ -161,7 +163,7 @@ buildApache(){
   		rm -Rf server/exports.c 
   		rm -Rf server/export_files
     fi	
-	./configure --prefix=$WRE_ROOT/prereqs --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared; checkError $? "Apache Configure"
+	./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared; checkError $? "Apache Configure"
     if [ "$WRE_OSNAME" == "Darwin" ] && [ "$WRE_OSTYPE" == "Leopard" ]; then
         $WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h
     fi
