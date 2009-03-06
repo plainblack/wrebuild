@@ -86,28 +86,11 @@ buildUtils(){
 	# lib xml
 	buildProgram "libxml2-2.7.3"
 
-    # lftp
-    # lftp requires a recent reeadline, which is not available on all systems
-    # in addition, readline casues compile issues with lots of other things like apache and rsync, so we compile into it's own directory
-  #  printHeader "readline"
-  #  cd readline-6.0
-  #  GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs/lftp; checkError $? "readline configure"
-  #  $WRE_MAKE; checkError $? "readline make"
-  #  $WRE_MAKE install; checkError $? "readline make install"
-  #  cd ..
-  #  printHeader "lftp"
-  #  cd lftp-3.7.8 
-  #  GNUMAKE=$WRE_MAKE env CFLAGS=-I$WRE_ROOT/prereqs/lftp/include CPPFLAGS=-I$WRE_ROOT/prereqs/lftp/include LDFLAGS=-L$WRE_ROOT/prereqs/lftp/lib ./configure --prefix=$WRE_ROOT/prereqs/lftp --with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs; checkError $? "lftp configure"
+    # readline
     buildProgram "readline-6.0"
+
+    # lftp
     buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
- #   $WRE_MAKE; checkError $? "lftp make"
- #   $WRE_MAKE install; checkError $? "lftp make install"
- #   cd ..
- #   echo "#!/bin/bash" > $WRE_ROOT/prereqs/bin/lftp
- #   echo "export LD_LIBRARY_PATH=/data/wre/prereqs/lftp/lib:/data/wre/prereqs/lib:$LD_LIBRARY_PATH" >> $WRE_ROOT/prereqs/bin/lftp
- #   echo "export DYLD_LIBRARY_PATH=/data/wre/prereqs/lftp/lib:/data/wre/prereqs/lib:$DYLD_LIBRARY_PATH"  >> $WRE_ROOT/prereqs/bin/lftp
- #   echo "/data/wre/prereqs/lftp/bin/lftp $@" >> $WRE_ROOT/prereqs/bin/lftp
- #   chmod 755 $WRE_ROOT/prereqs/bin/lftp
     
 	# catdoc
 	cd catdoc-0.94.2
