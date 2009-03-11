@@ -68,6 +68,10 @@ wget -t 4 -nv http://freshmeat.net/redir/libjpeg/5665/url_tgz/jpegsrc.v6b.tar.gz
 tar zxf jpegsrc.v6b.tar.gz
 mv jpeg-6b libjpeg-6b
 
+# graphviz graph generator
+wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.22.1.tar.gz
+tar xfz graphviz-2.22.1.tar.gz
+
 # libpng image manipulation
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/libpng-1.2.34.tar.bz2
 tar jxf libpng-1.2.34.tar.bz2

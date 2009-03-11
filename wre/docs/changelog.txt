@@ -34,6 +34,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     Convert-ASN1-0.22
     Crypt-SSLeay-0.57
  - Added the following components:
+    Readonly-1.03
+    Test-JSON-0.06
     ncurses 5.7
     readline 6.0
     Compress-Raw-Zlib-2.015

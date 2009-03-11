@@ -213,6 +213,9 @@ buildImageMagick(){
 
     # lib png
     buildProgram "libpng-1.2.34" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
+
+    # graphviz
+    buildProgram "graphviz-2.22.1" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
   
     # image magick
     cd ImageMagick-6.4.9-4
@@ -226,7 +229,7 @@ buildImageMagick(){
             export IM_OPTION="--without-threads"
         ;;
     esac 
-    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
+    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-gvc=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
         $WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
@@ -435,6 +438,24 @@ installPerlModules(){
     installPerlModule "XML-TreePP-0.37"
     installPerlModule "XML-FeedPP-0.37"
     installPerlModule "Sub-Uplevel-0.2002"
+    installPerlModule "Readonly-1.03"
+    installPerlModule "Carp-Assert-0.20"
+    installPerlModule "Test-Exception-0.27"
+    installPerlModule "Carp-Assert-More-1.12"
+    installPerlModule "HTTP-Server-Simple-0.38"
+    installPerlModule "Test-LongString-0.11"
+    installPerlModule "HTTP-Response-Encoding-0.05"
+    installPerlModule "Array-Compare-1.17"
+    installPerlModule "Tree-DAG_Node-1.06"
+    installPerlModule "Test-Warn-0.11"
+    installPerlModule "Devel-Cycle-1.10"
+    installPerlModule "PadWalker-1.7"
+    installPerlModule "Test-Memory-Cycle-1.04"
+    installPerlModule "Test-Taint-1.04"
+    installPerlModule "WWW-Mechanize-1.54"
+    installPerlModule "Test-WWW-Mechanize-1.24"
+    installPerlModule "Test-JSON-0.06"
+
 	cd $WRE_BUILDDIR
 }
 
