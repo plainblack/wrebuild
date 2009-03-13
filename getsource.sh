@@ -29,6 +29,7 @@ tar jxf aspell6-en-6.0-0.tar.bz2
 # awstats
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/awstats/awstats-6.9.tar.gz
 tar zxf awstats-6.9.tar.gz
+perl -ni -e 'print unless /^\s*if . !\$FileConfig/ .. /^\s+}/; print $_.qq/\t\terror("Could not open config file");\n\t}\n/ if /^\s*if . !\$FileConfig/;' awstats-6.9/wwwroot/cgi-bin/awstats.pl
 
 # catdoc .doc and .xls converter
 wget -t 4 -nv http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.94.2.tar.gz

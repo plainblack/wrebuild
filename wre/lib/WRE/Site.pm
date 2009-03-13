@@ -273,6 +273,7 @@ sub delete {
     while (my $row = $sth->fetchrow_arrayref ){
         my $host = $row->[0];
         $db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'" . $host . "'");
+        $db->do("delete from mysql.user where user='".$databaseUser."'");
     }
 
     # web root

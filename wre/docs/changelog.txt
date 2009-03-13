@@ -1,7 +1,10 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
-1.0.0
+0.9.0
+ - bugfix: MySQL cannot install system tables when /tmp permissions are wrong (#9337)
+ - bugfix: Security issue - Awstats.pl reveals server info on error  (#8964)
+ - bugfix: WRE: removesite.pl doesn't remove user from the mysql database user table  (#9755)
  - Multiple copies of WRE Monitor can no longer run simultaneously, this
    eliminates the possibility of WRE Monitor panic.
  - Removed ill-fated WDK option.

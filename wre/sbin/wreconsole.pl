@@ -1033,6 +1033,16 @@ sub www_setup {
     my $cgi = $state->{cgi};
     my $file = WRE::File->new(wreConfig=>$config);
 
+    # check /tmp
+    if (open(my $test, ">", "/tmp/testwrite.txt")) {
+        close($test);
+        unlink "/tmp/testwrite.txt";
+    }
+    else {
+        $out .= "<p class=\"status\">Can't write to /tmp!</p>";
+        warn "Can't write to /tmp!";
+    }
+
     # copy css into place
     $file->copy($config->getRoot("/var/setupfiles/wreconsole.css"),
         $config->getRoot("/var/wreconsole.css"));
