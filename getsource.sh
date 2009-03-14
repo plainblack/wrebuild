@@ -119,10 +119,10 @@ tar zxf perl-5.10.0.tar.gz
 # xpdf pdf generator
 wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02.tar.gz
 tar zxf xpdf-3.02.tar.gz
-
-# patches TODO: incorporate in WRE
 wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl1.patch
+patch -p0 <xpdf-3.02pl1.patch
 wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl2.patch
+patch -p0 <xpdf-3.02pl2.patch
 
 # zlib compression library
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.tar.bz2
