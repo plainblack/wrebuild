@@ -59,7 +59,11 @@ Replace YOURPASS with your password and www_example_com with your database
 name. Replace DBUSER and DBPASS with the dbuser and dbpass directives from the
 WebGUI config file for this site.
 
-8) Now your sites should be up and running again. Start the remaining WRE
+8) Now we have to tell MySQL to use the new usernames and passwords:
+
+mysql -uroot -pYOURPASS -e "flush privileges"
+
+9) Now your sites should be up and running again. Start the remaining WRE
 services.
 
 wreservice.pl --start web spectre
