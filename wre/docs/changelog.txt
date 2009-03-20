@@ -1,6 +1,11 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.9.1
+   - Downgraded to MySQL 5.0.77 due to a serious flaw discovered in 5.1. Read
+    the gotcha.txt for details.
+
+
 0.9.0
  - bugfix: MySQL cannot install system tables when /tmp permissions are wrong (#9337)
  - bugfix: Security issue - Awstats.pl reveals server info on error  (#8964)

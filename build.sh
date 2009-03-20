@@ -177,7 +177,7 @@ buildApache(){
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.1.32
+	cd source/mysql-5.0.77
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
@@ -488,6 +488,8 @@ makeItSmall(){
     rm -Rf $WRE_ROOT/prereqs/share/gtk-doc
     rm -Rf $WRE_ROOT/prereqs/share/man
     rm -Rf $WRE_ROOT/prereqs/share/ImageMagick*
+    rm -Rf $WRE_ROOT/etc/original
+    rm -Rf $WRE_ROOT/etc/extra
 }
 
 #gooey

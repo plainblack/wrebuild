@@ -6,6 +6,65 @@ affect your upgrade from one version of the WRE to another. Before upgrading
 the WRE you should always read this file in the new version you wish to
 upgrade to.
 
+WRE 0.9.1
+
+A serious flaw was discovered with MySQL 5.1 after the release of WRE 0.9.0.
+Unfortunately there's no way to recover from this until Sun Microsystems fixes
+a serious number of flaws with MySQL 5.1. So the only course of action we had
+was to downgrade to MySQL 5.0 in WRE 0.9.1. Unfortunately this is painful for
+you IF YOU HAVE ALREADY UPGRADED TO WRE 0.9.0. If you have not upgraded to
+WRE 0.9.0 then you can ignore the rest of this, and upgrade from 0.8.x to
+0.9.1 with no trouble.
+
+To install WRE 0.9.1 you'll have to create a fresh WRE with dumps of your
+existing databases. The following are the steps you'll need to take.
+
+1) Run the following command for each of your databases:
+
+mysqldump -uroot -pYOURPASS www_example_com > www_example_com.sql
+
+Replace YOURPASS with your password and www_example_com with the database
+name.
+
+2) Shut down all WRE services:
+
+wreservice.pl --stop all
+
+3) Move the existing WRE out of the way.
+
+mv /data/wre /data/wre.090
+
+4) Install WRE 0.9.1 following the instructions in install.txt.
+
+5) Copy your existing site configurations to the new WRE:
+
+cp /data/wre.090/etc/*.modproxy /data/wre/etc/
+cp /data/wre.090/etc/*.modperl /data/wre/etc/
+cp /data/wre.090/etc/awstats.* /data/wre/etc/
+
+6) Recreate the databases and load the data for each site:
+
+mysql -uroot -pYOURPASS -e "create database www_example_com"
+mysql -uroot -pYOURPASS www_example_com < www_example_com.sql
+
+Replace YOURPASS with your password and www_example_com with your database
+name.
+
+7) Grant privileges to each of your databases. You'll need the dbuser and
+dbpass values from each of your WebGUI config files.
+
+mysql -uroot -pYOURPASS -e "grant all privileges on www_example_com.* to DBUSER@localhost identified by 'DBPASS'"
+
+Replace YOURPASS with your password and www_example_com with your database
+name. Replace DBUSER and DBPASS with the dbuser and dbpass directives from the
+WebGUI config file for this site.
+
+8) Now your sites should be up and running again. Start the remaining WRE
+services.
+
+wreservice.pl --start web spectre
+
+
 
 WRE 0.8.5
 
