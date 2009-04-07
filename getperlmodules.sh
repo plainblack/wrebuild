@@ -56,8 +56,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/P/PM/PMQS/Compress-Zlib-2.015.tar.gz
 tar zxf Compress-Zlib-2.015.tar.gz
 
 # http://search.cpan.org/dist/Proc-ProcessTable/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DU/DURIST/Proc-ProcessTable-0.45.tar.gz
-tar zxf Proc-ProcessTable-0.45.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DU/DURIST/Proc-ProcessTable-0.44.tar.gz
+tar zxf Proc-ProcessTable-0.44.tar.gz
 
 # http://search.cpan.org/dist/BSD-Resource/
 wget -t 4 -nv $CPANMIRROR/authors/id/J/JH/JHI/BSD-Resource-1.2902.tar.gz

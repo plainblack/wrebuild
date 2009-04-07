@@ -281,7 +281,7 @@ installPerlModules(){
     installPerlModule "IO-Compress-Zlib-2.015"
 	installPerlModule "Compress-Zlib-2.015"  
     if [ "$WRE_OSTYPE" != "Leopard" ]; then
-	    installPerlModule "Proc-ProcessTable-0.45"
+	    installPerlModule "Proc-ProcessTable-0.44"
     fi
 	installPerlModule "BSD-Resource-1.2902"
 	installPerlModule "URI-1.37"
