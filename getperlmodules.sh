@@ -20,7 +20,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/B/BL/BLBLACK/Algorithm-C3-0.07.tar.gz
 tar zxf Algorithm-C3-0.07.tar.gz
 
 # http://search.cpan.org/dist/Class-C3-XS/
-wget -t 4 -nv $CPANMIRROR/authors/id/B/BL/BLBLACK/Class-C3-XS-0.11.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Class-C3-XS-0.11.tar.gz
 tar zxf Class-C3-XS-0.11.tar.gz
 
 # http://search.cpan.org/dist/Class-C3/
