@@ -36,7 +36,7 @@ wget -t 4 -nv http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.94.2.tar.gz
 tar zxf catdoc-0.94.2.tar.gz
 
 # oracle berkeley db
-wget -t 4 -nv http://freshmeat.net/redir/berkeleydb/694/url_tgz/db-4.7.25.tar.gz
+wget -t 4 -nv http://download.oracle.com/berkeley-db/db-4.7.25.tar.gz
 tar zxf db-4.7.25.tar.gz
 
 # expat xml parser
@@ -57,15 +57,15 @@ wget -t 4 -nv http://apache.mirror.transip.nl/httpd/httpd-2.2.11.tar.bz2
 tar jxf httpd-2.2.11.tar.bz2
 
 # lftp sophisticated ftp client
-wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-3.7.8.tar.bz2
-tar jxf lftp-3.7.8.tar.bz2
+wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-3.7.11.tar.bz2
+tar jxf lftp-3.7.11.tar.bz2
 
 # libiconv unicode conversion tool
 wget -t 4 -nv http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.12.tar.gz
 tar zxf libiconv-1.12.tar.gz
 
 # libjpeg image manipulation
-wget -t 4 -nv http://freshmeat.net/redir/libjpeg/5665/url_tgz/jpegsrc.v6b.tar.gz
+wget -t 4 -nv ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 tar zxf jpegsrc.v6b.tar.gz
 mv jpeg-6b libjpeg-6b
 

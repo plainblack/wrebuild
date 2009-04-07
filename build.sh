@@ -90,7 +90,7 @@ buildUtils(){
     buildProgram "readline-6.0"
 
     # lftp
-    buildProgram "lftp-3.7.8" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
+    buildProgram "lftp-3.7.11" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
     
 	# catdoc
 	cd catdoc-0.94.2
