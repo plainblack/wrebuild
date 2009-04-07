@@ -12,27 +12,27 @@ cd source/perlmodules
 CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 
 # http://search.cpan.org/dist/Readonly/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/R/RO/ROODE/Readonly-1.03.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RO/ROODE/Readonly-1.03.tar.gz
 tar zxf Readonly-1.03.tar.gz
 
 # http://search.cpan.org/dist/Algorithm-C3/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/B/BL/BLBLACK/Algorithm-C3-0.07.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/B/BL/BLBLACK/Algorithm-C3-0.07.tar.gz
 tar zxf Algorithm-C3-0.07.tar.gz
 
 # http://search.cpan.org/dist/Class-C3-XS/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/B/BL/BLBLACK/Class-C3-XS-0.11.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/B/BL/BLBLACK/Class-C3-XS-0.11.tar.gz
 tar zxf Class-C3-XS-0.11.tar.gz
 
 # http://search.cpan.org/dist/Class-C3/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/F/FL/FLORA/Class-C3-0.21.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Class-C3-0.21.tar.gz
 tar zxf Class-C3-0.21.tar.gz
 
 # http://search.cpan.org/dist/XML-TreePP/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/K/KA/KAWASAKI/XML-TreePP-0.38.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/K/KA/KAWASAKI/XML-TreePP-0.38.tar.gz
 tar zxf XML-TreePP-0.38.tar.gz
 
 # http://search.cpan.org/dist/XML-FeedPP/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/K/KA/KAWASAKI/XML-FeedPP-0.40.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/K/KA/KAWASAKI/XML-FeedPP-0.40.tar.gz
 tar zxf XML-FeedPP-0.40.tar.gz
 
 # http://search.cpan.org/dist/Net_SSLeay.pm/
