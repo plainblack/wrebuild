@@ -20,20 +20,20 @@ wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/B/BL/BLBLACK/Algorithm-C3-0
 tar zxf Algorithm-C3-0.07.tar.gz
 
 # http://search.cpan.org/dist/Class-C3-XS/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/B/BL/BLBLACK/Class-C3-XS-0.08.tar.gz
-tar zxf Class-C3-XS-0.08.tar.gz
+wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/B/BL/BLBLACK/Class-C3-XS-0.11.tar.gz
+tar zxf Class-C3-XS-0.11.tar.gz
 
 # http://search.cpan.org/dist/Class-C3/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/F/FL/FLORA/Class-C3-0.20.tar.gz
-tar zxf Class-C3-0.20.tar.gz
+wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/F/FL/FLORA/Class-C3-0.21.tar.gz
+tar zxf Class-C3-0.21.tar.gz
 
 # http://search.cpan.org/dist/XML-TreePP/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/K/KA/KAWASAKI/XML-TreePP-0.37.tar.gz
-tar zxf XML-TreePP-0.37.tar.gz
+wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/K/KA/KAWASAKI/XML-TreePP-0.38.tar.gz
+tar zxf XML-TreePP-0.38.tar.gz
 
 # http://search.cpan.org/dist/XML-FeedPP/
-wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/K/KA/KAWASAKI/XML-FeedPP-0.37.tar.gz
-tar zxf XML-FeedPP-0.37.tar.gz
+wget -t 4 -nv http://search.cpan.org/CPAN/authors/id/K/KA/KAWASAKI/XML-FeedPP-0.40.tar.gz
+tar zxf XML-FeedPP-0.40.tar.gz
 
 # http://search.cpan.org/dist/Net_SSLeay.pm/
 wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Net_SSLeay.pm-1.30.tar.gz
