@@ -348,7 +348,7 @@ installPerlModules(){
     $WRE_ROOT/prereqs/bin/perl -i -nl -e"print unless /'SASL authentication' => \[/../\],/" $LDAP_VERSION/Makefile.PL
 	installPerlModule $LDAP_VERSION
 	installPerlModule "Log-Log4perl-1.20"
-	installPerlModule "POE-1.003" "--default"
+	installPerlModule "POE-1.004" "--default"
 	installPerlModule "POE-Component-IKC-0.2002"
 	installPerlModule "String-CRC32-1.4"
 	installPerlModule "ExtUtils-XSBuilder-0.28"
@@ -390,7 +390,7 @@ installPerlModules(){
 	installPerlModule "Time-Format-1.09"
 	installPerlModule "Weather-Com-0.5.3"
 	installPerlModule "File-Slurp-9999.13"
-	installPerlModule "Text-CSV_XS-0.60"
+	installPerlModule "Text-CSV_XS-0.64"
 	installPerlModule "File-Temp-0.21"
 	installPerlModule "File-Path-2.07"
 	installPerlModule "File-Which-0.05"

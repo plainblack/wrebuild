@@ -300,8 +300,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.20.tar.gz
 tar zxf Log-Log4perl-1.20.tar.gz
 
 # http://search.cpan.org/dist/POE/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.003.tar.gz
-tar zxf POE-1.003.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.004.tar.gz
+tar zxf POE-1.004.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-IKC/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GW/GWYN/POE-Component-IKC-0.2002.tar.gz
@@ -448,8 +448,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/File-Slurp-9999.13.tar.gz
 tar zxf File-Slurp-9999.13.tar.gz
 
 # http://search.cpan.org/dist/Text-CSV_XS/
-wget -t 4 -nv $CPANMIRROR/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.60.tgz
-tar zxf Text-CSV_XS-0.60.tgz
+wget -t 4 -nv $CPANMIRROR/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.64.tgz
+tar zxf Text-CSV_XS-0.64.tgz
 
 # http://search.cpan.org/dist/File-Temp/
 wget -t 4 -nv $CPANMIRROR/authors/id/T/TJ/TJENNESS/File-Temp-0.21.tar.gz
