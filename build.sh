@@ -42,14 +42,18 @@ buildUtils(){
     printHeader "Utilities"
 	cd source
 	
-	# openssl
-	cd openssl-0.9.8j 
+    # openssl
+    cd openssl-0.9.8j 
     printHeader "openssl"
-	if [ "$WRE_CLEAN" == 1 ]; then
+    if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
     fi	
-	./config --prefix=$WRE_ROOT/prereqs shared; checkError $? "openssl configure"
+    if [ "$WRE_IA64" == 1]; then
+	# this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
+	SSLCFGOPTS="CFLAGS=\"-fPIC\" CXXFLAGS=\"-fPIC\" "
+    fi
+	$SSLCFGOPTS ./config --prefix=$WRE_ROOT/prereqs shared; checkError $? "openssl configure"
 	$WRE_MAKE; checkError $? "openssl make"
 	$WRE_MAKE install; checkError $? "openssl make install"
 	cd ..	
@@ -122,7 +126,7 @@ buildPerl(){
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-    if [ "$WRE_IA64" == 1 ]; then
+    if [ "$WRE_IA64" == 1]; then
         # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
         PERLCFGOPTS="-Accflags=\"-fPIC\""
     fi
@@ -181,7 +185,11 @@ buildMysql(){
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
-	CC=gcc CFLAGS="-O3 -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man; checkError $? "MySQL Configure"
+    if [ "$WRE_IA64" == 1]; then
+        # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
+        MYSQLCFGOPTS="-fPIC"
+    fi
+	CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man; checkError $? "MySQL Configure"
 	$WRE_MAKE; checkError $? "MySQL make"
 	$WRE_MAKE install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR
