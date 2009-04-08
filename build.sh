@@ -122,7 +122,7 @@ buildPerl(){
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-    if [ "$WRE_IA64" == 1]; then
+    if [ "$WRE_IA64" == 1 ]; then
         # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
         PERLCFGOPTS="-Accflags=\"-fPIC\""
     fi
