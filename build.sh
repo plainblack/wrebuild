@@ -219,6 +219,9 @@ buildImageMagick(){
     # lib ungif
     buildProgram "giflib-4.1.6" "--enable-shared"
 
+    # lcms 
+    buildProgram "lcms-1.18" "--enable-shared"
+
     # lib png
     buildProgram "libpng-1.2.34" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
 
@@ -237,7 +240,7 @@ buildImageMagick(){
             export IM_OPTION="--without-threads"
         ;;
     esac 
-    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-gvc=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
+    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared=yes --with-gvc=yes --with-jp2=yes --with-jpeg=yes --with-png=yes --with-perl=yes --with-lcms=yes --with-x=no $IM_OPTION; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
         $WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c

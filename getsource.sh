@@ -15,8 +15,8 @@ wget -t 4 -nv ftp://ftp.cwru.edu/pub/bash/readline-6.0.tar.gz
 tar xfz readline-6.0.tar.gz
 
 # imagemagick
-wget -t 4 -nv ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-6.4.9-4.tar.bz2
-tar jxf ImageMagick-6.4.9-4.tar.bz2
+wget -t 4 -nv ftp://ftp.fifi.org/pub/ImageMagick/beta/ImageMagick-6.5.1-1.tar.bz2
+tar jxf ImageMagick-6.5.1-1.tar.bz2
 
 # aspell dictionary
 wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.tar.gz
@@ -35,10 +35,6 @@ perl -ni -e 'print unless /^\s*if . !\$FileConfig/ .. /^\s+}/; print $_.qq/\t\te
 wget -t 4 -nv http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.94.2.tar.gz
 tar zxf catdoc-0.94.2.tar.gz
 
-# oracle berkeley db
-wget -t 4 -nv http://download.oracle.com/berkeley-db/db-4.7.25.tar.gz
-tar zxf db-4.7.25.tar.gz
-
 # expat xml parser
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
 tar zxf expat-2.0.1.tar.gz
@@ -50,7 +46,6 @@ tar jxf freetype-2.3.8.tar.bz2
 # gnutls transport layer security
 wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.6.4.tar.bz2
 tar jxf gnutls-2.6.4.tar.bz2
-
 
 # httpd apache webserver
 wget -t 4 -nv http://apache.mirror.transip.nl/httpd/httpd-2.2.11.tar.bz2
@@ -68,6 +63,10 @@ tar zxf libiconv-1.12.tar.gz
 wget -t 4 -nv ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 tar zxf jpegsrc.v6b.tar.gz
 mv jpeg-6b libjpeg-6b
+
+# lcms color management
+wget -t 4 -nv http://voxel.dl.sourceforge.net/sourceforge/lcms/lcms-1.18.tar.gz
+tar zxf lcms-1.18.tar.gz
 
 # graphviz graph generator
 wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.22.1.tar.gz
