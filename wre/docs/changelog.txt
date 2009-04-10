@@ -12,6 +12,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     XML::FeedPP 0.40
     POE 1.004
     Text::CSV_XS 0.64
+    tiff-3.8.2
  - Added lcms-1.18 which allows Image Magick to deal with CMYK images in
    addition to RGB.
  - Reverted Proc::ProcessTable to version 0.44 due to bug 10021.

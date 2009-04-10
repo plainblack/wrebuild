@@ -10,9 +10,14 @@ cd source
 # ncurses
 wget -t 4 -nv http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
 tar xfz ncurses-5.7.tar.gz
+
 # readline
 wget -t 4 -nv ftp://ftp.cwru.edu/pub/bash/readline-6.0.tar.gz
 tar xfz readline-6.0.tar.gz
+
+# tiff for image magick
+wget -t 4 -nv ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.8.2.tar.gz
+tar xfz tiff-3.8.2.tar.gz
 
 # imagemagick
 wget -t 4 -nv ftp://ftp.fifi.org/pub/ImageMagick/beta/ImageMagick-6.5.1-1.tar.bz2
