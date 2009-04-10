@@ -229,7 +229,7 @@ buildImageMagick(){
     buildProgram "graphviz-2.22.1" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
   
     # image magick
-    cd ImageMagick-6.4.9-4
+    cd ImageMagick-6.5.1-1
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
