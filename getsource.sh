@@ -23,6 +23,9 @@ tar xfz tiff-3.8.2.tar.gz
 wget -t 4 -nv ftp://ftp.fifi.org/pub/ImageMagick/beta/ImageMagick-6.5.1-1.tar.bz2
 tar jxf ImageMagick-6.5.1-1.tar.bz2
 
+# image magick color profile
+wget -t 4 -nv http://www.imagemagick.org/source/colors.xml
+
 # aspell dictionary
 wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.tar.gz
 tar zxf aspell-0.60.6.tar.gz

@@ -232,7 +232,8 @@ buildImageMagick(){
     buildProgram "graphviz-2.22.1" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
   
     # image magick
-    cd ImageMagick-6.5.1-1
+    
+    cd ImageMagick-6.5.1-1  # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -252,6 +253,7 @@ buildImageMagick(){
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
     cd $WRE_BUILDDIR
+    cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.1/config/
 }
 
 # most perl modules are installed the same way
