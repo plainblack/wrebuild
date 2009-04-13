@@ -3,6 +3,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 
 0.9.2
  - Fixed a bug with WRE Monitor.
+ - Fixed a bug with web stats showing permission denied.
  - Updated:
     Image Magick 6.5.1-1
     lftp 3.7.11
@@ -15,6 +16,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     tiff-3.8.2
  - Added lcms-1.18 which allows Image Magick to deal with CMYK images in
    addition to RGB.
+ - Added Image Magick color profile (colors.xml).
  - Reverted Proc::ProcessTable to version 0.44 due to bug 10021.
  - Removed legacy Berkley DB from download.
 

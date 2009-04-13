@@ -1,5 +1,9 @@
 <VirtualHost *:[% modproxyPort %]>
 ServerName [% sitename %]
 DocumentRoot [% wreRoot %]/prereqs/wwwroot
+<Directory />
+    Options +ExecCGI
+</Directory>
+AddHandler cgi-script .pl
 DirectoryIndex awstats.pl
 </VirtualHost>
