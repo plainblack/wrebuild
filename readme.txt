@@ -94,6 +94,7 @@ compile the WRE:
 build-essential
 g++
 make
+libncurses5-dev
 
 
 
