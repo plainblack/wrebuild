@@ -15,6 +15,10 @@ CPANMIRROR=http://search.cpan.org/CPAN
 wget -t 4 -nv $CPANMIRROR/authors/id/L/LB/LBROCARD/GraphViz-2.04.tar.gz
 tar zxf GraphViz-2.04.tar.gz 
 
+# http://search.cpan.org/dist/IPC-Run/
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADAMK/IPC-Run-0.82.tar.gz
+tar zxf IPC-Run-0.82.tar.gz
+
 # http://search.cpan.org/dist/Readonly/
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RO/ROODE/Readonly-1.03.tar.gz
 tar zxf Readonly-1.03.tar.gz

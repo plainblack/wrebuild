@@ -471,6 +471,8 @@ installPerlModules(){
     installPerlModule "WWW-Mechanize-1.54"
     installPerlModule "Test-WWW-Mechanize-1.24"
     installPerlModule "Test-JSON-0.06"
+    installPerlModule "IPC-Run-0.82"
+    installPerlModule "GraphViz-2.04"
 
 	cd $WRE_BUILDDIR
 }
