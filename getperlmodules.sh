@@ -531,10 +531,6 @@ tar zxf MySQL-Diff-0.33.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/V/VP/VPARSEVAL/List-MoreUtils-0.22.tar.gz
 tar zxf List-MoreUtils-0.22.tar.gz
 
-# http://search.cpan.org/dist/Scalar-List-Utils/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GB/GBARR/Scalar-List-Utils-1.19.tar.gz
-tar zxf Scalar-List-Utils-1.19.tar.gz
-
 # http://search.cpan.org/dist/Devel-StackTrace/
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Devel-StackTrace-1.20.tar.gz
 tar zxf Devel-StackTrace-1.20.tar.gz
