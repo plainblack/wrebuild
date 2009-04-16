@@ -49,9 +49,9 @@ buildUtils(){
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
     fi	
-    if [ "$WRE_IA64" == 1]; then
-	# this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
-	SSLCFGOPTS="CFLAGS=\"-fPIC\" CXXFLAGS=\"-fPIC\" "
+    if [ "$WRE_IA64" == 1 ]; then
+	    # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
+	    SSLCFGOPTS="CFLAGS=\"-fPIC\" CXXFLAGS=\"-fPIC\" "
     fi
 	$SSLCFGOPTS ./config --prefix=$WRE_ROOT/prereqs shared; checkError $? "openssl configure"
 	$WRE_MAKE; checkError $? "openssl make"
