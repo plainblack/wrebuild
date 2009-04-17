@@ -473,6 +473,11 @@ installPerlModules(){
     installPerlModule "Test-JSON-0.06"
     installPerlModule "IPC-Run-0.82"
     installPerlModule "GraphViz-2.04"
+    installPerlModule "Class-Member-1.6"
+    # detecting shared memory properly on 2.6 kernels
+    if [ "$WRE_OSNAME" == "Linux" ]; then
+        installPerlModule "Linux-Smaps-0.06" 
+    fi
 
 	cd $WRE_BUILDDIR
 }

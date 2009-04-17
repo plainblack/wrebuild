@@ -11,6 +11,14 @@ cd source/perlmodules
 CPANMIRROR=http://search.cpan.org/CPAN
 #CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 
+# http://search.cpan.org/dist/Class-Member/
+wget -t 4 -nv $CPANMIRROR/authors/id/O/OP/OPI/Class-Member-1.6.tar.gz
+tar zxf Class-Member-1.6.tar.gz 
+
+# http://search.cpan.org/dist/Linux-Smaps/
+wget -t 4 -nv $CPANMIRROR/authors/id/O/OP/OPI/Linux-Smaps-0.06.tar.gz
+tar zxf Linux-Smaps-0.06.tar.gz 
+
 # http://search.cpan.org/dist/GraphViz/
 wget -t 4 -nv $CPANMIRROR/authors/id/L/LB/LBROCARD/GraphViz-2.04.tar.gz
 tar zxf GraphViz-2.04.tar.gz 
