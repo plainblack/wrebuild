@@ -95,7 +95,6 @@ build-essential
 g++
 make
 libncurses5-dev
-graphviz
 gsfonts
 
 
