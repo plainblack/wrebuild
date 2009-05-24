@@ -316,8 +316,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.20.tar.gz
 tar zxf Log-Log4perl-1.20.tar.gz
 
 # http://search.cpan.org/dist/POE/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.004.tar.gz
-tar zxf POE-1.004.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.005.tar.gz
+tar zxf POE-1.005.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-IKC/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GW/GWYN/POE-Component-IKC-0.2002.tar.gz

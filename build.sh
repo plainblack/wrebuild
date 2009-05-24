@@ -226,7 +226,7 @@ buildImageMagick(){
     buildProgram "libpng-1.2.35" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
 
     # lcms 
-    buildProgram "lcms-1.18a" "--enable-shared"
+    buildProgram "lcms-1.18" "--enable-shared"
 
     # graphviz
     buildProgram "graphviz-2.22.2" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
@@ -366,7 +366,7 @@ installPerlModules(){
     $WRE_ROOT/prereqs/bin/perl -i -nl -e"print unless /'SASL authentication' => \[/../\],/" $LDAP_VERSION/Makefile.PL
 	installPerlModule $LDAP_VERSION
 	installPerlModule "Log-Log4perl-1.20"
-	installPerlModule "POE-1.004" "--default"
+	installPerlModule "POE-1.005" "--default"
 	installPerlModule "POE-Component-IKC-0.2002"
 	installPerlModule "String-CRC32-1.4"
 	installPerlModule "ExtUtils-XSBuilder-0.28"

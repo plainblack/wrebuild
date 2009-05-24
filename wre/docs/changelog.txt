@@ -2,6 +2,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.9.3
+ - Updated perl module POE-1.005 (Koen de Jonge / ProcoliX)
  - Updated these packaged (Koen de Jonge / ProcoliX):
     Image Magick 6.5.2-8
     Freetype 2.3.9
