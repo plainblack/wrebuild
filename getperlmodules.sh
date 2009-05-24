@@ -618,3 +618,50 @@ tar zxf Test-WWW-Mechanize-1.24.tar.gz
 # http://search.cpan.org/dist/Test-JSON/
 wget -t 4 -nv $CPANMIRROR/authors/id/O/OV/OVID/Test-JSON-0.06.tar.gz 
 tar zxf Test-JSON-0.06.tar.gz
+
+# http://search.cpan.org/dist/HTML-Packer/
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/HTML-Packer-0.4.tar.gz 
+tar zxf HTML-Packer-0.4.tar.gz
+
+# http://search.cpan.org/dist/JavaScript-Packer/
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/JavaScript-Packer-0.02.tar.gz
+tar zxf JavaScript-Packer-0.02.tar.gz
+
+# http://search.cpan.org/dist/CSS-Packer/
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/CSS-Packer-0.2.tar.gz
+tar zxf CSS-Packer-0.2.tar.gz
+
+# http://search.cpan.org/dist/Business-Tax-VAT-Validation/
+wget -t 4 -nv $CPANMIRROR/authors/id/B/BP/BPGN/Business-Tax-VAT-Validation-0.20.tar.gz
+tar zxf Business-Tax-VAT-Validation-0.20.tar.gz
+
+# http://search.cpan.org/dist/Scope-Guard/
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHOCOLATE/Scope-Guard-0.03.tar.gz
+tar zxf Scope-Guard-0.03.tar.gz
+
+# http://search.cpan.org/dist/Digest-SHA/
+wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSHELOR/Digest-SHA-5.47.tar.gz
+tar zxf Digest-SHA-5.47.tar.gz
+
+# http://search.cpan.org/dist/JavaScript-Minifier-XS/
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GT/GTERMARS/JavaScript-Minifier-XS-0.05.tar.gz
+tar zxf JavaScript-Minifier-XS-0.05.tar.gz
+
+# http://search.cpan.org/dist/CSS-Minifier-XS/
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GT/GTERMARS/CSS-Minifier-XS-0.03.tar.gz
+tar zxf CSS-Minifier-XS-0.03.tar.gz
+
+# http://search.cpan.org/dist/Crypt-OpenSSL-Random/
+wget -t 4 -nv $CPANMIRROR/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-Random-0.04.tar.gz
+tar zxf Crypt-OpenSSL-Random-0.04.tar.gz
+
+# http://search.cpan.org/dist/Crypt-OpenSSL-RSA/
+wget -t 4 -nv $CPANMIRROR/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-RSA-0.25.tar.gz
+tar zxf Crypt-OpenSSL-RSA-0.25.tar.gz
+
+# http://search.cpan.org/dist/Crypt-CBC/
+wget -t 4 -nv $CPANMIRROR/authors/id/L/LD/LDS/Crypt-CBC-2.30.tar.gz
+tar zxf Crypt-CBC-2.30.tar.gz
+
+
+

@@ -43,7 +43,7 @@ buildUtils(){
 	cd source
 	
     # openssl
-    cd openssl-0.9.8j 
+    cd openssl-0.9.8k 
     printHeader "openssl"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -65,11 +65,11 @@ buildUtils(){
     buildProgram "zlib-1.2.3" "--shared"
 
     # rsync
-    buildProgram "rsync-3.0.5"
+    buildProgram "rsync-3.0.6"
 
     # libiconv
     if [ "$WRE_OSNAME" != "Darwin" ] && [ "$WRE_OSTYPE" != "Leopard" ]; then
-        buildProgram "libiconv-1.12"
+        buildProgram "libiconv-1.13"
     fi
 
     # libtool
@@ -82,7 +82,7 @@ buildUtils(){
     buildProgram "libgcrypt-1.4.4"
 
     # gnutls
-    buildProgram "gnutls-2.6.4"
+    buildProgram "gnutls-2.6.6"
 
 	# expat
 	buildProgram "expat-2.0.1"
@@ -94,7 +94,7 @@ buildUtils(){
     buildProgram "readline-6.0"
 
     # lftp
-    buildProgram "lftp-3.7.11" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
+    buildProgram "lftp-3.7.14" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
     
 	# catdoc
 	cd catdoc-0.94.2
@@ -181,7 +181,7 @@ buildApache(){
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.0.77
+	cd source/mysql-5.0.81
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
@@ -214,7 +214,7 @@ buildImageMagick(){
     cd ..
 
     # freetype
-    buildProgram "freetype-2.3.8" "--enable-shared"
+    buildProgram "freetype-2.3.9" "--enable-shared"
 
     # lib ungif
     buildProgram "giflib-4.1.6" "--enable-shared"
@@ -223,17 +223,19 @@ buildImageMagick(){
     buildProgram "tiff-3.8.2" "--enable-shared"
 
     # lib png
-    buildProgram "libpng-1.2.34" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
+    buildProgram "libpng-1.2.35" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared"
 
     # lcms 
-    buildProgram "lcms-1.18" "--enable-shared"
+    buildProgram "lcms-1.18a" "--enable-shared"
 
     # graphviz
-    buildProgram "graphviz-2.22.1" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
-  
+    buildProgram "graphviz-2.22.2" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
+    ln -s $WRE_ROOT/prereqs/bin/dot_static $WRE_ROOT/prereqs/bin/dot 
+
+
     # image magick
     
-    cd ImageMagick-6.5.1-1  # when you update this version number, update the one below as well
+    cd ImageMagick-6.5.2-8  # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -253,7 +255,7 @@ buildImageMagick(){
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
     cd $WRE_BUILDDIR
-    cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.1/config/
+    cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.2/config/
 }
 
 # most perl modules are installed the same way
@@ -478,6 +480,21 @@ installPerlModules(){
     if [ "$WRE_OSNAME" == "Linux" ]; then
         installPerlModule "Linux-Smaps-0.06" 
     fi
+    # 7.7.5
+    installPerlModule "HTML-Packer-0.4"
+    installPerlModule "JavaScript-Packer-0.02"
+    installPerlModule "CSS-Packer-0.2"
+    # 7.7.6
+    installPerlModule "Business-Tax-VAT-Validation-0.20"
+    installPerlModule "Scope-Guard-0.03"
+    # 7.7.7
+    installPerlModule "Digest-SHA-5.47"
+    installPerlModule "JavaScript-Minifier-XS-0.05"
+    installPerlModule "CSS-Minifier-XS-0.03" 
+    # payment modules
+    installPerlModule "Crypt-OpenSSL-Random-0.04" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
+    installPerlModule "Crypt-OpenSSL-RSA-0.25" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
+    installPerlModule "Crypt-CBC-2.30"
 
 	cd $WRE_BUILDDIR
 }

@@ -1,6 +1,39 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
+0.9.3
+ - Updated these packaged (Koen de Jonge / ProcoliX):
+    Image Magick 6.5.2-8
+    Freetype 2.3.9
+    Gnutls 2.6.6
+    Lftp 3.7.14
+    Libiconv 1.13
+    lcms 1.18a
+    graphviz 2.22.2
+    libpng 1.2.35
+    mysql 5.0.81
+    openssl 0.9.8k
+    xpdf 3.02pl3
+    rsync 3.0.6
+ - Added homepage links to getsource.sh (Koen de Jonge / ProcoliX)
+ - for WebGUI 7.7.5 added these perl modules (Koen de Jonge / ProcoliX):
+    HTML-Packer-0.4
+    JavaScript-Packer-0.02
+    CSS-Packer-0.2
+ - for WebGUI 7.7.6 added these perl modules (Koen de Jonge / ProcoliX):
+    Business-Tax-VAT-Validation-0.20
+    Scope-Guard-0.03
+ - for WebGUI 7.7.7 added these perl modules (Koen de Jonge / ProcoliX):
+    Digest-SHA-5.47
+    JavaScript-Minifier-XS-0.05
+    CSS-Minifier-XS-0.03
+ - for payment plugins added these perl modules (Koen de Jonge / ProcoliX):
+    Crypt-OpenSSL-Random-0.04
+    Crypt-OpenSSL-RSA-0.25
+    Crypt-CBC-2.30
+ - fixed: static compile of dot (Koen de Jonge / ProcoliX)
+
+
 0.9.2
  - Added Linux-Smaps-0.06 and Class-Member-1.6.
  - fixed: shared memory not reported correctly  (#10212)
