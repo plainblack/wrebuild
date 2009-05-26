@@ -28,7 +28,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     Digest-SHA-5.47
     JavaScript-Minifier-XS-0.05
     CSS-Minifier-XS-0.03
-    Test-Class-0.32_1
+    Test-Class-0.31
  - for payment plugins added these perl modules (Koen de Jonge / ProcoliX):
     Crypt-OpenSSL-Random-0.04
     Crypt-OpenSSL-RSA-0.25

@@ -491,7 +491,7 @@ installPerlModules(){
     installPerlModule "Digest-SHA-5.47"
     installPerlModule "JavaScript-Minifier-XS-0.05"
     installPerlModule "CSS-Minifier-XS-0.03" 
-    installPerlModule "Test-Class-0.32_1"
+    installPerlModule "Test-Class-0.31"
     # payment modules
     installPerlModule "Crypt-OpenSSL-Random-0.04" "PREFIX=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
     installPerlModule "Crypt-OpenSSL-RSA-0.25" "PREFIX=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
