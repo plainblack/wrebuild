@@ -492,8 +492,8 @@ installPerlModules(){
     installPerlModule "JavaScript-Minifier-XS-0.05"
     installPerlModule "CSS-Minifier-XS-0.03" 
     # payment modules
-    installPerlModule "Crypt-OpenSSL-Random-0.04" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
-    installPerlModule "Crypt-OpenSSL-RSA-0.25" "PREFIX=$WRE_ROOT/prereqs/lib CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
+    installPerlModule "Crypt-OpenSSL-Random-0.04" "PREFIX=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
+    installPerlModule "Crypt-OpenSSL-RSA-0.25" "PREFIX=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib'"
     installPerlModule "Crypt-CBC-2.30"
 
 	cd $WRE_BUILDDIR
