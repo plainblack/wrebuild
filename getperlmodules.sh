@@ -670,3 +670,11 @@ tar zxf Test-Class-0.31.tar.gz
 # http://search.cpan.org/dist/XML-SAX-Writer/
 wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PERIGRIN/XML-SAX-Writer-0.52.tar.gz
 tar zxf XML-SAX-Writer-0.52.tar.gz
+
+# http://search.cpan.org/dist/Text-Iconv/
+wget -t 4 -nv $CPANMIRROR/authors/id/M/MP/MPIOTR/Text-Iconv-1.7.tar.gz
+tar zxf Text-Iconv-1.7.tar.gz
+
+# http://search.cpan.org/dist/XML-Filter-BufferText/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RB/RBERJON/XML-Filter-BufferText-1.01.tar.gz
+tar zxf XML-Filter-BufferText-1.01.tar.gz

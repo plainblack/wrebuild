@@ -34,7 +34,10 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     Crypt-OpenSSL-RSA-0.25
     Crypt-CBC-2.30
  - fixed: static compile of dot (Koen de Jonge / ProcoliX)
- - added perl modulde tar zxf XML-SAX-Writer-0.52 (Koen de Jonge / ProcoliX)
+ - added perl modules (Koen de Jonge / ProcoliX):
+    Text-Iconv-1.7
+    XML-Filter-BufferText-1.01
+    XML-SAX-Writer-0.52
 
 
 0.9.2

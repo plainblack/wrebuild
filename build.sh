@@ -246,7 +246,7 @@ buildImageMagick(){
             export IM_OPTION="--without-threads"
         ;;
     esac 
-    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz GVC_LIBS="-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
+    GNUMAKE=$WRE_MAKE ./configure --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$WRE_ROOT/prereqs/include/graphviz GVC_LIBS="-L$WRE_ROOT/prereqs/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
     if [ "$WRE_OSNAME" == "Darwin" ]; then
         # technically this is only for Darwin i386, but i don't know how to detect that
         $WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
@@ -358,6 +358,8 @@ installPerlModules(){
     installPerlModule "Path-Class-0.16"
 	installPerlModule "Config-JSON"
 	installPerlModule "IO-Socket-SSL-1.22"
+	installPerlModule "Text-Iconv-1.7" "LIBS='-L$WRE_ROOT/prereqs/lib' INC='-I$WRE_ROOT/prereqs/include'"
+	installPerlModule "XML-Filter-BufferText-1.01"
 	installPerlModule "XML-SAX-Writer-0.52"
     export AUTHEN_SASL_VERSION="Authen-SASL-2.12"
     $WRE_ROOT/prereqs/bin/perl -ni -e 'print unless /GSSAPI mechanism/ .. /\],/' $AUTHEN_SASL_VERSION/Makefile.PL
