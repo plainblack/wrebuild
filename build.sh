@@ -358,6 +358,7 @@ installPerlModules(){
     installPerlModule "Path-Class-0.16"
 	installPerlModule "Config-JSON"
 	installPerlModule "IO-Socket-SSL-1.22"
+	installPerlModule "XML-SAX-Writer-0.52"
     export AUTHEN_SASL_VERSION="Authen-SASL-2.12"
     $WRE_ROOT/prereqs/bin/perl -ni -e 'print unless /GSSAPI mechanism/ .. /\],/' $AUTHEN_SASL_VERSION/Makefile.PL
 	installPerlModule $AUTHEN_SASL_VERSION

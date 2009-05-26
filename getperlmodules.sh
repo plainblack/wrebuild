@@ -667,3 +667,6 @@ tar zxf Crypt-CBC-2.30.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADIE/Test-Class-0.31.tar.gz
 tar zxf Test-Class-0.31.tar.gz
 
+# http://search.cpan.org/dist/XML-SAX-Writer/
+wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PERIGRIN/XML-SAX-Writer-0.52.tar.gz
+tar zxf XML-SAX-Writer-0.52.tar.gz
