@@ -663,5 +663,7 @@ tar zxf Crypt-OpenSSL-RSA-0.25.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/L/LD/LDS/Crypt-CBC-2.30.tar.gz
 tar zxf Crypt-CBC-2.30.tar.gz
 
-
+# http://search.cpan.org/dist/Test-Class/
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADIE/Test-Class-0.32_1.tar.gz
+tar zxf Test-Class-0.32_1.tar.gz
 
