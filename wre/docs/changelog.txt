@@ -2,6 +2,19 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.9.3
+ - Added these perl modules:
+    YAML-0.68
+    Math-BigInt-FastCalc-0.19
+    Crypt-DH-0.06
+    LWPx-ParanoidAgent-1.04
+    Math-BigInt-GMP-1.24
+    Net-OpenID-Consumer-1.03
+    Crypt-RC4-2.02
+    Text-PDF-0.29a
+    CAM-PDF-1.52
+    Text-Diff-HTML-0.06
+    HTML-Tidy-1.08
+    Locales-0.05
  - Updated perl module POE-1.005 (Koen de Jonge / ProcoliX)
  - Updated these packaged (Koen de Jonge / ProcoliX):
     Image Magick 6.5.2-8

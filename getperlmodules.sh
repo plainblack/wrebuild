@@ -11,6 +11,42 @@ cd source/perlmodules
 CPANMIRROR=http://search.cpan.org/CPAN
 #CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.05.tar.gz
+tar zxf Locales-0.05.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/HTML-Tidy-1.08.tar.gz
+tar zxf HTML-Tidy-1.08.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Text-Diff-HTML-0.06.tar.gz
+tar zxf Text-Diff-HTML-0.06.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CD/CDOLAN/CAM-PDF-1.52.tar.gz
+tar zxf CAM-PDF-1.52.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/M/MH/MHOSKEN/Text-PDF-0.29a.tar.gz
+tar zxf Text-PDF-0.29a.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/S/SI/SIFUKURT/Crypt-RC4-2.02.tar.gz
+tar zxf Crypt-RC4-2.02.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MART/Net-OpenID-Consumer-1.03.tar.gz
+tar zxf Net-OpenID-Consumer-1.03.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/T/TE/TELS/math/Math-BigInt-GMP-1.24.tar.gz
+tar zxf Math-BigInt-GMP-1.24.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/B/BR/BRADFITZ/LWPx-ParanoidAgent-1.04.tar.gz
+tar zxf LWPx-ParanoidAgent-1.04.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/B/BT/BTROTT/Crypt-DH-0.06.tar.gz
+tar zxf Crypt-DH-0.06.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/T/TE/TELS/math/Math-BigInt-FastCalc-0.19.tar.gz
+tar zxf Math-BigInt-FastCalc-0.19.tar.gz 
+
+wget -t 4 -nv $CPANMIRROR/authors/id/I/IN/INGY/YAML-0.68.tar.gz
+tar zxf YAML-0.68.tar.gz 
+
 # http://search.cpan.org/dist/Class-Member/
 wget -t 4 -nv $CPANMIRROR/authors/id/O/OP/OPI/Class-Member-1.6.tar.gz
 tar zxf Class-Member-1.6.tar.gz 
