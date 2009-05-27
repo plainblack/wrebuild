@@ -503,7 +503,6 @@ installPerlModules(){
     installPerlModule "Math-BigInt-FastCalc-0.19"
     installPerlModule "Crypt-DH-0.06"
     installPerlModule "LWPx-ParanoidAgent-1.04"
-    installPerlModule "Math-BigInt-GMP-1.24"
     installPerlModule "Net-OpenID-Consumer-1.03"
     installPerlModule "Crypt-RC4-2.02"
     installPerlModule "Text-PDF-0.29a"

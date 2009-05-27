@@ -32,9 +32,6 @@ tar zxf Crypt-RC4-2.02.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MART/Net-OpenID-Consumer-1.03.tar.gz
 tar zxf Net-OpenID-Consumer-1.03.tar.gz 
 
-wget -t 4 -nv $CPANMIRROR/authors/id/T/TE/TELS/math/Math-BigInt-GMP-1.24.tar.gz
-tar zxf Math-BigInt-GMP-1.24.tar.gz 
-
 wget -t 4 -nv $CPANMIRROR/authors/id/B/BR/BRADFITZ/LWPx-ParanoidAgent-1.04.tar.gz
 tar zxf LWPx-ParanoidAgent-1.04.tar.gz 
 
