@@ -229,7 +229,7 @@ buildImageMagick(){
     buildProgram "lcms-1.18" "--enable-shared"
 
     # graphviz
-    buildProgram "graphviz-2.22.2" "--enable-static --enable-shared --enable-shared=PKGS --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
+    buildProgram "graphviz-2.22.2" "--enable-static --enable-shared --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
     ln -s $WRE_ROOT/prereqs/bin/dot_static $WRE_ROOT/prereqs/bin/dot 
 
 
@@ -293,6 +293,7 @@ buildPerlModule() {
 installPerlModules(){
 	printHeader "Perl Modules"
 	cd source/perlmodules
+    export PERL_MM_USE_DEFAULT=1 # makes it so perl modules don't ask questions
 	installPerlModule "Net_SSLeay.pm-1.30" "$WRE_ROOT/prereqs"
     installPerlModule "Compress-Raw-Zlib-2.015" # on upgrade modify config.in to point to our libs
     installPerlModule "IO-Compress-Base-2.015"
