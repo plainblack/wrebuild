@@ -12,7 +12,6 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     Text-PDF-0.29a
     CAM-PDF-1.52
     Text-Diff-HTML-0.06
-    HTML-Tidy-1.08
     Locales-0.05
  - Updated perl module POE-1.005 (Koen de Jonge / ProcoliX)
  - Updated these packaged (Koen de Jonge / ProcoliX):

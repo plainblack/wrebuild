@@ -14,9 +14,6 @@ CPANMIRROR=http://search.cpan.org/CPAN
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.05.tar.gz
 tar zxf Locales-0.05.tar.gz 
 
-wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/HTML-Tidy-1.08.tar.gz
-tar zxf HTML-Tidy-1.08.tar.gz 
-
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Text-Diff-HTML-0.06.tar.gz
 tar zxf Text-Diff-HTML-0.06.tar.gz 
 

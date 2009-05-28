@@ -505,10 +505,9 @@ installPerlModules(){
     installPerlModule "LWPx-ParanoidAgent-1.04"
     installPerlModule "Net-OpenID-Consumer-1.03"
     installPerlModule "Crypt-RC4-2.02"
-    installPerlModule "Text-PDF-0.29a"
+    installPerlModule "Text-PDF-0.29"
     installPerlModule "CAM-PDF-1.52"
     installPerlModule "Text-Diff-HTML-0.06"
-    installPerlModule "HTML-Tidy-1.08"
     installPerlModule "Locales-0.05"
 
 	cd $WRE_BUILDDIR
