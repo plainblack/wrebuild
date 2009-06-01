@@ -234,8 +234,9 @@ buildImageMagick(){
 
 
     # image magick
-    
-    cd ImageMagick-6.5.2-8  # when you update this version number, update the one below as well
+   
+    WRE_IM_VERSION=6.5.2-10 
+    cd ImageMagick-$WRE_IM_VERSION
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -255,7 +256,7 @@ buildImageMagick(){
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
     cd $WRE_BUILDDIR
-    cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.2/config/
+    cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-$WRE_IM_VERSION/config/
 }
 
 # most perl modules are installed the same way

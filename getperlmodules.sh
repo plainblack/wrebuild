@@ -708,3 +708,7 @@ tar zxf Text-Iconv-1.7.tar.gz
 # http://search.cpan.org/dist/XML-Filter-BufferText/
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RB/RBERJON/XML-Filter-BufferText-1.01.tar.gz
 tar zxf XML-Filter-BufferText-1.01.tar.gz
+
+
+rm -f *.gz *.tgz *.bz2 *.zip
+

@@ -20,8 +20,8 @@ wget -t 4 -nv ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.8.2.tar.gz
 tar xfz tiff-3.8.2.tar.gz
 
 # imagemagick http://www.imagemagick.org/script/index.php
-wget -t 4 -nv ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-6.5.2-8.tar.bz2
-tar jxf ImageMagick-6.5.2-8.tar.bz2
+wget -t 4 -nv ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-6.5.2-10.tar.bz2
+tar jxf ImageMagick-6.5.2-10.tar.bz2
 
 # image magick color profile
 wget -t 4 -nv http://www.imagemagick.org/source/colors.xml
@@ -145,4 +145,7 @@ tar jxf zlib-1.2.3.tar.bz2
 wget -t 4 -nv http://rsync.samba.org/ftp/rsync/rsync-3.0.6.tar.gz
 tar xfz rsync-3.0.6.tar.gz
 
+
+
+rm -f *.gz *.tgz *.bz2 *.zip
 
