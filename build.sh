@@ -42,6 +42,9 @@ buildUtils(){
     printHeader "Utilities"
 	cd source
 	
+    # libtool
+    buildProgram "libtool-2.2.6"
+
     # openssl
     cd openssl-0.9.8k 
     printHeader "openssl"
@@ -71,9 +74,6 @@ buildUtils(){
     if [ "$WRE_OSNAME" != "Darwin" ] && [ "$WRE_OSTYPE" != "Leopard" ]; then
         buildProgram "libiconv-1.13"
     fi
-
-    # libtool
-    buildProgram "libtool-2.2.6"
 
     # libgpg-error
     buildProgram "libgpg-error-1.7"
@@ -511,6 +511,7 @@ installPerlModules(){
     installPerlModule "CAM-PDF-1.52"
     installPerlModule "Text-Diff-HTML-0.06"
     installPerlModule "Locales-0.05"
+    installPerlModule "Test-Harness-3.17"
 
 	cd $WRE_BUILDDIR
 }

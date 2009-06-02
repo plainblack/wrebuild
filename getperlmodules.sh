@@ -11,6 +11,9 @@ cd source/perlmodules
 CPANMIRROR=http://search.cpan.org/CPAN
 #CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
+tar zxf Test-Harness-3.17.tar.gz
+
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.05.tar.gz
 tar zxf Locales-0.05.tar.gz 
 
