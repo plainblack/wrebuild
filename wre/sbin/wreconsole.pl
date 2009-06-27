@@ -148,7 +148,7 @@ sub sendResponse {
     my $state = shift;
     my $content = shift;
     $content = '<html><head><title>WRE Console</title><link rel="stylesheet" href="/css" type="text/css"
-    /></head> <body><div id="contentWrapper">'.$content.'</div><div id="footerOverline"></div><div id="credits">&copy; 2005-2007 <a
+    /></head> <body><div id="contentWrapper">'.$content.'</div><div id="footerOverline"></div><div id="credits">&copy; 2005-2009 <a
     href="http://www.plainblack.com/">Plain Black Corporation</a>. All rights reserved.</div></body></html>';
     my $response = HTTP::Response->new();
     $response->header("Content-Type" => "text/html");
