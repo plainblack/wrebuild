@@ -23,6 +23,10 @@
     RewriteCond %{REQUEST_FILENAME}             ^(.*/)
     RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f
     RewriteRule ^/uploads/                      - [L]
+    <Directory /data/domains/[% sitename %]/public/uploads/>
+        ExpiresActive On
+        ExpiresDefault "access plus 1 year"
+    </Directory>
 
     # proxy webgui pages
     ProxyPreserveHost On
@@ -61,6 +65,10 @@
 #    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
 #    RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f 
 #    RewriteRule ^/uploads/                      - [L] 
+#    <Directory /data/domains/[% sitename %]/public/uploads/>
+#        ExpiresActive On
+#        ExpiresDefault "access plus 1 year"
+#    </Directory>
 #
 #    # proxy webgui pages
 #    ProxyPreserveHost On
