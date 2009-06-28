@@ -185,7 +185,7 @@ buildMysql(){
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
-    if [ "$WRE_IA64" == 1]; then
+    if [ "$WRE_IA64" == 1 ]; then
         # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
         MYSQLCFGOPTS="-fPIC"
     fi
