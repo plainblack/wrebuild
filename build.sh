@@ -189,7 +189,7 @@ buildMysql(){
         # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
         MYSQLCFGOPTS="-fPIC"
     fi
-	CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man; checkError $? "MySQL Configure"
+	CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man --with-named-curses-libs=ncurses; checkError $? "MySQL Configure"
 	$WRE_MAKE; checkError $? "MySQL make"
 	$WRE_MAKE install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR

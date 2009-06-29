@@ -4,6 +4,8 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 1.0.0
  - Added missing Apache directives to enable Expires headers and gzip
    compression.
+ - Fixed a typo in MySQL build instructions.
+ - Made build compatible with SuSE.
 
 0.9.3
  - Added these perl modules:
