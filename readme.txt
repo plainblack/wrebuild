@@ -109,11 +109,6 @@ gcc
 gcc-c++
 autoconf
 
-For some reason on SuSE WRE doesn't find it's own ncurses library. That's
-something we're working on, but in the mean time you can install the one
-that comes with SuSE and build with that.
-
-
 
 -----------------------------------------------------------------------------
  * RHEL / CENTOS
