@@ -7,6 +7,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Fixed a typo in MySQL build instructions.
  - Made build compatible with SuSE.
  - fixed #10690: upgrade.pl does not honor WRE backup path
+ - fixed #4194: ETags considered harmful in cluster environment (removed ETags from modperl.conf)
 
 0.9.3
  - Added these perl modules:
