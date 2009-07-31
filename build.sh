@@ -382,7 +382,6 @@ installPerlModules(){
 	installPerlModule "trace-0.551" # TODO: replace by Devel::XRay
 	installPerlModule "Clone-0.31"
 	installPerlModule "Test-Pod-1.26"
-	installPerlModule "Data-Structure-Util-0.15"
 	installPerlModule "Parse-RecDescent-1.96.0"
     printHeader "libaqpreq2"
 	cd libapreq2-2.08

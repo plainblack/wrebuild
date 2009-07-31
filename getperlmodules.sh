@@ -380,10 +380,6 @@ tar zxf Clone-0.31.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/Test-Pod-1.26.tar.gz
 tar zxf Test-Pod-1.26.tar.gz
 
-# http://search.cpan.org/dist/Data-Structure-Util/
-wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Data-Structure-Util-0.15.tar.gz
-tar zxf Data-Structure-Util-0.15.tar.gz
-
 # http://search.cpan.org/dist/Parse-RecDescent/
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DC/DCONWAY/Parse-RecDescent-1.96.0.tar.gz
 tar zxf Parse-RecDescent-1.96.0.tar.gz
