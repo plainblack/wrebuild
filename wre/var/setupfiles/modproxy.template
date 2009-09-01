@@ -45,6 +45,7 @@
 #
 #    # let modperl know we're using SSL
 #    RequestHeader add SSLPROXY "1"
+#    RequestHeader add X-Forwarded-Proto "https"
 #
 #    # turn on mod_rewrite
 #    RewriteEngine On
