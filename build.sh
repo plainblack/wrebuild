@@ -443,7 +443,7 @@ installPerlModules(){
     $WRE_MAKE; checkError $? "aspell-en make"
     $WRE_MAKE install ; checkError $? "aspell-en make install"
     cd ../perlmodules
-	installPerlModule "Text-Aspell-0.09" "PREFIX=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include LIBS='-L$WRE_ROOT/prereqs/lib -laspell'"
+	installPerlModule "Text-Aspell-0.09" "PREFIX=$WRE_ROOT/prereqs CCFLAGS=-I$WRE_ROOT/prereqs/include"
     # back to perl modules
 	cd MySQL-Diff-0.33
 	perl Makefile.PL; checkError $? "MySQL::Diff Makefile.PL"
