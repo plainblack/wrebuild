@@ -429,6 +429,8 @@ sub www_editSettings {
         <p><input type="submit" class="saveButton" value="Save" /></p>
         <fieldset><legend>Web Statistics</legend>
 
+        <p>The WRE uses AWStats to analyze the Apache access logs. <a href="http://www.webgui.org/community-wiki/configuring-awstats">Get more help configuring AWStats</a>.</p>        
+
         <p>
         Enable?<br />
         <input type="radio" name="enableWebstats" value="1" '.(($webstats->{enabled} == 1) ? 'checked="1"' : '').' />Yes 
