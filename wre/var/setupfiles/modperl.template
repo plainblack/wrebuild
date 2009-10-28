@@ -1,6 +1,7 @@
 <VirtualHost *:[% modperlPort %]>
 	ServerName [% sitename %]
 	ServerAlias [% domain %]
+        ServerAdmin [% adminEmail %]
 	DocumentRoot [% domainRoot %]/[% sitename %]/public
     SetEnvIf SSLPROXY "1" \
         SSLPROXY

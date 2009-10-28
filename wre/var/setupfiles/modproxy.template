@@ -1,6 +1,7 @@
 <VirtualHost *:[% modproxyPort %]>
     ServerName [% sitename %]
     ServerAlias [% domain %]
+    ServerAdmin [% adminEmail %]
     CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
     DocumentRoot [% domainRoot %]/[% sitename %]/public
 
@@ -40,6 +41,7 @@
 #Listen 10.0.0.1:443
 #<VirtualHost 10.0.0.1:443>
 #    ServerName [% sitename %]
+#    ServerAdmin [% adminEmail %]
 #    CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
 #    DocumentRoot [% domainRoot %]/[% sitename %]/public
 #
