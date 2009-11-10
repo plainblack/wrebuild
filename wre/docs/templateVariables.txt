@@ -30,6 +30,8 @@ modperlPort             The Apache port running modperl.
 
 sitename                The real name of the site. Example: www.example.com
 
+adminEmail              The e-mail of the server administrator
+
 var0 - var9             A series of variables that can be used for custom
                         purposes. For example, if you like to add a hostname 
                         alias to all your sites that can be accessed even when 

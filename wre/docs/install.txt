@@ -169,3 +169,17 @@ following commands after the WRE is installed
 
 
 
+* Debian
+
+This note also applies to most Debian-like systems.
+
+To configure the WRE to start automatically at system boot
+
+    sudo ln -s /data/wre/sbin/services/redhat/webgui /etc/init.d/webgui
+    sudo update-rc.d webgui defaults
+
+You must install libgomp from APT
+
+    sudo apt-get install libgomp1
+
+

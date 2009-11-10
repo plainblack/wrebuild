@@ -200,6 +200,10 @@ sub www_addSite {
         left blank.</td>
     </tr>
     <tr>
+        <td>Admin E-mail</td>
+        <td><input type="text" name="adminEmail" value="'. ( $cgi->param("adminEmail") || $wreConfig->get('apache/adminEmail') ).'" /> <span class="subtext">E-mail address to be shown in Apache error messages</span></td>
+    </tr>
+    <tr>
         <td>Custom Variables</td>
         <td>
             var0 <input type="text" name="var0" value="'.$cgi->param("var0").'" /><br />
@@ -235,6 +239,7 @@ sub www_addSiteSave {
         $site->create({
             databaseUser            => $cgi->param("siteDatabaseUser"),
             databasePassword        => $cgi->param("siteDatabasePassword"),
+            adminEmail              => $cgi->param("adminEmail"),
             var0                    => $cgi->param("var0"),
             var1                    => $cgi->param("var1"),
             var2                    => $cgi->param("var2"),
@@ -300,13 +305,15 @@ sub www_deleteSiteSave {
         adminPassword   => $state->{cgi}->param("adminPassword")
         );
     if (eval{$site->checkDeletionSanity}) {
-        $site->delete;
-        www_listSites($state, $sitename." deleted."); 
+        eval{$site->delete};
+        if ($@) {
+            return www_listSites($state, "Site could not be deleted because: $@");
+        }
+        return www_listSites($state, $sitename." deleted."); 
     } 
     else {
         return www_deleteSite($state, $sitename." could not be created because ".$@);
     }
-    my $status = $sitename." deleted.";
 }
 
 #-------------------------------------------------------------------
@@ -346,6 +353,14 @@ sub www_editSettings {
         <input type="text" name="apacheMaxMemory" value="'.$apache->{maxMemory}.'" /> 
         <span class="subtext">The amount of the servers memory (in bytes) that the WRE will allow Apache/mod_perl processes
         to use before killing them.</span>
+        </p>
+
+        <p>
+        <label>
+        Admin E-mail<br />
+        <input type="text" name="apacheAdminEmail" value="' . $apache->{adminEmail} .'" />
+        </label>
+        <span class="subtext">The e-mail address of the server admin. Can be overridden per-site.</span>
         </p>
 
         </fieldset>
@@ -428,6 +443,8 @@ sub www_editSettings {
 
         <p><input type="submit" class="saveButton" value="Save" /></p>
         <fieldset><legend>Web Statistics</legend>
+
+        <p>The WRE uses AWStats to analyze the Apache access logs. <a href="http://www.webgui.org/community-wiki/configuring-awstats">Get more help configuring AWStats</a>.</p>        
 
         <p>
         Enable?<br />
@@ -647,6 +664,7 @@ sub www_editSettingsSave {
     $config->set("apache/defaultHostname", $cgi->param("apacheDefaultHostname"));
     $config->set("apache/maxMemory", $cgi->param("apacheMaxMemory"));
     $config->set("apache/connectionTimeout", $cgi->param("apacheConnectionTimeout"));
+    $config->set("apache/adminEmail", $cgi->param("apacheAdminEmail"));
 
     $status .= "Settings Saved.<br />";
     return www_editSettings($state, $status);
