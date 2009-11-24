@@ -238,7 +238,7 @@ buildImageMagick(){
 
     # image magick
    
-    WRE_IM_VERSION=6.5.7-4
+    WRE_IM_VERSION=6.5.7-10
     cd ImageMagick-$WRE_IM_VERSION
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
@@ -307,15 +307,15 @@ installPerlModules(){
 	    installPerlModule "Proc-ProcessTable-0.44"
     fi
 	installPerlModule "BSD-Resource-1.2902"
-	installPerlModule "URI-1.37"
+	installPerlModule "URI-1.51"
 	installPerlModule "IO-Zlib-1.09"
 	installPerlModule "HTML-Tagset-3.20"
-	installPerlModule "HTML-Parser-3.60"
-	installPerlModule "libwww-perl-5.824" "-n"
+	installPerlModule "HTML-Parser-3.64"
+	installPerlModule "libwww-perl-5.834" "-n"
 	installPerlModule "CGI.pm-3.42"
 	installPerlModule "Digest-HMAC-1.01"
-	installPerlModule "Digest-MD5-2.38"
-	installPerlModule "Digest-SHA1-2.11"
+	installPerlModule "Digest-MD5-2.39"
+	installPerlModule "Digest-SHA1-2.12"
 	installPerlModule "Module-Build-0.31012"
 	installPerlModule "Params-Validate-0.91"
 	installPerlModule "DateTime-Locale-0.42"
@@ -327,7 +327,7 @@ installPerlModules(){
 	installPerlModule "Pod-Escapes-1.04"
 	installPerlModule "ExtUtils-CBuilder-0.24"
 	installPerlModule "Pod-Coverage-0.19"
-	installPerlModule "Pod-Simple-3.07"
+	installPerlModule "Pod-Simple-3.10"
 	installPerlModule "podlators-2.2.2"
 	installPerlModule "DateTime-0.4501"
 	installPerlModule "DateTime-Format-Strptime-1.0800"
@@ -356,8 +356,8 @@ installPerlModules(){
 	installPerlModule "Convert-ASN1-0.22"
 	installPerlModule "HTML-TableExtract-2.10"
 	installPerlModule "HTML-Tree-3.23"
-	installPerlModule "Finance-Quote-1.15"
-	installPerlModule "JSON-XS-2.231"
+	installPerlModule "Finance-Quote-1.17"
+	installPerlModule "JSON-XS-2.26"
 	installPerlModule "JSON-2.12"
     installPerlModule "version-0.76"
     installPerlModule "Path-Class-0.16"
@@ -374,7 +374,7 @@ installPerlModules(){
     $WRE_ROOT/prereqs/bin/perl -i -nl -e"print unless /'SASL authentication' => \[/../\],/" $LDAP_VERSION/Makefile.PL
 	installPerlModule $LDAP_VERSION
 	installPerlModule "Log-Log4perl-1.20"
-	installPerlModule "POE-1.005" "--default"
+	installPerlModule "POE-1.280" "--default"
 	installPerlModule "POE-Component-IKC-0.2002"
 	installPerlModule "String-CRC32-1.4"
 	installPerlModule "ExtUtils-XSBuilder-0.28"
@@ -389,7 +389,7 @@ installPerlModules(){
 	$WRE_MAKE; checkError $? "libapreq2 make"
 	$WRE_MAKE install; checkError $? "libapreq2 make install"
 	cd ..
-	installPerlModule "Net-Subnets-0.21"
+	installPerlModule "Net-CIDR-Lite-0.20"
 	installPerlModule "MailTools-2.04"
 	installPerlModule "IO-stringy-2.110"
 	installPerlModule "MIME-tools-5.427"
@@ -403,19 +403,19 @@ installPerlModules(){
 	installPerlModule "Digest-BubbleBabble-0.01"
 	installPerlModule "Net-IP-1.25"
 	installPerlModule "Net-DNS-0.65" "--noonline-tests"
-	installPerlModule "POE-Component-Client-DNS-1.03"
-	installPerlModule "POE-Component-Client-Keepalive-0.25"
-	installPerlModule "POE-Component-Client-HTTP-0.88"
+	installPerlModule "POE-Component-Client-DNS-1.051"
+	installPerlModule "POE-Component-Client-Keepalive-0.262"
+	installPerlModule "POE-Component-Client-HTTP-0.892"
 	installPerlModule "Test-Deep-0.103"
 	installPerlModule "Test-MockObject-1.09"
-	buildPerlModule "UNIVERSAL-isa-1.01"
-	installPerlModule "UNIVERSAL-can-1.13_001"
+	buildPerlModule "UNIVERSAL-isa-1.03"
+	installPerlModule "UNIVERSAL-can-1.15"
 	installPerlModule "Class-MakeMethods-1.01"
 	installPerlModule "Locale-US-1.2"
 	installPerlModule "Time-Format-1.09"
 	installPerlModule "Weather-Com-0.5.3"
 	installPerlModule "File-Slurp-9999.13"
-	installPerlModule "Text-CSV_XS-0.64"
+	installPerlModule "Text-CSV_XS-0.69"
 	installPerlModule "File-Temp-0.21"
 	installPerlModule "File-Path-2.07"
 	installPerlModule "File-Which-0.05"
@@ -430,7 +430,7 @@ installPerlModules(){
 	buildPerlModule "PathTools-3.29"
 	installPerlModule "Module-Find-0.06"
 	buildPerlModule "Archive-Any-0.0932"
-	installPerlModule "Image-ExifTool-7.67"
+	installPerlModule "Image-ExifTool-8.00"
 	# aspell
     cd ..
 	buildProgram "aspell-0.60.6" "" "exec_prefix=$WRE_ROOT/prereqs"
@@ -470,7 +470,7 @@ installPerlModules(){
     installPerlModule "HTTP-Server-Simple-0.38"
     installPerlModule "Test-LongString-0.11"
     installPerlModule "HTTP-Response-Encoding-0.05"
-    installPerlModule "Array-Compare-1.17"
+    installPerlModule "Array-Compare-2.01"
     installPerlModule "Tree-DAG_Node-1.06"
     installPerlModule "Test-Warn-0.11"
     installPerlModule "Devel-Cycle-1.10"
@@ -512,7 +512,7 @@ installPerlModules(){
     installPerlModule "Text-PDF-0.29"
     installPerlModule "CAM-PDF-1.52"
     installPerlModule "Text-Diff-HTML-0.06"
-    installPerlModule "Locales-0.05"
+    installPerlModule "Locales-0.13"
     installPerlModule "Test-Harness-3.17"
 
 	cd $WRE_BUILDDIR

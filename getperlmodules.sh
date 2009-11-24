@@ -14,8 +14,8 @@ CPANMIRROR=http://search.cpan.org/CPAN
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
 tar zxf Test-Harness-3.17.tar.gz
 
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.05.tar.gz
-tar zxf Locales-0.05.tar.gz 
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.13.tar.gz
+tar zxf Locales-0.13.tar.gz 
 
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Text-Diff-HTML-0.06.tar.gz
 tar zxf Text-Diff-HTML-0.06.tar.gz 
@@ -113,8 +113,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/J/JH/JHI/BSD-Resource-1.2902.tar.gz
 tar zxf BSD-Resource-1.2902.tar.gz
 
 # http://search.cpan.org/dist/URI/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/URI-1.37.tar.gz
-tar zxf URI-1.37.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/URI-1.51.tar.gz
+tar zxf URI-1.51.tar.gz
 
 # http://search.cpan.org/dist/IO-Zlib/
 wget -t 4 -nv $CPANMIRROR/authors/id/T/TO/TOMHUGHES/IO-Zlib-1.09.tar.gz
@@ -129,12 +129,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETEK/HTML-Tree-3.23.tar.gz
 tar zxf HTML-Tree-3.23.tar.gz
 
 # http://search.cpan.org/dist/HTML-Parser/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/HTML-Parser-3.60.tar.gz
-tar zxf HTML-Parser-3.60.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/HTML-Parser-3.64.tar.gz
+tar zxf HTML-Parser-3.64.tar.gz
 
 # http://search.cpan.org/dist/libwww-perl/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/libwww-perl-5.824.tar.gz
-tar zxf libwww-perl-5.824.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/libwww-perl-5.834.tar.gz
+tar zxf libwww-perl-5.834.tar.gz
 
 # http://search.cpan.org/dist/CGI.pm/
 wget -t 4 -nv $CPANMIRROR/authors/id/L/LD/LDS/CGI.pm-3.42.tar.gz
@@ -145,12 +145,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/Digest-HMAC-1.01.tar.gz
 tar zxf Digest-HMAC-1.01.tar.gz
 
 # http://search.cpan.org/dist/Digest-MD5/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/Digest-MD5-2.38.tar.gz
-tar zxf Digest-MD5-2.38.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/Digest-MD5-2.39.tar.gz
+tar zxf Digest-MD5-2.39.tar.gz
 
 # http://search.cpan.org/dist/Digest-SHA1/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/Digest-SHA1-2.11.tar.gz
-tar zxf Digest-SHA1-2.11.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/Digest-SHA1-2.12.tar.gz
+tar zxf Digest-SHA1-2.12.tar.gz
 
 # http://search.cpan.org/dist/Module-Build/
 wget -t 4 -nv $CPANMIRROR/authors/id/E/EW/EWILHELM/Module-Build-0.31012.tar.gz
@@ -197,8 +197,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCLAMP/Pod-Coverage-0.19.tar.gz
 tar zxf Pod-Coverage-0.19.tar.gz
 
 # http://search.cpan.org/dist/Pod-Simple/
-wget -t 4 -nv $CPANMIRROR/authors/id/A/AR/ARANDAL/Pod-Simple-3.07.tar.gz
-tar zxf Pod-Simple-3.07.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Pod-Simple-3.10.tar.gz
+tar zxf Pod-Simple-3.10.tar.gz
 
 # http://search.cpan.org/dist/podlators/
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RR/RRA/podlators-2.2.2.tar.gz
@@ -309,12 +309,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSISK/HTML-TableExtract-2.10.tar.gz
 tar zxf HTML-TableExtract-2.10.tar.gz
 
 # http://search.cpan.org/dist/Finance-Quote/
-wget -t 4 -nv $CPANMIRROR/authors/id/E/EC/ECOCODE/Finance-Quote-1.15.tar.gz
-tar zxf Finance-Quote-1.15.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/E/EC/ECOCODE/Finance-Quote-1.17.tar.gz
+tar zxf Finance-Quote-1.17.tar.gz
 
 # http://search.cpan.org/dist/JSON-XS/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/JSON-XS-2.231.tar.gz
-tar zxf JSON-XS-2.231.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/JSON-XS-2.26.tar.gz
+tar zxf JSON-XS-2.26.tar.gz
 
 # http://search.cpan.org/dist/JSON/
 wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MAKAMAKA/JSON-2.12.tar.gz
@@ -349,8 +349,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.20.tar.gz
 tar zxf Log-Log4perl-1.20.tar.gz
 
 # http://search.cpan.org/dist/POE/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.005.tar.gz
-tar zxf POE-1.005.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.280.tar.gz
+tar zxf POE-1.280.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-IKC/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GW/GWYN/POE-Component-IKC-0.2002.tar.gz
@@ -387,10 +387,6 @@ tar zxf Parse-RecDescent-1.96.0.tar.gz
 # http://search.cpan.org/dist/libapreq2/
 wget -t 4 -nv $CPANMIRROR/authors/id/J/JO/JOESUF/libapreq2-2.08.tar.gz
 tar zxf libapreq2-2.08.tar.gz
-
-# http://search.cpan.org/dist/Net-Subnets/
-wget -t 4 -nv $CPANMIRROR/authors/id/S/SR/SRI/Net-Subnets-0.21.tar.gz
-tar zxf Net-Subnets-0.21.tar.gz
 
 # http://search.cpan.org/dist/MailTools/
 wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MARKOV/MailTools-2.04.tar.gz
@@ -445,16 +441,16 @@ wget -t 4 -nv $CPANMIRROR/authors/id/O/OL/OLAF/Net-DNS-0.65.tar.gz
 tar zxf Net-DNS-0.65.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-DNS/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-DNS-1.03.tar.gz
-tar zxf POE-Component-Client-DNS-1.03.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-DNS-1.051.tar.gz
+tar zxf POE-Component-Client-DNS-1.051.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-Keepalive/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive-0.25.tar.gz
-tar zxf POE-Component-Client-Keepalive-0.25.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive-0.262.tar.gz
+tar zxf POE-Component-Client-Keepalive-0.262.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-HTTP/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.88.tar.gz
-tar zxf POE-Component-Client-HTTP-0.88.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.892.tar.gz
+tar zxf POE-Component-Client-HTTP-0.892.tar.gz
 
 # http://search.cpan.org/dist/Test-Deep/
 wget -t 4 -nv $CPANMIRROR/authors/id/F/FD/FDALY/Test-Deep-0.103.tar.gz
@@ -465,12 +461,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/Test-MockObject-1.09.tar.gz
 tar zxf Test-MockObject-1.09.tar.gz
 
 # http://search.cpan.org/dist/UNIVERSAL-isa/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-isa-1.01.tar.gz
-tar zxf UNIVERSAL-isa-1.01.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-isa-1.03.tar.gz
+tar zxf UNIVERSAL-isa-1.03.tar.gz
 
 # http://search.cpan.org/dist/UNIVERSAL-can/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.13_001.tar.gz
-tar zxf UNIVERSAL-can-1.13_001.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.15.tar.gz
+tar zxf UNIVERSAL-can-1.15.tar.gz
 
 # http://search.cpan.org/~evo/Class-MakeMethods-1.01/
 wget -t 4 -nv $CPANMIRROR/authors/id/E/EV/EVO/Class-MakeMethods-1.01.tar.gz
@@ -493,8 +489,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/File-Slurp-9999.13.tar.gz
 tar zxf File-Slurp-9999.13.tar.gz
 
 # http://search.cpan.org/dist/Text-CSV_XS/
-wget -t 4 -nv $CPANMIRROR/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.64.tgz
-tar zxf Text-CSV_XS-0.64.tgz
+wget -t 4 -nv $CPANMIRROR/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.69.tgz
+tar zxf Text-CSV_XS-0.69.tgz
 
 # http://search.cpan.org/dist/File-Temp/
 wget -t 4 -nv $CPANMIRROR/authors/id/T/TJ/TJENNESS/File-Temp-0.21.tar.gz
@@ -553,8 +549,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/C/CM/CMOORE/Archive-Any-0.0932.tar.gz
 tar zxf Archive-Any-0.0932.tar.gz
 
 # http://search.cpan.org/dist/Image-ExifTool/
-wget -t 4 -nv $CPANMIRROR/authors/id/E/EX/EXIFTOOL/Image-ExifTool-7.67.tar.gz
-tar zxf Image-ExifTool-7.67.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/E/EX/EXIFTOOL/Image-ExifTool-8.00.tar.gz
+tar zxf Image-ExifTool-8.00.tar.gz
 
 # http://search.cpan.org/dist/Text-Aspell/
 wget -t 4 -nv $CPANMIRROR/authors/id/H/HA/HANK/Text-Aspell-0.09.tar.gz
@@ -609,8 +605,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/D/DA/DANKOGAI/HTTP-Response-Encoding-0.05.t
 tar zxf HTTP-Response-Encoding-0.05.tar.gz
 
 # http://search.cpan.org/dist/Array-Compare/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DA/DAVECROSS/Array-Compare-1.17.tar.gz
-tar zxf Array-Compare-1.17.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DA/DAVECROSS/Array-Compare-2.01.tar.gz
+tar zxf Array-Compare-2.01.tar.gz
 
 # http://search.cpan.org/dist/Tree-DAG_Node/
 wget -t 4 -nv $CPANMIRROR/authors/id/C/CO/COGENT/Tree-DAG_Node-1.06.tar.gz
@@ -708,6 +704,9 @@ tar zxf Text-Iconv-1.7.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RB/RBERJON/XML-Filter-BufferText-1.01.tar.gz
 tar zxf XML-Filter-BufferText-1.01.tar.gz
 
+# http://search.cpan.org/dist/Net-CIDR-Lite/
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DO/DOUGW/Net-CIDR-Lite-0.20.tar.gz
+tar zxf Net-CIDR-Lite-0.20.tar.gz
 
 rm -f *.gz *.tgz *.bz2 *.zip
 
