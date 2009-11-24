@@ -82,19 +82,19 @@ buildUtils(){
     buildProgram "libgcrypt-1.4.4"
 
     # gnutls
-    buildProgram "gnutls-2.6.6"
+    buildProgram "gnutls-2.8.5"
 
 	# expat
 	buildProgram "expat-2.0.1"
 
 	# lib xml
-	buildProgram "libxml2-2.7.3"
+	buildProgram "libxml2-2.7.6"
 
     # readline
     buildProgram "readline-6.0"
 
     # lftp
-    buildProgram "lftp-3.7.14" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
+    buildProgram "lftp-3.7.15" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
     
 	# catdoc
 	cd catdoc-0.94.2
@@ -121,7 +121,7 @@ buildUtils(){
 # perl
 buildPerl(){
 	printHeader "Perl"
-	cd source/perl-5.10.0
+	cd source/perl-5.10.1
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
@@ -143,7 +143,7 @@ buildApache(){
     cd source
 
 	# apache
-	cd httpd-2.2.11
+	cd httpd-2.2.14
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
@@ -181,7 +181,7 @@ buildApache(){
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.0.81
+	cd source/mysql-5.0.87
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
     fi	
@@ -205,7 +205,7 @@ buildImageMagick(){
     cd source
 
     # lib jpeg
-    cd libjpeg-6b
+    cd libjpeg-7
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
   	    $WRE_MAKE clean
@@ -217,7 +217,7 @@ buildImageMagick(){
     cd ..
 
     # freetype
-    buildProgram "freetype-2.3.9" "--enable-shared"
+    buildProgram "freetype-2.3.11" "--enable-shared"
 
     # lib ungif
     buildProgram "giflib-4.1.6" "--enable-shared"
@@ -232,13 +232,13 @@ buildImageMagick(){
     buildProgram "lcms-1.18" "--enable-shared"
 
     # graphviz
-    buildProgram "graphviz-2.22.2" "--enable-static --enable-shared --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
+    buildProgram "graphviz-2.24.0" "--enable-static --enable-shared --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
     ln -s $WRE_ROOT/prereqs/bin/dot_static $WRE_ROOT/prereqs/bin/dot 
 
 
     # image magick
    
-    WRE_IM_VERSION=6.5.2-10 
+    WRE_IM_VERSION=6.5.7-4
     cd ImageMagick-$WRE_IM_VERSION
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
@@ -522,7 +522,7 @@ installPerlModules(){
 #awstats
 installAwStats(){
 	printHeader "AWStats"
-	cp -RL source/awstats-6.9/* $WRE_ROOT/prereqs/
+	cp -RL source/awstats-6.95/* $WRE_ROOT/prereqs/
 }
 
 #wre utils
