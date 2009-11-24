@@ -134,6 +134,12 @@ chkconfig webgui on
 On RHEL 5 or higher you need to install the libgomp RPM.
 
 
+* SELinux
+
+The WRE contains no policies for configuring SELinux.  If you distribution
+uses SELinux, you will need to disable it, set it into permissive mode,
+or write your own policies for SELinux.
+
 
 * Mac OS X
 

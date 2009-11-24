@@ -305,13 +305,15 @@ sub www_deleteSiteSave {
         adminPassword   => $state->{cgi}->param("adminPassword")
         );
     if (eval{$site->checkDeletionSanity}) {
-        $site->delete;
-        www_listSites($state, $sitename." deleted."); 
+        eval{$site->delete};
+        if ($@) {
+            return www_listSites($state, "Site could not be deleted because: $@");
+        }
+        return www_listSites($state, $sitename." deleted."); 
     } 
     else {
         return www_deleteSite($state, $sitename." could not be created because ".$@);
     }
-    my $status = $sitename." deleted.";
 }
 
 #-------------------------------------------------------------------

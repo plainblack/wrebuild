@@ -13,6 +13,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - added #579: Change the default ServerAdmin config
     NOTE: This requires an additional template variable in your templates
     See var/setupfiles/modperl.template and var/setupfiles/modproxy.template
+ - Fixed wreconsole crashes  (#11208)
  - Updated these packages (Koen de Jonge / ProcoliX):
     gnutls 2.8.5
     libxml 2-2.7.6
@@ -26,7 +27,6 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     awstats 6.95
     Image Magick 6.5.7-4
     xpdf 3.02pl4
-     
 
 0.9.3
  - Added these perl modules:
