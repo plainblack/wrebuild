@@ -46,7 +46,7 @@ buildUtils(){
     buildProgram "libtool-2.2.6"
 
     # openssl
-    cd openssl-0.9.8k 
+    cd openssl-0.9.8l 
     printHeader "openssl"
     if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
@@ -192,7 +192,9 @@ buildMysql(){
     if [ "$WRE_NAME" == "Linux" ]; then
         MYSQLBUILDOPTS="--with-named-curses-libs=WRE_ROOT/prereqs/lib/libncurses.so"
     fi
-	CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"
+echo 'CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"'
+exit
+        echo $WRE_MAKE
 	$WRE_MAKE; checkError $? "MySQL make"
 	$WRE_MAKE install; checkError $? "MySQL make install"
 	cd $WRE_BUILDDIR

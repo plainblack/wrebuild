@@ -117,8 +117,8 @@ wget -t 4 -nv http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-5.0.87.tar.gz/f
 tar zxf mysql-5.0.87.tar.gz
 
 # openssl ssl toolkit http://www.openssl.org/
-wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8k.tar.gz
-tar zxf openssl-0.9.8k.tar.gz
+wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8l.tar.gz
+tar zxf openssl-0.9.8l.tar.gz
 
 # perl programming language http://www.cpan.org/src/README.html
 wget -t 4 -nv http://www.cpan.org/src/perl-5.10.1.tar.gz

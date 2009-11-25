@@ -27,6 +27,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     awstats 6.95
     Image Magick 6.5.7-10
     xpdf 3.02pl4
+    openssl 0.9.8l
 - Added these perl modules (Koen de Jonge / ProcoliX):
    Net-CIDR-Lite-0.20
 - Removed these obsolete perl modules (Koen de Jonge / ProcoliX):
