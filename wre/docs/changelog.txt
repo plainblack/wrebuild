@@ -51,6 +51,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     UNIVERSAL-can-1.15
     UNIVERSAL-isa-1.03
     URI-1.51
+- Fixed error in build.sh that didn't include the right option for mysql (Koen de Jonge / ProcoliX)
 
 0.9.3
  - Added these perl modules:

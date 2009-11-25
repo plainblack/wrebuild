@@ -84,11 +84,11 @@ buildUtils(){
     # gnutls
     buildProgram "gnutls-2.8.5"
 
-	# expat
-	buildProgram "expat-2.0.1"
+    # expat
+    buildProgram "expat-2.0.1"
 
-	# lib xml
-	buildProgram "libxml2-2.7.6"
+    # lib xml
+    buildProgram "libxml2-2.7.6"
 
     # readline
     buildProgram "readline-6.0"
@@ -189,11 +189,10 @@ buildMysql(){
         # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
         MYSQLCFGOPTS="-fPIC"
     fi
-    if [ "$WRE_NAME" == "Linux" ]; then
+    if [ "$WRE_OSNAME" == "Linux" ]; then
         MYSQLBUILDOPTS="--with-named-curses-libs=WRE_ROOT/prereqs/lib/libncurses.so"
     fi
-echo 'CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"'
-exit
+      CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"
         echo $WRE_MAKE
 	$WRE_MAKE; checkError $? "MySQL make"
 	$WRE_MAKE install; checkError $? "MySQL make install"
