@@ -212,7 +212,7 @@ buildImageMagick(){
   	    $WRE_MAKE clean
     fi	
     ./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
-    $WRE_ROOT/prereqs/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
+#    $WRE_ROOT/prereqs/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
     $WRE_MAKE; checkError $? "libjpeg make"
     $WRE_MAKE install; checkError $? "libjpeg make install"
     cd ..
