@@ -147,7 +147,13 @@ tar jxf zlib-1.2.3.tar.bz2
 wget -t 4 -nv http://rsync.samba.org/ftp/rsync/rsync-3.0.6.tar.gz
 tar xfz rsync-3.0.6.tar.gz
 
+# git http://git-scm.com/download
+wget -t 4 -nv http://kernel.org/pub/software/scm/git/git-1.6.5.3.tar.bz2
+tar jxf git-1.6.5.3.tar.bz2
 
+# http://curl.haxx.se/
+wget -t 4 -nv http://curl.haxx.se/download/curl-7.19.7.tar.bz2
+tar jxf curl-7.19.7.tar.bz2
 
 rm -f *.gz *.tgz *.bz2 *.zip
 

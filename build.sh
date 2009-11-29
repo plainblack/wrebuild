@@ -30,8 +30,8 @@ buildProgram() {
 		$WRE_MAKE distclean
   		$WRE_MAKE clean
     fi	
-    echo "Configuring $1 with GNUMAKE=$WRE_MAKE $4 ./configure --prefix=$WRE_ROOT/prereqs $2"
-	GNUMAKE=$WRE_MAKE $4 ./configure --prefix=$WRE_ROOT/prereqs $2; checkError $? "$1 configure"
+    echo "Configuring $1 with GNUMAKE=$WRE_MAKE $4 ./configure --prefix=$WRE_ROOT/prereqs LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include $2"
+	GNUMAKE=$WRE_MAKE $4 ./configure --prefix=$WRE_ROOT/prereqs LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include $2; checkError $? "$1 configure"
 	$WRE_MAKE; checkError $? "$1 make"
 	$WRE_MAKE install $3; checkError $? "$1 make install"
 	cd ..	
@@ -115,6 +115,9 @@ buildUtils(){
 	# xpdf
 	buildProgram "xpdf-3.02" "--without-x"
 
+	# curl
+	buildProgram "curl-7.19.7" "--with-ssl=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-gnutls=$WRE_ROOT/prereqs --with-libssh2$WRE_ROOT/prereqs"
+
 	cd $WRE_BUILDDIR
 }
 
@@ -133,6 +136,20 @@ buildPerl(){
 	./Configure -Dprefix=$WRE_ROOT/prereqs -des $PERLCFGOPTS; checkError $? "Perl Configure" 
 	$WRE_MAKE; checkError $? "Perl make"
 	$WRE_MAKE install; checkError $? "Perl make install"
+	cd $WRE_BUILDDIR
+}
+
+# git
+buildGit(){
+	printHeader "Git"
+	cd source/git-1.6.5.3
+	if [ "$WRE_CLEAN" == 1 ]; then
+		$WRE_MAKE distclean
+  		$WRE_MAKE clean
+	fi
+	./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include ; checkError $? "Git Configure"
+	$WRE_MAKE; checkError $? "Git make"
+	$WRE_MAKE install; checkError $? "Git make install"
 	cd $WRE_BUILDDIR
 }
 
@@ -594,8 +611,7 @@ cat <<_WREHELP
   
   Example: ./build.sh --perl            # only perl will be built
            ./build.sh --perl --apache   # only perl and apache will build
-           ./build.sh --all             # build all (except wdk)
-           ./build.sh --all --with-wdk  # build all including wdk 
+           ./build.sh --all             # build all 
 
   Options:
 
@@ -609,6 +625,7 @@ cat <<_WREHELP
 
   --utilities	    compiles and installs shared utilities
   --perl            compiles and installs perl
+  --git		    compiles and installs git
   --apache          compiles and installs apache
   --mysql	        compiles and installs mysql
   --imagemagick     compiles and installs image magick
@@ -640,6 +657,7 @@ do
     --all)
         export WRE_BUILD_UTILS=1
         export WRE_BUILD_PERL=1
+	export WRE_BUILD_GIT=1
         export WRE_BUILD_APACHE=1
         export WRE_BUILD_MYSQL=1
         export WRE_BUILD_IMAGEMAGICK=1
@@ -654,6 +672,10 @@ do
     
     --perl)
         export WRE_BUILD_PERL=1
+    ;;
+
+    --git)
+	export WRE_BUILD_GIT=1
     ;;
     
     --apache)
@@ -782,6 +804,9 @@ if [ -d /data ]; then
     fi
     if [ "$WRE_BUILD_PERL" == 1 ]; then
  		buildPerl
+    fi
+    if [ "$WRE_BUILD_GIT" == 1 ]; then
+ 		buildGit
     fi
     if [ "$WRE_BUILD_APACHE" == 1 ]; then
  		buildApache

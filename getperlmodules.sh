@@ -8,8 +8,8 @@ mkdir -p source/perlmodules
 cd source/perlmodules
 
 # edit this to use your local cpan mirror http://www.cpan.org/SITES.html
-CPANMIRROR=http://search.cpan.org/CPAN
-#CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
+#CPANMIRROR=http://search.cpan.org/CPAN
+CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
 tar zxf Test-Harness-3.17.tar.gz

@@ -92,6 +92,7 @@ From apt-get you'll need to install the following packages before you can
 compile the WRE:
 
 build-essential
+
 g++
 make
 libncurses5-dev

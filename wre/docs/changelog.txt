@@ -15,6 +15,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     See var/setupfiles/modperl.template and var/setupfiles/modproxy.template
  - Changed default location for pidfiles in templates to var/run/ (Koen de Jonge / ProcoliX)
  - Fixed wreconsole crashes  (#11208)
+ - Added these packages (Koen de Jonge / ProcoliX):
+    curl 7.19.7
+    git 1.6.5.3
  - Updated these packages (Koen de Jonge / ProcoliX):
     gnutls 2.8.5
     libxml 2-2.7.6
