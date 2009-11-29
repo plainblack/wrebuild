@@ -177,8 +177,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Time-Local-1.1901.tar.gz
 tar zxf Time-Local-1.1901.tar.gz
 
 # http://search.cpan.org/dist/Test-Simple/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHWERN/Test-Simple-0.86.tar.gz
-tar zxf Test-Simple-0.86.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHWERN/Test-Simple-0.94.tar.gz
+tar zxf Test-Simple-0.94.tar.gz
 
 # http://search.cpan.org/dist/Devel-Symdump/
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDK/Devel-Symdump-2.08.tar.gz
@@ -405,8 +405,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/S/SA/SAMTREGAR/HTML-Template-Expr-0.07.tar.
 tar zxf HTML-Template-Expr-0.07.tar.gz
 
 # http://search.cpan.org/dist/Template-Toolkit/
-wget -t 4 -nv $CPANMIRROR/authors/id/A/AB/ABW/Template-Toolkit-2.20.tar.gz
-tar zxf Template-Toolkit-2.20.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AB/ABW/Template-Toolkit-2.22.tar.gz
+tar zxf Template-Toolkit-2.22.tar.gz
 
 # http://search.cpan.org/dist/Scalar-List-Utils/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GB/GBARR/Scalar-List-Utils-1.19.tar.gz
@@ -681,8 +681,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-Random-0.04.tar
 tar zxf Crypt-OpenSSL-Random-0.04.tar.gz
 
 # http://search.cpan.org/dist/Crypt-OpenSSL-RSA/
-wget -t 4 -nv $CPANMIRROR/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-RSA-0.25.tar.gz
-tar zxf Crypt-OpenSSL-RSA-0.25.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-RSA-0.26.tar.gz
+tar zxf Crypt-OpenSSL-RSA-0.26.tar.gz
 
 # http://search.cpan.org/dist/Crypt-CBC/
 wget -t 4 -nv $CPANMIRROR/authors/id/L/LD/LDS/Crypt-CBC-2.30.tar.gz
@@ -708,5 +708,88 @@ tar zxf XML-Filter-BufferText-1.01.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DO/DOUGW/Net-CIDR-Lite-0.20.tar.gz
 tar zxf Net-CIDR-Lite-0.20.tar.gz
 
-rm -f *.gz *.tgz *.bz2 *.zip
+# http://search.cpan.org/dist/Params-Util/
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADAMK/Params-Util-1.00.tar.gz
+tar zxf Params-Util-1.00.tar.gz
 
+# http://search.cpan.org/dist/Sub-Install/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Sub-Install-0.925.tar.gz
+tar zxf Sub-Install-0.925.tar.gz
+
+# http://search.cpan.org/dist/Data-OptList/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Data-OptList-0.104.tar.gz
+tar zxf Data-OptList-0.104.tar.gz
+
+# http://search.cpan.org/dist/Sub-Exporter/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Sub-Exporter-0.982.tar.gz
+tar zxf Sub-Exporter-0.982.tar.gz
+
+# http://search.cpan.org/dist/Devel-GlobalDestruction/
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NU/NUFFIN/Devel-GlobalDestruction-0.02.tar.gz
+tar zxf Devel-GlobalDestruction-0.02.tar.gz
+
+# http://search.cpan.org/dist/MRO-Compat/
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/MRO-Compat-0.11.tar.gz
+tar zxf MRO-Compat-0.11.tar.gz
+
+# http://search.cpan.org/dist/Sub-Name/
+wget -t 4 -nv $CPANMIRROR/authors/id/X/XM/XMATH/Sub-Name-0.04.tar.gz
+tar zxf Sub-Name-0.04.tar.gz
+
+# http://search.cpan.org/dist/Task-Weaken/
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADAMK/Task-Weaken-1.03.tar.gz
+tar zxf Task-Weaken-1.03.tar.gz
+
+# http://search.cpan.org/dist/Try-Tiny/
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NU/NUFFIN/Try-Tiny-0.02.tar.gz 
+tar zxf Try-Tiny-0.02.tar.gz
+
+# http://search.cpan.org/dist/Class-MOP/
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Class-MOP-0.95.tar.gz
+tar zxf Class-MOP-0.95.tar.gz
+
+# http://search.cpan.org/dist/Moose/
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Moose-0.93.tar.gz
+tar zxf Moose-0.93.tar.gz
+
+# http://search.cpan.org/dist/Getopt-Long-Descriptive/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Getopt-Long-Descriptive-0.081.tar.gz
+tar zxf Getopt-Long-Descriptive-0.081.tar.gz
+
+# http://search.cpan.org/dist/MooseX-Getopt/
+wget -t 4 -nv $CPANMIRROR/authors/id/B/BO/BOBTFISH/MooseX-Getopt-0.25.tar.gz
+tar zxf MooseX-Getopt-0.25.tar.gz
+
+# http://search.cpan.org/dist/WWW-Pastebin-PastebinCom-Create/
+wget -t 4 -nv $CPANMIRROR/authors/id/Z/ZO/ZOFFIX/WWW-Pastebin-PastebinCom-Create-0.002.tar.gz
+tar zxf WWW-Pastebin-PastebinCom-Create-0.002.tar.gz
+
+# http://search.cpan.org/dist/Class-Data-Accessor/
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CL/CLACO/Class-Data-Accessor-0.04004.tar.gz
+tar zxf Class-Data-Accessor-0.04004.tar.gz
+
+# http://search.cpan.org/dist/WWW-Pastebin-RafbNet-Create/
+wget -t 4 -nv $CPANMIRROR/authors/id/Z/ZO/ZOFFIX/WWW-Pastebin-RafbNet-Create-0.001.tar.gz
+tar zxf WWW-Pastebin-RafbNet-Create-0.001.tar.gz
+
+# http://search.cpan.org/dist/Spiffy/
+wget -t 4 -nv $CPANMIRROR/authors/id/I/IN/INGY/Spiffy-0.30.tar.gz
+tar zxf Spiffy-0.30.tar.gz
+
+# http://search.cpan.org/dist/Clipboard/
+wget -t 4 -nv $CPANMIRROR/authors/id/K/KI/KING/Clipboard-0.09.tar.gz
+tar zxf Clipboard-0.09.tar.gz
+
+# http://search.cpan.org/dist/Mixin-Linewise/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Mixin-Linewise-0.002.tar.gz
+tar zxf Mixin-Linewise-0.002.tar.gz
+
+# http://search.cpan.org/dist/Config-INI/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Config-INI-0.014.tar.gz
+tar zxf Config-INI-0.014.tar.gz
+
+# http://search.cpan.org/dist/App-Nopaste/
+wget -t 4 -nv $CPANMIRROR/authors/id/S/SA/SARTAK/App-Nopaste-0.17.tar.gz
+tar zxf App-Nopaste-0.17.tar.gz
+
+rm -f *.gz *.tgz *.bz2 *.zip
