@@ -102,7 +102,7 @@ buildUtils(){
 	buildProgram "libgpg-error-1.7"
 
 	# libgcrypt
-	buildProgram "libgcrypt-1.4.4"
+	buildProgram "libgcrypt-1.4.4" "--with-gpg-error-prefix=/data/wre/prereqs"
 
 	# gnutls
 	buildProgram "gnutls-2.8.5"
@@ -223,17 +223,30 @@ buildGit(){
 # apache
 buildApache(){
 	printHeader "Apache"
-	cd source
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd source"
+	else
+		cd source
+	fi
 
 	# apache
-	cd httpd-2.2.14
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd httpd-2.2.14"
+	else
+		cd httpd-2.2.14
+	fi
 	if [ "$WRE_CLEAN" == 1 ]; then
 		$WRE_MAKE distclean
  		$WRE_MAKE clean
 		rm -Rf server/exports.c 
 		rm -Rf server/export_files
 	fi	
-	./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared; checkError $? "Apache Configure"
+
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared"
+	else
+		./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared; checkError $? "Apache Configure"
+	fi
 	if [ "$WRE_OSNAME" == "Darwin" ] && [ "$WRE_OSTYPE" == "Leopard" ]; then
 		$WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h
 	fi
