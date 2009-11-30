@@ -103,9 +103,9 @@ buildUtils(){
 
 	# libgcrypt
 	if [ "$WRE_OSNAME" != "Darwin" ] && [ "$WRE_OSTYPE" != "Leopard" ]; then
-		buildProgram "libgcrypt-1.4.4" "--with-gpg-error-prefix=/data/wre/prereqs --disable-asm"
-	else
 		buildProgram "libgcrypt-1.4.4" "--with-gpg-error-prefix=/data/wre/prereqs"
+	else
+		buildProgram "libgcrypt-1.4.4" "--with-gpg-error-prefix=/data/wre/prereqs --disable-asm"
 	fi
 
 	# gnutls
