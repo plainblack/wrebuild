@@ -57,6 +57,12 @@ buildUtils(){
 	# libtool
 	buildProgram "libtool-2.2.6"
 
+	# ncurses
+	buildProgram "ncurses-5.7" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --with-shared"
+
+	# zlib
+	buildProgram "zlib-1.2.3" "--shared"
+
 	# openssl
 	printHeader "Openssl"
 	if [ "$PRINTONLY" == 1 ]; then
@@ -83,12 +89,6 @@ buildUtils(){
 		$WRE_MAKE install; checkError $? "openssl make install"
 		cd ..
 	fi
-
-	# ncurses
-	buildProgram "ncurses-5.7" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --with-shared"
-
-	# zlib
-	buildProgram "zlib-1.2.3" "--shared"
 
 	# rsync
 	buildProgram "rsync-3.0.6" "LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include"
@@ -139,7 +139,7 @@ buildUtils(){
 		echo "$WRE_MAKE install"
 		echo "cd ../charsets"
 		echo "$WRE_MAKE install"
-		echo "cd $WRE_BUILDDIR"
+		echo "cd $WRE_BUILDDIR/source"
 	else
 		./configure --prefix=$WRE_ROOT/prereqs --disable-wordview --without-wish --with-input=utf-8 --with-output=utf-8 --disable-charset-check --disable-langinfo; checkError $? "catdoc Configure"
 		$WRE_MAKE; checkError $? "catdoc make"
@@ -149,7 +149,7 @@ buildUtils(){
 		$WRE_MAKE install; checkError $? "catdoc make install docs"
 		cd ../charsets
 		$WRE_MAKE install; checkError $? "catdoc make install charsets"
-		cd $WRE_BUILDDIR
+		cd $WRE_BUILDDIR/source
 	fi
 
 	# xpdf
