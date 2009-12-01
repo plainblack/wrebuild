@@ -160,7 +160,7 @@ buildUtils(){
 	buildProgram "xpdf-3.02" "--without-x"
 
 	# curl
-	buildProgram "curl-7.19.7" "--with-ssl=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-gnutls=$WRE_ROOT/prereqs --with-libssh2$WRE_ROOT/prereqs"
+	buildProgram "curl-7.19.7" "--with-ssl=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-gnutls=$WRE_ROOT/prereqs --with-libssh2=$WRE_ROOT/prereqs"
 
 	if [ "$PRINTONLY" == 1 ]; then
 		echo "cd $WRE_BUILDDIR"
