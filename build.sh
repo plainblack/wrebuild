@@ -211,12 +211,12 @@ buildGit(){
 		$WRE_MAKE clean
 	fi
 	if [ "$PRINTONLY" == 1 ]; then
-		echo "./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs/bin/perl LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include"
+		echo "./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs/bin/perl LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --without-tcltk"
 		echo "$WRE_MAKE"
 		echo "$WRE_MAKE install"
 		echo "cd $WRE_BUILDDIR"
 	else
-		./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include ; checkError $? "Git Configure"
+		./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs/bin/perl LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --without-tcltk ; checkError $? "Git Configure"
 		$WRE_MAKE; checkError $? "Git make"
 		$WRE_MAKE install; checkError $? "Git make install"
 		cd $WRE_BUILDDIR
