@@ -211,7 +211,7 @@ buildGit(){
 		$WRE_MAKE clean
 	fi
 	if [ "$PRINTONLY" == 1 ]; then
-		echo "./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include"
+		echo "./configure --prefix=$WRE_ROOT/prereqs --with-zlib=$WRE_ROOT/prereqs --with-perl=$WRE_ROOT/prereqs/bin/perl LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include"
 		echo "$WRE_MAKE"
 		echo "$WRE_MAKE install"
 		echo "cd $WRE_BUILDDIR"
@@ -247,9 +247,9 @@ buildApache(){
 	fi	
 
 	if [ "$PRINTONLY" == 1 ]; then
-		echo "./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared"
+		echo "./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include"
 	else
-		./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared; checkError $? "Apache Configure"
+		./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include; checkError $? "Apache Configure"
 	fi
 	if [ "$WRE_OSNAME" == "Darwin" ] && [ "$WRE_OSTYPE" == "Leopard" ]; then
 		$WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h
