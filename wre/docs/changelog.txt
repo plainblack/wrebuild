@@ -21,15 +21,15 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Updated these packages (Koen de Jonge / ProcoliX):
     gnutls 2.8.5
     libxml 2-2.7.6
-    lftp 3.7.15
+    lftp 4.0.5 (complete new version)
     perl 5.10.1
     httpd 2.2.14
-    mysql 5.0.87
+    mysql 5.0.89
     libjpeg 7
     freetype 2.3.11
     graphviz 2.24.0
     awstats 6.95
-    Image Magick 6.5.7-10
+    Image Magick 6.5.8-8
     xpdf 3.02pl4
     openssl 0.9.8l
 - Added these perl modules (Koen de Jonge / ProcoliX):
@@ -60,17 +60,18 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 - Updated these perl modules (Koen de Jonge / ProcoliX):
     libwww-perl-5.834
     Array-Compare-2.01
+    Config-JSON-1.5000
     Digest-MD5-2.39
     Digest-SHA1-2.12
     Finance-Quote-1.17
     HTML-Parser-3.64
     Image-ExifTool-8.00
     JSON-XS-2.26
-    Locales-0.13
+    Locales-0.15
     Crypt-OpenSSL-RSA-0.26
     POE-1.280
     POE-Component-Client-DNS-1.051
-    POE-Component-Client-HTTP-0.892
+    POE-Component-Client-HTTP-0.893
     POE-Component-Client-Keepalive-0.262
     Pod-Simple-3.10
     Template-Toolkit-2.22

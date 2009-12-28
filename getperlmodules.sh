@@ -14,8 +14,9 @@ CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
 tar zxf Test-Harness-3.17.tar.gz
 
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.13.tar.gz
-tar zxf Locales-0.13.tar.gz 
+# http://search.cpan.org/dist/Locales/
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.15.tar.gz
+tar zxf Locales-0.15.tar.gz 
 
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Text-Diff-HTML-0.06.tar.gz
 tar zxf Text-Diff-HTML-0.06.tar.gz 
@@ -329,8 +330,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/K/KW/KWILLIAMS/Path-Class-0.16.tar.gz
 tar zxf Path-Class-0.16.tar.gz
 
 # http://search.cpan.org/dist/Config-JSON/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RI/RIZEN/Config-JSON-1.3.1.tar.gz
-tar zxf Config-JSON-1.3.1.tar.gz
+#wget -t 4 -nv $CPANMIRROR/authors/id/R/RI/RIZEN/Config-JSON-1.3.1.tar.gz
+#tar zxf Config-JSON-1.3.1.tar.gz
+
+# http://search.cpan.org/dist/Config-JSON/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RI/RIZEN/Config-JSON-1.5000.tar.gz
+tar zxf Config-JSON-1.5000.tar.gz
 
 # http://search.cpan.org/dist/IO-Socket-SSL/
 wget -t 4 -nv $CPANMIRROR/authors/id/S/SU/SULLR/IO-Socket-SSL-1.22.tar.gz
@@ -449,8 +454,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive
 tar zxf POE-Component-Client-Keepalive-0.262.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-HTTP/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.892.tar.gz
-tar zxf POE-Component-Client-HTTP-0.892.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.893.tar.gz
+tar zxf POE-Component-Client-HTTP-0.893.tar.gz
 
 # http://search.cpan.org/dist/Test-Deep/
 wget -t 4 -nv $CPANMIRROR/authors/id/F/FD/FDALY/Test-Deep-0.103.tar.gz

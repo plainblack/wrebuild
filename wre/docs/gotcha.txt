@@ -6,6 +6,21 @@ affect your upgrade from one version of the WRE to another. Before upgrading
 the WRE you should always read this file in the new version you wish to
 upgrade to.
 
+WRE 0.9.4
+- Apache ServerAdmin directive
+
+In the apache configs there is now a default ServerAdmin config
+This requires an additional template variable in your templates
+See var/setupfiles/modperl.template and var/setupfiles/modproxy.template
+
+This will have to be fixed in the wre management scripts
+
+- Spectre pid-file dir
+
+Newer WebGUI versions use a pid-file for spectre. For this you have to use
+a directory. We suggest /data/wre/var/run
+This file is also used for the apache .pid files now.
+
 WRE 0.9.1
 
 A serious flaw was discovered with MySQL 5.1 after the release of WRE 0.9.0.

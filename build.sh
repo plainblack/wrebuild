@@ -121,7 +121,7 @@ buildUtils(){
 	buildProgram "readline-6.0"
 
 	# lftp
-	buildProgram "lftp-3.7.15" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
+	buildProgram "lftp-4.0.5" "--with-libiconv-prefix=$WRE_ROOT/prereqs --with-openssl=$WRE_ROOT/prereqs" "" "env CFLAGS=-I$WRE_ROOT/prereqs/include CPPFLAGS=-I$WRE_ROOT/prereqs/include LDFLAGS=-L$WRE_ROOT/prereqs/lib"
 	
 	# catdoc
 	printHeader "Catdoc"
@@ -252,69 +252,142 @@ buildApache(){
 		./configure --prefix=$WRE_ROOT/prereqs --with-included-apr --with-z=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var --enable-rewrite=shared --enable-deflate=shared --enable-ssl --with-ssl=$WRE_ROOT/prereqs --enable-proxy=shared --with-mpm=prefork --enable-headers --disable-userdir --disable-imap --disable-negotiation --disable-actions --enable-expires=shared LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include; checkError $? "Apache Configure"
 	fi
 	if [ "$WRE_OSNAME" == "Darwin" ] && [ "$WRE_OSTYPE" == "Leopard" ]; then
-		$WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "$WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h"
+		else 
+			$WRE_ROOT/prereqs/bin/perl -i -p -e's[#define APR_HAS_SENDFILE          1][#define APR_HAS_SENDFILE          0]g' srclib/apr/include/apr.h
+		fi
 	fi
-	$WRE_MAKE; checkError $? "Apache make"
-	$WRE_MAKE install; checkError $? "Apache make install"
-	rm -f $WRE_ROOT/etc/highperformance-std.conf
-	rm -f $WRE_ROOT/etc/highperformance.conf
-	rm -f $WRE_ROOT/etc/httpd-std.conf 
-	rm -f $WRE_ROOT/etc/httpd.conf 
-	rm -f $WRE_ROOT/etc/ssl-std.conf
-	rm -f $WRE_ROOT/etc/ssl.conf
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "$WRE_MAKE"
+		echo "$WRE_MAKE install"
+		echo "rm -f $WRE_ROOT/etc/highperformance-std.conf"
+		echo "rm -f $WRE_ROOT/etc/highperformance.conf"
+		echo "rm -f $WRE_ROOT/etc/httpd-std.conf"
+		echo "rm -f $WRE_ROOT/etc/httpd.conf"
+		echo "rm -f $WRE_ROOT/etc/ssl-std.conf"
+		echo "rm -f $WRE_ROOT/etc/ssl.conf"
+	else
+		$WRE_MAKE; checkError $? "Apache make"
+		$WRE_MAKE install; checkError $? "Apache make install"
+		rm -f $WRE_ROOT/etc/highperformance-std.conf
+		rm -f $WRE_ROOT/etc/highperformance.conf
+		rm -f $WRE_ROOT/etc/httpd-std.conf 
+		rm -f $WRE_ROOT/etc/httpd.conf 
+		rm -f $WRE_ROOT/etc/ssl-std.conf
+		rm -f $WRE_ROOT/etc/ssl.conf
+	fi
 
 	# modperl
-	cd ../mod_perl-2.0.4
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd ../mod_perl-2.0.4"
+	else
+		cd ../mod_perl-2.0.4
+	fi
 	if [ "$WRE_CLEAN" == 1 ]; then
-		$WRE_MAKE distclean
-		$WRE_MAKE clean
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "$WRE_MAKE distclean"
+			echo "$WRE_MAKE clean"
+		else
+			$WRE_MAKE distclean
+			$WRE_MAKE clean
+		fi
 	fi	
-	perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
-	$WRE_MAKE; checkError $? "mod_perl make"
-	$WRE_MAKE install; checkError $? "mod_perl make install"
-	cd ..
-
-	cd $WRE_BUILDDIR
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs"
+		echo "$WRE_MAKE"
+		echo "$WRE_MAKE install"
+		echo "cd .."
+		echo "cd $WRE_BUILDDIR
+	else
+		perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
+		$WRE_MAKE; checkError $? "mod_perl make"
+		$WRE_MAKE install; checkError $? "mod_perl make install"
+		cd ..
+		cd $WRE_BUILDDIR
+	fi
 }
 
 
 # mysql
 buildMysql(){
 	printHeader "MySQL"
-	cd source/mysql-5.0.87
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd source/mysql-5.0.89"
+	else
+		cd source/mysql-5.0.89
+	fi
 	if [ "$WRE_CLEAN" == 1 ]; then
-		$WRE_MAKE distclean
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "$WRE_MAKE distclean"
+		else
+			$WRE_MAKE distclean
+		fi
 	fi	
 	if [ "$WRE_IA64" == 1 ]; then
 		# this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
-		MYSQLCFGOPTS="-fPIC"
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "MYSQLCFGOPTS=\"-fPIC\""
+		else
+			MYSQLCFGOPTS="-fPIC"
+		fi
 	fi
 	if [ "$WRE_OSNAME" == "Linux" ]; then
 		MYSQLBUILDOPTS="--with-named-curses-libs=$WRE_ROOT/prereqs/lib/libncurses.so"
 	fi
-	CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"
-	echo $WRE_MAKE
-	$WRE_MAKE; checkError $? "MySQL make"
-	$WRE_MAKE install; checkError $? "MySQL make install"
-	cd $WRE_BUILDDIR
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "CC=gcc CFLAGS=\"-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer\" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti\" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS"
+	else
+		CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"
+	fi
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "$WRE_MAKE"
+		echo "$WRE_MAKE install"
+		echo "cd $WRE_BUILDDIR"
+	else
+		echo $WRE_MAKE
+		$WRE_MAKE; checkError $? "MySQL make"
+		$WRE_MAKE install; checkError $? "MySQL make install"
+		cd $WRE_BUILDDIR
+	fi
 }
 
 
 # Image Magick
 buildImageMagick(){
 	printHeader "Image Magick"
-	cd source
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd source"
+	else
+		cd source
+	fi
 
 	# lib jpeg
-	cd libjpeg-7
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd libjpeg-7"
+	else
+		cd libjpeg-7
+	fi
 	if [ "$WRE_CLEAN" == 1 ]; then
-		$WRE_MAKE distclean
-		$WRE_MAKE clean
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "$WRE_MAKE distclean"
+			echo "$WRE_MAKE clean"
+		else
+			$WRE_MAKE distclean
+			$WRE_MAKE clean
+		fi
 	fi	
-	./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
-	$WRE_MAKE; checkError $? "libjpeg make"
-	$WRE_MAKE install; checkError $? "libjpeg make install"
-	cd ..
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "./configure --enable-shared --prefix=$WRE_ROOT/prereqs"
+		echo "$WRE_MAKE"
+		echo "$WRE_MAKE install"
+		echo "cd .."
+	else
+		./configure --enable-shared --prefix=$WRE_ROOT/prereqs; checkError $? "libjpeg Configure"
+		$WRE_MAKE; checkError $? "libjpeg make"
+		$WRE_MAKE install; checkError $? "libjpeg make install"
+		cd ..
+	fi
 
 	# freetype
 	buildProgram "freetype-2.3.11" "--enable-shared"
@@ -333,32 +406,64 @@ buildImageMagick(){
 
 	# graphviz
 	buildProgram "graphviz-2.24.0" "--enable-static --enable-shared --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
-	ln -s $WRE_ROOT/prereqs/bin/dot_static $WRE_ROOT/prereqs/bin/dot 
-
+	
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "ln -s $WRE_ROOT/prereqs/bin/dot_static $WRE_ROOT/prereqs/bin/dot"
+	else
+		ln -s $WRE_ROOT/prereqs/bin/dot_static $WRE_ROOT/prereqs/bin/dot 
+	fi
 
 	# image magick
-	WRE_IM_VERSION=6.5.7-10
-	cd ImageMagick-$WRE_IM_VERSION
+	WRE_IM_VERSION=6.5.8-8
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd ImageMagick-$WRE_IM_VERSION"
+	else
+		cd ImageMagick-$WRE_IM_VERSION
+	fi
 	printHeader "Image Magick"
 	if [ "$WRE_CLEAN" == 1 ]; then
-		$WRE_MAKE distclean
-		$WRE_MAKE clean
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "$WRE_MAKE distclean"
+			echo "$WRE_MAKE clean"
+		else
+			$WRE_MAKE distclean
+			$WRE_MAKE clean
+		fi
 	fi	
 	case "$WRE_OSNAME" in
 	FreeBSD | OpenBSD)
 		export IM_OPTION="--without-threads"
 	;;
 	esac 
-	GNUMAKE=$WRE_MAKE ./configure LD=ld --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$WRE_ROOT/prereqs/include/graphviz GVC_LIBS="-L$WRE_ROOT/prereqs/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "GNUMAKE=$WRE_MAKE ./configure LD=ld --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$WRE_ROOT/prereqs/include/graphviz GVC_LIBS=\"-L$WRE_ROOT/prereqs/lib -lgvc -lgraph -lcdt\" $IM_OPTION"
+	else
+		GNUMAKE=$WRE_MAKE ./configure LD=ld --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$WRE_ROOT/prereqs/include/graphviz GVC_LIBS="-L$WRE_ROOT/prereqs/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
+	fi
 	if [ "$WRE_OSNAME" == "Darwin" ]; then
 		# technically this is only for Darwin i386, but i don't know how to detect that
-		$WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
+		if [ "$PRINTONLY" == 1 ]; then
+			echo "$WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c"
+		else
+			$WRE_ROOT/prereqs/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
+		fi
 	fi
-	$WRE_MAKE; checkError $? "Image Magick make"
-	$WRE_MAKE install; checkError $? "Image Magick make install"
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "$WRE_MAKE"
+		echo "$WRE_MAKE install"
+	else
+		$WRE_MAKE; checkError $? "Image Magick make"
+		$WRE_MAKE install; checkError $? "Image Magick make install"
+	fi
 
-	cd $WRE_BUILDDIR
-	cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-$WRE_IM_VERSION/config/
+	
+	if [ "$PRINTONLY" == 1 ]; then
+		echo "cd $WRE_BUILDDIR"
+		echo "cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-$WRE_IM_VERSION/config/"
+	else
+		cd $WRE_BUILDDIR
+		cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-$WRE_IM_VERSION/config/
+	fi
 }
 
 # most perl modules are installed the same way
@@ -504,7 +609,7 @@ installPerlModules(){
 	installPerlModule "Net-DNS-0.65" "--noonline-tests"
 	installPerlModule "POE-Component-Client-DNS-1.051"
 	installPerlModule "POE-Component-Client-Keepalive-0.262"
-	installPerlModule "POE-Component-Client-HTTP-0.892"
+	installPerlModule "POE-Component-Client-HTTP-0.893"
 	installPerlModule "Test-Deep-0.103"
 	installPerlModule "Test-MockObject-1.09"
 	buildPerlModule "UNIVERSAL-isa-1.03"
@@ -611,7 +716,7 @@ installPerlModules(){
 	installPerlModule "Text-PDF-0.29"
 	installPerlModule "CAM-PDF-1.52"
 	installPerlModule "Text-Diff-HTML-0.06"
-	installPerlModule "Locales-0.13"
+	installPerlModule "Locales-0.15"
 	installPerlModule "Test-Harness-3.17"
 	# App-Nopaste
 	installPerlModule "Params-Util-1.00"
