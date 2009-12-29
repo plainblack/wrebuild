@@ -298,7 +298,7 @@ buildApache(){
 		echo "$WRE_MAKE"
 		echo "$WRE_MAKE install"
 		echo "cd .."
-		echo "cd $WRE_BUILDDIR
+		echo "cd $WRE_BUILDDIR"
 	else
 		perl Makefile.PL MP_APXS=$WRE_ROOT/prereqs/bin/apxs; checkError $? "mod_perl Configure"
 		$WRE_MAKE; checkError $? "mod_perl make"
@@ -336,7 +336,7 @@ buildMysql(){
 		MYSQLBUILDOPTS="--with-named-curses-libs=$WRE_ROOT/prereqs/lib/libncurses.so"
 	fi
 	if [ "$PRINTONLY" == 1 ]; then
-		echo "CC=gcc CFLAGS=\"-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer\" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti\" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS"
+		echo "CC=gcc CFLAGS=\"-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer\" CXX=g++ CXXFLAGS=\"-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti\" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS"
 	else
 		CC=gcc CFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer" CXX=g++ CXXFLAGS="-O3 $MYSQLCFGOPTS -fno-omit-frame-pointer -felide-constructors -fno-exceptions -fno-rtti" ./configure --prefix=$WRE_ROOT/prereqs --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man $MYSQLBUILDOPTS; checkError $? "MySQL Configure"
 	fi
@@ -436,9 +436,9 @@ buildImageMagick(){
 	;;
 	esac 
 	if [ "$PRINTONLY" == 1 ]; then
-		echo "GNUMAKE=$WRE_MAKE ./configure LD=ld --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$WRE_ROOT/prereqs/include/graphviz GVC_LIBS=\"-L$WRE_ROOT/prereqs/lib -lgvc -lgraph -lcdt\" $IM_OPTION"
-	else
-		GNUMAKE=$WRE_MAKE ./configure LD=ld --prefix=$WRE_ROOT/prereqs --enable-delegate-build LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$WRE_ROOT/prereqs/include/graphviz GVC_LIBS="-L$WRE_ROOT/prereqs/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
+		echo "export GNUMAKE=$WRE_MAKE GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include GVC_LIBS=\"-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt\" LD=ld ; ./configure --prefix=$WRE_ROOT/prereqs --with-quantum-depth=8 --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-perl-options=\"LIBS=-L/data/wre/prereqs/lib\" --with-lcms --with-tiff --without-x $IM_OPTION"
+ 	else
+		export GNUMAKE=$WRE_MAKE GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include GVC_LIBS="-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt" LD=ld ; ./configure --prefix=$WRE_ROOT/prereqs --with-quantum-depth=8 --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-perl-options="LIBS=-L/data/wre/prereqs/lib" --with-lcms --with-tiff --without-x $IM_OPTION; checkError $? "Image Magick configure"
 	fi
 	if [ "$WRE_OSNAME" == "Darwin" ]; then
 		# technically this is only for Darwin i386, but i don't know how to detect that
@@ -459,10 +459,10 @@ buildImageMagick(){
 	
 	if [ "$PRINTONLY" == 1 ]; then
 		echo "cd $WRE_BUILDDIR"
-		echo "cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-$WRE_IM_VERSION/config/"
+		echo "cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.8-8/config/"
 	else
 		cd $WRE_BUILDDIR
-		cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-$WRE_IM_VERSION/config/
+		cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.8-8/config/
 	fi
 }
 
