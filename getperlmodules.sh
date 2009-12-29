@@ -797,4 +797,9 @@ tar zxf Config-INI-0.014.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/S/SA/SARTAK/App-Nopaste-0.17.tar.gz
 tar zxf App-Nopaste-0.17.tar.gz
 
+# http://search.cpan.org/dist/Business-PayPal-API-rel/
+wget -t 4 -nv $CPANMIRROR/authors/id/H/HE/HEMBREED/Business-PayPal-API-rel-0.69.tar.gz
+tar zxf Business-PayPal-API-rel-0.69.tar.gz
+
+
 rm -f *.gz *.tgz *.bz2 *.zip

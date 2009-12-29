@@ -436,9 +436,9 @@ buildImageMagick(){
 	;;
 	esac 
 	if [ "$PRINTONLY" == 1 ]; then
-		echo "export GNUMAKE=$WRE_MAKE GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include GVC_LIBS=\"-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt\" LD=ld ; ./configure --prefix=$WRE_ROOT/prereqs --with-quantum-depth=8 --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-perl-options=\"LIBS=-L/data/wre/prereqs/lib\" --with-lcms --with-tiff --without-x $IM_OPTION"
+		echo "export GNUMAKE=$WRE_MAKE GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include GVC_LIBS=\"-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt\" LD=ld ; ./configure --prefix=$WRE_ROOT/prereqs --with-quantum-depth=8 --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-perl-options=\"LIBS=-L/data/wre/prereqs/lib -L/data/wre/prereqs/lib/perl5/5.10.1/i686-linux/CORE\" --with-lcms --with-tiff --without-x $IM_OPTION"
  	else
-		export GNUMAKE=$WRE_MAKE GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include GVC_LIBS="-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt" LD=ld ; ./configure --prefix=$WRE_ROOT/prereqs --with-quantum-depth=8 --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-perl-options="LIBS=-L/data/wre/prereqs/lib" --with-lcms --with-tiff --without-x $IM_OPTION; checkError $? "Image Magick configure"
+		export GNUMAKE=$WRE_MAKE GVC_CFLAGS=-I/data/wre/prereqs/include/graphviz LDFLAGS=-L$WRE_ROOT/prereqs/lib CPPFLAGS=-I$WRE_ROOT/prereqs/include GVC_LIBS="-L/data/wre/prereqs/lib -lgvc -lgraph -lcdt" LD=ld ; ./configure --prefix=$WRE_ROOT/prereqs --with-quantum-depth=8 --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-perl-options="LIBS=-L/data/wre/prereqs/lib -L/data/wre/prereqs/lib/perl5/5.10.1/i686-linux/CORE" --with-lcms --with-tiff --without-x $IM_OPTION; checkError $? "Image Magick configure"
 	fi
 	if [ "$WRE_OSNAME" == "Darwin" ]; then
 		# technically this is only for Darwin i386, but i don't know how to detect that
@@ -459,10 +459,10 @@ buildImageMagick(){
 	
 	if [ "$PRINTONLY" == 1 ]; then
 		echo "cd $WRE_BUILDDIR"
-		echo "cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.8-8/config/"
+		echo "cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.8/config/"
 	else
 		cd $WRE_BUILDDIR
-		cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.8-8/config/
+		cp source/colors.xml $WRE_ROOT/prereqs/lib/ImageMagick-6.5.8/config/
 	fi
 }
 
@@ -565,7 +565,7 @@ installPerlModules(){
 	installPerlModule "JSON-2.12"
 	installPerlModule "version-0.76"
 	installPerlModule "Path-Class-0.16"
-	installPerlModule "Config-JSON"
+	installPerlModule "Config-JSON-1.5000"
 	installPerlModule "IO-Socket-SSL-1.22"
 	installPerlModule "Text-Iconv-1.7" "LIBS='-L$WRE_ROOT/prereqs/lib' INC='-I$WRE_ROOT/prereqs/include'"
 	installPerlModule "XML-Filter-BufferText-1.01"
@@ -740,6 +740,7 @@ installPerlModules(){
 	installPerlModule "Mixin-Linewise-0.002"
 	installPerlModule "Config-INI-0.014"
 	installPerlModule "App-Nopaste-0.17"
+	installPerlModule "Business-PayPal-API-rel-0.69"
 
 	cd $WRE_BUILDDIR
 }

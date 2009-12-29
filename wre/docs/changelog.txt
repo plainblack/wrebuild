@@ -55,6 +55,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
    Mixin-Linewise-0.002
    Config-INI-0.014
    App-Nopaste-0.17
+   Business-PayPal-API-rel-0.69
 - Removed these obsolete perl modules (Koen de Jonge / ProcoliX):
    Net-Subnets-0.21
 - Updated these perl modules (Koen de Jonge / ProcoliX):

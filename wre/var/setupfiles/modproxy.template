@@ -1,7 +1,9 @@
 <VirtualHost *:[% modproxyPort %]>
     ServerName [% sitename %]
     ServerAlias [% domain %]
-    ServerAdmin [% adminEmail %]
+    [% IF adminEmail %]
+        ServerAdmin [% adminEmail %]
+    [% END %]
     CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
     DocumentRoot [% domainRoot %]/[% sitename %]/public
 
