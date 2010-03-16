@@ -16,9 +16,18 @@ use Path::Class;
 use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
+use Getopt::Long ();
+use Pod::Usage ();
 
 my $config  = WRE::Config->new;
 my $util    = WRE::File->new(wreConfig => $config);
+my $help;
+
+Getopt::Long::GetOptions(
+        'help'=>\$help
+);
+
+Pod::Usage::pod2usage( verbose => 2 ) if $help;
 
 # are backups enabled
 exit unless $config->get("backup/enabled");
@@ -272,4 +281,39 @@ sub runExternalScripts {
 }
 
 
+__END__
 
+=head1 NAME
+
+backup - Backup script for a WebGUI instance
+
+=head1 SYNOPSIS
+
+ backup.pl [all options from configuration files]
+
+ backup.pl --help
+
+=head1 DESCRIPTION
+
+This wre script backups all files and databases according to the wre.conf and
+backup.exclude files. This script is advised to be run as a root owned cronjob.
+
+Please see L<wre.conf.pod> for the backup options.
+
+=head2 backup.exclude
+
+A file that contains patterns of file locations and filenames that should not be backed up. This is used by the tar --exclude-from option.
+
+=over 4
+
+=item B<--help>
+
+Shows this documentation, then exits.
+
+=back
+
+=head1 AUTHOR
+
+Copyright 2001-2009 Plain Black Corporation.
+
+=cut
