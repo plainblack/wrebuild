@@ -15,6 +15,16 @@ use strict;
 use lib '/data/wre/lib';
 use Path::Class;
 use WRE::Config;
+use Getopt::Long();
+use Pod::Usage();
+
+my $help;
+
+Getopt::Long::GetOptions(
+        'help'=>\$help
+);
+
+Pod::Usage::pod2usage( verbose => 2 ) if $help;
 
 my $config = WRE::Config->new;
 our $rotateFiles = $config->get("logs/rotations") || 3;
@@ -92,4 +102,35 @@ sub findLogFiles {
     }
 }
 
+__END__
+
+=head1 NAME
+
+logrotate.pl
+
+=head1 SYNOPSIS
+
+./logrotate.pl
+
+=head1 DESCRIPTION
+
+Rotates the logs according to the settings in the wre.conf file.
+
+=over
+
+=item B<logs-{rotations}>
+
+The number of logrotations that should be stored.
+
+=item B<--help>
+
+Shows this documentation and then exits.
+
+=back
+
+=head1 AUTHOR
+
+Copyright 2001-2009 Plain Black Corporation.
+
+=cut
 

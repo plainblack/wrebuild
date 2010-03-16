@@ -31,7 +31,16 @@ use WRE::Mysql;
 use WRE::Site;
 use WRE::Spectre;
 use WRE::WebguiUpdate;
+use Getopt::Long ();
+use Pod::Usage ();
 
+my $help;
+
+Getopt::Long::GetOptions(
+        'help'=>\$help
+);
+
+Pod::Usage::pod2usage( verbose => 2 ) if $help;
 
 #-------------------------------------------------------------------
 # server daemon
@@ -1556,4 +1565,32 @@ sub www_stopSpectre {
     www_listServices($state, $status);
 }
 
+
+__END__
+
+=head1 NAME
+
+wreconsole.pl
+
+=head1 SYNOPSIS
+
+./wreconsole.pl
+
+=head1 DESCRIPTION
+
+Starts the wre console so the wre can be configured via a web interface.
+
+=over
+
+=item B<--help>
+
+Shows this documentation and then exits.
+
+=back
+
+=head1 AUTHOR
+
+Copyright 2001-2009 Plain Black Corporation.
+
+=cut
 
