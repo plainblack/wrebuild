@@ -26,10 +26,6 @@
     RewriteCond %{REQUEST_FILENAME}             ^(.*/)
     RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f
     RewriteRule ^/uploads/                      - [L]
-    <Directory /data/domains/[% sitename %]/public/uploads/>
-        ExpiresActive On
-        ExpiresDefault "access plus 1 year"
-    </Directory>
 
     # proxy webgui pages
     ProxyPreserveHost On
@@ -43,13 +39,11 @@
 #Listen 10.0.0.1:443
 #<VirtualHost 10.0.0.1:443>
 #    ServerName [% sitename %]
-#    ServerAdmin [% adminEmail %]
 #    CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
 #    DocumentRoot [% domainRoot %]/[% sitename %]/public
 #
 #    # let modperl know we're using SSL
 #    RequestHeader add SSLPROXY "1"
-#    RequestHeader add X-Forwarded-Proto "https"
 #
 #    # turn on mod_rewrite
 #    RewriteEngine On
@@ -70,10 +64,6 @@
 #    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
 #    RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f 
 #    RewriteRule ^/uploads/                      - [L] 
-#    <Directory /data/domains/[% sitename %]/public/uploads/>
-#        ExpiresActive On
-#        ExpiresDefault "access plus 1 year"
-#    </Directory>
 #
 #    # proxy webgui pages
 #    ProxyPreserveHost On

@@ -21,7 +21,6 @@ use WRE::Mysql;
 
 
 private adminPassword => my %adminPassword;
-public  adminEmail      => my %adminEmail;
 public  databaseName => my %databaseName;
 
 #-------------------------------------------------------------------
@@ -54,10 +53,6 @@ Creates a site given the creation information.
 =head3 params
 
 A hash reference containing a list of creation parameters.
-
-=head4 adminEmail
-
-An e-mail address for the administrator of the website. This will be shown in any apache error messages.
 
 =head4 databaseUser
 

@@ -76,15 +76,7 @@ will be using, including the AWStats site.
             - or -
     http://www.example.com:60834/setup
 
-    NOTE: You will need to open a port in your firewall to 60834 to 
-    connect to WRE Console. Alternatively you can ssh to your WRE box
-    like this:
-
-        ssh -L60834:localhost:60834 root@www.example.com
-
-    Then you will be able to access the WRE Console like this:
-
-        http://localhost:60834/
+    NOTE: You may have to open a firewall port to access this.
 
 
 8. Follow the on screen instructions to complete the configuration.
@@ -167,19 +159,5 @@ following commands after the WRE is installed
  ln -s /data/wre/sbin/services/freebsd/webgui /usr/local/etc/rc.d/webgui
  echo "webgui_enable=YES" >> /etc/rc.conf.local
 
-
-
-* Debian
-
-This note also applies to most Debian-like systems.
-
-To configure the WRE to start automatically at system boot
-
-    sudo ln -s /data/wre/sbin/services/redhat/webgui /etc/init.d/webgui
-    sudo update-rc.d webgui defaults
-
-You must install libgomp from APT
-
-    sudo apt-get install libgomp1
 
 

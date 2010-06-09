@@ -144,7 +144,7 @@ wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.ta
 tar jxf zlib-1.2.3.tar.bz2
 
 # rsync http://www.samba.org/rsync/download.html
-wget -t 4 -nv http://rsync.samba.org/ftp/rsync/rsync-3.0.6.tar.gz
+wget -t 4 -nv http://rsync.samba.org/ftp/rsync/src/rsync-3.0.6.tar.gz
 tar xfz rsync-3.0.6.tar.gz
 
 # git http://git-scm.com/download

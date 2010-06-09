@@ -318,8 +318,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/JSON-XS-2.26.tar.gz
 tar zxf JSON-XS-2.26.tar.gz
 
 # http://search.cpan.org/dist/JSON/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MAKAMAKA/JSON-2.12.tar.gz
-tar zxf JSON-2.12.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MAKAMAKA/JSON-2.17.tar.gz
+tar zxf JSON-2.17.tar.gz
 
 # http://search.cpan.org/dist/version/
 wget -t 4 -nv $CPANMIRROR/authors/id/J/JP/JPEACOCK/version-0.76.tar.gz
@@ -354,8 +354,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.20.tar.gz
 tar zxf Log-Log4perl-1.20.tar.gz
 
 # http://search.cpan.org/dist/POE/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.280.tar.gz
-tar zxf POE-1.280.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.283.tar.gz
+tar zxf POE-1.283.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-IKC/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GW/GWYN/POE-Component-IKC-0.2002.tar.gz
@@ -384,6 +384,10 @@ tar zxf Clone-0.31.tar.gz
 # http://search.cpan.org/dist/Test-Pod/
 wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/Test-Pod-1.26.tar.gz
 tar zxf Test-Pod-1.26.tar.gz
+
+# http://search.cpan.org/dist/Data-Structure-Util/
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Data-Structure-Util-0.15.tar.gz
+tar zxf Data-Structure-Util-0.15.tar.gz
 
 # http://search.cpan.org/dist/Parse-RecDescent/
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DC/DCONWAY/Parse-RecDescent-1.96.0.tar.gz
@@ -750,8 +754,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/N/NU/NUFFIN/Try-Tiny-0.02.tar.gz
 tar zxf Try-Tiny-0.02.tar.gz
 
 # http://search.cpan.org/dist/Class-MOP/
-wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Class-MOP-0.95.tar.gz
-tar zxf Class-MOP-0.95.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Class-MOP-0.97.tar.gz
+tar zxf Class-MOP-0.97.tar.gz
 
 # http://search.cpan.org/dist/Moose/
 wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Moose-0.93.tar.gz

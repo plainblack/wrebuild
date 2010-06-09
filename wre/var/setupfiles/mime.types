@@ -3,7 +3,7 @@
 # This file controls what Internet media types are sent to the client for
 # given file extension(s).  Sending the correct media type to the client
 # is important so they know how to handle the content of the file.
-# Extra types can either be added here or by using an directive
+# Extra types can either be added here or by using an AddType directive
 # in your config files. For more information about Internet media types,
 # please read RFC 2045, 2046, 2047, 2048, and 2077.  The Internet media type
 # registry is at <http://www.iana.org/assignments/media-types/>.
@@ -591,19 +591,3 @@ video/x-msvideo			avi
 video/x-sgi-movie		movie
 x-conference/x-cooltalk		ice
 webgui/package   wgpkg
-application/vnd.ms-word.document.macroEnabled.12 .docm
-application/vnd.openxmlformats-officedocument.wordprocessingml.document docx
-application/vnd.openxmlformats-officedocument.wordprocessingml.template dotx
-application/vnd.ms-powerpoint.template.macroEnabled.12 potm
-application/vnd.openxmlformats-officedocument.presentationml.template potx
-application/vnd.ms-powerpoint.addin.macroEnabled.12 ppam
-application/vnd.ms-powerpoint.slideshow.macroEnabled.12 ppsm
-application/vnd.openxmlformats-officedocument.presentationml.slideshow ppsx
-application/vnd.ms-powerpoint.presentation.macroEnabled.12 pptm
-application/vnd.openxmlformats-officedocument.presentationml.presentation pptx
-application/vnd.ms-excel.addin.macroEnabled.12 xlam
-application/vnd.ms-excel.sheet.binary.macroEnabled.12 xlsb
-application/vnd.ms-excel.sheet.macroEnabled.12 xlsm
-application/vnd.openxmlformats-officedocument.spreadsheetml.sheet xlsx
-application/vnd.ms-excel.template.macroEnabled.12 xltm
-application/vnd.openxmlformats-officedocument.spreadsheetml.template xltx
