@@ -40,6 +40,7 @@ if ($config->get("wreMonitor/items/mysql") && !$config->get("wreMonitor/mysqlAdm
 
 if ($config->get("wreMonitor/items/modperl") && !$config->get("wreMonitor/modperlAdministrativelyDown")) {
     my $modperl = WRE::Modperl->new(wreConfig=>$config);
+    monitor($modperl);
     if ($config->get("wreMonitor/items/runaway")) {
         my $killed = $modperl->killRunaways;
         logEntry("Killed $killed ".$modperl->getName." processes that were using too much memory.");
