@@ -95,10 +95,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     CAM-PDF-1.52
     Text-Diff-HTML-0.06
     Locales-0.05
-    Test-Harness-3.17
  - Updated perl module POE-1.005 (Koen de Jonge / ProcoliX)
  - Updated these packaged (Koen de Jonge / ProcoliX):
-    Image Magick 6.5.2-10
+    Image Magick 6.5.2-8
     Freetype 2.3.9
     Gnutls 2.6.6
     Lftp 3.7.14

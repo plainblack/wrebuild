@@ -25,7 +25,6 @@ my $config  = WRE::Config->new;
 my $update  = WRE::WebguiUpdate->new(wreConfig=>$config);
 my $file    = WRE::File->new(wreConfig=>$config);
 
-my $backupPath = '';
 
 my $doUpgrade = checkUpgrade();
 deployNewVersion();
@@ -63,7 +62,7 @@ sub deployNewVersion {
 sub doBackup {
 	my $answer = prompt("Would you like to back up your existing files before we do the update?","y","y","n");
 	if ($answer eq "y") {
-        $backupPath = dir(promptWithPref("backupPath", "Where would you like to store your backups?"));
+        my $backupPath = dir(promptWithPref("backupPath", "Where would you like to store your backups?"));
 		printTest("Backing up files");
         $file->makePath($backupPath->stringify);
         eval { $file->tar(
@@ -110,12 +109,7 @@ sub doUpgrade {
 	my $answer = prompt("Do you want me to start the upgrade script?","n","y","n");
 	if ($answer eq "y") {
 		chdir($config->getWebguiRoot("/sbin"));
-
-        my $opts = "--doit";
-        if ($backupPath) {
-            $opts .= " --backupdir ". $backupPath->stringify;
-        }
-		system($config->getRoot("/prereqs/bin/perl")." upgrade.pl " . $opts);
+		system($config->getRoot("/prereqs/bin/perl")." upgrade.pl --doit");
 	}
 }
 

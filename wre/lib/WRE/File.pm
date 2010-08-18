@@ -339,9 +339,6 @@ sub processTemplate {
     $var->{domainRoot}    = $config->getDomainRoot;
     $var->{wreRoot}       = $config->getRoot;
     $var->{wreUser}       = $config->get("user");
-    my $defaultUserGid    = (getpwnam($var->{wreUser}))[3];
-    my $defaultUserGroup  = getgrgid($defaultUserGid);
-    $var->{wreGroup}      = $config->get("group") || $defaultUserGroup;
     $var->{webguiRoot}    = $config->getWebguiRoot;
 
     # cache template
