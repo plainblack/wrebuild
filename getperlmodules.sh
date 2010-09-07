@@ -10,6 +10,7 @@ cd source/perlmodules
 # edit this to use your local cpan mirror http://www.cpan.org/SITES.html
 #CPANMIRROR=http://search.cpan.org/CPAN
 CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
+BACKPANMIRROR=http://backpan.perl.org
 
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
 tar zxf Test-Harness-3.17.tar.gz
@@ -114,7 +115,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/J/JH/JHI/BSD-Resource-1.2902.tar.gz
 tar zxf BSD-Resource-1.2902.tar.gz
 
 # http://search.cpan.org/dist/URI/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/URI-1.51.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/G/GA/GAAS/URI-1.51.tar.gz
 tar zxf URI-1.51.tar.gz
 
 # http://search.cpan.org/dist/IO-Zlib/
@@ -130,7 +131,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETEK/HTML-Tree-3.23.tar.gz
 tar zxf HTML-Tree-3.23.tar.gz
 
 # http://search.cpan.org/dist/HTML-Parser/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/HTML-Parser-3.64.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/G/GA/GAAS/HTML-Parser-3.64.tar.gz
 tar zxf HTML-Parser-3.64.tar.gz
 
 # http://search.cpan.org/dist/libwww-perl/
@@ -158,11 +159,11 @@ wget -t 4 -nv $CPANMIRROR/authors/id/E/EW/EWILHELM/Module-Build-0.31012.tar.gz
 tar zxf Module-Build-0.31012.tar.gz
 
 # http://search.cpan.org/dist/Params-Validate/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Params-Validate-0.91.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/D/DR/DROLSKY/Params-Validate-0.91.tar.gz
 tar zxf Params-Validate-0.91.tar.gz
 
 # http://search.cpan.org/dist/DateTime-Locale/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/DateTime-Locale-0.42.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/D/DR/DROLSKY/DateTime-Locale-0.42.tar.gz
 tar zxf DateTime-Locale-0.42.tar.gz
 
 # http://search.cpan.org/dist/Class-Singleton/
@@ -170,7 +171,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/A/AB/ABW/Class-Singleton-1.4.tar.gz
 tar zxf Class-Singleton-1.4.tar.gz
 
 # http://search.cpan.org/dist/DateTime-TimeZone/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/DateTime-TimeZone-0.84.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/D/DR/DROLSKY/DateTime-TimeZone-0.84.tar.gz
 tar zxf DateTime-TimeZone-0.84.tar.gz
 
 # http://search.cpan.org/dist/Time-Local/
@@ -202,11 +203,11 @@ wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Pod-Simple-3.10.tar.gz
 tar zxf Pod-Simple-3.10.tar.gz
 
 # http://search.cpan.org/dist/podlators/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RR/RRA/podlators-2.2.2.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/R/RR/RRA/podlators-2.2.2.tar.gz
 tar zxf podlators-2.2.2.tar.gz
 
 # http://search.cpan.org/dist/DateTime/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/DateTime-0.4501.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/D/DR/DROLSKY/DateTime-0.4501.tar.gz
 tar zxf DateTime-0.4501.tar.gz
 
 # http://search.cpan.org/dist/DateTime-Format-Strptime/
@@ -258,11 +259,11 @@ wget -t 4 -nv $CPANMIRROR/authors/id/G/GA/GAAS/IO-String-1.08.tar.gz
 tar zxf IO-String-1.08.tar.gz
 
 # http://search.cpan.org/dist/Archive-Tar/
-wget -t 4 -nv $CPANMIRROR/authors/id/K/KA/KANE/Archive-Tar-1.44.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/K/KA/KANE/Archive-Tar-1.44.tar.gz
 tar zxf Archive-Tar-1.44.tar.gz
 
 # http://search.cpan.org/dist/Archive-Zip/
-wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADAMK/Archive-Zip-1.26.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/A/AD/ADAMK/Archive-Zip-1.26.tar.gz
 tar zxf Archive-Zip-1.26.tar.gz
 
 # http://search.cpan.org/dist/XML-NamespaceSupport/
@@ -326,7 +327,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/J/JP/JPEACOCK/version-0.76.tar.gz
 tar zxf version-0.76.tar.gz
 
 # http://search.cpan.org/dist/Path-Class/
-wget -t 4 -nv $CPANMIRROR/authors/id/K/KW/KWILLIAMS/Path-Class-0.16.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/K/KW/KWILLIAMS/Path-Class-0.16.tar.gz
 tar zxf Path-Class-0.16.tar.gz
 
 # http://search.cpan.org/dist/Config-JSON/
@@ -342,7 +343,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/S/SU/SULLR/IO-Socket-SSL-1.22.tar.gz
 tar zxf IO-Socket-SSL-1.22.tar.gz
 
 # http://search.cpan.org/dist/Authen-SASL/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GB/GBARR/Authen-SASL-2.12.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/G/GB/GBARR/Authen-SASL-2.12.tar.gz
 tar zxf Authen-SASL-2.12.tar.gz
 
 # http://search.cpan.org/dist/perl-ldap/
@@ -354,7 +355,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.20.tar.gz
 tar zxf Log-Log4perl-1.20.tar.gz
 
 # http://search.cpan.org/dist/POE/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.283.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/R/RC/RCAPUTO/POE-1.283.tar.gz
 tar zxf POE-1.283.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-IKC/
@@ -370,7 +371,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/G/GR/GRICHTER/ExtUtils-XSBuilder-0.28.tar.g
 tar zxf ExtUtils-XSBuilder-0.28.tar.gz
 
 # http://search.cpan.org/dist/ExtUtils-MakeMaker/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSCHWERN/ExtUtils-MakeMaker-6.48.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/M/MS/MSCHWERN/ExtUtils-MakeMaker-6.48.tar.gz
 tar zxf ExtUtils-MakeMaker-6.48.tar.gz
 
 # TODO trace to be replaced by: Devel::XRay http://search.cpan.org/dist/Devel-XRay/
@@ -382,7 +383,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/R/RD/RDF/Clone-0.31.tar.gz
 tar zxf Clone-0.31.tar.gz
 
 # http://search.cpan.org/dist/Test-Pod/
-wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/Test-Pod-1.26.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/P/PE/PETDANCE/Test-Pod-1.26.tar.gz
 tar zxf Test-Pod-1.26.tar.gz
 
 # http://search.cpan.org/dist/Data-Structure-Util/
@@ -398,7 +399,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/J/JO/JOESUF/libapreq2-2.08.tar.gz
 tar zxf libapreq2-2.08.tar.gz
 
 # http://search.cpan.org/dist/MailTools/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MARKOV/MailTools-2.04.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/M/MA/MARKOV/MailTools-2.04.tar.gz
 tar zxf MailTools-2.04.tar.gz
 
 # http://search.cpan.org/dist/IO-stringy/
@@ -418,7 +419,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/A/AB/ABW/Template-Toolkit-2.22.tar.gz
 tar zxf Template-Toolkit-2.22.tar.gz
 
 # http://search.cpan.org/dist/Scalar-List-Utils/
-wget -t 4 -nv $CPANMIRROR/authors/id/G/GB/GBARR/Scalar-List-Utils-1.19.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/G/GB/GBARR/Scalar-List-Utils-1.19.tar.gz
 tar zxf Scalar-List-Utils-1.19.tar.gz
 
 # http://search.cpan.org/dist/Graphics-ColorNames/
@@ -430,7 +431,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/K/KA/KANE/Module-Load-0.16.tar.gz
 tar zxf Module-Load-0.16.tar.gz
 
 # http://search.cpan.org/dist/Color-Calc/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CF/CFAERBER/Color-Calc-1.05.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/C/CF/CFAERBER/Color-Calc-1.05.tar.gz
 tar zxf Color-Calc-1.05.tar.gz
 
 # http://search.cpan.org/dist/DateTime-Format-Mail/
@@ -454,11 +455,11 @@ wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-DNS-1.051
 tar zxf POE-Component-Client-DNS-1.051.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-Keepalive/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive-0.262.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-Keepalive-0.262.tar.gz
 tar zxf POE-Component-Client-Keepalive-0.262.tar.gz
 
 # http://search.cpan.org/dist/POE-Component-Client-HTTP/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.893.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/R/RC/RCAPUTO/POE-Component-Client-HTTP-0.893.tar.gz
 tar zxf POE-Component-Client-HTTP-0.893.tar.gz
 
 # http://search.cpan.org/dist/Test-Deep/
@@ -474,7 +475,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-isa-1.03.tar.gz
 tar zxf UNIVERSAL-isa-1.03.tar.gz
 
 # http://search.cpan.org/dist/UNIVERSAL-can/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.15.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-can-1.15.tar.gz
 tar zxf UNIVERSAL-can-1.15.tar.gz
 
 # http://search.cpan.org/~evo/Class-MakeMethods-1.01/
@@ -498,7 +499,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/File-Slurp-9999.13.tar.gz
 tar zxf File-Slurp-9999.13.tar.gz
 
 # http://search.cpan.org/dist/Text-CSV_XS/
-wget -t 4 -nv $CPANMIRROR/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.69.tgz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/H/HM/HMBRAND/Text-CSV_XS-0.69.tgz
 tar zxf Text-CSV_XS-0.69.tgz
 
 # http://search.cpan.org/dist/File-Temp/
@@ -538,7 +539,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/F/FG/FGLOCK/DateTime-Event-ICal-0.09.tar.gz
 tar zxf DateTime-Event-ICal-0.09.tar.gz
 
 # http://search.cpan.org/dist/MIME-Types/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MARKOV/MIME-Types-1.27.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/M/MA/MARKOV/MIME-Types-1.27.tar.gz
 tar zxf MIME-Types-1.27.tar.gz
 
 # http://search.cpan.org/dist/File-MMagic/
@@ -546,7 +547,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/K/KN/KNOK/File-MMagic-1.27.tar.gz
 tar zxf File-MMagic-1.27.tar.gz
 
 # http://search.cpan.org/dist/PathTools/
-wget -t 4 -nv $CPANMIRROR/authors/id/S/SM/SMUELLER/PathTools-3.29.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/S/SM/SMUELLER/PathTools-3.29.tar.gz
 tar zxf PathTools-3.29.tar.gz
 
 # http://search.cpan.org/dist/Module-Find/
@@ -558,7 +559,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/C/CM/CMOORE/Archive-Any-0.0932.tar.gz
 tar zxf Archive-Any-0.0932.tar.gz
 
 # http://search.cpan.org/dist/Image-ExifTool/
-wget -t 4 -nv $CPANMIRROR/authors/id/E/EX/EXIFTOOL/Image-ExifTool-8.00.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/E/EX/EXIFTOOL/Image-ExifTool-8.00.tar.gz
 tar zxf Image-ExifTool-8.00.tar.gz
 
 # http://search.cpan.org/dist/Text-Aspell/
@@ -582,7 +583,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/T/TM/TMTM/Class-Data-Inheritable-0.08.tar.g
 tar zxf Class-Data-Inheritable-0.08.tar.gz
 
 # http://search.cpan.org/dist/Exception-Class/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Exception-Class-1.26.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/D/DR/DROLSKY/Exception-Class-1.26.tar.gz
 tar zxf Exception-Class-1.26.tar.gz
 
 # http://search.cpan.org/dist/Sub-Uplevel/
@@ -658,8 +659,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/HTML-Packer-0.4.tar.gz
 tar zxf HTML-Packer-0.4.tar.gz
 
 # http://search.cpan.org/dist/JavaScript-Packer/
-wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/JavaScript-Packer-0.02.tar.gz
-tar zxf JavaScript-Packer-0.02.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/JavaScript-Packer-0.04.tar.gz
+tar zxf JavaScript-Packer-0.04.tar.gz
 
 # http://search.cpan.org/dist/CSS-Packer/
 wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/CSS-Packer-0.2.tar.gz
@@ -670,7 +671,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/B/BP/BPGN/Business-Tax-VAT-Validation-0.20.
 tar zxf Business-Tax-VAT-Validation-0.20.tar.gz
 
 # http://search.cpan.org/dist/Scope-Guard/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHOCOLATE/Scope-Guard-0.03.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/C/CH/CHOCOLATE/Scope-Guard-0.03.tar.gz
 tar zxf Scope-Guard-0.03.tar.gz
 
 # http://search.cpan.org/dist/Digest-SHA/
@@ -754,7 +755,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/N/NU/NUFFIN/Try-Tiny-0.02.tar.gz
 tar zxf Try-Tiny-0.02.tar.gz
 
 # http://search.cpan.org/dist/Class-MOP/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DR/DROLSKY/Class-MOP-0.97.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/D/DR/DROLSKY/Class-MOP-0.97.tar.gz
 tar zxf Class-MOP-0.97.tar.gz
 
 # http://search.cpan.org/dist/Moose/
@@ -762,7 +763,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Moose-0.93.tar.gz
 tar zxf Moose-0.93.tar.gz
 
 # http://search.cpan.org/dist/Getopt-Long-Descriptive/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Getopt-Long-Descriptive-0.081.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/R/RJ/RJBS/Getopt-Long-Descriptive-0.081.tar.gz
 tar zxf Getopt-Long-Descriptive-0.081.tar.gz
 
 # http://search.cpan.org/dist/MooseX-Getopt/
@@ -802,7 +803,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/S/SA/SARTAK/App-Nopaste-0.17.tar.gz
 tar zxf App-Nopaste-0.17.tar.gz
 
 # http://search.cpan.org/dist/Business-PayPal-API-rel/
-wget -t 4 -nv $CPANMIRROR/authors/id/H/HE/HEMBREED/Business-PayPal-API-rel-0.69.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/H/HE/HEMBREED/Business-PayPal-API-rel-0.69.tar.gz
 tar zxf Business-PayPal-API-rel-0.69.tar.gz
 
 
