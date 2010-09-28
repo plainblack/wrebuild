@@ -185,7 +185,7 @@ sub copyToRemote {
 
     # get old versions 
     if ($rotations > 1) {
-        my $cmd = $config->getRoot('/prereqs/bin/lftp').' -e "ls; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.$path.'/';
+        my $cmd = $config->getRoot('/prereqs/bin/lftp').' -e "cd '.$path.'; ls; exit" -u '.$user.','.$pass.' '.$protocol.'://'.$host.'/';
         my @dirs = ();
 	    if (open my $pipe, $cmd.'|') {
             while (my $line = <$pipe>) {
