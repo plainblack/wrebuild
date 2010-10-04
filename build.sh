@@ -304,10 +304,10 @@ buildUtils(){
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi	
-    $SSLCFGOPTS ./config --prefix=$PREFIX shared ; checkError $? "openssl configure"
+    ./config --prefix=$PREFIX shared ; checkError $? "openssl configure"
     $WRE_MAKE; checkError $? "openssl make"
     $WRE_MAKE install; checkError $? "openssl make install"
-    cd ..	
+    cd ..
 
     # rsync
     buildProgram "rsync-3.0.6" "$CFG_CACHE"
@@ -339,7 +339,10 @@ buildUtils(){
     buildProgram "curl-7.19.7" "$CFG_CACHE --with-ssl=$PREFIX --with-zlib=$PREFIX --with-gnutls=$PREFIX"
 
     # lftp
-    buildProgram "lftp-4.0.5" "$CFG_CACHE --with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
+    SAVED_CFLAGS=$CFLAGS
+    CFLAGS="$CFLAGS -liconv"
+    buildProgram "lftp-3.7.14" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
+    CFLAGS=$SAVED_CFLAGS
     
     # catdoc
     cd catdoc-0.94.2
@@ -386,7 +389,7 @@ buildApache(){
     cd source
 
     # apache
-    cd httpd-2.2.14
+    cd httpd-2.2.11
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
@@ -418,8 +421,7 @@ buildApache(){
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi	
-    export MP_APXS="$PREFIX/bin/apxs" 
-    perl Makefile.PL ; checkError $? "mod_perl Configure"
+    perl Makefile.PL MP_APXS="$PREFIX/bin/apxs"; checkError $? "mod_perl Configure"
     $WRE_MAKE; checkError $? "mod_perl make"
     $WRE_MAKE install; checkError $? "mod_perl make install"
     cd ..
@@ -488,12 +490,16 @@ buildImageMagick(){
 
 
     # image magick
-    cd ImageMagick-6.5.8-8  # when you update this version number, update the one below as well
+    cd ImageMagick-6.5.8-10  # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi	
+    if [ "$WRE_IA64" == 1 ]; then
+    	SAVED_LDFLAGS="$LDFLAGS"
+    	LDFLAGS="$LDFLAGS -L$PREFIX/lib -L$PREFIX/lib/perl5/lib -L$PREFIX/lib/perl5/5.10.1/x86_64-linux/CORE"
+    fi
     # For some reason the CFG_CACHE causes compile to fail
     ./configure --prefix=$PREFIX --with-zlib=$PREFIX --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$PREFIX/include/graphviz GVC_LIBS="-L$PREFIX/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
 #    if [ "$WRE_OSNAME" == "Darwin" ]; then7#        # technically this is only for Darwin i386, but i don't know how to detect that
@@ -504,6 +510,10 @@ buildImageMagick(){
 
     cd $WRE_BUILDDIR
     cp source/colors.xml $PREFIX/lib/ImageMagick-6.5.8/config/
+
+    if [ "$WRE_IA64" == 1 ]; then
+    	LDFLAGS="$SAVED_LDFLAGS"
+    fi
 }
 
 # most perl modules are installed the same way
@@ -511,12 +521,12 @@ buildImageMagick(){
 # param2: parameters to pass to Makefile.PL
 installPerlModule() {
     cd $1
-    printHeader "PM $1"
+    printHeader "PM $1 with $2"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi
-    perl Makefile.PL $2 INSTALL_BASE=$PREFIX CCFLAGS="$CFLAGS"; checkError $? "$1 Makefile.PL"
+    perl Makefile.PL $2 CCFLAGS="$CFLAGS"; checkError $? "$1 Makefile.PL"
     $WRE_MAKE; checkError $? "$1 make"
     $WRE_MAKE install; checkError $? "$1 make install"
     cd ..
@@ -629,6 +639,10 @@ installPerlModules () {
     installPerlModule "Parse-RecDescent-1.96.0"
     printHeader "libaqpreq2"
     cd libapreq2-2.08
+    if [ "$WRE_CLEAN" == 1 ]; then
+        $WRE_MAKE distclean
+        $WRE_MAKE clean
+    fi  
     ./configure $CFG_CACHE --with-apache2-apxs=$PREFIX/bin/apxs --enable-perl-glue; checkError $? "libapreq2 configure"
     $WRE_MAKE; checkError $? "libapreq2 make"
     $WRE_MAKE install; checkError $? "libapreq2 make install"
@@ -744,8 +758,11 @@ installPerlModules () {
     installPerlModule "CSS-Minifier-XS-0.03" 
     installPerlModule "Test-Class-0.31"
     # payment modules
-    installPerlModule "Crypt-OpenSSL-Random-0.04"
-    installPerlModule "Crypt-OpenSSL-RSA-0.26"
+SAVED_IFS=$IFS
+IFS=";"
+    installPerlModule "Crypt-OpenSSL-Random-0.04" "LDDLFLAGS=-shared -O2 -L$PREFIX/lib -fstack-protector"
+    installPerlModule "Crypt-OpenSSL-RSA-0.26" "LDDLFLAGS=-shared -O2 -L$PREFIX/lib -fstack-protector"
+IFS=$SAVED_IFS
     installPerlModule "Crypt-CBC-2.30"
     installPerlModule "YAML-0.68"
     installPerlModule "Math-BigInt-FastCalc-0.19"
@@ -768,7 +785,10 @@ installPerlModules () {
     installPerlModule "Sub-Name-0.04"
     installPerlModule "Task-Weaken-1.03"
     installPerlModule "Try-Tiny-0.02"
+SAVED_CFLAGS=$CFLAGS
+CFLAGS="$CFLAGS -I."
     installPerlModule "Class-MOP-0.97"
+CFLAGS=$SAVED_CFLAGS
     installPerlModule "Moose-0.93"
     installPerlModule "Getopt-Long-Descriptive-0.081"
     installPerlModule "MooseX-Getopt-0.25"
