@@ -298,7 +298,7 @@ buildUtils(){
     buildProgram "zlib-1.2.3" "--shared"
 
     # openssl
-    cd openssl-0.9.8l
+    cd openssl-0.9.8o
     printHeader "openssl"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean

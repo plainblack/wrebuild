@@ -65,7 +65,7 @@ tar zxf httpd-2.2.17.tar.gz
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
 wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.0.10.tar.gz
-tar jxf lftp-4.0.10.tar.bz2
+tar zxf lftp-4.0.10.tar.gz
 
 # libiconv unicode conversion tool http://www.gnu.org/software/libiconv/
 wget -t 4 -nv http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.tar.gz
@@ -117,8 +117,8 @@ wget -t 4 -nv http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-5.0.89.tar.gz/f
 tar zxf mysql-5.0.89.tar.gz
 
 # openssl ssl toolkit http://www.openssl.org/
-wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8l.tar.gz
-tar zxf openssl-0.9.8l.tar.gz
+wget -t 4 -nv http://openssl.org/source/openssl-0.9.8o.tar.gz
+tar zxf openssl-0.9.8o.tar.gz
 
 # perl programming language http://www.cpan.org/src/README.html
 wget -t 4 -nv http://www.cpan.org/src/perl-5.10.1.tar.gz
