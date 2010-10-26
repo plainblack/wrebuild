@@ -490,7 +490,7 @@ buildImageMagick(){
 
 
     # image magick
-    cd ImageMagick-6.5.8-10  # when you update this version number, update the one below as well
+    cd ImageMagick  # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
@@ -509,7 +509,7 @@ buildImageMagick(){
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
     cd $WRE_BUILDDIR
-    cp source/colors.xml $PREFIX/lib/ImageMagick-6.5.8/config/
+    cp source/colors.xml $PREFIX/lib/ImageMagick/config/
 
     if [ "$WRE_IA64" == 1 ]; then
     	LDFLAGS="$SAVED_LDFLAGS"
