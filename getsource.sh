@@ -60,8 +60,8 @@ wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.8.5.tar.bz2
 tar jxf gnutls-2.8.5.tar.bz2
 
 # httpd apache webserver http://httpd.apache.org/
-wget -t 4 -nv http://apache.mirror.transip.nl/httpd/httpd-2.2.14.tar.bz2
-tar jxf httpd-2.2.14.tar.bz2
+wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.17.tar.gz
+tar zxf httpd-2.2.17.tar.gz
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
 wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.0.10.tar.gz

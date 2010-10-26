@@ -389,7 +389,7 @@ buildApache(){
     cd source
 
     # apache
-    cd httpd-2.2.11
+    cd httpd-2.2.17
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
