@@ -64,8 +64,8 @@ wget -t 4 -nv http://apache.mirror.transip.nl/httpd/httpd-2.2.14.tar.bz2
 tar jxf httpd-2.2.14.tar.bz2
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
-wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.0.5.tar.bz2
-tar jxf lftp-4.0.5.tar.bz2
+wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.0.10.tar.gz
+tar jxf lftp-4.0.10.tar.bz2
 
 # libiconv unicode conversion tool http://www.gnu.org/software/libiconv/
 wget -t 4 -nv http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.tar.gz
