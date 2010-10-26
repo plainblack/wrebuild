@@ -77,8 +77,8 @@ tar zxf jpegsrc.v7.tar.gz
 mv jpeg-7 libjpeg-7
 
 # lcms color management http://www.littlecms.com/
-wget -t 4 -nv http://www.littlecms.com/lcms-1.18a.tar.gz
-tar zxf lcms-1.18a.tar.gz
+wget -t 4 -nv http://sourceforge.net/projects/lcms/files/lcms/1.19/lcms-1.19.tar.gz/download
+tar zxf lcms-1.19.tar.gz
 
 # graphviz graph generator http://www.graphviz.org/
 wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.0.tar.gz

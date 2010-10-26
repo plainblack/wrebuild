@@ -482,7 +482,7 @@ buildImageMagick(){
     buildProgram "libpng-1.2.35" "$CFG_CACHE --enable-shared"
 
     # lcms 
-    buildProgram "lcms-1.18" "$CFG_CACHE --enable-shared"
+    buildProgram "lcms-1.19" "$CFG_CACHE --enable-shared"
 
     # graphviz
     buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --enable-shared --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
