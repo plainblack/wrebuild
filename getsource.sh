@@ -12,8 +12,8 @@ wget -t 4 -nv http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
 tar xfz ncurses-5.7.tar.gz
 
 # readline http://tiswww.case.edu/php/chet/readline/rltop.html
-wget -t 4 -nv http://ftp.gnu.org/gnu/readline/readline-6.0.tar.gz
-tar xfz readline-6.0.tar.gz
+wget -t 4 -nv ftp://ftp.cwru.edu/pub/bash/readline-6.1.tar.gz
+tar xfz readline-6.1.tar.gz
 
 # tiff for image magick http://www.libtiff.org/
 wget -t 4 -nv ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.8.2.tar.gz
@@ -117,7 +117,7 @@ wget -t 4 -nv http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-5.0.89.tar.gz/f
 tar zxf mysql-5.0.89.tar.gz
 
 # openssl ssl toolkit http://www.openssl.org/
-wget -t 4 -nv http://openssl.org/source/openssl-0.9.8o.tar.gz
+wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8o.tar.gz
 tar zxf openssl-0.9.8o.tar.gz
 
 # perl programming language http://www.cpan.org/src/README.html
@@ -156,4 +156,6 @@ wget -t 4 -nv http://curl.haxx.se/download/curl-7.19.7.tar.bz2
 tar jxf curl-7.19.7.tar.bz2
 
 rm -f *.gz *.tgz *.bz2 *.zip
+
+
 

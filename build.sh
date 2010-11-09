@@ -25,10 +25,10 @@ cat <<_WREHELP
 
   Packages:         (must be built in the order shown below)
 
-  --utilities	    compiles and installs shared utilities
+  --utilities       compiles and installs shared utilities
   --perl            compiles and installs perl
   --apache          compiles and installs apache
-  --mysql	        compiles and installs mysql
+  --mysql           compiles and installs mysql
   --imagemagick     compiles and installs image magick
   --perlmodules     installs perl modules from cpan
   --awstats         installs awstats
@@ -127,7 +127,7 @@ done
 
 #No arguments passed, display help
 if [ $# -eq 0 ]; then
-	wrehelp
+    wrehelp
     exit 0
 fi
 
@@ -148,7 +148,7 @@ if [ -d /data ]; then
     
     # --cache-file speeds up configure a lot
     rm /tmp/Configure.cache
-    export CFG_CACHE="--cache-file=/tmp/Configure.cache"  
+    export CFG_CACHE=""  #"--cache-file=/tmp/Configure.cache"  
     if [ "$WRE_IA64" == 1 ]; then
         export CFLAGS="$CFLAGS -fPIC"
         export CXXFLAGS="$CXXFLAGS -fPIC"
@@ -251,16 +251,16 @@ fi
 
 # error
 checkError(){
-	if [ $1 -ne 0 ];
-	then
-		echo "WRE ERROR: "$2" did not complete successfully."
-		exit
-	fi
+    if [ $1 -ne 0 ];
+    then
+        echo "WRE ERROR: "$2" did not complete successfully."
+        exit
+    fi
 }
 
 printHeader(){
-	echo "### ----------------------------------- ###"
-	echo "#### Building $1       "
+    echo "### ----------------------------------- ###"
+    echo "#### Building $1       "
 }
 
 # most programs build the same
@@ -275,19 +275,19 @@ buildProgram() {
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-    fi	
+    fi
     echo "Configuring $1 with GNUMAKE=$WRE_MAKE $4 ./configure --prefix=$PREFIX $2"
     ./configure --prefix=$PREFIX $2; checkError $? "$1 configure"
     $WRE_MAKE; checkError $? "$1 make"
     $WRE_MAKE install $3; checkError $? "$1 make install"
-    cd ..	
+    cd ..
 }
 
 # utilities
 buildUtils(){
     printHeader "Utilities"
     cd source
-	
+
     # libtool
     buildProgram "libtool-2.2.6"
 
@@ -303,19 +303,19 @@ buildUtils(){
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-    fi	
+    fi
     ./config --prefix=$PREFIX shared ; checkError $? "openssl configure"
     $WRE_MAKE; checkError $? "openssl make"
     $WRE_MAKE install; checkError $? "openssl make install"
     cd ..
 
-    # rsync
-    buildProgram "rsync-3.0.6" "$CFG_CACHE"
-
     # libiconv
     if [ "$WRE_OSNAME" != "Darwin" ] && [ "$WRE_OSTYPE" != "Leopard" ]; then
         buildProgram "libiconv-1.13" "$CFG_CACHE"
     fi
+
+    # rsync
+    buildProgram "rsync-3.0.6" "$CFG_CACHE"
 
     # libgpg-error
     buildProgram "libgpg-error-1.7" "$CFG_CACHE"
@@ -333,7 +333,7 @@ buildUtils(){
     buildProgram "libxml2-2.7.6" "$CFG_CACHE"
 
     # readline
-    buildProgram "readline-6.0" "$CFG_CACHE"
+    buildProgram "readline-6.1" "$CFG_CACHE"
 
     # curl
     buildProgram "curl-7.19.7" "$CFG_CACHE --with-ssl=$PREFIX --with-zlib=$PREFIX --with-gnutls=$PREFIX"
@@ -349,7 +349,7 @@ buildUtils(){
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-    fi	
+    fi
     CATDOCARGS="--disable-wordview --without-wish --with-input=utf-8 \
         --with-output=utf-8 --disable-charset-check --disable-langinfo"
     ./configure $CFG_CACHE --prefix=$PREFIX $CATDOCARGS; checkError $? "catdoc Configure"
@@ -375,7 +375,7 @@ buildPerl(){
     if [ "$WRE_CLEAN" == 1 ]; then
             $WRE_MAKE distclean
             $WRE_MAKE clean
-    fi	
+    fi
     ./Configure $PERLCFGOPTS; checkError $? "Perl Configure" 
     $WRE_MAKE; checkError $? "Perl make"
     $WRE_MAKE install; checkError $? "Perl make install"
@@ -395,7 +395,7 @@ buildApache(){
         $WRE_MAKE clean
         rm -Rf server/exports.c 
         rm -Rf server/export_files
-    fi	
+    fi
     ./configure $CFG_CACHE --prefix=$PREFIX --with-included-apr --with-z=$PREFIX \
         --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var \
         --enable-rewrite=shared --enable-deflate=shared --enable-ssl \
@@ -420,7 +420,7 @@ buildApache(){
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-    fi	
+    fi
     perl Makefile.PL MP_APXS="$PREFIX/bin/apxs"; checkError $? "mod_perl Configure"
     $WRE_MAKE; checkError $? "mod_perl make"
     $WRE_MAKE install; checkError $? "mod_perl make install"
@@ -436,7 +436,7 @@ buildMysql(){
     cd source/mysql-5.0.89
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
-    fi	
+    fi
     SAVED_CFLAGS="$CFLAGS"
     SAVED_CXXFLAGS="$CXXFLAGS"
     CFLAGS="$MYSQL_CFLAGS"
@@ -453,7 +453,7 @@ buildMysql(){
 
 # Image Magick
 buildImageMagick(){
-	
+
     printHeader "Image Magick"
     cd source
 
@@ -462,7 +462,7 @@ buildImageMagick(){
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-    fi	
+    fi
     ./configure $CFG_CACHE --enable-shared --prefix=$PREFIX; checkError $? "libjpeg Configure"
     #$PREFIX/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
     $WRE_MAKE; checkError $? "libjpeg make"
@@ -490,15 +490,15 @@ buildImageMagick(){
 
 
     # image magick
-    cd ImageMagick  # when you update this version number, update the one below as well
+    cd ImageMagick-6.6.5-7  # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-    fi	
+    fi
     if [ "$WRE_IA64" == 1 ]; then
-    	SAVED_LDFLAGS="$LDFLAGS"
-    	LDFLAGS="$LDFLAGS -L$PREFIX/lib -L$PREFIX/lib/perl5/lib -L$PREFIX/lib/perl5/5.10.1/x86_64-linux/CORE"
+        SAVED_LDFLAGS="$LDFLAGS"
+        LDFLAGS="$LDFLAGS -L$PREFIX/lib -L$PREFIX/lib/perl5/lib -L$PREFIX/lib/perl5/5.10.1/x86_64-linux/CORE"
     fi
     # For some reason the CFG_CACHE causes compile to fail
     ./configure --prefix=$PREFIX --with-zlib=$PREFIX --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$PREFIX/include/graphviz GVC_LIBS="-L$PREFIX/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
@@ -512,7 +512,7 @@ buildImageMagick(){
     cp source/colors.xml $PREFIX/lib/ImageMagick/config/
 
     if [ "$WRE_IA64" == 1 ]; then
-    	LDFLAGS="$SAVED_LDFLAGS"
+        LDFLAGS="$SAVED_LDFLAGS"
     fi
 }
 
@@ -747,7 +747,7 @@ installPerlModules () {
     fi
     # 7.7.5
     installPerlModule "HTML-Packer-0.4"
-    installPerlModule "JavaScript-Packer-0.02"
+    installPerlModule "JavaScript-Packer-0.04"
     installPerlModule "CSS-Packer-0.2"
     # 7.7.6
     installPerlModule "Business-Tax-VAT-Validation-0.20"
@@ -874,4 +874,6 @@ if [ "$WRE_BUILD_WRE" == 1 ]; then
 fi
 makeItSmall
 printHeader "Complete And Successful"
+
+
 

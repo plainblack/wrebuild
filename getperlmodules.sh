@@ -315,11 +315,11 @@ wget -t 4 -nv $CPANMIRROR/authors/id/E/EC/ECOCODE/Finance-Quote-1.17.tar.gz
 tar zxf Finance-Quote-1.17.tar.gz
 
 # http://search.cpan.org/dist/JSON-XS/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/JSON-XS-2.26.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/M/ML/MLEHMANN/JSON-XS-2.26.tar.gz
 tar zxf JSON-XS-2.26.tar.gz
 
 # http://search.cpan.org/dist/JSON/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MA/MAKAMAKA/JSON-2.17.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/M/MA/MAKAMAKA/JSON-2.17.tar.gz
 tar zxf JSON-2.17.tar.gz
 
 # http://search.cpan.org/dist/version/
@@ -523,11 +523,11 @@ wget -t 4 -nv $CPANMIRROR/authors/id/L/LB/LBROCARD/HTML-TagCloud-0.34.tar.gz
 tar zxf HTML-TagCloud-0.34.tar.gz
 
 # http://search.cpan.org/dist/Set-Infinite/
-wget -t 4 -nv $CPANMIRROR/authors/id/F/FG/FGLOCK/Set-Infinite-0.63.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/F/FG/FGLOCK/Set-Infinite-0.63.tar.gz
 tar zxf Set-Infinite-0.63.tar.gz
 
 # http://search.cpan.org/dist/DateTime-Set/
-wget -t 4 -nv $CPANMIRROR/authors/id/F/FG/FGLOCK/DateTime-Set-0.26.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/F/FG/FGLOCK/DateTime-Set-0.26.tar.gz
 tar zxf DateTime-Set-0.26.tar.gz
 
 # http://search.cpan.org/dist/DateTime-Event-Recurrence/
@@ -808,3 +808,4 @@ tar zxf Business-PayPal-API-rel-0.69.tar.gz
 
 
 rm -f *.gz *.tgz *.bz2 *.zip
+
