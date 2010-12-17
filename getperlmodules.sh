@@ -12,6 +12,15 @@ cd source/perlmodules
 CPANMIRROR=http://archive.cs.uu.nl/mirror/CPAN
 BACKPANMIRROR=http://backpan.perl.org
 
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FD/FDALY/Test-Tester-0.107.tar.gz
+tar zxf Test-Tester-0.107.tar.gz
+
+wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADAMK/Test-NoWarnings-1.02.tar.gz
+tar zxf Test-NoWarnings-1.02.tar.gz
+
+wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/common-sense-3.3.tar.gz
+tar zxf common-sense-3.3.tar.gz
+
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
 tar zxf Test-Harness-3.17.tar.gz
 
@@ -87,8 +96,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/K/KA/KAWASAKI/XML-FeedPP-0.40.tar.gz
 tar zxf XML-FeedPP-0.40.tar.gz
 
 # http://search.cpan.org/dist/Net_SSLeay.pm/
-wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Net_SSLeay.pm-1.30.tar.gz
-tar zxf Net_SSLeay.pm-1.30.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/F/FL/FLORA/Net-SSLeay-1.36.tar.gz
+tar zxf Net-SSLeay-1.36.tar.gz
 
 # http://search.cpan.org/dist/Compress-Raw-Zlib/
 wget -t 4 -nv $CPANMIRROR/authors/id/P/PM/PMQS/Compress-Raw-Zlib-2.015.tar.gz
@@ -295,12 +304,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/M/MK/MKUTTER/SOAP-Lite-0.710.08.tar.gz
 tar zxf SOAP-Lite-0.710.08.tar.gz
 
 # http://search.cpan.org/dist/DBI/
-wget -t 4 -nv $CPANMIRROR/authors/id/T/TI/TIMB/DBI-1.607.tar.gz
-tar zxf DBI-1.607.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/T/TI/TIMB/DBI-1.615.tar.gz
+tar zxf DBI-1.615.tar.gz
 
 # http://search.cpan.org/dist/DBD-mysql/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.010.tar.gz
-tar zxf DBD-mysql-4.010.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.018.tar.gz
+tar zxf DBD-mysql-4.018.tar.gz
 
 # http://search.cpan.org/dist/Convert-ASN1/
 wget -t 4 -nv $CPANMIRROR/authors/id/G/GB/GBARR/Convert-ASN1-0.22.tar.gz

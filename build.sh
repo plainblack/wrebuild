@@ -145,7 +145,9 @@ if [ -d /data ]; then
     export CFLAGS="$CFLAGS -O3 -I$PREFIX/include"
     export CXXFLAGS="$CPPFLAGS -O3 -I$PREFIX/include"
     export LDFLAGS="$LDFLAGS -L$PREFIX/lib"
-    
+    export LIBS="-L$PREFIX/lib"
+    export LD_LIBRARY_PATH="$PREFIX/include"
+
     # --cache-file speeds up configure a lot
     rm /tmp/Configure.cache
     export CFG_CACHE=""  #"--cache-file=/tmp/Configure.cache"  
@@ -192,9 +194,13 @@ if [ -d /data ]; then
             VERSION=`uname -r | cut -d. -f1` 
             if [ $VERSION == "10" ]; then
                 export WRE_OSTYPE="Snow Leopard"
-                export CFLAGS="-arch i386 $CFLAGS"
-                export CXXFLAGS="-arch i386 $CXXFLAGS";
-                export LDFLAGS="-arch i386 $LDFLAGS";
+                export MACOSX_DEPLOYMENT_TARGET=10.6
+                export CFLAGS="-m32 -arch i386 -g -Os -pipe -no-cpp-precomp $CFLAGS"
+                export CCFLAGS="-m32 -arch i386 -g -Os -pipe -no-cpp-precomp $CCFLAGS"
+                export CXXFLAGS="-m32 -arch i386 -g -Os -pipe $CXXFLAGS"
+                export LDFLAGS="-m32 -arch i386 -bind_at_load $LDFLAGS"
+                export CFG_LIBGCRYPT="--disable-asm"
+                export PERLCFGOPTS="-Ald=\"-m32\" -Accflags=\"-m32\" -Aldflags=\"-m32\" -Acppflags=\"-m32\""
             fi
             if [ $VERSION == "9" ]; then
                 export WRE_OSTYPE="Leopard"
@@ -207,20 +213,7 @@ if [ -d /data ]; then
 
     ### Program-specific options
     # Perl ./Config options
-    export PERLCFGOPTS="-Dprefix=$PREFIX -des"
-    if [ "$WRE_IA64" == 1 ]; then
-        # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
-        export PERLCFGOPTS="$PERLCFGOPTS -Accflags=\"-fPIC\""
-    fi
-    if [ "$WRE_OSTYPE" == "Snow Leopard" ]; then
-        export PERLCFGOPTS="$PERLCFGOPTS -Dccflags=\"-arch i386\" -Dldflags=\"-arch i386\""
-    fi
-    
-    # OpenSSL options
-    #if [ "$WRE_IA64" == 1 ]; then
-    #    # this may be safe for all options, but 32-bit versions don't need it, and 64-bit ones do
-    #    export SSLCFGOPTS="CFLAGS=\"$CFLAGS -fPIC\" CXXFLAGS=\"$CXXFLAGS -fPIC\" "
-    #fi
+    export PERLCFGOPTS="$PERLCFGOPTS -Dprefix=$PREFIX -des"
 
     # Mysql Configure vars
     export MYSQL_CFLAGS="$CFLAGS -fno-omit-frame-pointer"
@@ -321,7 +314,7 @@ buildUtils(){
     buildProgram "libgpg-error-1.7" "$CFG_CACHE"
 
     # libgcrypt
-    buildProgram "libgcrypt-1.4.4" "$CFG_CACHE"
+    buildProgram "libgcrypt-1.4.6" "$CFG_CACHE $CFG_LIBGCRYPT"
 
     # gnutls
     buildProgram "gnutls-2.8.5" "$CFG_CACHE"
@@ -341,7 +334,7 @@ buildUtils(){
     # lftp
     SAVED_CFLAGS=$CFLAGS
     CFLAGS="$CFLAGS -liconv"
-    buildProgram "lftp-4.0.10" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
+    buildProgram "lftp-4.1.1" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
     CFLAGS=$SAVED_CFLAGS
     
     # catdoc
@@ -490,7 +483,7 @@ buildImageMagick(){
 
 
     # image magick
-    cd ImageMagick-6.6.5-7  # when you update this version number, update the one below as well
+    cd ImageMagick-6.6.6-4  # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
@@ -502,9 +495,9 @@ buildImageMagick(){
     fi
     # For some reason the CFG_CACHE causes compile to fail
     ./configure --prefix=$PREFIX --with-zlib=$PREFIX --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$PREFIX/include/graphviz GVC_LIBS="-L$PREFIX/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
-#    if [ "$WRE_OSNAME" == "Darwin" ]; then7#        # technically this is only for Darwin i386, but i don't know how to detect that
-#        $PREFIX/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
-#    fi
+    if [ "$WRE_OSNAME" == "Darwin" ]; then # technically this is only for Darwin i386, but i don't know how to detect that
+        $PREFIX/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
+    fi
     $WRE_MAKE; checkError $? "Image Magick make"
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
@@ -528,6 +521,7 @@ installPerlModule() {
     fi
     perl Makefile.PL $2 CCFLAGS="$CFLAGS"; checkError $? "$1 Makefile.PL"
     $WRE_MAKE; checkError $? "$1 make"
+    #$WRE_MAKE test; checkError $? "$1 make test"
     $WRE_MAKE install; checkError $? "$1 make install"
     cd ..
 }
@@ -554,7 +548,14 @@ installPerlModules () {
     if [ "$WRE_OSTYPE" != "Leopard" && "$WRE_OSTYPE" != "Snow Leopard" ]; then
         installPerlModule "Proc-ProcessTable-0.44"
     fi
-    installPerlModule "Net_SSLeay.pm-1.30" "$PREFIX"
+    installPerlModule "Test-Tester-0.107"
+    installPerlModule "Test-NoWarnings-1.02"
+    installPerlModule "Test-Deep-0.103"
+    installPerlModule "Test-MockObject-1.09"
+    buildPerlModule "UNIVERSAL-isa-1.03"
+    buildPerlModule "UNIVERSAL-can-1.15"
+    installPerlModule "common-sense-3.3"
+    installPerlModule "Net-SSLeay-1.36" "$PREFIX"
     installPerlModule "Compress-Raw-Zlib-2.015"
     installPerlModule "IO-Compress-Base-2.015"
     installPerlModule "IO-Compress-Zlib-2.015"
@@ -571,6 +572,9 @@ installPerlModules () {
     installPerlModule "Digest-SHA1-2.12"
     installPerlModule "Module-Build-0.31012"
     installPerlModule "Params-Validate-0.91"
+    installPerlModule "List-MoreUtils-0.22"
+    installPerlModule "Scalar-List-Utils-1.19"
+    buildPerlModule "Devel-StackTrace-1.20"
     installPerlModule "DateTime-Locale-0.42"
     installPerlModule "Class-Singleton-1.4"
     installPerlModule "DateTime-TimeZone-0.84"
@@ -604,8 +608,8 @@ installPerlModules () {
     installPerlModule "XML-Simple-2.18"
     installPerlModule "XML-RSSLite-0.11"
     installPerlModule "SOAP-Lite-0.710.08" "--noprompt"
-    installPerlModule "DBI-1.607"
-    installPerlModule "DBD-mysql-4.010"
+    installPerlModule "DBI-1.615"
+    installPerlModule "DBD-mysql-4.018"
     installPerlModule "Convert-ASN1-0.22"
     installPerlModule "HTML-TableExtract-2.10"
     installPerlModule "HTML-Tree-3.23"
@@ -664,10 +668,6 @@ installPerlModules () {
     installPerlModule "POE-Component-Client-DNS-1.051"
     installPerlModule "POE-Component-Client-Keepalive-0.262"
     installPerlModule "POE-Component-Client-HTTP-0.893"
-    installPerlModule "Test-Deep-0.103"
-    installPerlModule "Test-MockObject-1.09"
-    buildPerlModule "UNIVERSAL-isa-1.03"
-    buildPerlModule "UNIVERSAL-can-1.15"
     installPerlModule "Class-MakeMethods-1.01"
     installPerlModule "Locale-US-1.2"
     installPerlModule "Time-Format-1.09"
@@ -710,9 +710,6 @@ installPerlModules () {
     cp -f mysqldiff $WRE_ROOT/sbin/
     perl -i -p -e's[/usr/bin/perl][$WRE_ROOT/prereqs/bin/perl]g' $WRE_ROOT/sbin/mysqldiff
     cd ..
-    installPerlModule "List-MoreUtils-0.22"
-    installPerlModule "Scalar-List-Utils-1.19"
-    buildPerlModule "Devel-StackTrace-1.20"
     installPerlModule "Class-Data-Inheritable-0.08"
     installPerlModule "Exception-Class-1.26"
     installPerlModule "Algorithm-C3-0.07"
@@ -760,8 +757,8 @@ installPerlModules () {
     # payment modules
 SAVED_IFS=$IFS
 IFS=";"
-    installPerlModule "Crypt-OpenSSL-Random-0.04" "LDDLFLAGS=-shared -O2 -L$PREFIX/lib -fstack-protector"
-    installPerlModule "Crypt-OpenSSL-RSA-0.26" "LDDLFLAGS=-shared -O2 -L$PREFIX/lib -fstack-protector"
+    installPerlModule "Crypt-OpenSSL-Random-0.04"
+    installPerlModule "Crypt-OpenSSL-RSA-0.26"
 IFS=$SAVED_IFS
     installPerlModule "Crypt-CBC-2.30"
     installPerlModule "YAML-0.68"
