@@ -40,6 +40,7 @@ backupWre($config);
 runExternalScripts($config);
 compressBackups($config);
 copyToRemote($config);
+removeBackupFiles($config);
 
 
 #-------------------------------------------------------------------
@@ -232,6 +233,24 @@ sub copyToRemote {
     system($cmd);
 }
 
+#-------------------------------------------------------------------
+sub removeBackupFiles {
+    my $config      = shift;
+    my $backupDir   = dir($config->get("backup/path"));
+    my $rotations   = $config->get("backup/rotations");
+    if ($rotations eq "0" ||$rotations eq "1") {
+        opendir(DIR,$backupDir->stringify);
+        my @files = readdir(DIR);
+        closedir(DIR);
+        foreach my $file (@files) {
+                if ($rotations eq "0") {
+                        $backupDir->file($file)->remove;
+                elsif ($file =~ /(.*\.)1/ ) {
+                        $backupDir->file($file)->remove;
+                }
+        }
+    }
+}
 #-------------------------------------------------------------------
 sub rotateBackupFiles {
     my $config      = shift;
