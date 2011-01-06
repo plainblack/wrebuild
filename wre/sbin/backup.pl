@@ -245,6 +245,7 @@ sub removeBackupFiles {
         foreach my $file (@files) {
                 if ($rotations eq "0") {
                         $backupDir->file($file)->remove;
+                }
                 elsif ($file =~ /(.*\.)1/ ) {
                         $backupDir->file($file)->remove;
                 }
