@@ -238,7 +238,7 @@ sub removeBackupFiles {
     my $config      = shift;
     my $backupDir   = dir($config->get("backup/path"));
     my $rotations   = $config->get("backup/rotations");
-    if ($rotations eq "0" ||$rotations eq "1") {
+    if ($rotations == 0 ||$rotations == 1) {
         opendir(DIR,$backupDir->stringify);
         my @files = readdir(DIR);
         closedir(DIR);
