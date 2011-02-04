@@ -41,7 +41,7 @@ backupCustom($config);
 runExternalScripts($config);
 compressBackups($config);
 copyToRemote($config);
-#removeBackupFiles($config);
+removeBackupFiles($config);
 
 #-------------------------------------------------------------------
 sub backupCustom {
