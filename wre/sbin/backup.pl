@@ -37,11 +37,39 @@ backupMysql($config);
 backupDomains($config);
 backupWebgui($config);
 backupWre($config);
+backupCustom($config);
 runExternalScripts($config);
 compressBackups($config);
 copyToRemote($config);
-removeBackupFiles($config);
+#removeBackupFiles($config);
 
+#-------------------------------------------------------------------
+sub backupCustom {
+    my $config          = shift;
+    
+    return undef unless $config->get("backup/items/custom");
+    
+    my $backupDir   = dir($config->get("backup/path"));
+    my $customFile      = $config->getWebguiRoot("/sbin/preload.custom");
+    open FILE, $customFile or die $!;
+    my @lines           = <FILE>;
+    my @customDirs;
+    foreach my $line (@lines) {
+        if ($line =~ /^\//) {
+            my $backupFile = join("",map { ucfirst($_) } split /\//, $line);
+            chomp $backupFile;
+
+            eval { $util->tar(
+                file    => $backupDir->file($backupFile.".tar")->stringify,
+                stuff   => [$line],
+            )};
+            print $@."\n" if ($@);
+        }
+        else {
+            next;
+        }
+    }
+}
 
 #-------------------------------------------------------------------
 sub backupDomains {
