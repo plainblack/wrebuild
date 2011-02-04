@@ -62,6 +62,7 @@ sub backupCustom {
             eval { $util->tar(
                 file    => $backupDir->file($backupFile.".tar")->stringify,
                 stuff   => [$line],
+                absPath => 1,
             )};
             print $@."\n" if ($@);
         }

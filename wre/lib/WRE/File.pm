@@ -437,6 +437,9 @@ sub tar {
     if ($options{gzip}) {
         $args .= " --gzip";
     }
+    if ($options{absPath}) {
+        $args .= " -P";
+    }
     if (exists $options{exclude}) {
         my $exFile = file($options{exclude});
         if (-e $exFile) {
