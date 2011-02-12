@@ -147,6 +147,7 @@ if [ -d /data ]; then
     export LDFLAGS="$LDFLAGS -L$PREFIX/lib"
     export LIBS="-L$PREFIX/lib"
     export LD_LIBRARY_PATH="$PREFIX/include"
+    export PERLCFGOPTS="-Aldflags=\"-L$PREFIX/lib\""
 
     # --cache-file speeds up configure a lot
     rm /tmp/Configure.cache
@@ -154,6 +155,7 @@ if [ -d /data ]; then
     if [ "$WRE_IA64" == 1 ]; then
         export CFLAGS="$CFLAGS -fPIC"
         export CXXFLAGS="$CXXFLAGS -fPIC"
+        export PERLCFGOPTS="-Accflags=\"-fPIC\" $PERLCFGOPTS"
     fi
 
     # deal with operating system inconsistencies
@@ -409,7 +411,7 @@ buildApache(){
     rm -f $WRE_ROOT/etc/ssl.conf
 
     # modperl
-    cd ../mod_perl-2.0.4
+    cd ../mod_perl-2.0.5
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
@@ -483,7 +485,7 @@ buildImageMagick(){
 
 
     # image magick
-    cd ImageMagick-6.6.6-4  # when you update this version number, update the one below as well
+    cd ImageMagick-* # when you update this version number, update the one below as well
     printHeader "Image Magick"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean

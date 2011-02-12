@@ -804,7 +804,7 @@ wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Mixin-Linewise-0.002.tar.gz
 tar zxf Mixin-Linewise-0.002.tar.gz
 
 # http://search.cpan.org/dist/Config-INI/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RJ/RJBS/Config-INI-0.014.tar.gz
+wget -t 4 -nv $BACKPANMIRROR/authors/id/R/RJ/RJBS/Config-INI-0.014.tar.gz
 tar zxf Config-INI-0.014.tar.gz
 
 # http://search.cpan.org/dist/App-Nopaste/
