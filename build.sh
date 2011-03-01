@@ -458,29 +458,29 @@ buildImageMagick(){
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi
-    ./configure $CFG_CACHE --enable-shared --prefix=$PREFIX; checkError $? "libjpeg Configure"
+    ./configure $CFG_CACHE --prefix=$PREFIX; checkError $? "libjpeg Configure"
     #$PREFIX/bin/perl -i -p -e's[./libtool][libtool]g' Makefile
     $WRE_MAKE; checkError $? "libjpeg make"
     $WRE_MAKE install; checkError $? "libjpeg make install"
     cd ..
 
     # freetype
-    buildProgram "freetype-2.3.11" "$CFG_CACHE --enable-shared"
+    buildProgram "freetype-2.3.11" "$CFG_CACHE"
 
     # lib ungif
-    buildProgram "giflib-4.1.6" "$CFG_CACHE --enable-shared"
+    buildProgram "giflib-4.1.6" "$CFG_CACHE"
 
     # tiff 
-    buildProgram "tiff-3.8.2" "$CFG_CACHE --enable-shared"
+    buildProgram "tiff-3.8.2" "$CFG_CACHE"
 
     # lib png
-    buildProgram "libpng-1.2.35" "$CFG_CACHE --enable-shared"
+    buildProgram "libpng-1.2.35" "$CFG_CACHE"
 
     # lcms 
-    buildProgram "lcms-1.19" "$CFG_CACHE --enable-shared"
+    buildProgram "lcms-1.19" "$CFG_CACHE"
 
     # graphviz
-    buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --enable-shared --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
+    buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
     ln -s $PREFIX/bin/dot_static $PREFIX/bin/dot 
 
 
