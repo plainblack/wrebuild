@@ -64,8 +64,8 @@ wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.17.tar.gz
 tar zxf httpd-2.2.17.tar.gz
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
-wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.1.1.tar.gz
-tar zxf lftp-4.1.1.tar.gz
+wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/old/lftp-4.2.0.tar.gz
+tar zxf lftp-4.2.0.tar.gz
 
 # libiconv unicode conversion tool http://www.gnu.org/software/libiconv/
 wget -t 4 -nv http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.tar.gz

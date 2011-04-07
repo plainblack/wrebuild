@@ -336,7 +336,7 @@ buildUtils(){
     # lftp
     SAVED_CFLAGS=$CFLAGS
     CFLAGS="$CFLAGS -liconv"
-    buildProgram "lftp-4.1.1" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
+    buildProgram "lftp-4.2.0" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
     CFLAGS=$SAVED_CFLAGS
     
     # catdoc
