@@ -60,8 +60,8 @@ wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.8.5.tar.bz2
 tar jxf gnutls-2.8.5.tar.bz2
 
 # httpd apache webserver http://httpd.apache.org/
-wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.17.tar.gz
-tar zxf httpd-2.2.17.tar.gz
+wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.20.tar.gz
+tar zxf httpd-2.2.20.tar.gz
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
 wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/old/lftp-4.2.0.tar.gz
@@ -79,7 +79,7 @@ mv jpeg-7 libjpeg-7
 # lcms color management http://www.littlecms.com/
 wget -t 4 -nv http://sourceforge.net/projects/lcms/files/lcms/1.19/lcms-1.19.tar.gz/download
 tar zxf lcms-1.19.tar.gz
-
+.3
 # graphviz graph generator http://www.graphviz.org/
 wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.0.tar.gz
 tar xfz graphviz-2.24.0.tar.gz
@@ -148,8 +148,8 @@ wget -t 4 -nv http://rsync.samba.org/ftp/rsync/src/rsync-3.0.6.tar.gz
 tar xfz rsync-3.0.6.tar.gz
 
 # git http://git-scm.com/download
-wget -t 4 -nv http://kernel.org/pub/software/scm/git/git-1.6.5.3.tar.bz2
-tar jxf git-1.6.5.3.tar.bz2
+wget -t 4 -nv http://kernel.org/pub/software/scm/git/git-1.7.6.tar.bz2
+tar jxf git-1.7.6.tar.bz2
 
 # http://curl.haxx.se/
 wget -t 4 -nv http://curl.haxx.se/download/curl-7.19.7.tar.bz2

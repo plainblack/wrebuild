@@ -18,15 +18,15 @@ tar zxf Test-Tester-0.107.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADAMK/Test-NoWarnings-1.02.tar.gz
 tar zxf Test-NoWarnings-1.02.tar.gz
 
-wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/common-sense-3.3.tar.gz
-tar zxf common-sense-3.3.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/M/ML/MLEHMANN/common-sense-3.4.tar.gz
+tar zxf common-sense-3.4.tar.gz
 
 wget -t 4 -nv $CPANMIRROR/authors/id/A/AN/ANDYA/Test-Harness-3.17.tar.gz
 tar zxf Test-Harness-3.17.tar.gz
 
 # http://search.cpan.org/dist/Locales/
-wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.15.tar.gz
-tar zxf Locales-0.15.tar.gz 
+wget -t 4 -nv $CPANMIRROR/authors/id/D/DM/DMUEY/Locales-0.19.tar.gz
+tar zxf Locales-0.19.tar.gz 
 
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DW/DWHEELER/Text-Diff-HTML-0.06.tar.gz
 tar zxf Text-Diff-HTML-0.06.tar.gz 
@@ -60,8 +60,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/O/OP/OPI/Class-Member-1.6.tar.gz
 tar zxf Class-Member-1.6.tar.gz 
 
 # http://search.cpan.org/dist/Linux-Smaps/
-wget -t 4 -nv $CPANMIRROR/authors/id/O/OP/OPI/Linux-Smaps-0.06.tar.gz
-tar zxf Linux-Smaps-0.06.tar.gz 
+wget -t 4 -nv $CPANMIRROR/authors/id/O/OP/OPI/Linux-Smaps-0.09.tar.gz
+tar zxf Linux-Smaps-0.09.tar.gz 
 
 # http://search.cpan.org/dist/GraphViz/
 wget -t 4 -nv $CPANMIRROR/authors/id/L/LB/LBROCARD/GraphViz-2.04.tar.gz
@@ -252,8 +252,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/C/CJ/CJM/Tie-CPHash-1.04.tar.gz
 tar zxf Tie-CPHash-1.04.tar.gz
 
 # http://search.cpan.org/dist/Error/
-wget -t 4 -nv $CPANMIRROR/authors/id/S/SH/SHLOMIF/Error-0.17015.tar.gz
-tar zxf Error-0.17015.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/S/SH/SHLOMIF/Error-0.17016.tar.gz
+tar zxf Error-0.17016.tar.gz
 
 # http://search.cpan.org/dist/HTML-Highlight/
 wget -t 4 -nv $CPANMIRROR/authors/id/T/TR/TRIPIE/HTML-Highlight-0.20.tar.gz
@@ -278,6 +278,10 @@ tar zxf Archive-Zip-1.26.tar.gz
 # http://search.cpan.org/dist/XML-NamespaceSupport/
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RB/RBERJON/XML-NamespaceSupport-1.09.tar.gz
 tar zxf XML-NamespaceSupport-1.09.tar.gz
+
+# http://search.cpan.org/dist/XML-SAX-Base/
+wget -t 4 -nv $CPANMIRROR/authors/id/K/KH/KHAMPTON/XML-SAX-Base-1.02.tar.gz
+tar zxf XML-SAX-Base-1.02.tar.gz
 
 # http://search.cpan.org/dist/XML-Parser/
 wget -t 4 -nv $CPANMIRROR/authors/id/M/MS/MSERGEANT/XML-Parser-2.36.tar.gz
@@ -343,9 +347,18 @@ tar zxf Path-Class-0.16.tar.gz
 #wget -t 4 -nv $CPANMIRROR/authors/id/R/RI/RIZEN/Config-JSON-1.3.1.tar.gz
 #tar zxf Config-JSON-1.3.1.tar.gz
 
+# http://search.cpan.org/dist/Mouse/
+http://search.cpan.org/CPAN/
+wget -t 4 -nv $CPANMIRROR/authors/id/G/GF/GFUJI/Mouse-0.93.tar.gz
+tar zxf Mouse-0.93.tar.gz
+
 # http://search.cpan.org/dist/Config-JSON/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RI/RIZEN/Config-JSON-1.5000.tar.gz
-tar zxf Config-JSON-1.5000.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/S/SA/SARTAK/Any-Moose-0.15.tar.gz
+tar zxf Any-Moose-0.15.tar.gz
+
+# http://search.cpan.org/dist/Config-JSON/
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RI/RIZEN/Config-JSON-1.5100.tar.gz
+tar zxf Config-JSON-1.5100.tar.gz
 
 # http://search.cpan.org/dist/IO-Socket-SSL/
 wget -t 4 -nv $CPANMIRROR/authors/id/S/SU/SULLR/IO-Socket-SSL-1.22.tar.gz
@@ -476,8 +489,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/F/FD/FDALY/Test-Deep-0.103.tar.gz
 tar zxf Test-Deep-0.103.tar.gz
 
 # http://search.cpan.org/dist/Test-MockObject/
-wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/Test-MockObject-1.09.tar.gz
-tar zxf Test-MockObject-1.09.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/Test-MockObject-1.20110612.tar.gz
+tar zxf Test-MockObject-1.20110612.tar.gz
 
 # http://search.cpan.org/dist/UNIVERSAL-isa/
 wget -t 4 -nv $CPANMIRROR/authors/id/C/CH/CHROMATIC/UNIVERSAL-isa-1.03.tar.gz
@@ -612,12 +625,12 @@ wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PETDANCE/Carp-Assert-More-1.12.tar.gz
 tar zxf Carp-Assert-More-1.12.tar.gz
 
 # http://search.cpan.org/dist/HTTP-Server-Simple/
-wget -t 4 -nv $CPANMIRROR/authors/id/J/JE/JESSE/HTTP-Server-Simple-0.38.tar.gz
-tar zxf HTTP-Server-Simple-0.38.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/J/JE/JESSE/HTTP-Server-Simple-0.44.tar.gz
+tar zxf HTTP-Server-Simple-0.44.tar.gz
 
 # http://search.cpan.org/dist/Test-LongString/
-wget -t 4 -nv $CPANMIRROR/authors/id/R/RG/RGARCIA/Test-LongString-0.11.tar.gz
-tar zxf Test-LongString-0.11.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/R/RG/RGARCIA/Test-LongString-0.15.tar.gz
+tar zxf Test-LongString-0.15.tar.gz
 
 # http://search.cpan.org/dist/HTTP-Response-Encoding/
 wget -t 4 -nv $CPANMIRROR/authors/id/D/DA/DANKOGAI/HTTP-Response-Encoding-0.05.tar.gz
@@ -663,17 +676,21 @@ tar zxf Test-WWW-Mechanize-1.24.tar.gz
 wget -t 4 -nv $CPANMIRROR/authors/id/O/OV/OVID/Test-JSON-0.06.tar.gz 
 tar zxf Test-JSON-0.06.tar.gz
 
+# http://search.cpan.org/dist/Regexp::RegGrp/
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/Regexp-RegGrp-1.002.tar.gz 
+tar zxf Regexp-RegGrp-1.002.tar.gz 
+
 # http://search.cpan.org/dist/HTML-Packer/
-wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/HTML-Packer-0.4.tar.gz 
-tar zxf HTML-Packer-0.4.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/HTML-Packer-1.002001.tar.gz 
+tar zxf HTML-Packer-1.002001.tar.gz
 
 # http://search.cpan.org/dist/JavaScript-Packer/
-wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/JavaScript-Packer-0.04.tar.gz
-tar zxf JavaScript-Packer-0.04.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/JavaScript-Packer-1.004.tar.gz
+tar zxf JavaScript-Packer-1.004.tar.gz
 
 # http://search.cpan.org/dist/CSS-Packer/
-wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/CSS-Packer-0.2.tar.gz
-tar zxf CSS-Packer-0.2.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/N/NE/NEVESENIN/CSS-Packer-1.002.tar.gz
+tar zxf CSS-Packer-1.002.tar.gz
 
 # http://search.cpan.org/dist/Business-Tax-VAT-Validation/
 wget -t 4 -nv $CPANMIRROR/authors/id/B/BP/BPGN/Business-Tax-VAT-Validation-0.20.tar.gz
@@ -712,12 +729,13 @@ wget -t 4 -nv $CPANMIRROR/authors/id/A/AD/ADIE/Test-Class-0.31.tar.gz
 tar zxf Test-Class-0.31.tar.gz
 
 # http://search.cpan.org/dist/XML-SAX-Writer/
-wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PERIGRIN/XML-SAX-Writer-0.52.tar.gz
-tar zxf XML-SAX-Writer-0.52.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/P/PE/PERIGRIN/XML-SAX-Writer-0.53.tar.gz
+tar zxf XML-SAX-Writer-0.53.tar.gz
 
 # http://search.cpan.org/dist/Text-Iconv/
-wget -t 4 -nv $CPANMIRROR/authors/id/M/MP/MPIOTR/Text-Iconv-1.7.tar.gz
-tar zxf Text-Iconv-1.7.tar.gz
+##Replaced by Encode.
+#wget -t 4 -nv $CPANMIRROR/authors/id/M/MP/MPIOTR/Text-Iconv-1.7.tar.gz
+#tar zxf Text-Iconv-1.7.tar.gz
 
 # http://search.cpan.org/dist/XML-Filter-BufferText/
 wget -t 4 -nv $CPANMIRROR/authors/id/R/RB/RBERJON/XML-Filter-BufferText-1.01.tar.gz
@@ -780,8 +798,8 @@ wget -t 4 -nv $CPANMIRROR/authors/id/B/BO/BOBTFISH/MooseX-Getopt-0.25.tar.gz
 tar zxf MooseX-Getopt-0.25.tar.gz
 
 # http://search.cpan.org/dist/WWW-Pastebin-PastebinCom-Create/
-wget -t 4 -nv $CPANMIRROR/authors/id/Z/ZO/ZOFFIX/WWW-Pastebin-PastebinCom-Create-0.002.tar.gz
-tar zxf WWW-Pastebin-PastebinCom-Create-0.002.tar.gz
+wget -t 4 -nv $CPANMIRROR/authors/id/Z/ZO/ZOFFIX/WWW-Pastebin-PastebinCom-Create-0.003.tar.gz
+tar zxf WWW-Pastebin-PastebinCom-Create-0.003.tar.gz
 
 # http://search.cpan.org/dist/Class-Data-Accessor/
 wget -t 4 -nv $CPANMIRROR/authors/id/C/CL/CLACO/Class-Data-Accessor-0.04004.tar.gz

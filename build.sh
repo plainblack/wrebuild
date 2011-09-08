@@ -358,7 +358,7 @@ buildUtils(){
     cd ../..
 
     # xpdf
-    buildProgram "xpdf-3.02" "$CFG_CACHE --without-x"
+    buildProgram "xpdf-3.03" "$CFG_CACHE --without-x"
 
     cd $WRE_BUILDDIR
 }
@@ -384,7 +384,7 @@ buildApache(){
     cd source
 
     # apache
-    cd httpd-2.2.17
+    cd httpd-2.2.20
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
@@ -547,16 +547,16 @@ installPerlModules () {
     printHeader "Perl Modules"
     cd source/perlmodules
     export PERL_MM_USE_DEFAULT=1 # makes it so perl modules don't ask questions
-    if [ "$WRE_OSTYPE" != "Leopard" && "$WRE_OSTYPE" != "Snow Leopard" ]; then
+    if [ "$WRE_OSTYPE" != "Leopard" ] && [ "$WRE_OSTYPE" != "Snow Leopard" ]; then
         installPerlModule "Proc-ProcessTable-0.44"
     fi
     installPerlModule "Test-Tester-0.107"
     installPerlModule "Test-NoWarnings-1.02"
     installPerlModule "Test-Deep-0.103"
-    installPerlModule "Test-MockObject-1.09"
+    installPerlModule "Test-MockObject-1.20110612"
     buildPerlModule "UNIVERSAL-isa-1.03"
     buildPerlModule "UNIVERSAL-can-1.15"
-    installPerlModule "common-sense-3.3"
+    installPerlModule "common-sense-3.4"
     installPerlModule "Net-SSLeay-1.36" "$PREFIX"
     installPerlModule "Compress-Raw-Zlib-2.015"
     installPerlModule "IO-Compress-Base-2.015"
@@ -597,13 +597,14 @@ installPerlModules () {
     installPerlModule "Text-Balanced-v2.0.0"
     installPerlModule "Tie-IxHash-1.21"
     installPerlModule "Tie-CPHash-1.04"
-    installPerlModule "Error-0.17015"
+    installPerlModule "Error-0.17016"
     installPerlModule "HTML-Highlight-0.20"
     installPerlModule "HTML-TagFilter-1.03"
     installPerlModule "IO-String-1.08"
     installPerlModule "Archive-Tar-1.44"
     installPerlModule "Archive-Zip-1.26"
     installPerlModule "XML-NamespaceSupport-1.09"
+    installPerlModule "XML-SAX-Base-1.02"
     installPerlModule "XML-Parser-2.36" "EXPATLIBPATH=$PREFIX/lib EXPATINCPATH=$PREFIX/include"
     installPerlModule "XML-SAX-0.96"
     installPerlModule "XML-SAX-Expat-0.40"
@@ -620,11 +621,13 @@ installPerlModules () {
     installPerlModule "JSON-2.17"
     installPerlModule "version-0.76"
     installPerlModule "Path-Class-0.16"
-    installPerlModule "Config-JSON-1.5000"
+    installPerlModule "Mouse-0.93"
+    installPerlModule "Any-Moose-0.15"
+    installPerlModule "Config-JSON-1.5100"
     installPerlModule "IO-Socket-SSL-1.22"
-    installPerlModule "Text-Iconv-1.7"
+    #installPerlModule "Text-Iconv-1.7" ##Replaced by Encode for XML::SAX::Writer
     installPerlModule "XML-Filter-BufferText-1.01"
-    installPerlModule "XML-SAX-Writer-0.52"
+    installPerlModule "XML-SAX-Writer-0.53"
     export AUTHEN_SASL_VERSION="Authen-SASL-2.12"
     $PREFIX/bin/perl -ni -e 'print unless /GSSAPI mechanism/ .. /\],/' $AUTHEN_SASL_VERSION/Makefile.PL
     installPerlModule $AUTHEN_SASL_VERSION
@@ -724,8 +727,8 @@ installPerlModules () {
     installPerlModule "Carp-Assert-0.20"
     installPerlModule "Test-Exception-0.27"
     installPerlModule "Carp-Assert-More-1.12"
-    installPerlModule "HTTP-Server-Simple-0.38"
-    installPerlModule "Test-LongString-0.11"
+    installPerlModule "HTTP-Server-Simple-0.44"
+    installPerlModule "Test-LongString-0.15"
     installPerlModule "HTTP-Response-Encoding-0.05"
     installPerlModule "Array-Compare-2.01"
     installPerlModule "Tree-DAG_Node-1.06"
@@ -742,12 +745,13 @@ installPerlModules () {
     installPerlModule "Class-Member-1.6"
     # detecting shared memory properly on 2.6 kernels
     if [ "$WRE_OSNAME" == "Linux" ]; then
-        installPerlModule "Linux-Smaps-0.06" 
+        installPerlModule "Linux-Smaps-0.09" 
     fi
     # 7.7.5
-    installPerlModule "HTML-Packer-0.4"
-    installPerlModule "JavaScript-Packer-0.04"
-    installPerlModule "CSS-Packer-0.2"
+    installPerlModule "Regexp-RegGrp-1.002"
+    installPerlModule "HTML-Packer-1.002001"
+    installPerlModule "JavaScript-Packer-1.004"
+    installPerlModule "CSS-Packer-1.002"
     # 7.7.6
     installPerlModule "Business-Tax-VAT-Validation-0.20"
     installPerlModule "Scope-Guard-0.03"
@@ -772,7 +776,7 @@ IFS=$SAVED_IFS
     installPerlModule "Text-PDF-0.29"
     installPerlModule "CAM-PDF-1.52"
     installPerlModule "Text-Diff-HTML-0.06"
-    installPerlModule "Locales-0.15"
+    installPerlModule "Locales-0.19"
     installPerlModule "Test-Harness-3.17"
     # App-Nopaste
     installPerlModule "Params-Util-1.00"
@@ -791,7 +795,7 @@ CFLAGS=$SAVED_CFLAGS
     installPerlModule "Moose-0.93"
     installPerlModule "Getopt-Long-Descriptive-0.081"
     installPerlModule "MooseX-Getopt-0.25"
-    installPerlModule "WWW-Pastebin-PastebinCom-Create-0.002"
+    installPerlModule "WWW-Pastebin-PastebinCom-Create-0.003"
     installPerlModule "Class-Data-Accessor-0.04004"
     installPerlModule "WWW-Pastebin-RafbNet-Create-0.001"
     installPerlModule "Spiffy-0.30"
