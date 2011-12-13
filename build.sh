@@ -330,6 +330,17 @@ buildUtils(){
     # xpdf
     buildProgram "xpdf-3.03" "$CFG_CACHE --without-x"
 
+    # aspell
+    buildProgram "aspell-0.60.6" "" "exec_prefix=$PREFIX"
+    cd aspell6-en-6.0-0
+    if [ "$WRE_CLEAN" == 1 ]; then
+        $WRE_MAKE distclean
+        $WRE_MAKE clean
+    fi  
+    ./configure --vars ASPELL=$PREFIX/bin/aspell WORD_LIST_COMPRESS=$PREFIX/bin/word-list-compress; checkError $? "aspell-en configure"
+    $WRE_MAKE; checkError $? "aspell-en make"
+    $WRE_MAKE install ; checkError $? "aspell-en make install"
+
     cd $WRE_BUILDDIR
 }
 
@@ -446,20 +457,26 @@ installPerlModule() {
     cd ..
 }
 
-# some other perl modules are installed the same way
-# param1: module directory
-# param2: parameters to pass to Makefile.PL
-buildPerlModule() {
-    cd $1
-    printHeader "PM $1"
-    if [ "$WRE_CLEAN" == 1 ]; then
-        perl Build clean
+installPerlModules () {
+    printHeader "Perl Modules"
+    cd source/perlmodules
+    export PERL_MM_USE_DEFAULT=1 # makes it so perl modules don't ask questions
+    cpan App::cpanminus
+    cpanm Task::WebGUI
+    if [ "$WRE_OSTYPE" != "Leopard" ] && [ "$WRE_OSTYPE" != "Snow Leopard" ]; then
+        cpanm Proc::ProcessTable
     fi
-    perl Build.PL $2; checkError $? "$1 Build.PL"
-    perl Build; checkError $? "$1 Build"
-    perl Build install; checkError $? "$1 Build install"
-    cd ..
+    installPerlModule "Text-Aspell-0.09" "LIBS='-laspell'"
+    # detecting shared memory properly on 2.6 kernels
+    if [ "$WRE_OSNAME" == "Linux" ]; then
+        cpanm Linux::Smaps
+    fi
+
+    cd $WRE_BUILDDIR
 }
+
+
+
 
 #awstats
 installAwStats(){
