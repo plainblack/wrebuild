@@ -26,7 +26,7 @@ use WRE::Config;
 use WRE::File;
 use WRE::Host;
 use WRE::Modperl;
-use WRE::Modproxy;
+use WRE::Nginx;
 use WRE::Mysql;
 use WRE::Site;
 use WRE::Spectre;
@@ -182,7 +182,7 @@ sub www_addSite {
     $content .= '
     <h1>Add A Site</h1>
     <div class="status">'.$status.'</div>
-    <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
+    <p>Adding a site requires you to restart modperl, nginx, and Spectre.</p>
     <form action="/addSiteSave" method="post">
     <table>
     <tr>
@@ -273,7 +273,7 @@ sub www_deleteSite {
     <div class="status">'.$status.'</div>
     <p>Are you sure you wish to delete this site and all it\'s content and users? This cannot be undone, once you
     click on the button below.</p>
-    <p>Adding a site requires you to restart modperl, modproxy, and Spectre.</p>
+    <p>Deleting a site requires you to restart modperl, nginx, and Spectre.</p>
     <form action="/deleteSiteSave" method="post">
     <input type="hidden" name="filename" value="'.$cgi->param("filename").'" />
     <table>
@@ -335,8 +335,6 @@ sub www_editSettings {
     my $demo = $config->get("demo");
     makeHtmlFormSafe(\$configOverrides); 
     $content .= '<p class="status">'.$status.'</p><form method="post" action="/editSettingsSave">
-        <p><input type="submit" class="saveButton" value="Save" /></p>
-
         <fieldset><legend>Apache</legend>
 
         <p>
@@ -348,7 +346,7 @@ sub www_editSettings {
         <p>
         Connection Timeout<br />
         <input type="text" name="apacheConnectionTimeout" value="'.$apache->{connectionTimeout}.'" /> 
-        <span class="subtext">How long the WRE will wait when checking to see if Apache is alive before
+        <span class="subtext">How long the WRE will wait when checking to see if a service is alive before
         deciding to give up.</span>
         </p>
 
@@ -385,9 +383,9 @@ sub www_editSettings {
 
         <p>
         Items To Monitor<br />
-        <input type="radio" name="wreMonModproxy" value="1" '.(($wreMonitor->{items}{modproxy} == 1) ? 'checked="1"' : '').' />Yes 
-        <input type="radio" name="wreMonModproxy" value="0" '.(($wreMonitor->{items}{modproxy} != 1) ? 'checked="1"' : '').' />No
-        - modproxy<br />
+        <input type="radio" name="wreMonNginx" value="1" '.(($wreMonitor->{items}{nginx} == 1) ? 'checked="1"' : '').' />Yes 
+        <input type="radio" name="wreMonNginx" value="0" '.(($wreMonitor->{items}{nginx} != 1) ? 'checked="1"' : '').' />No
+        - nginx<br />
         <input type="radio" name="wreMonModperl" value="1" '.(($wreMonitor->{items}{modperl} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="wreMonModperl" value="0" '.(($wreMonitor->{items}{modperl} != 1) ? 'checked="1"' : '').' />No
         - modperl<br />
@@ -583,7 +581,7 @@ sub www_editSettingsSave {
     my @notify          = split(",", $notifyString); 
     $config->set("wreMonitor/notify", \@notify);
     $config->set("wreMonitor/items/modperl", $cgi->param("wreMonModperl"));
-    $config->set("wreMonitor/items/modproxy", $cgi->param("wreMonModproxy"));
+    $config->set("wreMonitor/items/nginx", $cgi->param("wreMonNginx"));
     $config->set("wreMonitor/items/mysql", $cgi->param("wreMonMysql"));
     $config->set("wreMonitor/items/runaway", $cgi->param("wreMonRunaway"));
     $config->set("wreMonitor/items/spectre", $cgi->param("wreMonSpectre"));
@@ -649,7 +647,7 @@ sub www_editSettingsSave {
     elsif ($config->get("demo/enabled") == 1 && $cgi->param("enableDemo") == 0) {
         $file->delete($config->getRoot("/etc/demo.modproxy"));
         $file->delete($config->getRoot("/etc/demo.modperl"));
-        $status .= "Demo settings changed. You must restart modproxy and modperl for these changes to take effect.<br />";
+        $status .= "Demo settings changed. You must restart nginx and modperl for these changes to take effect.<br />";
     }
     $config->set("demo/enabled", $cgi->param("enableDemo"));
     $config->set("demo/duration", $cgi->param("demoDuration"));
@@ -731,7 +729,7 @@ sub www_editSite {
     }
     makeHtmlFormSafe($contents);
     $content .= '
-        <p>Making a modification of these files requires a restart of modperl and modproxy afterwards, and sometimes also a restart
+        <p>Making a modification of these files requires a restart of modperl and nginx afterwards, and sometimes also a restart
         of Spectre after that.</p>
         <form action="/editSiteSave" method="post">
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
@@ -741,15 +739,15 @@ sub www_editSite {
         <input type="submit" class="saveButton" value="Save" />  <br /><br />
     ';
     $$contents = '';
-    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/".$sitename.".modproxy")) };
+    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/".$sitename.".nginx")) };
     if ($@) {
-        carp "Couldn't open $sitename.modproxy file for editing $@";
+        carp "Couldn't open $sitename.nginx file for editing $@";
         $content .= '<div class="status">'.$@.'</div>';
     }
     makeHtmlFormSafe($contents);
     $content .= '
-        <div><b>'.$sitename.'.modproxy</b></div>
-        <textarea name="modproxy">'.$$contents.'</textarea><br />
+        <div><b>'.$sitename.'.nginx</b></div>
+        <textarea name="nginx">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
     ';
     $$contents = '';
@@ -797,9 +795,9 @@ sub www_editSiteSave {
         $status = "Couldn't save $filename. $@";
         carp $status;
     }
-    eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".modproxy"), $state->{cgi}->param("modproxy")) };
+    eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".nginx"), $state->{cgi}->param("nginx")) };
     if ($@) {
-        $status = "Couldn't save $sitename.modproxy. $@";
+        $status = "Couldn't save $sitename.nginx. $@";
         carp $status;
     }
     eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".modperl"), $state->{cgi}->param("modperl")) };
@@ -872,23 +870,23 @@ sub www_listServices {
          </td>
     </tr>
     <tr>
-        <td>Apache Modproxy</td>
+        <td>Nginx</td>
         <td>';
-    my $modproxy = WRE::Modproxy->new(wreConfig=>$state->{config});
-    if (eval{$modproxy->ping}) {
+    my $nginx = WRE::Nginx->new(wreConfig=>$state->{config});
+    if (eval{$nginx->ping}) {
         $content .= '
-             <form action="/stopModproxy" method="post">
+             <form action="/stopNginx" method="post">
                 <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
-             <form action="/startModproxy" method="post">
+             <form action="/startNginx" method="post">
                 <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" /> (Requires Modperl in order to start.)
              </form>';
     }
     $content .= '
-             <form action="/restartModproxy" method="post">
+             <form action="/restartNginx" method="post">
                 <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
@@ -1003,12 +1001,12 @@ sub www_restartModperl {
 }
 
 #-------------------------------------------------------------------
-sub www_restartModproxy {
+sub www_restartNginx {
     my $state = shift;
-    my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
-    my $status = "Modproxy restarted.";
+    my $service = WRE::Nginx->new(wreConfig=>$state->{config});
+    my $status = "Nginx restarted.";
     unless ($service->restart) {
-        $status = "Modproxy did not restart successfully. ".$@;
+        $status = "Nginx did not restart successfully. ".$@;
     }
     www_listServices($state, $status);
 }
@@ -1074,14 +1072,14 @@ sub www_setup {
             $out .= qq|<p class="status">There is no user $collected->{wreUser} on this system, please create it or go
                 back and change the user you'd like to run the WRE under.</p>|;
         }
-        my $apache = $config->get("apache");
+        my $nginx = $config->get("nginx");
         $out .= '<h1>Apache</h1>
             <form action="/setup" method="post">
             <input type="hidden" name="step" value="mysql">
             <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
-            mod_proxy Port <br />
-            <input type="text" name="modproxyPort" value="'.($collected->{modproxyPort} || $apache->{modproxyPort}).'" />
+            nginx Port <br />
+            <input type="text" name="nginxPort" value="'.($collected->{nginxPort} || $nginx->{nginxPort}).'" />
             </p>
             <p>
             mod_perl Port <br />
@@ -1212,7 +1210,7 @@ sub www_setup {
         $config->set("backup", $backup);
         my $apache                  = $config->get("apache");
         $apache->{modperlPort}      = $collected->{modperlPort};
-        $apache->{modproxyPort}     = $collected->{modproxyPort};
+        $apache->{nginxPort}        = $collected->{nginxPort};
         $config->set("apache", $apache);
         my $webgui                  = $config->get("webgui");
         my $spectreSubnetsString    = $collected->{spectreSubnets};
@@ -1309,8 +1307,8 @@ sub www_setup {
         $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
             $config->getRoot("/etc/modperl.conf"),
             { force => 1, templateVars=>\%modperlVars });
-        $file->copy($config->getRoot("/var/setupfiles/modproxy.conf"),
-            $config->getRoot("/etc/modproxy.conf"),
+        $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
+            $config->getRoot("/etc/nginx.conf"),
             { force => 1, templateVars=>{osName=>$host->getOsName} });
         $file->copy($config->getRoot("/var/setupfiles/mime.types"),
             $config->getRoot("/etc/mime.types"),
@@ -1321,8 +1319,8 @@ sub www_setup {
         $file->copy($config->getRoot("/var/setupfiles/modperl.template"),
             $config->getRoot("/var/modperl.template"),
             { force => 1 });
-        $file->copy($config->getRoot("/var/setupfiles/modproxy.template"),
-            $config->getRoot("/var/modproxy.template"),
+        $file->copy($config->getRoot("/var/setupfiles/nginx.template"),
+            $config->getRoot("/var/nginx.template"),
             { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/awstats.template"),
             $config->getRoot("/var/awstats.template"),
@@ -1390,14 +1388,6 @@ sub www_setup {
             print $socket "</blockquote>$crlf";
         }
 
-        # windows service stuff
-        if ($host->getOsName eq "windows") {
-            print $socket "<p>Installing Windows services.</p>$crlf";
-            system($config->getRoot("/sbin/services/windows/modperl-install.bat"));
-            system($config->getRoot("/sbin/services/windows/modproxy-install.bat"));
-            system($config->getRoot("/sbin/services/windows/spectre-install.bat"));
-        }
-
         # status
         print $socket "<h1>Configuration Complete</h1>
             <p>Please add the following maintenance scripts to your crontab:</p>
@@ -1444,12 +1434,12 @@ sub www_startModperl {
 }
 
 #-------------------------------------------------------------------
-sub www_startModproxy {
+sub www_startNginx {
     my $state = shift;
-    my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
-    my $status = "Modproxy started.";
+    my $service = WRE::Nginx->new(wreConfig=>$state->{config});
+    my $status = "Nginx started.";
     unless (eval {$service->start}) {
-        $status = "Modproxy did not start successfully. ".$@;
+        $status = "Nginx did not start successfully. ".$@;
     }
     www_listServices($state, $status);
 }
@@ -1517,12 +1507,12 @@ sub www_stopModperl {
 }
 
 #-------------------------------------------------------------------
-sub www_stopModproxy {
+sub www_stopNginx {
     my $state = shift;
-    my $service = WRE::Modproxy->new(wreConfig=>$state->{config});
-    my $status = "Modproxy stopped.";
+    my $service = WRE::Nginx->new(wreConfig=>$state->{config});
+    my $status = "Nginx stopped.";
     unless ($service->stop) {
-        $status = "Modproxy did not stop successfully. ".$@;
+        $status = "Nginx did not stop successfully. ".$@;
     }
     www_listServices($state, $status);
 }
