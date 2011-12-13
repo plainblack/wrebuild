@@ -1,1 +1,0 @@
-c:\data\wre\prereqs\bin\mysqld-nt -remove WREmysql

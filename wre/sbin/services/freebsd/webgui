@@ -9,19 +9,19 @@ rcvar=`set_rcvar`
 
 extra_commands="help startweb stopweb restartweb\
     startmodperl stopmodperl restartmodperl\
-    startmodproxy stopmodproxy restartmodproxy\
+    startnginx stopnginx restartnginx\
     startmysql stopmysql restartmysql\
     startspectre stopspectre restartspectre\
 "
 help_cmd="${name}_help"
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
-startweb_cmd="${startmodperl_cmd}; ${startmodproxy_cmd}"
-stopweb_cmd="${stopmodproxy_cmd}; ${stopmodperl_cmd}"
+startweb_cmd="${startmodperl_cmd}; ${startnginx_cmd}"
+stopweb_cmd="${stopnginx_cmd}; ${stopmodperl_cmd}"
 restartweb_cmd="${stopweb_cmd}; ${startweb_cmd}"
-startmodproxy_cmd="${name}_startmodproxy"
-stopmodproxy_cmd="${name}_stopmodproxy"
-restartmodproxy_cmd="${stopmodproxy_cmd}; ${startmodproxy_cmd}"
+startnginx_cmd="${name}_startnginx"
+stopnginx_cmd="${name}_stopnginx"
+restartnginx_cmd="${stopnginx_cmd}; ${startnginx_cmd}"
 startmodperl_cmd="${name}_startmodperl"
 stopmodperl_cmd="${name}_stopmodperl"
 restartmodperl_cmd="${stopmodperl_cmd}; ${startmodperl_cmd}"
@@ -43,7 +43,7 @@ webgui_help() {
     echo "      -- Start/stop both Apache services"
     echo " $0 { startmodperl | stopmodperl | restartmodperl }"
     echo "      -- Start/stop mod_perl (WebGUI) Apache service"
-    echo " $0 { startmodproxy | stopmodproxy | restartmodproxy }"
+    echo " $0 { startnginx | stopnginx | restartnginx }"
     echo "      -- Start/stop mod_proxy Apache service"
     echo " $0 { startmysql | stopmysql | restartmysql }"
     echo "      -- Start/stop MySQL service"
@@ -68,12 +68,12 @@ webgui_stopmodperl() {
     wreservice.pl --quiet --stop modperl
 }
 
-webgui_startmodproxy() {
-    wreservice.pl --quiet --start modproxy
+webgui_startnginx() {
+    wreservice.pl --quiet --start nginx
 }
 
-webgui_stopmodproxy() {
-    wreservice.pl --quiet --stop modproxy
+webgui_stopnginx() {
+    wreservice.pl --quiet --stop nginx
 }
 
 webgui_startmysql() {

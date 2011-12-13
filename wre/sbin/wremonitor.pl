@@ -20,7 +20,7 @@ use Net::SMTP;
 use WRE::Config;
 use WRE::File;
 use WRE::Modperl;
-use WRE::Modproxy;
+use WRE::Nginx;
 use WRE::Mysql;
 use WRE::Spectre;
 
@@ -47,9 +47,9 @@ if ($config->get("wreMonitor/items/modperl") && !$config->get("wreMonitor/modper
     }
 }
 
-if ($config->get("wreMonitor/items/modproxy") && !$config->get("wreMonitor/modproxyAdministrativelyDown")) {
-    my $modproxy = WRE::Modproxy->new(wreConfig=>$config);
-    monitor($modproxy);
+if ($config->get("wreMonitor/items/nginx") && !$config->get("wreMonitor/nginxAdministrativelyDown")) {
+    my $nginx = WRE::Nginx->new(wreConfig=>$config);
+    monitor($nginx);
 }
 
 if ($config->get("wreMonitor/items/spectre") && !$config->get("wreMonitor/spectreAdministrativelyDown")) {

@@ -637,15 +637,15 @@ sub www_editSettingsSave {
     # have to enable demos
     if ($config->get("demo/enabled") == 0 && $cgi->param("enableDemo") == 1) {
         $file->makePath($config->getDomainRoot("/demo"));
-        $file->copy($config->getRoot("/var/setupfiles/demo.modproxy"), $config->getRoot("/etc/demo.modproxy"), 
+        $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
             { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
         $file->copy($config->getRoot("/var/setupfiles/demo.modperl"), $config->getRoot("/etc/demo.modperl"), 
             { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
-        $status .= "Demo settings changed. You must restart modproxy and modperl for these changes to take effect.<br />";
+        $status .= "Demo settings changed. You must restart nginx and modperl for these changes to take effect.<br />";
     }
     # have to disable demos
     elsif ($config->get("demo/enabled") == 1 && $cgi->param("enableDemo") == 0) {
-        $file->delete($config->getRoot("/etc/demo.modproxy"));
+        $file->delete($config->getRoot("/etc/demo.nginx"));
         $file->delete($config->getRoot("/etc/demo.modperl"));
         $status .= "Demo settings changed. You must restart nginx and modperl for these changes to take effect.<br />";
     }

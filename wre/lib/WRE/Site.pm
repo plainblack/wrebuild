@@ -138,9 +138,9 @@ sub create {
         $wreConfig->getRoot("/etc/".$sitename.".modperl"),
         { templateVars => $params, force => 1 });
 
-    # create modproxy config
-    $file->copy($wreConfig->getRoot("/var/modproxy.template"), 
-        $wreConfig->getRoot("/etc/".$sitename.".modproxy"),
+    # create nginx config
+    $file->copy($wreConfig->getRoot("/var/nginx.template"), 
+        $wreConfig->getRoot("/etc/".$sitename.".nginx"),
         { templateVars => $params, force => 1 });
 }
 
@@ -285,8 +285,8 @@ sub delete {
     # modperl
     $file->delete($wreConfig->getRoot("/etc/".$sitename.".modperl"));
 
-    # awstats
-    $file->delete($wreConfig->getRoot("/etc/".$sitename.".modproxy"));
+    # nginx
+    $file->delete($wreConfig->getRoot("/etc/".$sitename.".nginx"));
 
     # webgui
     $file->delete($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));

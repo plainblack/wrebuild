@@ -1,7 +1,7 @@
 #!/bin/bash
 # chkconfig: 2345 90 60
 # description: Start and stop WebGUI (WRE) Spectre
-# processname: wreapache
+# processname: wrespectre
 
 . /data/wre/sbin/setenvironment.sh
 
@@ -17,11 +17,9 @@ case "$1" in
     	/data/wre/sbin/wreservice.pl --quiet --restart spectre
     	;;
   	*)
-		echo $"WRE Apache Service Controller"
+		echo $"WRE Spectre Service Controller"
    		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
-   		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
-   		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
     	exit 1
 esac
 

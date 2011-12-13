@@ -25,21 +25,22 @@ case "$1" in
   	restartmodperl)
     	/data/wre/sbin/wreservice.pl --quiet --restart modperl
     	;;
-  	startmodproxy)
-    	/data/wre/sbin/wreservice.pl --quiet --start modproxy
+  	startnginx)
+    	/data/wre/sbin/wreservice.pl --quiet --start nginx
     	;;
-  	stopmodproxy)
-    	/data/wre/sbin/wreservice.pl --quiet --stop modproxy
+  	stopnginx)
+    	/data/wre/sbin/wreservice.pl --quiet --stop nginx
     	;;
-  	restartmodproxy)
-    	/data/wre/sbin/wreservice.pl --quiet --restart modproxy
+  	restartnginx)
+    	/data/wre/sbin/wreservice.pl --quiet --restart nginx
     	;;
   	*)
 		echo $"WRE Apache Service Controller"
    		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
    		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
-   		echo $"	$0 { startmodproxy | stopmodproxy | restartmodproxy }"
+   		echo $"	$0 { startnginx | stopnginx | restartnginx }"
+   		echo $"	$0 { startweb | stopweb | restartweb }"
     	exit 1
 esac
 
