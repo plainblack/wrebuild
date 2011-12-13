@@ -1,0 +1,19 @@
+To build a WRE on MacOS X. Do the following tasks:
+
+1) Install X-Code from the Mac App Store. 
+
+2) Install wget:
+ http://www.merenbach.com/software/wget/
+
+3) Install MySQL. We recommend the MySQL Community Server:
+ http://www.mysql.com/downloads/mysql/
+
+4) Import the WRE into your environment:
+ . wre/sbin/setenvironment.sh
+ 
+5) Run:
+ ./getsource.sh
+
+6) Run:
+ ./build.sh --all
+

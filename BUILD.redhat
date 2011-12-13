@@ -2,15 +2,18 @@ To build a WRE on RedHat Enterprise Linux. Do the following tasks:
 
 1) Install the following packages:
 
- ncurses-devel gcc make glibc-devel gcc-c++ zlib-devel openssl-devel expat-devel glib2-devel
+ ncurses-devel gcc make glibc-devel gcc-c++ zlib-devel openssl-devel expat-devel glib2-devel wget
 
 2) Install MySQL. We recommend the Percona Server version:
-
-http://www.percona.com/software/percona-server/downloads/
+ http://www.percona.com/software/percona-server/downloads/
  
-3) Run:
- getsource.sh
-
+3) Import the WRE into your environment:
+ . wre/sbin/setenvironment.sh
+ 
 4) Run:
- build.sh --all
+ ./getsource.sh
+
+5) Run:
+ ./build.sh --all
+
 
