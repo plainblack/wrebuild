@@ -109,7 +109,7 @@ sub backupMysql {
     return undef unless $config->get("backup/items/mysql");
 
     # disable wremonitor to prevent false positives
-    $config->set("wreMonitor/modproxyAdministrativelyDown", 1);
+    $config->set("wreMonitor/nginxAdministrativelyDown", 1);
     $config->set("wreMonitor/modperlAdministrativelyDown", 1);
 
 
@@ -139,7 +139,7 @@ sub backupMysql {
 
     # re-enable WRE monitor
     $config->set("wreMonitor/modperlAdministrativelyDown", 0);
-    $config->set("wreMonitor/modproxyAdministrativelyDown", 0);
+    $config->set("wreMonitor/nginxAdministrativelyDown", 0);
 }
 
 #-------------------------------------------------------------------
