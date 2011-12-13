@@ -526,6 +526,7 @@ multipart/signed
 multipart/voice-message
 text/calendar			ics ifb
 text/css			css
+text/csv			csv
 text/directory
 text/enriched
 text/html			html htm
