@@ -1,0 +1,96 @@
+#!/bin/sh
+# FreeBSD rc.d script
+
+. /etc/rc.subr
+. /data/wre/sbin/setenvironment.sh
+
+name="webgui"
+rcvar=`set_rcvar`
+
+extra_commands="help startweb stopweb restartweb\
+    startmodperl stopmodperl restartmodperl\
+    startmodproxy stopmodproxy restartmodproxy\
+    startmysql stopmysql restartmysql\
+    startspectre stopspectre restartspectre\
+"
+help_cmd="${name}_help"
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+startweb_cmd="${startmodperl_cmd}; ${startmodproxy_cmd}"
+stopweb_cmd="${stopmodproxy_cmd}; ${stopmodperl_cmd}"
+restartweb_cmd="${stopweb_cmd}; ${startweb_cmd}"
+startmodproxy_cmd="${name}_startmodproxy"
+stopmodproxy_cmd="${name}_stopmodproxy"
+restartmodproxy_cmd="${stopmodproxy_cmd}; ${startmodproxy_cmd}"
+startmodperl_cmd="${name}_startmodperl"
+stopmodperl_cmd="${name}_stopmodperl"
+restartmodperl_cmd="${stopmodperl_cmd}; ${startmodperl_cmd}"
+startmysql_cmd="${name}_startmysql"
+stopmysql_cmd="${name}_stopmysql"
+restartmysql_cmd="${stopmysql_cmd}; ${startmysql_cmd}"
+startspectre_cmd="${name}_startspectre"
+stopspectre_cmd="${name}_stopspectre"
+restartspectre_cmd="${stopspectre_cmd}; ${startspectre_cmd}"
+
+load_rc_config $name
+
+webgui_help() {
+    echo "WRE Service Controller"
+    echo "Usage:"
+    echo " $0 { start | stop | restart }"
+    echo "      -- Start/stop all WRE services"
+    echo " $0 { startweb | stopweb | restartweb }"
+    echo "      -- Start/stop both Apache services"
+    echo " $0 { startmodperl | stopmodperl | restartmodperl }"
+    echo "      -- Start/stop mod_perl (WebGUI) Apache service"
+    echo " $0 { startmodproxy | stopmodproxy | restartmodproxy }"
+    echo "      -- Start/stop mod_proxy Apache service"
+    echo " $0 { startmysql | stopmysql | restartmysql }"
+    echo "      -- Start/stop MySQL service"
+    echo " $0 { startspectre | stopspectre | restartspectre }"
+    echo "      -- Start/stop SPECTRE"
+    exit 1
+}
+
+webgui_start() {
+    wreservice.pl --quiet --start all
+}
+
+webgui_stop() {
+    wreservice.pl --quiet --stop all
+}
+
+webgui_startmodperl() {
+    wreservice.pl --quiet --start modperl
+}
+
+webgui_stopmodperl() {
+    wreservice.pl --quiet --stop modperl
+}
+
+webgui_startmodproxy() {
+    wreservice.pl --quiet --start modproxy
+}
+
+webgui_stopmodproxy() {
+    wreservice.pl --quiet --stop modproxy
+}
+
+webgui_startmysql() {
+    wreservice.pl --quiet --start mysql
+}
+
+webgui_stopmysql() {
+    wreservice.pl --quiet --stop mysql
+}
+
+webgui_startspectre() {
+    wreservice.pl --quiet --start spectre
+}
+
+webgui_stopspectre() {
+    wreservice.pl --quiet --stop spectre
+}
+
+run_rc_command "$1"
+
