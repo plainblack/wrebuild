@@ -1,7 +1,7 @@
 package WRE::Site;
 
 #-------------------------------------------------------------------
-# WRE is Copyright 2005-2008 Plain Black Corporation.
+# WRE is Copyright 2005-2011 Plain Black Corporation.
 #-------------------------------------------------------------------
 # Please read the legal notices (docs/legal.txt) and the license
 # (docs/license.txt) that came with this distribution before using
