@@ -19,8 +19,6 @@ cat <<_WREHELP
   --all             builds all packages
   --clean           cleans all pre-req folders for a new build
   --help            displays this screen
-  --ia64            turns on special flags for building on 64-bit systems
-
 
   Packages:         (must be built in the order shown below)
 
@@ -45,10 +43,6 @@ do
 
   case "$opt" in
  
-    --ia64)
-      export WRE_IA64=1
-    ;;
-
     --clean)
       export WRE_CLEAN=1
     ;;
@@ -138,11 +132,6 @@ if [ -d /data ]; then
     # --cache-file speeds up configure a lot
     rm /tmp/Configure.cache
     export CFG_CACHE=""  #"--cache-file=/tmp/Configure.cache"  
-    if [ "$WRE_IA64" == 1 ]; then
-        export CFLAGS="$CFLAGS -fPIC"
-        export CXXFLAGS="$CXXFLAGS -fPIC"
-        export PERLCFGOPTS="-Accflags=\"-fPIC\" $PERLCFGOPTS"
-    fi
 
     # deal with operating system inconsistencies
     export WRE_OSNAME=`uname -s`
@@ -268,47 +257,6 @@ buildUtils(){
     printHeader "Utilities"
     cd source
 
-    # libtool
-#    buildProgram "libtool-2.2.6"
-
-    # ncurses
-#    buildProgram "ncurses-5.7" "$CFG_CACHE --with-shared "
-
-    # zlib
-#    buildProgram "zlib-1.2.3" "--shared"
-
-    # libiconv
-#    if [ "$WRE_OSNAME" != "Darwin" ] && [ "$WRE_OSTYPE" != "Leopard" ]; then
-#        buildProgram "libiconv-1.13" "$CFG_CACHE"
-#    fi
-
-    # rsync
-#    buildProgram "rsync-3.0.6" "$CFG_CACHE"
-
-    # libgpg-error
-#    buildProgram "libgpg-error-1.7" "$CFG_CACHE"
-
-    # libgcrypt
-#    buildProgram "libgcrypt-1.4.6" "$CFG_CACHE $CFG_LIBGCRYPT"
-
-    # gnutls
-#    buildProgram "gnutls-2.8.5" "$CFG_CACHE"
-
-    # expat
-#    buildProgram "expat-2.0.1" "$CFG_CACHE"
-
-    # readline
-#    buildProgram "readline-6.1" "$CFG_CACHE"
-
-    # curl
-#    buildProgram "curl-7.19.7" "$CFG_CACHE --with-ssl=$PREFIX --with-zlib=$PREFIX --with-gnutls=$PREFIX"
-
-    # lftp
-#    SAVED_CFLAGS=$CFLAGS
-#    CFLAGS="$CFLAGS -liconv"
-#    buildProgram "lftp-4.3.3" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
-#    CFLAGS=$SAVED_CFLAGS
-    
     # catdoc
     cd catdoc-0.94.2
     if [ "$WRE_CLEAN" == 1 ]; then
@@ -398,19 +346,12 @@ buildImageMagick(){
     # lib ungif
     buildProgram "giflib-4.1.6" "--enable-shared $CFG_CACHE"
 
-    # tiff 
-#    buildProgram "tiff-3.8.2" "$CFG_CACHE"
-
     # lib png
     buildProgram "libpng-1.5.6" "--enable-shared $CFG_CACHE"
-
-    # lcms 
-#    buildProgram "lcms-1.19" "$CFG_CACHE"
 
     # graphviz
     buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
     ln -s $PREFIX/bin/dot_static $PREFIX/bin/dot 
-
 
     # image magick
     cd ImageMagick-* # when you update this version number, update the one below as well
@@ -419,25 +360,10 @@ buildImageMagick(){
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi
-    if [ "$WRE_IA64" == 1 ]; then
-        SAVED_LDFLAGS="$LDFLAGS"
-        LDFLAGS="$LDFLAGS -L$PREFIX/lib -L$PREFIX/lib/perl5/lib -L$PREFIX/lib/perl5/5.14.2/x86_64-linux/CORE"
-    fi
-    # For some reason the CFG_CACHE causes compile to fail
     GNUMAKE=$WRE_MAKE ./configure LD=ld --enable-delegate-build LDFLAGS=-L$PREFIX/lib CPPFLAGS=-I$PREFIX/include --enable-shared --prefix=/data/apps --with-jpeg --with-png --with-gif --with-perl --without-x --with-xml
-#    ./configure --prefix=$PREFIX --with-zlib=$PREFIX --enable-delegate-build --enable-shared --with-gvc --with-jp2 --with-jpeg --with-png --with-perl --with-lcms --with-tiff --without-x GVC_CFLAGS=-I$PREFIX/include/graphviz GVC_LIBS="-L$PREFIX/lib -lgvc -lgraph -lcdt" $IM_OPTION; checkError $? "Image Magick configure"
-#    if [ "$WRE_OSNAME" == "Darwin" ]; then # technically this is only for Darwin i386, but i don't know how to detect that
-#        $PREFIX/bin/perl -i -p -e's[\#if defined\(PNG_USE_PNGGCCRD\) \&\& defined\(PNG_ASSEMBLER_CODE_SUPPORTED\) \\][#if FALSE]g' coders/png.c
-#    fi
     $WRE_MAKE; checkError $? "Image Magick make"
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
-#    cd $WRE_BUILDDIR
-#    cp source/colors.xml $PREFIX/lib/ImageMagick/config/
-
-    if [ "$WRE_IA64" == 1 ]; then
-        LDFLAGS="$SAVED_LDFLAGS"
-    fi
 }
 
 # most perl modules are installed the same way
@@ -481,7 +407,7 @@ installPerlModules () {
 #awstats
 installAwStats(){
     printHeader "AWStats"
-    cp -RL source/awstats-6.95/* $PREFIX
+    cp -RL source/awstats-7.0/* $PREFIX
 }
 
 #wre utils
