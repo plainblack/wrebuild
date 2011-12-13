@@ -16,7 +16,7 @@ use Getopt::Long;
 use WRE::Config;
 use WRE::Host;
 use WRE::Modperl;
-use WRE::Modproxy;
+use WRE::Nginx;
 use WRE::Mysql;
 use WRE::Spectre;
 
@@ -45,14 +45,14 @@ Service Names:
 
     modperl         The Apache mod_perl service which runs WebGUI.
 
-    modproxy        The Apache mod_proxy service which provides performance and security
+    nginx           The nginx service which provides performance and security
                     services for WebGUI.
 
     mysql           WebGUI's database engine.
 
     spectre         WebGUI's workflow governor.
 
-    web             A shortcut that represents both modperl and modproxy.
+    web             A shortcut that represents both modperl and nginx.
 
 Actions:
 
@@ -95,8 +95,8 @@ if (scalar(@stop)) {
     if (grep /^spectre|all$/, @stop) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->stop}, "Stop S.P.E.C.T.R.E.");
     }
-    if (grep /^modproxy|all|web$/, @stop) {
-        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->stop}, "Stop mod_proxy");
+    if (grep /^nginx|modproxy|all|web$/, @stop) {
+        printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->stop}, "Stop nginx");
     }
     if (grep /^modperl|all|web$/, @stop) {
         printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->stop}, "Stop mod_perl");
@@ -113,8 +113,8 @@ if (scalar(@start)) {
     if (grep /^modperl|all|web$/, @start) {
         printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->start}, "Start mod_perl");
     }
-    if (grep /^modproxy|all|web$/, @start) {
-        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->start}, "Start mod_proxy");
+    if (grep /^nginx|modproxy|all|web$/, @start) {
+        printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->start}, "Start nginx");
     }
     if (grep /^spectre|all$/, @start) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->start}, "Start S.P.E.C.T.R.E.");
@@ -128,8 +128,8 @@ if (scalar(@restart)) {
     if (grep /^modperl|all|web$/, @restart) {
         printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->restart}, "Restart mod_perl");
     }
-    if (grep /^modproxy|all|web$/, @restart) {
-        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->restart}, "Restart mod_proxy");
+    if (grep /^nginx|modproxy|all|web$/, @restart) {
+        printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->restart}, "Restart nginx");
     }
     if (grep /^spectre|all$/, @restart) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->restart}, "Restart S.P.E.C.T.R.E.");
@@ -143,8 +143,8 @@ if (scalar(@status)) {
     if (grep /^modperl|all|web$/, @status) {
         printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->ping}, "Ping mod_perl");
     }
-    if (grep /^modproxy|all|web$/, @status) {
-        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->ping}, "Ping mod_proxy");
+    if (grep /^nginx|modproxy|all|web$/, @status) {
+        printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->ping}, "Ping nginx");
     }
     if (grep /^spectre|all$/, @status) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->ping}, "Ping S.P.E.C.T.R.E.");
