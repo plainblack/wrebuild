@@ -87,8 +87,8 @@ is(-f file($recursiveDir2."/ab/a")->stringify, 1, "recursive copy() subdirectory
 
 
 # processTemplate
-my $content = "This is my modperl port: [% modperlPort %].";
-my $evaluatedContent = "This is my modperl port: 8081.";
+my $content = "This is my starmsn port: [% starmanPort %].";
+my $evaluatedContent = "This is my starman port: 8081.";
 is(${$file->processTemplate(\$content)}, $evaluatedContent, "processTemplate() with scalarref");
 
 
