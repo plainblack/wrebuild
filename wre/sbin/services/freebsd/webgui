@@ -8,7 +8,7 @@ name="webgui"
 rcvar=`set_rcvar`
 
 extra_commands="help startweb stopweb restartweb\
-    startmodperl stopmodperl restartmodperl\
+    startstarman stopstarman restartstarman\
     startnginx stopnginx restartnginx\
     startmysql stopmysql restartmysql\
     startspectre stopspectre restartspectre\
@@ -16,15 +16,15 @@ extra_commands="help startweb stopweb restartweb\
 help_cmd="${name}_help"
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
-startweb_cmd="${startmodperl_cmd}; ${startnginx_cmd}"
-stopweb_cmd="${stopnginx_cmd}; ${stopmodperl_cmd}"
+startweb_cmd="${startstarman_cmd}; ${startnginx_cmd}"
+stopweb_cmd="${stopnginx_cmd}; ${stopstarman_cmd}"
 restartweb_cmd="${stopweb_cmd}; ${startweb_cmd}"
 startnginx_cmd="${name}_startnginx"
 stopnginx_cmd="${name}_stopnginx"
 restartnginx_cmd="${stopnginx_cmd}; ${startnginx_cmd}"
-startmodperl_cmd="${name}_startmodperl"
-stopmodperl_cmd="${name}_stopmodperl"
-restartmodperl_cmd="${stopmodperl_cmd}; ${startmodperl_cmd}"
+startstarman_cmd="${name}_startstarman"
+stopstarman_cmd="${name}_stopstarman"
+restartstarman_cmd="${stopstarman_cmd}; ${startstarman_cmd}"
 startmysql_cmd="${name}_startmysql"
 stopmysql_cmd="${name}_stopmysql"
 restartmysql_cmd="${stopmysql_cmd}; ${startmysql_cmd}"
@@ -41,7 +41,7 @@ webgui_help() {
     echo "      -- Start/stop all WRE services"
     echo " $0 { startweb | stopweb | restartweb }"
     echo "      -- Start/stop both Apache services"
-    echo " $0 { startmodperl | stopmodperl | restartmodperl }"
+    echo " $0 { startstarman | stopstarman | restartstarman }"
     echo "      -- Start/stop mod_perl (WebGUI) Apache service"
     echo " $0 { startnginx | stopnginx | restartnginx }"
     echo "      -- Start/stop mod_proxy Apache service"
@@ -60,12 +60,12 @@ webgui_stop() {
     wreservice.pl --quiet --stop all
 }
 
-webgui_startmodperl() {
-    wreservice.pl --quiet --start modperl
+webgui_startstarman() {
+    wreservice.pl --quiet --start starman
 }
 
-webgui_stopmodperl() {
-    wreservice.pl --quiet --stop modperl
+webgui_stopstarman() {
+    wreservice.pl --quiet --stop starman
 }
 
 webgui_startnginx() {
