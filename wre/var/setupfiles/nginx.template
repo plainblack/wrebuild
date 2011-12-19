@@ -1,0 +1,83 @@
+server {
+    listen     [% modproxyPort %];
+    server_name [% sitename %] [% domain %]; 
+    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+
+    # block IIS related attacks from getting to WebGUI
+    location = /^scripts/ {
+        return 400
+    }
+
+    location = /^default.ida/ {
+        return 400
+    }
+
+    location = /_vti_bin/ {
+        return 400
+    }
+
+    location = /_mem_bin/ {
+        return 400
+    }
+
+    # leave static stuff (extras) to be served directly by modproxy (rule should be inherited from parent)
+    #RewriteRule ^/extras/ - [L]
+
+    # For speed we only pass on uploads if there is a .wgaccess file
+    RewriteCond %{REQUEST_FILENAME}             ^(.*/)
+    RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f
+    RewriteRule ^/uploads/                      - [L]
+
+    # proxy webgui pages
+    #ProxyPreserveHost On
+    #RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
+}
+
+# Uncomment the following lines to enable SSL for this host. Also,
+# change the 10.0.0.1 to the IP address you wish to bind the SSL host
+# to.
+
+#Listen 10.0.0.1:443
+#<VirtualHost 10.0.0.1:443>
+#    ServerName [% sitename %]
+#    CustomLog [% domainRoot %]/[% sitename %]/logs/access.log combined
+#    DocumentRoot [% domainRoot %]/[% sitename %]/public
+#
+#    # let modperl know we're using SSL
+#    RequestHeader add SSLPROXY "1"
+#
+#    # turn on mod_rewrite
+#    RewriteEngine On
+#    RewriteLog "[% wreRoot %]/var/logs/modrewrite.log"
+#    RewriteLogLevel 0
+#
+#    # block IIS related attacks from getting to WebGUI
+#    RewriteRule ^/scripts/ - [L]
+#    RewriteRule ^/default.ida - [L]
+#    RewriteRule ^/_vti_bin - [L]
+#    RewriteRule ^/_mem_bin - [L]
+#
+#    # leave static stuff to be served directly by modproxy
+#    RewriteRule ^/favicon.ico - [L]
+#    RewriteRule ^/extras/ - [L]
+#
+#    # For speed we only pass on uploads if there is a .wgaccess file
+#    RewriteCond %{REQUEST_FILENAME}             ^(.*/) 
+#    RewriteCond %{DOCUMENT_ROOT}%1.wgaccess     !-f 
+#    RewriteRule ^/uploads/                      - [L] 
+#
+#    # proxy webgui pages
+#    ProxyPreserveHost On
+#    RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
+#
+#    # enable SSL 
+#    SSLEngine on
+#    SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+#    SSLCertificateFile [% domainRoot %]/[% sitename %]/certs/server.crt
+#    SSLCertificateKeyFile [% domainRoot %]/[% sitename %]/certs/server.key
+#    SSLCACertificateFile [% domainRoot %]/[% sitename %]/certs/UTNAddTrustServerCA.crt
+#    SetEnvIf User-Agent ".*MSIE.*" \
+#        nokeepalive ssl-unclean-shutdown \
+#        downgrade-1.0 force-response-1.0
+#</VirtualHost>
+
