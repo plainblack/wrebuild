@@ -13,8 +13,8 @@ tar xfz pcre-8.20.tar.gz
 #wget http://openssl.org/source/openssl-1.0.0e.tar.gz
 #tar xfz openssl-1.0.0e.tar.gz
 
-wget http://nginx.org/download/nginx-0.7.67.tar.gz
-tar xfz nginx-0.7.67.tar.gz
+wget http://nginx.org/download/nginx-1.0.11.tar.gz
+tar xfz nginx-1.0.11.tar.gz
 
 #wget http://www.monkey.org/~provos/libevent-1.4.14b-stable.tar.gz
 #tar xfz libevent-1.4.14b-stable.tar.gz

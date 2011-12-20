@@ -310,7 +310,7 @@ buildPerl(){
 buildNginx(){
     printHeader "nginx"
     cd source
-    cd nginx-0.7.67
+    cd nginx-1.0.11
     #./configure --prefix=$PREFIX --with-pcre=../pcre-8.20 --with-http_ssl_module --with-openssl=../openssl-1.0.0e; checkError $? "nginx Configure"
     ./configure --prefix=$PREFIX --with-pcre=../pcre-8.20 --with-http_ssl_module; checkError $? "nginx Configure"
     $WRE_MAKE; checkError $? "nginx make"
