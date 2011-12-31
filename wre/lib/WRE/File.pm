@@ -332,6 +332,7 @@ sub processTemplate {
     }
 
     # add in some template template variables
+    $var->{config}  = $config;
     $var->{databaseHost}  = $config->get("mysql/hostname");
     $var->{databasePort}  = $config->get("mysql/port");
     $var->{nginxPort}     = $config->get("nginx/port");
