@@ -59,6 +59,8 @@ server {
 #        return 400
 #    }
 #
+#    # For chained certificates, concatenate all the certs together, starting with the
+#    # site certificate and then the chained certificates
 #    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt
 #    ssl_certificate_key [% domainRoot %]/[% sitename %]/certs/server.key
 #
