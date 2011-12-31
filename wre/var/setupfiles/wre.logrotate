@@ -1,0 +1,27 @@
+#Rotate TGC log
+
+[% config.getRoot %]/var/logs/error.log /data/domains/*/logs/access.log {
+    notifempty
+    daily
+    rotate 7
+    missingok
+    compress
+    sharedscripts
+    postrotate
+        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart nginx
+    endscript
+}
+
+
+[% config.getRoot %]/var/logs/webgui.log {
+    notifempty
+    daily
+    rotate 7
+    missingok
+    compress
+    sharedscripts
+    postrotate
+        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart nginx
+    endscript
+}
+
