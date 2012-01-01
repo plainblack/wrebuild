@@ -1,6 +1,7 @@
 #Rotate TGC log
 
-[% config.getRoot %]/var/logs/error.log /data/domains/*/logs/access.log {
+##nginx and access logs
+[% config.getRoot %]/var/logs/nginx_error.log /data/domains/*/logs/access.log {
     notifempty
     daily
     rotate 7
@@ -12,8 +13,8 @@
     endscript
 }
 
-
-[% config.getRoot %]/var/logs/webgui.log {
+##webgui and starman
+[% config.getRoot %]/var/logs/webgui.log [% config.getRoot %]/var/logs/starman*.log {
     notifempty
     daily
     rotate 7
@@ -21,7 +22,16 @@
     compress
     sharedscripts
     postrotate
-        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart nginx
+        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart starman
     endscript
+}
+
+##wremonitor
+[% config.getRoot %]/var/logs/wremonitor.log
+    notifempty
+    daily
+    rotate 7
+    missingok
+    compress
 }
 
