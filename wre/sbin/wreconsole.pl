@@ -1326,6 +1326,9 @@ sub www_setup {
         $file->copy($config->getRoot("/var/setupfiles/awstats.template"),
             $config->getRoot("/var/awstats.template"),
             { force => 1 });
+        $file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
+            $config->getRoot("/var/wre.logrotate"),
+            { force => 1 });
         print $socket "</blockquote>$crlf";
 
         # configuring webgui
