@@ -1305,20 +1305,11 @@ sub www_setup {
         }
         $modperlVars{osName} = $host->getOsName;
         $modperlVars{devOnly} = $collected->{devOnly};
-        $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
-            $config->getRoot("/etc/modperl.conf"),
-            { force => 1, templateVars=>\%modperlVars });
         $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
             $config->getRoot("/etc/nginx.conf"),
             { force => 1, templateVars=>{osName=>$host->getOsName} });
         $file->copy($config->getRoot("/var/setupfiles/mime.types"),
             $config->getRoot("/etc/mime.types"),
-            { force => 1 });
-        $file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
-            $config->getRoot("/etc/modperl.pl"),
-            { force => 1 });
-        $file->copy($config->getRoot("/var/setupfiles/modperl.template"),
-            $config->getRoot("/var/modperl.template"),
             { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/nginx.template"),
             $config->getRoot("/var/nginx.template"),
