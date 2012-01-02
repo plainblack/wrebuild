@@ -360,7 +360,7 @@ buildImageMagick(){
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi
-    GNUMAKE=$WRE_MAKE ./configure LD=ld --enable-delegate-build LDFLAGS=-L$PREFIX/lib CPPFLAGS=-I$PREFIX/include --enable-shared --prefix=$WRE_ROOT --with-jpeg --with-png --with-gif --with-perl --without-x --with-xml
+    GNUMAKE=$WRE_MAKE ./configure LD=ld --enable-delegate-build LDFLAGS=-L$PREFIX/lib CPPFLAGS=-I$PREFIX/include --enable-shared --prefix=$WRE_ROOT --with-jpeg --with-png --with-perl --without-x --with-xml
     $WRE_MAKE; checkError $? "Image Magick make"
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
