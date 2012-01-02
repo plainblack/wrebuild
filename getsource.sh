@@ -13,8 +13,8 @@ tar xfz pcre-8.20.tar.gz
 #wget http://openssl.org/source/openssl-1.0.0e.tar.gz
 #tar xfz openssl-1.0.0e.tar.gz
 
-wget http://nginx.org/download/nginx-0.7.67.tar.gz
-tar xfz nginx-0.7.67.tar.gz
+wget http://nginx.org/download/nginx-1.0.11.tar.gz
+tar xfz nginx-1.0.11.tar.gz
 
 #wget http://www.monkey.org/~provos/libevent-1.4.14b-stable.tar.gz
 #tar xfz libevent-1.4.14b-stable.tar.gz
@@ -99,8 +99,8 @@ wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.
 tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
-wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.6.tar.gz
-tar xfz libpng-1.5.6.tar.gz
+wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.7.tar.gz
+tar xfz libpng-1.5.7.tar.gz
 
 # gnu libtool http://www.gnu.org/software/libtool/
 #wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz

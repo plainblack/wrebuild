@@ -310,7 +310,7 @@ buildPerl(){
 buildNginx(){
     printHeader "nginx"
     cd source
-    cd nginx-0.7.67
+    cd nginx-1.0.11
     #./configure --prefix=$PREFIX --with-pcre=../pcre-8.20 --with-http_ssl_module --with-openssl=../openssl-1.0.0e; checkError $? "nginx Configure"
     ./configure --prefix=$PREFIX --with-pcre=../pcre-8.20 --with-http_ssl_module; checkError $? "nginx Configure"
     $WRE_MAKE; checkError $? "nginx make"
@@ -347,7 +347,7 @@ buildImageMagick(){
     buildProgram "giflib-4.1.6" "--enable-shared $CFG_CACHE"
 
     # lib png
-    buildProgram "libpng-1.5.6" "--enable-shared $CFG_CACHE"
+    buildProgram "libpng-1.5.7" "--enable-shared $CFG_CACHE"
 
     # graphviz
     buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"

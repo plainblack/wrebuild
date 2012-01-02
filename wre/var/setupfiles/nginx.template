@@ -1,0 +1,67 @@
+server {
+    listen     [% modproxyPort %];
+    server_name [% sitename %] [% domain %]; 
+    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+
+    client_max_body_size 20M;
+    proxy_set_header  X-Real-IP  $remote_addr;
+    proxy_set_header Host $host;
+
+    # block IIS related attacks from getting to WebGUI
+    location = /^scripts/ {
+        return 400
+    }
+
+    location = /^default.ida/ {
+        return 400
+    }
+
+    location = /_vti_bin/ {
+        return 400
+    }
+
+    location = /_mem_bin/ {
+        return 400
+    }
+
+    # proxy webgui pages
+    #ProxyPreserveHost On
+    #RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
+}
+
+# Uncomment the following lines to enable SSL for this host. Also,
+# change the 10.0.0.1 to the IP address you wish to bind the SSL host
+# to.
+
+#server {
+#    listen     443;
+#    server_name [% sitename %] [% domain %]; 
+#    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+#
+#    client_max_body_size 20M;
+#    proxy_set_header  X-Real-IP  $remote_addr;
+#    proxy_set_header Host $host;
+#
+#    # block IIS related attacks from getting to WebGUI
+#    location = /^scripts/ {
+#        return 400
+#    }
+#
+#    location = /^default.ida/ {
+#        return 400
+#    }
+#
+#    location = /_vti_bin/ {
+#        return 400
+#    }
+#
+#    location = /_mem_bin/ {
+#        return 400
+#    }
+#
+#    # For chained certificates, concatenate all the certs together, starting with the
+#    # site certificate and then the chained certificates
+#    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt
+#    ssl_certificate_key [% domainRoot %]/[% sitename %]/certs/server.key
+#
+#}

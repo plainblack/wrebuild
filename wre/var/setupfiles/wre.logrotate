@@ -1,0 +1,37 @@
+#Rotate TGC log
+
+##nginx and access logs
+[% config.getRoot %]/var/logs/nginx_error.log /data/domains/*/logs/access.log {
+    notifempty
+    daily
+    rotate 7
+    missingok
+    compress
+    sharedscripts
+    postrotate
+        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart nginx
+    endscript
+}
+
+##webgui and starman
+[% config.getRoot %]/var/logs/webgui.log [% config.getRoot %]/var/logs/starman*.log {
+    notifempty
+    daily
+    rotate 7
+    missingok
+    compress
+    sharedscripts
+    postrotate
+        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart starman
+    endscript
+}
+
+##wremonitor
+[% config.getRoot %]/var/logs/wremonitor.log
+    notifempty
+    daily
+    rotate 7
+    missingok
+    compress
+}
+

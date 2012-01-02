@@ -34,14 +34,14 @@ case "$1" in
   	restartweb)
     	/data/wre/sbin/wreservice.pl --quiet --restart web
     	;;
-  	startmodperl)
-    	/data/wre/sbin/wreservice.pl --quiet --start modperl
+  	startstarman)
+    	/data/wre/sbin/wreservice.pl --quiet --start starman
     	;;
-  	stopmodperl)
-    	/data/wre/sbin/wreservice.pl --quiet --stop modperl
+  	stopstarman)
+    	/data/wre/sbin/wreservice.pl --quiet --stop starman
     	;;
-  	restartmodperl)
-    	/data/wre/sbin/wreservice.pl --quiet --restart modperl
+  	restartstarman)
+    	/data/wre/sbin/wreservice.pl --quiet --restart starman
     	;;
   	startnginx)
     	/data/wre/sbin/wreservice.pl --quiet --start nginx
@@ -66,7 +66,7 @@ case "$1" in
    		echo $"Usage:"
 		echo $"	$0 { start | stop | restart }"
 		echo $"	$0 { startweb | stopweb | restartweb }"
-   		echo $"	$0 { startmodperl | stopmodperl | restartmodperl }"
+   		echo $"	$0 { startstarman | stopstarman | restartstarman }"
    		echo $"	$0 { startnginx | stopnginx | restartnginx }"
    		echo $"	$0 { startmysql | stopmysql | restartmysql }"
    		echo $"	$0 { startspectre | stopspectre | restartspectre }"

@@ -1190,6 +1190,7 @@ sub www_setup {
         print $socket $crlf;
         print $socket "<h1>Configuring Your WRE Server</h1>$crlf";
         $file->makePath($config->getRoot("/var/logs"));
+        $file->makePath($config->getRoot("/var/run"));
 
         # config file
         print $socket "<p>Updating WRE config.</p><blockquote>$crlf";
@@ -1304,26 +1305,20 @@ sub www_setup {
         }
         $modperlVars{osName} = $host->getOsName;
         $modperlVars{devOnly} = $collected->{devOnly};
-        $file->copy($config->getRoot("/var/setupfiles/modperl.conf"),
-            $config->getRoot("/etc/modperl.conf"),
-            { force => 1, templateVars=>\%modperlVars });
         $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
             $config->getRoot("/etc/nginx.conf"),
             { force => 1, templateVars=>{osName=>$host->getOsName} });
         $file->copy($config->getRoot("/var/setupfiles/mime.types"),
             $config->getRoot("/etc/mime.types"),
             { force => 1 });
-        $file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
-            $config->getRoot("/etc/modperl.pl"),
-            { force => 1 });
-        $file->copy($config->getRoot("/var/setupfiles/modperl.template"),
-            $config->getRoot("/var/modperl.template"),
-            { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/nginx.template"),
             $config->getRoot("/var/nginx.template"),
             { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/awstats.template"),
             $config->getRoot("/var/awstats.template"),
+            { force => 1 });
+        $file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
+            $config->getRoot("/var/wre.logrotate"),
             { force => 1 });
         print $socket "</blockquote>$crlf";
 

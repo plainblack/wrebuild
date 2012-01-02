@@ -15,32 +15,26 @@ The configuration file is stored as JSON.
 =head2 BACKUP
 
    "backup" : {
-      "compress" : null,
       "enabled" : "1",
       "externalScripts" : [],
-      "ftp" : {
+      "rsync" : {
          "enabled" : "1",
          "hostname" : "my remote backup host",
-         "password" : "sekrit",
          "path" : "/remote_backups",
-         "protocol" : "sftp",
          "rotations" : "1",
-         "usePassiveTransfers" : "1",
          "user" : "username"
       },
-      "items" : {
-         "domainsFolder" : "1",
-         "fullWre" : "0",
-         "mysql" : "1",
-         "smallWre" : "1",
-         "webgui" : "1"
+      "items" : {  ##List of directories to backup, wildcards are okay
+		    "/data/domains",  ##All domain files
+		    "/data/WebGUI",   ##All of WebGUI, including etc and sbin
+		    "/data/backup/*.sql.gz",  ##All database dumps
+		    "/data/wre/etc"  ##All WRE configuration files
       },
       "mysql" : {
          "password" : "also_sekrit",
          "user" : "other_name"
       },
       "path" : "/backup",
-      "rotations" : "15"
    },
 
 =over 4
@@ -55,19 +49,17 @@ Optional value that can be set to run external script during backup.
 
 =item B<items>
 
-The parts of WebGUI that should be backupped (domainsFolder,fullWre,mysql,smallWre(only configfiles),webgui), set the according values to non-zero if these parts should be backupped.
+A list of directories that should be backed up.  They are copied to B<path> and optionally transferred remotely.
 
 =item B<path>
 
 The path to the directory on the WebGUI host, where the backups are stored.
 
-=item B<rotations>
-
-The number of rotations that should be stored on the WebGUI host.
-
 =back
 
-=head3 FTP OPTIONS
+=head3 RSYNC OPTIONS
+
+Rsync based backups require that private/public key-pair be setup for transfers.
 
 =over 4
 
@@ -79,25 +71,13 @@ This value has to be non-zero to enable remote backups
 
 The hostname of the host where the remote backups will be stored
 
-=item B<password>
-
-The password of the backup user on the remote host.
-
 =item B<path>
 
 The path on the remote host where the backups should be stored. Backup user must have write access.
 
-=item B<protocol>
-
-The protocol that is used to transfer backups to the remote host. Valid values are ftp, sftp, http, https and fish.
-
 =item B<rotations>
 
 The number of rotations that should be stored on the remote host.
-
-=item B<usePassiveTransfers>
-
-This vale can be set to zero to use non-passive ftp transfers
 
 =item B<user>
 
@@ -107,6 +87,6 @@ The user on the remote host
 
 =head1 AUTHOR
 
-Copyright 2001-2009 Plain Black Corporation.
+Copyright 2001-2011 Plain Black Corporation.
 
 =cut
