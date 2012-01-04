@@ -53,7 +53,7 @@ my %serverProperties = (
     LocalAddr   => undef,
     LocalPort   => 60834,
     );
-if ($osname eq "darwin" || $osname eq "freebsd") {
+if ($osname eq "darwin") {
     $serverProperties{ReusePort} = 1;
 }
 
@@ -1068,14 +1068,10 @@ sub www_setup {
 
     # apache stuff
     if ($cgi->param("step") eq "apache") {
-        if ($host->getOsName ne "windows" && !(getpwnam $collected->{wreUser})) {
-            $out .= qq|<p class="status">There is no user $collected->{wreUser} on this system, please create it or go
-                back and change the user you'd like to run the WRE under.</p>|;
-        }
         my $nginx = $config->get("nginx");
         $out .= '<h1>Apache</h1>
             <form action="/setup" method="post">
-            <input type="hidden" name="step" value="mysql">
+            <input type="hidden" name="step" value="webgui">
             <input type="hidden" name="collected" value="'.$collectedJson.'" />
             <p>
             nginx Port <br />
@@ -1086,42 +1082,6 @@ sub www_setup {
             <input type="text" name="modperlPort" value="'.($collected->{modperlPort} || $apache->{modperlPort}).'" />
             </p>
             <input type="button" class="deleteButton" value="&laquo; Previous" onclick="this.form.step.value=\'\';this.form.submit()" />
-            <input type="submit" class="saveButton" value="Next &raquo;" />
-            </form>
-            ';
-    }
-
-    # mysql stuff
-    elsif ($cgi->param("step") eq "mysql") {
-        if (-f "/etc/my.cnf") {
-            $out .= q|<p class="status">There is a file at /etc/my.cnf that you must move or it will interfere with the WRE.</p>|;
-        }
-        if (-f "/my.ini") {
-            $out .= q|<p class="status">There is a file at /my.ini that you must move or it will interfere with the WRE.</p>|;
-        }
-        my $mysql = $config->get("mysql");
-        $out .= '<h1>MySQL</h1>
-            <form action="/setup" method="post">
-            <input type="hidden" name="step" value="webgui">
-            <input type="hidden" name="collected" value="'.$collectedJson.'" />
-            <p>
-            Host <br />
-            <input type="text" name="mysqlHost" value="'.($collected->{mysqlHost} || $mysql->{hostname}).'" />
-            </p>
-            <p>
-            Port <br />
-            <input type="text" name="mysqlPort" value="'.($collected->{mysqlPort} || $mysql->{port}).'" />
-            </p>
-            <p>
-            Admin User <br />
-            <input type="text" name="mysqlAdminUser" value="'.($collected->{mysqlAdminUser} || $mysql->{adminUser}).'" />
-            </p>
-            <p>
-            Admin Password <br />
-            <input type="text" name="mysqlAdminPassword" value="'.($collected->{mysqlAdminPassword} || "123qwe").'" />
-            </p>
-            <input type="button" class="deleteButton" value="&laquo; Previous"
-            onclick="this.form.step.value=\'apache\';this.form.submit();" />
             <input type="submit" class="saveButton" value="Next &raquo;" />
             </form>
             ';
@@ -1229,21 +1189,10 @@ sub www_setup {
             print $socket "<p>Creating default databases</p>";
             $file->makePath($config->getRoot("/var/mysqldata"));
             chdir($config->getRoot("/prereqs"));
-            if ($host->getOsName eq "windows") {
-                $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
-                    $config->getRoot("/etc/my.ini"),
-                    { force => 1, templateVars=>{osName=>$host->getOsName} });
-                $file->copy($config->getRoot("/prereqs/data/"),
-                    $config->getRoot("/var/mysqldata/"),
-                    { force => 1, recursive => 1 });
-                system($config->getRoot("/sbin/services/windows/mysql-install.bat"));
-            }
-            else {
                 $file->copy($config->getRoot("/var/setupfiles/my.cnf"),
                     $config->getRoot("/etc/my.cnf"),
                     { force => 1, processTemplate=>1 });
                 system(file("bin/mysql_install_db")->stringify." --user=".$collected->{wreUser}." --port=" . $collected->{mysqlPort});
-            }
             print $socket "<p>Starting MySQL</p>";
             $mysql->start;
             print $socket "<p>Connecting</p>";
@@ -1338,11 +1287,8 @@ sub www_setup {
 
             print $socket "<p>Extracting WebGUI. Please be patient, this can take a while.</p>$crlf";
             eval { $update->extractArchive($download) };
-            if ($@ && $host->getOsName ne "windows") {
+            if ($@) {
                 print $socket "<p>Had some errors extracting WebGUI. $@</p>$crlf";
-            }
-            elsif ($@ && $host->getOsName eq "windows") {
-                print STDERR "\nNOTICE:\nYou can safely ignore all the tar extraction errors above. They\nare do to the differences between *nix and Windows file systems.\n";
             }
         }
         eval {
