@@ -365,7 +365,6 @@ buildImageMagick(){
 # param1: module directory
 # param2: parameters to pass to Makefile.PL
 installPerlModule() {
-    cd $1
     printHeader "PM $1 with $2"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
@@ -373,20 +372,21 @@ installPerlModule() {
     fi
     perl Makefile.PL $2 CCFLAGS="$CFLAGS"; checkError $? "$1 Makefile.PL"
     $WRE_MAKE; checkError $? "$1 make"
-    #$WRE_MAKE test; checkError $? "$1 make test"
     $WRE_MAKE install; checkError $? "$1 make install"
-    cd ..
+    cd /data/wrebuild
 }
 
 installPerlModules () {
     printHeader "Perl Modules"
-    #cd source/perlmodules
     export PERL_MM_USE_DEFAULT=1 # makes it so perl modules don't ask questions
     cpan App::cpanminus
     cpanm Task::WebGUI
     if [ "$WRE_OSTYPE" != "Leopard" ] && [ "$WRE_OSTYPE" != "Snow Leopard" ]; then
         cpanm http://backpan.perl.org/authors/id/D/DU/DURIST/Proc-ProcessTable-0.44.tar.gz
     fi
+    mkdir -p source/perlmodules
+    chdir source/perlmodules
+    cpanm --look Text::Aspell
     installPerlModule "Text-Aspell-0.09" "LIBS='-laspell'"
     # detecting shared memory properly on 2.6 kernels
     if [ "$WRE_OSNAME" == "Linux" ]; then
