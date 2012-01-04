@@ -380,7 +380,7 @@ installPerlModule() {
 
 installPerlModules () {
     printHeader "Perl Modules"
-    cd source/perlmodules
+    #cd source/perlmodules
     export PERL_MM_USE_DEFAULT=1 # makes it so perl modules don't ask questions
     cpan App::cpanminus
     cpanm Task::WebGUI
