@@ -48,7 +48,7 @@ sub dump {
     my %options = @_;    
     my $config  = $self->wreConfig;
     my $path = file($options{path});
-    my $command = $config->getRoot("/prereqs/bin/mysqldump")
+    my $command = "mysqldump")
         ." --user=".$config->get("backup/mysql/user")
         ." --password=".$config->get("backup/mysql/password")
         ." --host=".$config->get("mysql/hostname")
@@ -162,7 +162,7 @@ sub load {
     my %options = @_;    
     my $config  = $self->wreConfig;
     my $path = file($options{path});
-    my $command = $config->getRoot("/prereqs/bin/mysql")
+    my $command = "mysql"
         ." --batch" # disables interactive mode
         ." --user=".$options{username}
         ." --password=".$options{password}
@@ -211,13 +211,7 @@ sub start {
     my $config = $self->wreConfig;
     $config->set("wreMonitor/mysqlAdministrativelyDown", 0);
     my $host = WRE::Host->new(wreConfig => $config);
-    my $cmd = "";
-    if ($host->getOsName eq "windows") {
-        $cmd = "net start WREmysql";
-    }
-    else {
-        $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." start --user=".$config->get("user");
-    }
+    my $cmd = "mysql.server start --user=".$config->get("user");
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -244,13 +238,7 @@ sub stop {
     my $config = $self->wreConfig;
     $config->set("wreMonitor/mysqlAdministrativelyDown", 1);
     my $host = WRE::Host->new(wreConfig => $config);
-    my $cmd = "";
-    if ($host->getOsName eq "windows") {
-        $cmd = "net stop WREmysql";
-    }
-    else {
-        $cmd = $config->getRoot("/prereqs/share/mysql/mysql.server")." stop";
-    }
+    my $cmd = "mysql.server stop";
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         sleep(1);
