@@ -15,7 +15,7 @@ use strict;
 use Getopt::Long;
 use WRE::Config;
 use WRE::Host;
-use WRE::Modperl;
+use WRE::Starman;
 use WRE::Nginx;
 use WRE::Mysql;
 use WRE::Spectre;
@@ -43,7 +43,7 @@ Service Names:
 
     all             A shortcut that represents all the services.
 
-    modperl         The Apache mod_perl service which runs WebGUI.
+    starman         The starman service which runs WebGUI.
 
     nginx           The nginx service which provides performance and security
                     services for WebGUI.
@@ -52,7 +52,7 @@ Service Names:
 
     spectre         WebGUI's workflow governor.
 
-    web             A shortcut that represents both modperl and nginx.
+    web             A shortcut that represents both starman and nginx.
 
 Actions:
 
@@ -98,8 +98,8 @@ if (scalar(@stop)) {
     if (grep /^nginx|modproxy|all|web$/, @stop) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->stop}, "Stop nginx");
     }
-    if (grep /^modperl|all|web$/, @stop) {
-        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->stop}, "Stop mod_perl");
+    if (grep /^starman|modperl|all|web$/, @stop) {
+        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->stop}, "Stop starman");
     }
     if (grep /^mysql|all$/, @stop) {
         printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->stop}, "Stop MySQL");
@@ -110,8 +110,8 @@ if (scalar(@start)) {
     if (grep /^mysql|all$/, @start) {
         printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
     }
-    if (grep /^modperl|all|web$/, @start) {
-        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->start}, "Start mod_perl");
+    if (grep /^starman|modperl|all|web$/, @start) {
+        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->start}, "Start starman");
     }
     if (grep /^nginx|modproxy|all|web$/, @start) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->start}, "Start nginx");
@@ -125,8 +125,8 @@ if (scalar(@restart)) {
     if (grep /^mysql|all$/, @restart) {
         printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->restart}, "Restart MySQL");
     }
-    if (grep /^modperl|all|web$/, @restart) {
-        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->restart}, "Restart mod_perl");
+    if (grep /^starman|modperl|all|web$/, @restart) {
+        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->restart}, "Restart starman");
     }
     if (grep /^nginx|modproxy|all|web$/, @restart) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->restart}, "Restart nginx");
@@ -140,8 +140,8 @@ if (scalar(@status)) {
     if (grep /^mysql|all$/, @status) {
         printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->ping}, "Ping MySQL");
     }
-    if (grep /^modperl|all|web$/, @status) {
-        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->ping}, "Ping mod_perl");
+    if (grep /^starman|modperl|all|web$/, @status) {
+        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->ping}, "Ping starman");
     }
     if (grep /^nginx|modproxy|all|web$/, @status) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->ping}, "Ping nginx");

@@ -25,7 +25,7 @@ use String::Random qw(random_string);
 use WRE::Config;
 use WRE::File;
 use WRE::Host;
-use WRE::Modperl;
+use WRE::Starman;
 use WRE::Nginx;
 use WRE::Mysql;
 use WRE::Site;
@@ -182,7 +182,7 @@ sub www_addSite {
     $content .= '
     <h1>Add A Site</h1>
     <div class="status">'.$status.'</div>
-    <p>Adding a site requires you to restart modperl, nginx, and Spectre.</p>
+    <p>Adding a site requires you to restart starman, nginx, and Spectre.</p>
     <form action="/addSiteSave" method="post">
     <table>
     <tr>
@@ -273,7 +273,7 @@ sub www_deleteSite {
     <div class="status">'.$status.'</div>
     <p>Are you sure you wish to delete this site and all it\'s content and users? This cannot be undone, once you
     click on the button below.</p>
-    <p>Deleting a site requires you to restart modperl, nginx, and Spectre.</p>
+    <p>Deleting a site requires you to restart starman, nginx, and Spectre.</p>
     <form action="/deleteSiteSave" method="post">
     <input type="hidden" name="filename" value="'.$cgi->param("filename").'" />
     <table>
@@ -386,9 +386,9 @@ sub www_editSettings {
         <input type="radio" name="wreMonNginx" value="1" '.(($wreMonitor->{items}{nginx} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="wreMonNginx" value="0" '.(($wreMonitor->{items}{nginx} != 1) ? 'checked="1"' : '').' />No
         - nginx<br />
-        <input type="radio" name="wreMonModperl" value="1" '.(($wreMonitor->{items}{modperl} == 1) ? 'checked="1"' : '').' />Yes 
-        <input type="radio" name="wreMonModperl" value="0" '.(($wreMonitor->{items}{modperl} != 1) ? 'checked="1"' : '').' />No
-        - modperl<br />
+        <input type="radio" name="wreMonSstarman" value="1" '.(($wreMonitor->{items}{starman} == 1) ? 'checked="1"' : '').' />Yes 
+        <input type="radio" name="wreMonSstarman" value="0" '.(($wreMonitor->{items}{starman} != 1) ? 'checked="1"' : '').' />No
+        - starman<br />
         <input type="radio" name="wreMonMysql" value="1" '.(($wreMonitor->{items}{mysql} == 1) ? 'checked="1"' : '').' />Yes 
         <input type="radio" name="wreMonMysql" value="0" '.(($wreMonitor->{items}{mysql} != 1) ? 'checked="1"' : '').' />No
         - MySQL<br />
@@ -580,7 +580,7 @@ sub www_editSettingsSave {
     $notifyString       =~ s/\s+//g;
     my @notify          = split(",", $notifyString); 
     $config->set("wreMonitor/notify", \@notify);
-    $config->set("wreMonitor/items/modperl", $cgi->param("wreMonModperl"));
+    $config->set("wreMonitor/items/starman", $cgi->param("wreMonStarman"));
     $config->set("wreMonitor/items/nginx", $cgi->param("wreMonNginx"));
     $config->set("wreMonitor/items/mysql", $cgi->param("wreMonMysql"));
     $config->set("wreMonitor/items/runaway", $cgi->param("wreMonRunaway"));
@@ -639,15 +639,12 @@ sub www_editSettingsSave {
         $file->makePath($config->getDomainRoot("/demo"));
         $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
             { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
-        $file->copy($config->getRoot("/var/setupfiles/demo.modperl"), $config->getRoot("/etc/demo.modperl"), 
-            { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
-        $status .= "Demo settings changed. You must restart nginx and modperl for these changes to take effect.<br />";
+        $status .= "Demo settings changed. You must restart nginx and starman for these changes to take effect.<br />";
     }
     # have to disable demos
     elsif ($config->get("demo/enabled") == 1 && $cgi->param("enableDemo") == 0) {
         $file->delete($config->getRoot("/etc/demo.nginx"));
-        $file->delete($config->getRoot("/etc/demo.modperl"));
-        $status .= "Demo settings changed. You must restart nginx and modperl for these changes to take effect.<br />";
+        $status .= "Demo settings changed. You must restart nginx and starman for these changes to take effect.<br />";
     }
     $config->set("demo/enabled", $cgi->param("enableDemo"));
     $config->set("demo/duration", $cgi->param("demoDuration"));
@@ -729,7 +726,7 @@ sub www_editSite {
     }
     makeHtmlFormSafe($contents);
     $content .= '
-        <p>Making a modification of these files requires a restart of modperl and nginx afterwards, and sometimes also a restart
+        <p>Making a modification of these files requires a restart of starman and nginx afterwards, and sometimes also a restart
         of Spectre after that.</p>
         <form action="/editSiteSave" method="post">
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
@@ -748,18 +745,6 @@ sub www_editSite {
     $content .= '
         <div><b>'.$sitename.'.nginx</b></div>
         <textarea name="nginx">'.$$contents.'</textarea><br />
-        <input type="submit" class="saveButton" value="Save" /> <br /><br />
-    ';
-    $$contents = '';
-    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/".$sitename.".modperl")) };
-    if ($@) {
-        carp "Couldn't open $sitename.modperl file for editing $@";
-        $content .= '<div class="status">'.$@.'</div>';
-    }
-    makeHtmlFormSafe($contents);
-    $content .= '
-        <div><b>'.$sitename.'.modperl</b></div>
-        <textarea name="modperl">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
     ';
     sendResponse($state, $content);
@@ -785,11 +770,6 @@ sub www_editSiteSave {
     eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".nginx"), $state->{cgi}->param("nginx")) };
     if ($@) {
         $status = "Couldn't save $sitename.nginx. $@";
-        carp $status;
-    }
-    eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".modperl"), $state->{cgi}->param("modperl")) };
-    if ($@) {
-        $status = "Couldn't save $sitename.modperl. $@";
         carp $status;
     }
     www_listSites($state, $status);
@@ -830,23 +810,23 @@ sub www_listServices {
          </td>
     </tr>
     <tr>
-        <td>Apache Modperl</td>
+        <td>Starman</td>
         <td>';
-    my $modperl = WRE::Modperl->new(wreConfig=>$state->{config});
-    if (eval{$modperl->ping}) {
+    my $starman = WRE::Starman->new(wreConfig=>$state->{config});
+    if (eval{$starman->ping}) {
         $content .= '
-             <form action="/stopModperl" method="post">
+             <form action="/stopStarman" method="post">
                 <input type="submit" class="deleteButton" value="Stop" onclick="this.value=\'Stopping...\'" />
              </form>';
     }
     else {
         $content .= '
-             <form action="/startModperl" method="post">
+             <form action="/startStarman" method="post">
                 <input type="submit" class="saveButton" value="Start" onclick="this.value=\'Starting...\'" />
              </form>';
     }
     $content .= '
-             <form action="/restartModperl" method="post">
+             <form action="/restartStarman" method="post">
                 <input type="submit" value="Restart" onclick="this.value=\'Restarting...\'" />
              </form>
          </td>
@@ -974,10 +954,10 @@ sub www_listUtilities {
 #-------------------------------------------------------------------
 sub www_restartModperl {
     my $state = shift;
-    my $service = WRE::Modperl->new(wreConfig=>$state->{config});
-    my $status = "Modperl restarted.";
+    my $service = WRE::Starman->new(wreConfig=>$state->{config});
+    my $status = "Starman restarted.";
     unless ($service->restart) {
-        $status = "Modperl did not restart successfully. ".$@;
+        $status = "Starman did not restart successfully. ".$@;
     }
     www_listServices($state, $status);
 }
@@ -1345,10 +1325,10 @@ sub www_setup {
 #-------------------------------------------------------------------
 sub www_startModperl {
     my $state = shift;
-    my $service = WRE::Modperl->new(wreConfig=>$state->{config});
-    my $status = "Modperl started.";
+    my $service = WRE::Starman->new(wreConfig=>$state->{config});
+    my $status = "Starman started.";
     unless (eval {$service->start} ) {
-        $status = "Modperl did not start successfully. ".$@;
+        $status = "Starman did not start successfully. ".$@;
     }
     www_listServices($state, $status);
 }
@@ -1418,10 +1398,10 @@ STOP
 #-------------------------------------------------------------------
 sub www_stopModperl {
     my $state = shift;
-    my $service = WRE::Modperl->new(wreConfig=>$state->{config});
-    my $status = "Modperl stopped.";
+    my $service = WRE::Starman->new(wreConfig=>$state->{config});
+    my $status = "Starman stopped.";
     unless ($service->stop) {
-        $status = "Modperl did not stop successfully. ".$@;
+        $status = "Starman did not stop successfully. ".$@;
     }
     www_listServices($state, $status);
 }

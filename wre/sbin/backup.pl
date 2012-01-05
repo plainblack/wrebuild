@@ -46,7 +46,7 @@ sub backupMysql {
 
     # disable wremonitor to prevent false positives
     $config->set("wreMonitor/nginxAdministrativelyDown", 1);
-    $config->set("wreMonitor/modperlAdministrativelyDown", 1);
+    $config->set("wreMonitor/starmanAdministrativelyDown", 1);
 
 
     my $mysql       = WRE::Mysql->new(wreConfig=>$config);
@@ -74,7 +74,7 @@ sub backupMysql {
 	$db->disconnect;
 
     # re-enable WRE monitor
-    $config->set("wreMonitor/modperlAdministrativelyDown", 0);
+    $config->set("wreMonitor/starmanAdministrativelyDown", 0);
     $config->set("wreMonitor/nginxAdministrativelyDown", 0);
 }
 

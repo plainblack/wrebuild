@@ -19,7 +19,7 @@ use List::Util qw/first sum max/;
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;
-use WRE::Modperl;
+use WRE::Starman;
 use WRE::Nginx;
 use WRE::Mysql;
 use WRE::Spectre;
@@ -38,12 +38,12 @@ if ($config->get("wreMonitor/items/mysql") && !$config->get("wreMonitor/mysqlAdm
     monitor($mysql);
 }
 
-if ($config->get("wreMonitor/items/modperl") && !$config->get("wreMonitor/modperlAdministrativelyDown")) {
-    my $modperl = WRE::Modperl->new(wreConfig=>$config);
-    monitor($modperl);
+if ($config->get("wreMonitor/items/starman") && !$config->get("wreMonitor/starmanAdministrativelyDown")) {
+    my $starman = WRE::Starman->new(wreConfig=>$config);
+    monitor($starman);
     if ($config->get("wreMonitor/items/runaway")) {
-        my $killed = $modperl->killRunaways;
-        logEntry("Killed $killed ".$modperl->getName." processes that were using too much memory.");
+        my $killed = $starman->killRunaways;
+        logEntry("Killed $killed ".$starman->getName." processes that were using too much memory.");
     }
 }
 

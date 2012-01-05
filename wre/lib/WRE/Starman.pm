@@ -70,7 +70,7 @@ sub killRunaways {
 
 =head2 ping ( )
 
-Returns a 1 if Modperl is running, or a 0 if it is not.
+Returns a 1 if Starman is running, or a 0 if it is not.
 
 =cut
 
