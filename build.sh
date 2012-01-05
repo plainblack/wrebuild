@@ -27,7 +27,6 @@ cat <<_WREHELP
   --nginx           compiles and installs nginx
   --imagemagick     compiles and installs image magick
   --perlmodules     installs perl modules from cpan
-  --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
 
 _WREHELP
@@ -44,45 +43,40 @@ do
   case "$opt" in
 
     --clean)
-      export WRE_CLEAN=1
+      WRE_CLEAN=1
     ;;
 
     --all)
-        export WRE_BUILD_UTILS=1
-        export WRE_BUILD_PERL=1
-        export WRE_BUILD_NGINX=1
-        export WRE_BUILD_IMAGEMAGICK=1
-        export WRE_BUILD_AWSTATS=1
-        export WRE_BUILD_WRE=1
-        export WRE_BUILD_PM=1
+        WRE_BUILD_UTILS=1
+        WRE_BUILD_PERL=1
+        WRE_BUILD_NGINX=1
+        WRE_BUILD_IMAGEMAGICK=1
+        WRE_BUILD_WRE=1
+        WRE_BUILD_PM=1
     ;;
 
     --utils | --utilities)
-        export WRE_BUILD_UTILS=1
+        WRE_BUILD_UTILS=1
     ;;
 
     --perl)
-        export WRE_BUILD_PERL=1
+        WRE_BUILD_PERL=1
     ;;
 
     --nginx)
-        export WRE_BUILD_NGINX=1
+        WRE_BUILD_NGINX=1
     ;;
 
     --imageMagick | --imagemagick)
-        export WRE_BUILD_IMAGEMAGICK=1
-    ;;
-
-    --awstats)
-        export WRE_BUILD_AWSTATS=1
+        WRE_BUILD_IMAGEMAGICK=1
     ;;
 
     --wre)
-        export WRE_BUILD_WRE=1
+        WRE_BUILD_WRE=1
     ;;
 
     --perlModules | --perlmodules | --pm)
-        export WRE_BUILD_PM=1
+        WRE_BUILD_PM=1
     ;;
 
     --help | -help | -h | -? | ?)
@@ -396,15 +390,6 @@ installPerlModules () {
     cd $WRE_BUILDDIR
 }
 
-
-
-
-#awstats
-installAwStats(){
-    printHeader "AWStats"
-    cp -RL source/awstats-7.0/* $PREFIX
-}
-
 #wre utils
 installWreUtils(){
     printHeader "WebGUI Runtime Environment Core and Utilities"
@@ -444,9 +429,6 @@ if [ "$WRE_BUILD_IMAGEMAGICK" == 1 ]; then
 fi
 if [ "$WRE_BUILD_PM" == 1 ]; then
     installPerlModules
-fi
-if [ "$WRE_BUILD_AWSTATS" == 1 ]; then
-    installAwStats
 fi
 if [ "$WRE_BUILD_WRE" == 1 ]; then
     installWreUtils
