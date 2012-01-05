@@ -8,12 +8,14 @@ To build a WRE on MacOS X. Do the following tasks:
 3) Install MySQL. We recommend the MySQL Community Server:
  http://www.mysql.com/downloads/mysql/
 
-4) Import the WRE into your environment:
+4) Modify the default my.cnf file in wre/var/setupfiles/my.cnf and add this line to it:
+lower_case_table_names=2
+
+5) Import the WRE into your environment:
  . wre/sbin/setenvironment.sh
  
-5) Run:
+6) Run:
  ./getsource.sh
 
-6) Run:
+7) Run:
  ./build.sh --all
-
