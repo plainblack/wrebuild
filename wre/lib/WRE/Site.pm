@@ -119,7 +119,6 @@ sub create {
         );
 
     # create webroot
-	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/awstats'));
 	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/logs'));
 	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/public'));
     my $uploads = $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/');
@@ -127,16 +126,6 @@ sub create {
     $file->copy($wreConfig->getWebguiRoot('/www/uploads/'), 
         $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/'),
         { recursive => 1, force=>1 });
-
-    # create awstats config
-    $file->copy($wreConfig->getRoot("/var/awstats.template"),
-        $wreConfig->getRoot("/etc/awstats.".$sitename.".conf"),
-        { templateVars => $params, force => 1 });
-
-    # create modperl config
-    $file->copy($wreConfig->getRoot("/var/modperl.template"), 
-        $wreConfig->getRoot("/etc/".$sitename.".modperl"),
-        { templateVars => $params, force => 1 });
 
     # create nginx config
     $file->copy($wreConfig->getRoot("/var/nginx.template"), 
@@ -278,12 +267,6 @@ sub delete {
 
     # web root
     $file->delete($wreConfig->getDomainRoot("/".$sitename));
-
-    # awstats
-    $file->delete($wreConfig->getRoot("/etc/awstats.".$sitename.".conf"));
-
-    # modperl
-    $file->delete($wreConfig->getRoot("/etc/".$sitename.".modperl"));
 
     # nginx
     $file->delete($wreConfig->getRoot("/etc/".$sitename.".nginx"));

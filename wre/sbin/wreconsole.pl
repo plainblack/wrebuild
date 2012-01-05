@@ -762,19 +762,6 @@ sub www_editSite {
         <textarea name="modperl">'.$$contents.'</textarea><br />
         <input type="submit" class="saveButton" value="Save" /> <br /><br />
     ';
-    $$contents = '';
-    eval { $contents = $file->slurp($state->{config}->getRoot("/etc/awstats.".$sitename.".conf")) };
-    if ($@) {
-        carp "Couldn't open awstats.$sitename.conf file for editing $@";
-        $content .= '<div class="status">'.$@.'</div>';
-    }
-    makeHtmlFormSafe($contents);
-    $content .= '
-        <div><b>awstats.'.$sitename.'.conf</b></div>
-        <textarea name="awstats">'.$$contents.'</textarea><br />
-        <input type="submit" class="saveButton" value="Save" /> 
-        </form>
-    ';
     sendResponse($state, $content);
 }
 
@@ -803,11 +790,6 @@ sub www_editSiteSave {
     eval { $file->spit($state->{config}->getRoot("/etc/".$sitename.".modperl"), $state->{cgi}->param("modperl")) };
     if ($@) {
         $status = "Couldn't save $sitename.modperl. $@";
-        carp $status;
-    }
-    eval { $file->spit($state->{config}->getRoot("/etc/awstats.".$sitename.".conf"), $state->{cgi}->param("awstats")) };
-    if ($@) {
-        $status = "Couldn't save awstats.$sitename.conf. $@";
         carp $status;
     }
     www_listSites($state, $status);
@@ -1262,9 +1244,6 @@ sub www_setup {
             { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/nginx.template"),
             $config->getRoot("/var/nginx.template"),
-            { force => 1 });
-        $file->copy($config->getRoot("/var/setupfiles/awstats.template"),
-            $config->getRoot("/var/awstats.template"),
             { force => 1 });
         $file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
             $config->getRoot("/var/wre.logrotate"),
