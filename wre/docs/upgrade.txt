@@ -1,27 +1,28 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   U P G R A D E
 -------------------------------------------------------------------
 
-NOTE: There is no upgrade procedure from versions prior to WRE 0.8.0 to 0.8,
-as WRE 0.8 is a complete rewrite of the system. To upgrade you must remove the
+NOTE: There is no upgrade procedure from versions prior to WRE 0.9.6 for WebGUI 8
+as WRE 0.9.6 is a complete rewrite of the system. To upgrade you must remove the
 old WRE and install a completely new one.
-
 
 To upgrade the WRE follow these simple steps:
 
 1. Download the new version.
 
-2. Shutdown your existing WRE.
+2. Dump all site databases.
 
-3. Extract the new WRE over the top of the old one.
+3. Make backups of everything in wre/etc.
 
-4. Run /data/wre/sbin/wreupgrade.pl
+4. Shutdown your existing WRE.
 
-5. Watch the output of wreupgrade.pl. It will tell you if you have any templates that are out of date.
+5. Delete the old WRE.
 
-6. Read /data/wre/docs/install.txt and /data/wre/docs/changelog.txt to make sure there aren't any new instructions.
+6. Install the new WRE in its place.
 
-7. Start the WRE.
+7. Build a site for each old server using addsite.pl.
 
+8. Translate modproxy configuration files to nginx.
 
+9. Read /data/wre/docs/install.txt and /data/wre/docs/changelog.txt to make sure there aren't any new instructions.
 
-
+10. Start the WRE.
