@@ -38,6 +38,7 @@ say "Setting up demo files";
 $file->makePath($config->getDomainRoot("/demo"));
 $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
     { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
+
 say "Setting up nginx main config";
 $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
     $config->getRoot("/etc/nginx.conf"),
@@ -50,9 +51,10 @@ say "Setting up mime.types file";
 $file->copy($config->getRoot("/var/setupfiles/mime.types"),
     $config->getRoot("/etc/mime.types"),
     { force => 1 });
+
 say "Setting up logrotate file";
 $file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
-    $config->getRoot("/var/wre.logrotate"),
+    $config->getRoot("/etc/wre.logrotate"),
     { force => 1 });
 
 say "Setting up Spectre config";
