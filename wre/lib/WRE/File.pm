@@ -348,7 +348,9 @@ sub processTemplate {
 
     # process the template
     my $output = undef;
-    $template{$refId}->process($input, $var, \$output);
+    unless ($template{$refId}->process($input, $var, \$output)) {
+        warn $template{$refId}->error;
+    }
     return \$output;
 }
 
