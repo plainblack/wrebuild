@@ -48,7 +48,7 @@ sub dump {
     my %options = @_;    
     my $config  = $self->wreConfig;
     my $path = file($options{path});
-    my $command = "mysqldump")
+    my $command = "mysqldump"
         ." --user=".$config->get("backup/mysql/user")
         ." --password=".$config->get("backup/mysql/password")
         ." --host=".$config->get("mysql/hostname")
