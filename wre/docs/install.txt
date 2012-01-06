@@ -53,47 +53,30 @@ rename it so that it doesn't interfere with the WRE MySQL.
 will be using, including the AWStats site.
 
 
-6. Run the WRE Console which you can use to configure WebGUI.
+6. Use the WRE environment
 
 	cd /data/wre/sbin
     . setenvironment.sh
-    ./wreconsole.pl
 
-    NOTE: If you are not an administrator on this machine you should
-    start the WRE console with sudo like thi:
-
-    sudo ./wreconsole.pl
-
-    NOTE: You should probably add the following command to your
-    profile so it executes every time you log in:
+    NOTE: You could add the following command to your profile so it
+    executes every time you log in.  However, on CentOS 5 servers
+    this can interfere with yum running:
 
     . /data/wre/sbin/setenvironment.sh
 
 
-7. Use your favorite web browser to visit the WRE Console setup page:
+7. Customize the WRE configuration file with database users, paths and other items.
 
-    http://localhost:60834/setup   
-            - or -
-    http://www.example.com:60834/setup
-
-    NOTE: You may have to open a firewall port to access this.
+    vim /data/wre/etc/wre/conf
 
 
-8. Follow the on screen instructions to complete the configuration.
+8. Run the WRE setup script to create base templates for nginx, logrotate and Spectre
 
-    NOTE: Safari is not capable of displaying a page as it's being downloaded
-    so it is not the best browser you can use for the setup process, which is
-    a realtime process. Safari will work in most cases, but it is not ideal.
-    We recommend Firefox instead.
-
+    /data/wre/sbin/wresetup.pl --configFile=/data/wre/etc/wre.conf
+    
 
 9. On the command-line, go to /data/WebGUI/sbin, and as root, run the testEnvironment.pl
 script to install any new dependencies in WebGUI that may be missing from the WRE.
-
-10. Go to the "Sites" tab and add your first web site.
-
-
-11. Go to the "Services" tab and start mod_proxy, mod_perl, and S.P.E.C.T.R.E.
 
 
 12. Visit your new web site!
@@ -148,19 +131,3 @@ http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
 To get the WRE to start automatically at boot run the following commands:
 
 ln -s /data/wre/sbin/services/osx/org.webgui.wre.plist /Library/LaunchDaemons/
-
-
-
-* FreeBSD
-
-You must install and use the bash shell while using the WRE. The WRE also
-assumes that the bash shell is installed or linked at /bin/bash.
-
-You can set up the WRE to start automatically at system boot by running the
-following commands after the WRE is installed
-
- ln -s /data/wre/sbin/services/freebsd/webgui /usr/local/etc/rc.d/webgui
- echo "webgui_enable=YES" >> /etc/rc.conf.local
-
-
-
