@@ -12,16 +12,9 @@
 
 use strict;
 use lib '/data/wre/lib';
-use Carp qw(carp croak);
 use WRE::Config;
 use WRE::File;
-
 use WRE::Host;
-use WRE::Starman;
-use WRE::Nginx;
-use WRE::Mysql;
-use WRE::Site;
-use WRE::Spectre;
 use Getopt::Long ();
 use Pod::Usage ();
 
@@ -37,14 +30,11 @@ Pod::Usage::pod2usage( verbose => 2 ) if $help;
 # server daemon
 my $wreConfig = WRE::Config->new;
 my $host      = WRE::Host->new(wreConfig => $wreConfig);
+my $file      = WRE::File->new(wreConfig => $wreConfig);
 
-my $file      = WRE::File->new(wreConfig=>$config);
-
-if ($config->get("demo/enabled") == 0 && $cgi->param("enableDemo") == 1) {
-    $file->makePath($config->getDomainRoot("/demo"));
-    $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
-        { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
-}
+$file->makePath($config->getDomainRoot("/demo"));
+$file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
+    { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
 $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
     $config->getRoot("/etc/nginx.conf"),
     { force => 1, templateVars=>{osName=>$host->getOsName} });
@@ -77,10 +67,6 @@ wresetup.pl
 Takes a wre.conf file as input and templates base configurations for nginx, logrotate, spectre.
 
 =over
-
-=item B<--configFile>
-
-The full path to a WRE configuration file.
 
 =item B<--help>
 
