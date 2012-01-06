@@ -382,7 +382,6 @@ installPerlModules () {
     if [ "$WRE_OSTYPE" != "Leopard" ] && [ "$WRE_OSTYPE" != "Snow Leopard" ]; then
         cpanm http://backpan.perl.org/authors/id/D/DU/DURIST/Proc-ProcessTable-0.44.tar.gz
     fi
-    installPerlModule "Text-Aspell-0.09" "LIBS='-laspell'"
     # detecting shared memory properly on 2.6 kernels
     if [ "$WRE_OSNAME" == "Linux" ]; then
         cpanm Linux::Smaps
