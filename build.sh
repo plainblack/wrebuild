@@ -43,40 +43,41 @@ do
   case "$opt" in
 
     --clean)
-      WRE_CLEAN=1
+      export WRE_CLEAN=1
     ;;
 
     --all)
-        WRE_BUILD_UTILS=1
-        WRE_BUILD_PERL=1
-        WRE_BUILD_NGINX=1
-        WRE_BUILD_IMAGEMAGICK=1
-        WRE_BUILD_WRE=1
-        WRE_BUILD_PM=1
+        export WRE_BUILD_UTILS=1
+        export WRE_BUILD_PERL=1
+        export WRE_BUILD_NGINX=1
+        export WRE_BUILD_IMAGEMAGICK=1
+        export WRE_BUILD_AWSTATS=1
+        export WRE_BUILD_WRE=1
+        export WRE_BUILD_PM=1
     ;;
 
     --utils | --utilities)
-        WRE_BUILD_UTILS=1
+        export WRE_BUILD_UTILS=1
     ;;
 
     --perl)
-        WRE_BUILD_PERL=1
+        export WRE_BUILD_PERL=1
     ;;
 
     --nginx)
-        WRE_BUILD_NGINX=1
+        export WRE_BUILD_NGINX=1
     ;;
 
     --imageMagick | --imagemagick)
-        WRE_BUILD_IMAGEMAGICK=1
+        export WRE_BUILD_IMAGEMAGICK=1
     ;;
 
     --wre)
-        WRE_BUILD_WRE=1
+        export WRE_BUILD_WRE=1
     ;;
 
     --perlModules | --perlmodules | --pm)
-        WRE_BUILD_PM=1
+        export WRE_BUILD_PM=1
     ;;
 
     --help | -help | -h | -? | ?)
@@ -359,6 +360,7 @@ buildImageMagick(){
 # param1: module directory
 # param2: parameters to pass to Makefile.PL
 installPerlModule() {
+    cd $1
     printHeader "PM $1 with $2"
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
@@ -366,21 +368,20 @@ installPerlModule() {
     fi
     perl Makefile.PL $2 CCFLAGS="$CFLAGS"; checkError $? "$1 Makefile.PL"
     $WRE_MAKE; checkError $? "$1 make"
+    #$WRE_MAKE test; checkError $? "$1 make test"
     $WRE_MAKE install; checkError $? "$1 make install"
-    cd /data/wrebuild
+    cd ..
 }
 
 installPerlModules () {
     printHeader "Perl Modules"
+    cd source/perlmodules
     export PERL_MM_USE_DEFAULT=1 # makes it so perl modules don't ask questions
     cpan App::cpanminus
     cpanm Task::WebGUI
     if [ "$WRE_OSTYPE" != "Leopard" ] && [ "$WRE_OSTYPE" != "Snow Leopard" ]; then
         cpanm http://backpan.perl.org/authors/id/D/DU/DURIST/Proc-ProcessTable-0.44.tar.gz
     fi
-    mkdir -p source/perlmodules
-    chdir source/perlmodules
-    cpanm --look Text::Aspell
     installPerlModule "Text-Aspell-0.09" "LIBS='-laspell'"
     # detecting shared memory properly on 2.6 kernels
     if [ "$WRE_OSNAME" == "Linux" ]; then
@@ -389,6 +390,9 @@ installPerlModules () {
 
     cd $WRE_BUILDDIR
 }
+
+
+
 
 #wre utils
 installWreUtils(){
@@ -414,6 +418,7 @@ makeItSmall(){
     rm -Rf $WRE_ROOT/etc/extra
 }
 
+#
 # build stuff
 if [ "$WRE_BUILD_UTILS" == 1 ]; then
     buildUtils
