@@ -386,9 +386,6 @@ installPerlModules () {
 installWreUtils(){
     printHeader "WebGUI Runtime Environment Core and Utilities"
     cp -Rf wre /data/
-    if [ ! -d "$WRE_ROOT/etc" ]; then
-            mkdir $WRE_ROOT/etc
-    fi
 }
 
 # make the WRE distro smaller by getting rid of non-essential stuff
