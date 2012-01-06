@@ -1,5 +1,12 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
+0.9.6
+ - Almost a complete rewrite, using starman, nginx, Percona mysql and perl 5.14.2.
+ - Includes all perl modules for WebGUI 8.0 beta.
+ - awstats has been removed completely.
+ - The logrotate script is replaced with a configuration file for logrotated.
+ - Backups now use rsync instead of sftp.
+ - The wreconsole for setting up the WRE is replaced with a small shell script to do it from the command line.
 
 0.9.4
  - Added missing Apache directives to enable Expires headers and gzip
