@@ -28,9 +28,9 @@ Pod::Usage::pod2usage( verbose => 2 ) if $help;
 
 #-------------------------------------------------------------------
 # server daemon
-my $wreConfig = WRE::Config->new;
-my $host      = WRE::Host->new(wreConfig => $wreConfig);
-my $file      = WRE::File->new(wreConfig => $wreConfig);
+my $config = WRE::Config->new;
+my $host   = WRE::Host->new(wreConfig => $config);
+my $file   = WRE::File->new(wreConfig => $config);
 
 $file->makePath($config->getDomainRoot("/demo"));
 $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
