@@ -6,6 +6,13 @@ affect your upgrade from one version of the WRE to another. Before upgrading
 the WRE you should always read this file in the new version you wish to
 upgrade to.
 
+WRE 0.9.6
+
+This is almost a complete rewrite of the WRE, even to the point of
+replacing Apache with nginx and Starman.  There is no automated upgrade
+process to go from an earlier version of the WRE to this one.
+
+
 WRE 0.9.4
 - Apache ServerAdmin directive
 
