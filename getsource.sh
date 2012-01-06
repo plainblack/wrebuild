@@ -17,14 +17,6 @@ tar xfz nginx-1.0.11.tar.gz
 wget -t 4 -nv ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick.tar.gz
 tar zxf ImageMagick.tar.gz
 
-# aspell dictionary http://aspell.net/
-wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.tar.gz
-tar zxf aspell-0.60.6.tar.gz
-
-# aspell-en
-wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-6.0-0.tar.bz2
-tar jxf aspell6-en-6.0-0.tar.bz2
-
 # catdoc .doc and .xls converter http://vitus.wagner.pp.ru/software/catdoc/
 wget -t 4 -nv http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.94.2.tar.gz
 tar zxf catdoc-0.94.2.tar.gz
