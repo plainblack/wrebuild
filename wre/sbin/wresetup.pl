@@ -20,6 +20,8 @@ use Pod::Usage ();
 
 my $help;
 
+use 5.010;
+
 Getopt::Long::GetOptions(
     'help'=>\$help
 );
@@ -32,22 +34,28 @@ my $config = WRE::Config->new;
 my $host   = WRE::Host->new(wreConfig => $config);
 my $file   = WRE::File->new(wreConfig => $config);
 
+say "Setting up demo files";
 $file->makePath($config->getDomainRoot("/demo"));
 $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
     { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
+say "Setting up nginx main config";
 $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
     $config->getRoot("/etc/nginx.conf"),
     { force => 1, templateVars=>{osName=>$host->getOsName} });
-$file->copy($config->getRoot("/var/setupfiles/mime.types"),
-    $config->getRoot("/etc/mime.types"),
-    { force => 1 });
+say "Setting up nginx per-site config";
 $file->copy($config->getRoot("/var/setupfiles/nginx.template"),
     $config->getRoot("/var/nginx.template"),
     { force => 1 });
+say "Setting up mime.types file";
+$file->copy($config->getRoot("/var/setupfiles/mime.types"),
+    $config->getRoot("/etc/mime.types"),
+    { force => 1 });
+say "Setting up logrotate file";
 $file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
     $config->getRoot("/var/wre.logrotate"),
     { force => 1 });
 
+say "Setting up Spectre config";
 $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
     { force => 1 });
 $file->changeOwner($config->getWebguiRoot("/etc"));
