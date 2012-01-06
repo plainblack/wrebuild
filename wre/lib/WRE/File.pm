@@ -62,14 +62,12 @@ sub changeOwner {
     my $self = shift;
     my $path = shift;
     my $host = WRE::Host->new(wreConfig=>$self->wreConfig);
-    if ($host->getOsName ne "windows") {
-        my $refId = id $self;
-        if ($groupId{$refId} eq "" || $userId{$refId} eq "") {
-            my $user = $self->wreConfig->get("user");
-            (undef, undef, $userId{$refId}, $groupId{$refId}) = getpwnam $user or carp $user." not in passwd file";
-        }
-        chown $userId{$refId}, $groupId{$refId}, $path;
+    my $refId = id $self;
+    if ($groupId{$refId} eq "" || $userId{$refId} eq "") {
+        my $user = $self->wreConfig->get("user");
+        (undef, undef, $userId{$refId}, $groupId{$refId}) = getpwnam $user or carp $user." not in passwd file";
     }
+    chown $userId{$refId}, $groupId{$refId}, $path;
 }
 
 

@@ -103,20 +103,8 @@ sub getOsType {
         elsif ( -f "/etc/fedora-release" ) {
             return "Fedora";
         } 
-        elsif ( -f "/etc/slackware-release" || -f "/etc/slackware-version" ) {
-            return "Slackware";
-        }
         elsif ( -f "/etc/debian_release" || -f "/etc/debian_version" ) {
             return "Debian";
-        }
-        elsif ( -f "/etc/mandrake-release" ) {
-            return "Mandrake";
-        }
-        elsif ( -f "/etc/yellowdog-release" ) {
-            return "YellowDog";
-        }
-        elsif ( -f "/etc/gentoo-release" ) {
-            return "Gentoo";
         }
         elsif ( -f "/etc/lsb-release" ) {
             return "Ubuntu";
@@ -150,9 +138,6 @@ Returns a boolean indicating whether the current user is a privileged user for t
 
 sub isPrivilegedUser {
     my $self = shift;
-    if ($self->getOsName eq "windows" || $< == 0) {
-        return 1;
-    }
     return 0;
 }
 

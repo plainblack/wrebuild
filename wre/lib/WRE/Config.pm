@@ -57,7 +57,6 @@ necessary.
 
 sub getRoot {
     my ($self,$path) = @_;
-    my $volume = WRE::Host->new(wreConfig => $self)->getOsName eq 'windows' ? 'c:' : '';
     my $root = dir("/data/wre");
     if (defined $path) {
         return $root->file($path)->stringify;    
