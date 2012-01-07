@@ -10,7 +10,6 @@ rcvar=`set_rcvar`
 extra_commands="help startweb stopweb restartweb\
     startstarman stopstarman restartstarman\
     startnginx stopnginx restartnginx\
-    startmysql stopmysql restartmysql\
     startspectre stopspectre restartspectre\
 "
 help_cmd="${name}_help"
@@ -25,9 +24,6 @@ restartnginx_cmd="${stopnginx_cmd}; ${startnginx_cmd}"
 startstarman_cmd="${name}_startstarman"
 stopstarman_cmd="${name}_stopstarman"
 restartstarman_cmd="${stopstarman_cmd}; ${startstarman_cmd}"
-startmysql_cmd="${name}_startmysql"
-stopmysql_cmd="${name}_stopmysql"
-restartmysql_cmd="${stopmysql_cmd}; ${startmysql_cmd}"
 startspectre_cmd="${name}_startspectre"
 stopspectre_cmd="${name}_stopspectre"
 restartspectre_cmd="${stopspectre_cmd}; ${startspectre_cmd}"
@@ -45,8 +41,6 @@ webgui_help() {
     echo "      -- Start/stop mod_perl (WebGUI) Apache service"
     echo " $0 { startnginx | stopnginx | restartnginx }"
     echo "      -- Start/stop mod_proxy Apache service"
-    echo " $0 { startmysql | stopmysql | restartmysql }"
-    echo "      -- Start/stop MySQL service"
     echo " $0 { startspectre | stopspectre | restartspectre }"
     echo "      -- Start/stop SPECTRE"
     exit 1
@@ -74,14 +68,6 @@ webgui_startnginx() {
 
 webgui_stopnginx() {
     wreservice.pl --quiet --stop nginx
-}
-
-webgui_startmysql() {
-    wreservice.pl --quiet --start mysql
-}
-
-webgui_stopmysql() {
-    wreservice.pl --quiet --stop mysql
 }
 
 webgui_startspectre() {

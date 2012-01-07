@@ -16,15 +16,6 @@ case "$1" in
   	restart)
     	/data/wre/sbin/wreservice.pl --quiet --restart all
     	;;
-  	startmysql)
-    	/data/wre/sbin/wreservice.pl --quiet --start mysql
-    	;;
-  	stopmysql)
-		/data/wre/sbin/wreservice.pl --quiet --stop mysql
-    	;;
-  	restartmysql)
-    	/data/wre/sbin/wreservice.pl --quiet --restart mysql
-    	;;
   	startweb)
     	/data/wre/sbin/wreservice.pl --quiet --start web
     	;;
@@ -68,7 +59,6 @@ case "$1" in
 		echo $"	$0 { startweb | stopweb | restartweb }"
    		echo $"	$0 { startstarman | stopstarman | restartstarman }"
    		echo $"	$0 { startnginx | stopnginx | restartnginx }"
-   		echo $"	$0 { startmysql | stopmysql | restartmysql }"
    		echo $"	$0 { startspectre | stopspectre | restartspectre }"
    		exit 1
 esac

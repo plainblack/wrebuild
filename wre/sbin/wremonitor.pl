@@ -21,7 +21,6 @@ use WRE::Config;
 use WRE::File;
 use WRE::Starman;
 use WRE::Nginx;
-use WRE::Mysql;
 use WRE::Spectre;
 
 # don't want two copies of this to run simultaneously
@@ -32,11 +31,6 @@ unless (flock(DATA, LOCK_EX|LOCK_NB)) {
 
 
 my $config = WRE::Config->new;
-
-if ($config->get("wreMonitor/items/mysql") && !$config->get("wreMonitor/mysqlAdministrativelyDown")) {
-    my $mysql = WRE::Mysql->new(wreConfig=>$config);
-    monitor($mysql);
-}
 
 if ($config->get("wreMonitor/items/starman") && !$config->get("wreMonitor/starmanAdministrativelyDown")) {
     my $starman = WRE::Starman->new(wreConfig=>$config);

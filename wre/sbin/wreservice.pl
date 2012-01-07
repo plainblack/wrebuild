@@ -17,7 +17,6 @@ use WRE::Config;
 use WRE::Host;
 use WRE::Starman;
 use WRE::Nginx;
-use WRE::Mysql;
 use WRE::Spectre;
 
 $|=1;   # turn off buffering
@@ -47,8 +46,6 @@ Service Names:
 
     nginx           The nginx service which provides performance and security
                     services for WebGUI.
-
-    mysql           WebGUI's database engine.
 
     spectre         WebGUI's workflow governor.
 
@@ -101,15 +98,9 @@ if (scalar(@stop)) {
     if (grep /^starman|modperl|all|web$/, @stop) {
         printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->stop}, "Stop starman");
     }
-    if (grep /^mysql|all$/, @stop) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->stop}, "Stop MySQL");
-    }
 }
 
 if (scalar(@start)) {
-    if (grep /^mysql|all$/, @start) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
-    }
     if (grep /^starman|modperl|all|web$/, @start) {
         printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->start}, "Start starman");
     }
@@ -122,9 +113,6 @@ if (scalar(@start)) {
 }
 
 if (scalar(@restart)) {
-    if (grep /^mysql|all$/, @restart) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->restart}, "Restart MySQL");
-    }
     if (grep /^starman|modperl|all|web$/, @restart) {
         printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->restart}, "Restart starman");
     }
@@ -137,9 +125,6 @@ if (scalar(@restart)) {
 }
 
 if (scalar(@status)) {
-    if (grep /^mysql|all$/, @status) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->ping}, "Ping MySQL");
-    }
     if (grep /^starman|modperl|all|web$/, @status) {
         printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->ping}, "Ping starman");
     }

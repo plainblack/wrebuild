@@ -145,15 +145,8 @@ displayed to a user.
 sub checkCreationSanity {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
-    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $sitename = $self->sitename;
     my $password = $adminPassword{id $self};
-
-    # check that mysql is alive
-    unless (eval {$mysql->ping}) {
-        croak "MySQL appears to be down. ".$@;
-        return 0;
-    }
 
     # check that this user has admin rights
     unless (eval {$mysql->isAdmin(password=>$password)}) {
@@ -200,15 +193,8 @@ displayed to a user.
 sub checkDeletionSanity {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
-    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $sitename = $self->sitename;
     my $filename = $sitename.".conf";
-
-    # check that mysql is alive
-    unless (eval {$mysql->ping}) {
-        croak "MySQL appears to be down. ".$@;
-        return 0;
-    }
 
     # check that this user has admin rights
     unless (eval {$mysql->isAdmin(password=>$adminPassword{id $self})} ) {
