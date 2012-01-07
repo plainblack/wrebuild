@@ -1,67 +1,81 @@
 server {
-    listen     [% modproxyPort %];
-    server_name [% sitename %] [% domain %]; 
+    server_name  [% sitename %] [%domain %]
+
+    listen   [% config.get('nginx/port') %]; ## listen for ipv4
+
     access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
-
+    root       [% domainRoot %]/www.example.com/public;
     client_max_body_size 20M;
-    proxy_set_header  X-Real-IP  $remote_addr;
-    proxy_set_header Host $host;
 
-    # block IIS related attacks from getting to WebGUI
-    location = /^scripts/ {
-        return 400
+    # proxy webgui to starman listening on 127.0.0.1
+    location / {
+        # proxy_cache static;
+        # proxy_cache_valid 200 1s;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+        proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
     }
-
-    location = /^default.ida/ {
-        return 400
+    location /uploads {
+        expires 2h;
+        if ( $request_filename ~ "^(.*/)" ) {
+            set $request_directory $document_root$1;
+        }
+        if ( -f "$request_directory/.wgaccess" ) {
+            proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
+        }
     }
-
-    location = /_vti_bin/ {
-        return 400
-    }
-
-    location = /_mem_bin/ {
-        return 400
-    }
-
-    # proxy webgui pages
-    #ProxyPreserveHost On
-    #RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
+    location /uploads/filepump { expires max; }
+    location /extras/          { expires 24h; }
+    location = /default.ida    { access_log off; deny all; }
+    location /_vti_bin         { access_log off; deny all; }
+    location /_mem_bin         { access_log off; deny all; }
+    location ~ /\.(ht|wg)      { access_log off; deny all; }
+    location = /alive          { access_log off; }
 }
 
-# Uncomment the following lines to enable SSL for this host. Also,
-# change the 10.0.0.1 to the IP address you wish to bind the SSL host
-# to.
-
 #server {
-#    listen     443;
-#    server_name [% sitename %] [% domain %]; 
-#    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+#    listen   443;
+#    server_name  [% sitename %] [%domain %]
 #
-#    client_max_body_size 20M;
-#    proxy_set_header  X-Real-IP  $remote_addr;
-#    proxy_set_header Host $host;
-#
-#    # block IIS related attacks from getting to WebGUI
-#    location = /^scripts/ {
-#        return 400
-#    }
-#
-#    location = /^default.ida/ {
-#        return 400
-#    }
-#
-#    location = /_vti_bin/ {
-#        return 400
-#    }
-#
-#    location = /_mem_bin/ {
-#        return 400
-#    }
-#
-#    # For chained certificates, concatenate all the certs together, starting with the
-#    # site certificate and then the chained certificates
+#    ssl  on;
 #    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt
 #    ssl_certificate_key [% domainRoot %]/[% sitename %]/certs/server.key
 #
+#    ssl_session_timeout  5m;
+#
+#    ssl_protocols  SSLv3 TLSv1;
+#    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+#    ssl_prefer_server_ciphers   on;
+#
+#    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+#    root       [% domainRoot %]/www.example.com/public;
+#
+#    # proxy webgui to starman listening on 127.0.0.1
+#    location / {
+#        # proxy_cache static;
+#        # proxy_cache_valid 200 1s;
+#        proxy_set_header X-Real-IP $remote_addr;
+#        proxy_set_header X-Forwarded-For $remote_addr;
+#        proxy_set_header Host $host;
+#        proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
+#    }
+#    location /uploads {
+#        expires 2h;
+#        if ( $request_filename ~ "^(.*/)" ) {
+#            set $request_directory $document_root$1;
+#        }
+#        if ( -f "$request_directory/.wgaccess" ) {
+#             proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
+#        }
+#    }
+#    location /uploads/filepump { expires max; }
+#    location /extras/      { expires 24h; }
+#    location = /default.ida    { access_log off; deny all; }
+#    location /_vti_bin     { access_log off; deny all; }
+#    location /_mem_bin     { access_log off; deny all; }
+#    location ~ /\.(ht|wg)      { access_log off; deny all; }
+#    location = /alive      { access_log off; }
 #}
+
+
