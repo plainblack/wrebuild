@@ -112,7 +112,7 @@ sub start {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
     my $cmd = "";
-    #start_server --pid-file=/data/wre/var/run/starman.pid --port=8081 --status=/data/wre/var/run/starman.status starman  --preload=/data/WebGUI/app.psgi
+    #start_server --pid-file=/data/wre/var/run/starman.pid --port=8081 --status=/data/wre/var/run/starman.status starman  --preload-app=/data/WebGUI/app.psgi
     $cmd = $config->getRoot("/prereqs/bin/start_server")
          . " --pid="     . $config->getRoot("var/run/starman.pid")
          . " --status="  . $config->getRoot("var/run/starman.status")
