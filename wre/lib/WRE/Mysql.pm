@@ -209,8 +209,7 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
-    my $host = WRE::Host->new(wreConfig => $config);
-    my $cmd = "mysql.server start --user=".$config->get("user");
+    my $cmd = "service mysql start";
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 0) {
         sleep(1);
@@ -238,8 +237,7 @@ sub stop {
     my $count = 0;
     my $success = 1;
     my $config = $self->wreConfig;
-    my $host = WRE::Host->new(wreConfig => $config);
-    my $cmd = "mysql.server stop";
+    my $cmd = "service mysql stop";
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         sleep(1);
