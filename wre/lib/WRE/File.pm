@@ -313,8 +313,7 @@ Either a path to a template file as a scalar or a scalar reference to a template
 =head3 vars
 
 A hash reference containing the template variables to process on the template. The following template variables
-are automatically generated and added to the list: databaseHost, databasePort, nginxPort, starmanPort,
-domainRoot, wreRoot, webguiRoot
+are automatically generated and added to the list: domainRoot, wreRoot, webguiRoot, config.
 
 =cut
 
@@ -331,13 +330,8 @@ sub processTemplate {
 
     # add in some template template variables
     $var->{config}  = $config;
-    $var->{databaseHost}  = $config->get("mysql/hostname");
-    $var->{databasePort}  = $config->get("mysql/port");
-    $var->{nginxPort}     = $config->get("nginx/port");
-    $var->{starmanPort}   = $config->get("starman/port");
     $var->{domainRoot}    = $config->getDomainRoot;
     $var->{wreRoot}       = $config->getRoot;
-    $var->{wreUser}       = $config->get("user");
     $var->{webguiRoot}    = $config->getWebguiRoot;
 
     # cache template
