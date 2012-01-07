@@ -113,7 +113,7 @@ sub create {
     $db->disconnect;
     $mysql->load(
         database    => $params->{databaseName},
-        path        => $wreConfig->getWebguiRoot("/docs/create.sql"),
+        path        => $wreConfig->getWebguiRoot("/share/create.sql"),
         username    => $params->{databaseUser},
         password    => $params->{databasePassword},
         );
