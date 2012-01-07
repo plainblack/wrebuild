@@ -138,7 +138,7 @@ Returns a boolean indicating whether the current user is a privileged user for t
 
 sub isPrivilegedUser {
     my $self = shift;
-    return 0;
+    return $< == 0;
 }
 
 #-------------------------------------------------------------------
