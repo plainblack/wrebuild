@@ -117,7 +117,8 @@ sub start {
          . " --pid="     . $config->getRoot("var/run/starman.pid")
          . " --status="  . $config->getRoot("var/run/starman.status")
          . " --port="    . $config->get("starman/port")
-         . " starman" #Beginning of the starman specific configurations
+         . " --" #Beginning of the starman specific configurations
+         . " starman"
          . " --preload-app"
          . " --access-log=" . $config->getRoot("var/logs/starman.log")
          . " --error-log=" . $config->getRoot("var/logs/starman_error.log")
