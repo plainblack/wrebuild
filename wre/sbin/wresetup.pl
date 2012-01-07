@@ -62,6 +62,10 @@ $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWe
     { force => 1 });
 $file->changeOwner($config->getWebguiRoot("/etc"));
 
+say "Creating log and run directory";
+$file->makePath($config->getRoot("/var/logs"));
+$file->makePath($config->getRoot("/var/run"));
+
 __END__
 
 =head1 NAME
