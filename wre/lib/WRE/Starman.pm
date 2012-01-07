@@ -118,10 +118,11 @@ sub start {
          . " --status="  . $config->getRoot("var/run/starman.status")
          . " --port="    . $config->get("starman/port")
          . " starman" #Beginning of the starman specific configurations
-         . " --preload=" . $config->get("webgui/root") . "/app.psgi"
+         . " --preload-app"
          . " --access-log=" . $config->getRoot("var/logs/starman.log")
          . " --error-log=" . $config->getRoot("var/logs/starman_error.log")
          . " --workers=" . $config->get("starman/workers")
+         .  $config->get("webgui/root") . "/app.psgi"
          ;
     `$cmd`; # catch command line output
     while ($count++ < 10 && !$success) {
