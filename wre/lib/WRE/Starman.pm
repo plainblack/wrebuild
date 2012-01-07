@@ -123,9 +123,9 @@ sub start {
          . " --access-log=" . $config->getRoot("var/logs/starman.log")
          . " --error-log=" . $config->getRoot("var/logs/starman_error.log")
          . " --workers=" . $config->get("starman/workers")
-         .  $config->get("webgui/root") . "/app.psgi"
+         .  $config->get("webgui/root") . "/app.psgi & "
          ;
-    `$cmd`; # catch command line output
+    system($cmd); # catch command line output
     while ($count++ < 10 && !$success) {
         sleep(1);
         eval {$success = $self->ping };
