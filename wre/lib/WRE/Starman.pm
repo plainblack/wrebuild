@@ -106,13 +106,12 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
-    $config->set("wreMonitor/starmanAdministrativelyDown", 0);
     my $host = WRE::Host->new(wreConfig=>$config);
     unless ($config->get("starman/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
     my $cmd = "";
-    #start_server --pid-file=/data/wre/var/run/starman.pid --port=8081 --status=/data/wre/var/run/starman.status starman  --preload-app=/data/WebGUI/app.psgi
+    #start_server --pid-file=/data/wre/var/run/starman.pid --port=8081 --status=/data/wre/var/run/starman.status -- starman  --preload-app /data/WebGUI/app.psgi
     $cmd = $config->getRoot("/prereqs/bin/start_server")
          . " --pid="     . $config->getRoot("var/run/starman.pid")
          . " --status="  . $config->getRoot("var/run/starman.status")
@@ -129,6 +128,9 @@ sub start {
     while ($count++ < 10 && !$success) {
         sleep(1);
         eval {$success = $self->ping };
+    }
+    if ($success) {
+        $config->set("wreMonitor/starmanAdministrativelyDown", 0);
     }
     return $success;
 }
@@ -153,10 +155,17 @@ sub stop {
     unless ($config->get("starman/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
     }
-    #kill "TERM", 0;
+    open my $pid_file, $config->getRoot('var/run/starman.pid') or
+        croak "Unable open PID file ".$config->getRoot('var/run/starman.pid')." for reading $!\n";
+    my $pid = do { local $/; <$pid_file> };
+    close $pid_file;
+    kill "TERM", $pid;
     while ($count++ < 10 && $success) {
         sleep(1);
         eval { $success = $self->ping };
+    }
+    if ($success) {
+        $config->set("wreMonitor/starmanAdministrativelyDown", 1);
     }
     return $success;
 }
