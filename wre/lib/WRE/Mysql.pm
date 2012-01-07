@@ -209,7 +209,6 @@ sub start {
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
-    $config->set("wreMonitor/mysqlAdministrativelyDown", 0);
     my $host = WRE::Host->new(wreConfig => $config);
     my $cmd = "mysql.server start --user=".$config->get("user");
     `$cmd`; # catch command line output
@@ -217,6 +216,9 @@ sub start {
         sleep(1);
         eval {$success = $self->ping };
         $count++;
+    }
+    if ($success) {
+        $config->set("wreMonitor/mysqlAdministrativelyDown", 0);
     }
     return $success;
 }
@@ -236,7 +238,6 @@ sub stop {
     my $count = 0;
     my $success = 1;
     my $config = $self->wreConfig;
-    $config->set("wreMonitor/mysqlAdministrativelyDown", 1);
     my $host = WRE::Host->new(wreConfig => $config);
     my $cmd = "mysql.server stop";
     `$cmd`; # catch command line output
@@ -244,6 +245,9 @@ sub stop {
         sleep(1);
         eval {$success = $self->ping };
         $count++;
+    }
+    if (!$success) {
+        $config->set("wreMonitor/mysqlAdministrativelyDown", 1);
     }
     return !$success;
 }
