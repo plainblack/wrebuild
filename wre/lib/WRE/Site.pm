@@ -148,6 +148,8 @@ sub checkCreationSanity {
     my $sitename = $self->sitename;
     my $password = $adminPassword{id $self};
 
+    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
+
     # check that this user has admin rights
     unless (eval {$mysql->isAdmin(password=>$password)}) {
         croak "Invalid admin password. ". $@;
@@ -196,6 +198,7 @@ sub checkDeletionSanity {
     my $sitename = $self->sitename;
     my $filename = $sitename.".conf";
 
+    my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     # check that this user has admin rights
     unless (eval {$mysql->isAdmin(password=>$adminPassword{id $self})} ) {
         croak "Invalid admin password.";
