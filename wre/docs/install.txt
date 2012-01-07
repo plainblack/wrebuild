@@ -42,18 +42,22 @@ commands like this:
 	killall mysqld
 	killall httpd
 
+4. Install Percona mysql.  See instructions in BUILD.redhat and BUILD.mac
 
-4. If you have a MySQL config file at /etc/my.cnf please remove or
+Leave in the test user and database, as they're needed for the WRE to see if
+mysql is up and running.
+
+5. If you have a MySQL config file at /etc/my.cnf please remove or
 rename it so that it doesn't interfere with the WRE MySQL.
 
-	mv /etc/my.cnf /etc/my.cnf.old
+	cp /data/wre/var/setupfiles//my.cnf /etc/my.cnf.old
 
 
-5. Create your DNS entries (or add to /etc/hosts) for the sites you
+6. Create your DNS entries (or add to /etc/hosts) for the sites you
 will be using, including the AWStats site.
 
 
-6. Use the WRE environment
+7. Use the WRE environment
 
 	cd /data/wre/sbin
     . setenvironment.sh
@@ -65,24 +69,24 @@ will be using, including the AWStats site.
     . /data/wre/sbin/setenvironment.sh
 
 
-7. Customize the WRE configuration file with database users, paths and other items.
+8. Customize the WRE configuration file with database users, paths and other items.
 
-    vim /data/wre/etc/wre/conf
+    vim /data/wre/etc/wre.conf
 
 
-8. Run the WRE setup script to create base templates for nginx, logrotate and Spectre
+9. Run the WRE setup script to create base templates for nginx, logrotate and Spectre
 
     /data/wre/sbin/wresetup.pl --configFile=/data/wre/etc/wre.conf
     
 
-9. On the command-line, go to /data/WebGUI/sbin, and as root, run the testEnvironment.pl
+10. On the command-line, go to /data/WebGUI/sbin, and as root, run the testEnvironment.pl
 script to install any new dependencies in WebGUI that may be missing from the WRE.
 
 
-12. Visit your new web site!
+11. Visit your new web site!
 
 
-13. Add the following cron jobs to your server's cron tab.
+12. Add the following cron jobs to your server's cron tab.
 
 	0 0 * * * /data/wre/sbin/logrotate.pl
 	*/3 * * * * /data/wre/sbin/wremonitor.pl
@@ -110,6 +114,11 @@ chkconfig --add webgui
 chkconfig webgui on
 
 On RHEL 5 or higher you need to install the libgomp RPM.
+
+Installing Percona via yum:
+
+rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.i386.rpm
+yum install -y Percona-Server-{server,client,shared,devel}-55
 
 
 * SELinux
