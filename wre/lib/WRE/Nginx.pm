@@ -78,13 +78,11 @@ Note: The process that runs this command must be either root or the user specifi
 sub start {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
-    $wreConfig->set("wreMonitor/nginxAdministrativelyDown", 0);
     my $host = WRE::Host->new(wreConfig=>$wreConfig);
     unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
-    my $cmd = "";
-    $cmd = $wreConfig->getRoot("/prereqs/bin/nginx")." -c ".$wreConfig->getRoot("/etc/nginx.conf");
+    my $cmd = $wreConfig->getRoot("/prereqs/bin/nginx")." -c ".$wreConfig->getRoot("/etc/nginx.conf");
     my $count   = 0;
     my $success = 0;
     `$cmd`; # catch command line output
@@ -92,6 +90,9 @@ sub start {
         sleep(1);
         eval {$success = $self->ping};
         $count++;
+    }
+    if ($success) {
+        $wreConfig->set("wreMonitor/nginxAdministrativelyDown", 0);
     }
     return $success;
 }
@@ -109,7 +110,6 @@ Note: The process that runs this command must be either root or the user specifi
 sub stop {
     my $self = shift;
     my $wreConfig = $self->wreConfig;
-    $wreConfig->set("wreMonitor/modproxyAdministrativelyDown", 1);
     my $host = WRE::Host->new(wreConfig=>$wreConfig);
     unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
@@ -121,6 +121,9 @@ sub stop {
     while ($count < 10 && !$success) {
         $success = !(eval {$self->ping});
         $count++;
+    }
+    if ($success) {
+        $wreConfig->set("wreMonitor/modproxyAdministrativelyDown", 1);
     }
     return $success;
 }
