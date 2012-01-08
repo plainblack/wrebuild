@@ -1,9 +1,9 @@
 server {
-    server_name  [% sitename %] [%domain %]
+    server_name  [% sitename %] [%domain %];
 
     listen   [% config.get('nginx/port') %]; ## listen for ipv4
 
-    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined;
     root       [% domainRoot %]/www.example.com/public;
     client_max_body_size 20M;
 
@@ -36,7 +36,7 @@ server {
 
 #server {
 #    listen   443;
-#    server_name  [% sitename %] [%domain %]
+#    server_name  [% sitename %] [%domain %];
 #
 #    ssl  on;
 #    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt
