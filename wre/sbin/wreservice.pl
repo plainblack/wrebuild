@@ -22,19 +22,20 @@ use WRE::Spectre;
 $|=1;   # turn off buffering
 
 my ($quiet, $help, $verbose) = "";
-my (@start, @stop, @restart, @status) = ();
+my (@start, @stop, @restart, @status, @reload) = ();
 
 GetOptions(
     "help"                      => \$help,
     "start|begin=s{1,4}"        => \@start,
     "stop|end|shutdown=s{1,4}"  => \@stop,
     "restart|cycle=s{1,4}"      => \@restart,
+    "reload=s{1,4}"             => \@reload,
     "status|ping=s{1,4}"        => \@status,
     "verbose"                   => \$verbose,
     "quiet"                     => \$quiet,
     );
 
-if ($help || !(scalar(@start) || scalar(@stop) || scalar(@restart) || scalar(@status))) {
+if ($help || !(scalar(@start) || scalar(@stop) || scalar(@restart) || scalar(@status) || scalar(@reload))) {
     print <<STOP;
 Usage: $0 --[action] [service] [service] [service]
 
@@ -60,6 +61,8 @@ Actions:
     --ping          An alias for --status.
 
     --restart       Stops and then starts a service again.
+
+    --reload        Makes a service reload its configuration files, only works for Nginx.
 
     --shutdown      An alias for --stop.
 
@@ -121,6 +124,12 @@ if (scalar(@restart)) {
     }
     if (grep /^spectre|all$/, @restart) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->restart}, "Restart S.P.E.C.T.R.E.");
+    }
+}
+
+if (scalar(@reload)) {
+    if (grep /^nginx|modproxy|all|web$/, @reload) {
+        printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->Reload}, "Reload nginx configs");
     }
 }
 

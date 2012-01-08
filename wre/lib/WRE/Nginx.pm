@@ -28,6 +28,27 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
+=head base () 
+
+Get's the base command line invocation for this service and make sure that the user has permission
+to start services.
+
+/path/to/wre/nginx -c __NGINX_CONFIG__
+
+=cut
+
+sub base {
+    my $self = shift;
+    my $wreConfig = $self->wreConfig;
+    my $host = WRE::Host->new(wreConfig=>$wreConfig);
+    unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
+        croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
+    }
+    return $wreConfig->getRoot("/prereqs/sbin/nginx")." -c ".$wreConfig->getRoot("/etc/nginx.conf");
+}
+
+#-------------------------------------------------------------------
+
 =head getName () 
 
 Returns human readable name.
@@ -67,6 +88,32 @@ sub ping {
 
 #-------------------------------------------------------------------
 
+=head2 reload ( )
+
+Makes nginx reload its configuration files without fully shutting down.
+
+Returns a 1 if the start was successful, or a 0 if it was not.
+
+Note: The process that runs this command must be either root or the user specified in the WRE config file.
+
+=cut
+
+sub reload {
+    my $self = shift;
+    my $cmd = $self->base . ' -s reload';
+    my $count   = 0;
+    my $success = 0;
+    `$cmd`; # catch command line output
+    while ($count < 10 && !$success) {
+        sleep(1);
+        eval {$success = $self->ping};
+        $count++;
+    }
+    return $success;
+}
+
+#-------------------------------------------------------------------
+
 =head2 start ( )
 
 Returns a 1 if the start was successful, or a 0 if it was not.
@@ -77,12 +124,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub start {
     my $self = shift;
-    my $wreConfig = $self->wreConfig;
-    my $host = WRE::Host->new(wreConfig=>$wreConfig);
-    unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
-        croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
-    }
-    my $cmd = $wreConfig->getRoot("/prereqs/sbin/nginx")." -c ".$wreConfig->getRoot("/etc/nginx.conf");
+    my $cmd = $self->base;
     my $count   = 0;
     my $success = 0;
     `$cmd`; # catch command line output
@@ -109,12 +151,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub stop {
     my $self = shift;
-    my $wreConfig = $self->wreConfig;
-    my $host = WRE::Host->new(wreConfig=>$wreConfig);
-    unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
-        croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
-    }
-    my $cmd = $wreConfig->getRoot("/prereqs/sbin/nginx")." -c ".$wreConfig->getRoot("/etc/nginx.conf")." -s stop";
+    my $cmd = $self->base . " -s stop";
     `$cmd`; # catch command line output
     my $count = 0;
     my $success = 0;
@@ -127,5 +164,26 @@ sub stop {
     }
     return $success;
 }
+
+#-------------------------------------------------------------------
+
+=head2 test ( )
+
+Have nginx 
+
+Returns a 1 if the start was successful, or a 0 if it was not.
+
+Note: The process that runs this command must be either root or the user specified in the WRE config file.
+
+=cut
+
+sub reload {
+    my $self = shift;
+    my $cmd = $self->base . ' -t';
+    my $out = `$cmd`; # catch command line output
+    print $out;
+    return 1;
+}
+
 
 1;
