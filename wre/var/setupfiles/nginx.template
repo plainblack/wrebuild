@@ -16,17 +16,15 @@ server {
         proxy_set_header Host $host;
         proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
     }
-    location /uploads {
-        expires 2h;
-        if ( $request_filename ~ "^(.*/)" ) {
-            set $request_directory $document_root$1;
-        }
-        if ( -f "$request_directory/.wgaccess" ) {
-            proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
-        }
+
+    location /extras/ {
+        add_header Cache-Control public;
+        expires 24h;
+        root   /data/WebGUI/www/extras;
+        add_header Access-Control-Allow-Origin *;
     }
+
     location /uploads/filepump { expires max; }
-    location /extras/          { expires 24h; }
     location = /default.ida    { access_log off; deny all; }
     location /_vti_bin         { access_log off; deny all; }
     location /_mem_bin         { access_log off; deny all; }
