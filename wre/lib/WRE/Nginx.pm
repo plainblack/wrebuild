@@ -114,7 +114,7 @@ sub stop {
     unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot stop services with ports 1-1024.";
     }
-    my $cmd = $wreConfig->getRoot("/prereqs/sbin/nginx")." -c ".$wreConfig->getRoot("/etc/modproxy.conf")." -s stop";
+    my $cmd = $wreConfig->getRoot("/prereqs/sbin/nginx")." -c ".$wreConfig->getRoot("/etc/nginx.conf")." -s stop";
     `$cmd`; # catch command line output
     my $count = 0;
     my $success = 0;
@@ -123,7 +123,7 @@ sub stop {
         $count++;
     }
     if ($success) {
-        $wreConfig->set("wreMonitor/modproxyAdministrativelyDown", 1);
+        $wreConfig->set("wreMonitor/nginxAdministrativelyDown", 1);
     }
     return $success;
 }
