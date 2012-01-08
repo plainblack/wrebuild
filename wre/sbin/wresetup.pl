@@ -34,11 +34,6 @@ my $config = WRE::Config->new;
 my $host   = WRE::Host->new(wreConfig => $config);
 my $file   = WRE::File->new(wreConfig => $config);
 
-say "Setting up demo files";
-$file->makePath($config->getDomainRoot("/demo"));
-$file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"), 
-    { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
-
 say "Setting up nginx main config";
 $file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
     $config->getRoot("/etc/nginx.conf"),
@@ -62,6 +57,21 @@ $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWe
     { force => 1 });
 $file->changeOwner($config->getWebguiRoot("/etc"));
 
+say "Setting up WebGUI logging";
+eval {
+    open my $in, '<', $config->getWebguiRoot("/etc/log.conf.original")
+        or die "Unable to open '" . $config->getWebguiRoot("/etc/log.conf.original") . "': $!\n";
+    open my $out, '>', $config->getWebguiRoot("/etc/log.conf")
+        or die "Unable to open '" . $config->getWebguiRoot("/etc/log.conf") . "': $!\n";
+    while (my $line = <$in>) {
+        $line =~ s{/var/log/webgui\.log}{ $config->getRoot("/var/logs/webgui.log") }ge;
+        print {$out} $line;
+    }
+    close $out;
+    close $in;
+};
+
+
 say "Creating log and run directory";
 $file->makePath($config->getRoot("/var/logs"));
 $file->makePath($config->getRoot("/var/run"));
@@ -74,7 +84,7 @@ wresetup.pl
 
 =head1 SYNOPSIS
 
-./wresetup.pl --configFile=/data/wre/etc/wre.conf
+wresetup.pl
 
 =head1 DESCRIPTION
 
