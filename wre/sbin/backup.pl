@@ -34,6 +34,7 @@ Pod::Usage::pod2usage( verbose => 2 ) if $help;
 exit unless $config->get("backup/enabled");
 
 backupMysql($config);
+backupFiles($config);
 runExternalScripts($config);
 copyToRemote($config);
 
@@ -42,7 +43,7 @@ sub backupMysql {
     my $config = shift;
 
     # should we run?
-    return undef unless $config->get("backup//mysql/enabled");
+    return undef unless $config->get("backup/mysql/enabled");
 
     # disable wremonitor to prevent false positives
     $config->set("wreMonitor/nginxAdministrativelyDown", 1);
@@ -62,8 +63,8 @@ sub backupMysql {
 	while (my ($name) = $databases->fetchrow_array) {
 
         # skip some databases
-		next if ($name =~ /^demo\d/);
-		next if ($name eq 'test');
+		next if $name =~ /^demo\d/;
+        next if $name ~~ [qw/test information_schema performance_schema/];
 
         # create dump
         $mysql->dump(
