@@ -63,7 +63,7 @@ sub backupMysql {
 
         # skip some databases
 		next if ($name =~ /^demo\d/);
-		next if ($name eq 'test'/);
+		next if ($name eq 'test');
 
         # create dump
         $mysql->dump(
