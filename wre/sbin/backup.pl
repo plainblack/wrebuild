@@ -86,7 +86,7 @@ sub backupFiles {
     my $backupDir   = $config->get("backup/path");
     foreach my $path (@{ $paths }) {
         say "rsyncing $path locally...";
-        system (q!nice rsync -av --exclude=logs --exclude="domains/demo*" --exclude=mysqldata $path $backupDir/backup!);
+        system (qq!nice rsync -av --exclude=logs --exclude="domains/demo*" --exclude=mysqldata $path $backupDir/backup!);
     }
 }
 
