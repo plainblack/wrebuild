@@ -86,7 +86,7 @@ sub backupFiles {
     my $backupDir   = $config->get("backup/path");
     foreach my $path (@{ $paths }) {
         say "rsyncing $path locally...";
-        system (qq!nice rsync -av --exclude=logs --exclude="domains/demo*" --exclude=mysqldata $path $backupDir/backup!);
+        system (qq!nice rsync -a --quiet --exclude=logs --exclude="domains/demo*" --exclude=mysqldata $path $backupDir/backup!);
     }
 }
 
@@ -126,7 +126,7 @@ sub copyToRemote {
     say "Moving new data over...";
     foreach my $path (@{ $paths }) {
         say "rsyncing $path remotely...";
-        system ("rsync -av --chmod=u+rwx --exclude=logs --exclude=mysqldata $path $ACCOUNT:$remote_path/backup");
+        system ("rsync -av --chmod=u+rwx $path $ACCOUNT:$remote_path/backup");
     }
 }
 
