@@ -42,7 +42,7 @@ sub backupMysql {
     my $config = shift;
 
     # should we run?
-    return undef unless $config->get("backup/items/mysql");
+    return undef unless $config->get("backup//mysql/enabled");
 
     # disable wremonitor to prevent false positives
     $config->set("wreMonitor/nginxAdministrativelyDown", 1);
@@ -63,7 +63,7 @@ sub backupMysql {
 
         # skip some databases
 		next if ($name =~ /^demo\d/);
-		next if ($name =~ /^test$/);
+		next if ($name eq 'test'/);
 
         # create dump
         $mysql->dump(
@@ -153,13 +153,13 @@ backup - Backup script for a WebGUI instance
 =head1 DESCRIPTION
 
 This wre script backups all files and databases according to the wre.conf and
-backup.exclude files. This script is advised to be run as a root owned cronjob.
+backup.exclude files. This script is best run as a root owned cronjob.
 
 Please see L<wre.conf.pod> for the backup options.
 
-=head2 backup.exclude
-
-A file that contains patterns of file locations and filenames that should not be backed up. This is used by the tar --exclude-from option.
+The script will ignore the test database, and any database that looks like it might
+come from the demo system.  The demo system databases are identified by any name that
+starts with "demo" and then a digit, C<^demo\d>.
 
 =over 4
 
