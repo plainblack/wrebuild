@@ -134,6 +134,7 @@ sub start {
         $count++;
     }
     if ($success) {
+        my $wreConfig = $self->wreConfig;
         $wreConfig->set("wreMonitor/nginxAdministrativelyDown", 0);
     }
     return $success;
@@ -160,6 +161,7 @@ sub stop {
         $count++;
     }
     if ($success) {
+        my $wreConfig = $self->wreConfig;
         $wreConfig->set("wreMonitor/nginxAdministrativelyDown", 1);
     }
     return $success;
