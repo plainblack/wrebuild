@@ -122,6 +122,7 @@ sub start {
          . " --access-log=" . $config->getRoot("var/logs/starman.log")
          . " --error-log=" . $config->getRoot("var/logs/starman_error.log")
          . " --workers=" . $config->get("starman/workers")
+         . " --user=" . $config->get("user")
          . ' ' . $config->get("webgui/root") . "/app.psgi & "
          ;
     system($cmd); # catch command line output
