@@ -162,7 +162,7 @@ sub stop {
     kill "TERM", $pid;
     while ($count++ < 10 && $success) {
         sleep(1);
-        eval { $success = $self->ping };
+        eval { $success = !$self->ping };
     }
     if ($success) {
         $config->set("wreMonitor/starmanAdministrativelyDown", 1);
