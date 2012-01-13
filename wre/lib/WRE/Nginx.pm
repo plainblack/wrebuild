@@ -183,7 +183,6 @@ sub reload {
     my $self = shift;
     my $cmd = $self->base . ' -t';
     my $out = `$cmd`; # catch command line output
-    print $out;
     return 1;
 }
 
