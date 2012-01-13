@@ -82,13 +82,14 @@ A dsn to connect with. By default uses the DSN for the test database.
 =cut
 
 sub getDatabaseHandle {
-    my $self = shift;
-    my %options = @_;
+    my $self     = shift;
+    my %options  = @_;
     my $password = $options{password};
-    my $mysql = $self->wreConfig->get("mysql");
+    my $mysql    = $self->wreConfig->get("mysql");
     my $username = $options{username} || $mysql->{adminUser};
-    my $dsn = $options{dsn} || 'DBI:mysql:'.$mysql->{test}->{database}.';host='.$mysql->{hostname}.';port='.$mysql->{port};
-    my $db = undef;
+    my $test_db  = $mysql->{test}->{database} || 'test';
+    my $dsn = $options{dsn} || 'DBI:mysql:'.$test_db.';host='.$mysql->{hostname}.';port='.$mysql->{port};
+    my $db  = undef;
     eval { 
         $db = DBI->connect($dsn, $username, $password, {RaiseError=>1});
     };
