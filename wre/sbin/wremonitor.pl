@@ -15,7 +15,7 @@ $| = 1;
 use strict;
 use lib '/data/wre/lib';
 use Fcntl qw(:flock);
-use List::Util qw/first sum max/;
+use List::Util qw/sum/;
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;
