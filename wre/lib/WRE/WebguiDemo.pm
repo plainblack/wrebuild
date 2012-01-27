@@ -19,8 +19,9 @@ use WebGUI::Config;
 use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
+use Moose;
 
-extends 'Plack::Component';
+use parent 'Plack::Component';
 use Plack::Util::Accessor qw/wre_config/;
 
 #-------------------------------------------------------------------
@@ -31,7 +32,7 @@ sub call {
     my $r  = Plack::Request->new($env);
     my ($id) = $r->uri->host =~ m/^\/(demo[0-9\_]+).*$/;
     my $webgui_config = $config->getWebguiRoot("/etc/".$id.".conf");
-    $self->response($response);
+    my $response;
     if (-e $webgui_config) {
         ## Code to use the WebGUI App with a particular config file.
         local $ENV{WEBGUI_CONFIG} = $webgui_config;
@@ -46,6 +47,7 @@ sub call {
     else {
         $response = $self->prompt_demo();
     }
+    return $response->finalize;
 }
 
 
