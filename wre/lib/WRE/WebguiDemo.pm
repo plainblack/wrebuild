@@ -19,7 +19,6 @@ use WebGUI::Config;
 use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
-use Moose;
 
 use parent 'Plack::Component';
 use Plack::Util::Accessor qw/wre_config/;
