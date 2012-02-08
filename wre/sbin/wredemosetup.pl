@@ -38,7 +38,7 @@ if ($config->get('demo/enabled') {
     say "Setting up demo files";
     $file->makePath($config->getDomainRoot("/demo"));
     $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"),
-        { force => 1, templateVars=>{ sitename=>$config->get("demo/hostname") } });
+        { force => 1,  processTemplate => 1, );
 }
 else {
     say "Skipping demo files";

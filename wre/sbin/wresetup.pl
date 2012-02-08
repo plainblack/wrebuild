@@ -57,13 +57,6 @@ $file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWe
     { force => 1 });
 $file->changeOwner($config->getWebguiRoot("/etc"));
 
-if ($config->get('demo/enabled') {
-    say "Setting up demo server";
-    $file->copy($config->getRoot("/var/setupfiles/demo.nginx"),
-        $config->getRoot("/etc/demo.nginx"),
-        { force => 1, processTemplate => 1, });
-}
-
 say "Setting up WebGUI logging";
 eval {
     open my $in, '<', $config->getWebguiRoot("/etc/log.conf.original")
