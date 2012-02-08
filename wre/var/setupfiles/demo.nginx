@@ -1,10 +1,10 @@
 server {
-    server_name  [% config.get('demo.hostname') %];
+    server_name  [% config.get('demo/hostname') %];
 
     listen   [% config.get('nginx/port') %]; ## listen for ipv4
 
-    access_log [% domainRoot %]/[% config.get('demo.hostname') %]/logs/access.log combined;
-    root       [% domainRoot %]/[% config.get('demo.hostname') %]/public;
+    access_log [% domainRoot %]/[% config.get('demo/hostname') %]/logs/access.log combined;
+    root       [% domainRoot %]/[% config.get('demo/hostname') %]/public;
     client_max_body_size 20M;
 
     # proxy webgui to starman listening on 127.0.0.1
