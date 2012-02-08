@@ -1,67 +1,35 @@
 server {
-    listen     [% modproxyPort %];
-    server_name [% sitename %] [% domain %]; 
-    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
+    server_name  [% config.get('demo.hostname') %];
 
+    listen   [% config.get('nginx/port') %]; ## listen for ipv4
+
+    access_log [% domainRoot %]/[% config.get('demo.hostname') %]/logs/access.log combined;
+    root       [% domainRoot %]/[% config.get('demo.hostname') %]/public;
     client_max_body_size 20M;
-    proxy_set_header  X-Real-IP  $remote_addr;
-    proxy_set_header Host $host;
 
-    # block IIS related attacks from getting to WebGUI
-    location = /^scripts/ {
-        return 400
+    # proxy webgui to starman listening on 127.0.0.1
+    location / {
+        # proxy_cache static;
+        # proxy_cache_valid 200 1s;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+        proxy_pass   http://127.0.0.1:[% config.get('starman/port') %];
     }
 
-    location = /^default.ida/ {
-        return 400
+    location /extras/ {
+        add_header Cache-Control public;
+        expires 24h;
+        root   /data/WebGUI/www/;
+        add_header Access-Control-Allow-Origin *;
     }
 
-    location = /_vti_bin/ {
-        return 400
-    }
-
-    location = /_mem_bin/ {
-        return 400
-    }
-
-    # proxy webgui pages
-    #ProxyPreserveHost On
-    #RewriteRule ^/(.*) http://127.0.0.1:[% modperlPort %]/$1 [P]
+    location /uploads/filepump { expires max; }
+    location = /default.ida    { access_log off; deny all; }
+    location /_vti_bin         { access_log off; deny all; }
+    location /_mem_bin         { access_log off; deny all; }
+    location ~ /\.(ht|wg)      { access_log off; deny all; }
+    location = /alive          { access_log off; }
 }
 
-# Uncomment the following lines to enable SSL for this host. Also,
-# change the 10.0.0.1 to the IP address you wish to bind the SSL host
-# to.
 
-#server {
-#    listen     443;
-#    server_name [% sitename %] [% domain %]; 
-#    access_log [% domainRoot %]/[% sitename %]/logs/access.log combined
-#
-#    client_max_body_size 20M;
-#    proxy_set_header  X-Real-IP  $remote_addr;
-#    proxy_set_header Host $host;
-#
-#    # block IIS related attacks from getting to WebGUI
-#    location = /^scripts/ {
-#        return 400
-#    }
-#
-#    location = /^default.ida/ {
-#        return 400
-#    }
-#
-#    location = /_vti_bin/ {
-#        return 400
-#    }
-#
-#    location = /_mem_bin/ {
-#        return 400
-#    }
-#
-#    # For chained certificates, concatenate all the certs together, starting with the
-#    # site certificate and then the chained certificates
-#    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt
-#    ssl_certificate_key [% domainRoot %]/[% sitename %]/certs/server.key
-#
-#}
