@@ -34,11 +34,11 @@ my $config = WRE::Config->new;
 my $host   = WRE::Host->new(wreConfig => $config);
 my $file   = WRE::File->new(wreConfig => $config);
 
-if ($config->get('demo/enabled') {
+if ($config->get('demo/enabled')) {
     say "Setting up demo files";
     $file->makePath($config->getDomainRoot("/demo"));
     $file->copy($config->getRoot("/var/setupfiles/demo.nginx"), $config->getRoot("/etc/demo.nginx"),
-        { force => 1,  processTemplate => 1, );
+        { force => 1,  processTemplate => 1, } );
 }
 else {
     say "Skipping demo files";
