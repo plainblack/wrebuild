@@ -123,7 +123,7 @@ sub start {
          . " --error-log=" . $config->getRoot("var/logs/starman_error.log")
          . " --workers=" . $config->get("starman/workers")
          . " --user=" . $config->get("user")
-         . ' ' . $config->getRoot("wre.psgi") . " & "
+         . ' ' . $config->getRoot("sbin/wre.psgi") . " & "
          ;
     system($cmd); # catch command line output
     while ($count++ < 10 && !$success) {
