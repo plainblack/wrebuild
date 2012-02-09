@@ -3,7 +3,7 @@ server {
 
     listen   [% config.get('nginx/port') %]; ## listen for ipv4
 
-    access_log [% domainRoot %]/[% config.get('demo/hostname') %]/logs/access.log combined;
+    access_log off;
     root       [% domainRoot %]/[% config.get('demo/hostname') %]/public;
     client_max_body_size 20M;
 
