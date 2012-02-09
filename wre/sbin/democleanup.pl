@@ -16,6 +16,8 @@ use Getopt::Long;
 use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
+use WRE::Starman;
+use 5.010.;
 
 my ($all, $help, $verbose);
 $|=1;
@@ -27,7 +29,7 @@ GetOptions(
 );
 
 if ($help) {
-	print <<STOP;
+	say <<STOP;
 
 	Usage: $0
 
@@ -42,18 +44,18 @@ if ($help) {
 STOP
 }
 
-print "START UP.\n" if ($verbose);
-print "Reading demo config.\n" if ($verbose);
+say "START UP." if ($verbose);
+say "Reading demo config." if ($verbose);
 my $config = WRE::Config->new;
 my $file = WRE::File->new(wreConfig=>$config);
-print "Getting the list of demo sites.\n" if ($verbose);
+say "Getting the list of demo sites." if ($verbose);
 opendir(my $demodir, $config->getWebguiRoot("/etc"));
 my @demos = ();
 foreach my $file (readdir($demodir)) {
     next unless $file =~ m/^demo/;
     my $config = eval {Config::JSON->new($config->getWebguiRoot("/etc/".$file)) };
     if ($@) {
-        print "Error reading $file\n" if ($verbose);
+        say "Error reading $file" if ($verbose);
     }
     else {
         push @demos, $config;
@@ -61,15 +63,15 @@ foreach my $file (readdir($demodir)) {
 }
 closedir($demodir);
 
-print "Deleting demos.\n" if ($verbose);
+say "Deleting demos." if ($verbose);
 foreach my $demo (@demos) {
     my $demoId = $demo->getFilename;
     $demoId =~ s/(demo.*)\.conf/$1/;
 	if ($all || time() - $demo->get("demoCreated") > $config->get("demo/duration") * 60 * 60 * 24) {
-		print "Deleting Site: ".$demoId."\n" if ($verbose);
+		say "Deleting Site: ".$demoId."" if ($verbose);
 
         # database
-		print "\tConnecting to database.\n" if ($verbose);
+		say "\tConnecting to database." if ($verbose);
         my $databaseName = $demo->get("dsn");
         $databaseName =~ s/^DBI\:mysql\:(\w+).*$/$1/i; 
         my $databaseUser = $demo->get("dbuser");
@@ -79,31 +81,38 @@ foreach my $demo (@demos) {
             username=>$config->get("demo/user")
             )};
         if ($@) {
-            print "\tCan't connect to database, so can't delete site.\n" if ($verbose);
+            say "\tCan't connect to database, so can't delete site." if ($verbose);
         }
         else {
-		    print "\tDropping database.\n" if ($verbose);
+		    say "\tDropping database." if ($verbose);
             eval{$db->do("drop database $databaseName")};
-		    print "\tError: $@\n" if ($@ && $verbose);
-		    print "\tRevoking database privileges.\n" if ($verbose);
+		    say "\tError: $@" if ($@ && $verbose);
+		    say "\tRevoking database privileges." if ($verbose);
             eval{$db->do("revoke all privileges on ".$databaseName.".* from '".$databaseUser."'\@'%'")};
-		    print "\tError: $@\n" if ($@ && $verbose);
+		    say "\tError: $@" if ($@ && $verbose);
             $db->disconnect;
 
             # web root
-            print "\tDeleting Web Root.\n" if ($verbose);
+            say "\tDeleting Web Root." if ($verbose);
             $file->delete($config->getDomainRoot("/demo/".$demoId));
 
             # webgui
-            print "\tDeleting WebGUI Config.\n" if ($verbose);
+            say "\tDeleting WebGUI Config." if ($verbose);
             $file->delete($demo->getFilePath);
 
-		    print "\tFinished deleting $demoId\n" if ($verbose);
+		    say "\tFinished deleting $demoId" if ($verbose);
         }
 	}
     else {
-		print "Skipping Site: ".$demoId."\n" if ($verbose);
+		say "Skipping Site: ".$demoId if ($verbose);
 	}
 }
-print "COMPLETE.\n" if ($verbose);
+say "Restarting Starman" if $verbose;
+if (eval { WRE::Starman->new(wreConfig=>$config)->restart; }) {
+    say "OK" if $verbose;
+}
+else {
+    say "Failed: $@";
+}
+say "COMPLETE." if ($verbose);
 
