@@ -25,6 +25,7 @@ use Plack::Util::Accessor qw/wre_config/;
 
 #-------------------------------------------------------------------
 sub call {
+    my $self = shift;
     my $env = shift;
     my $config = WRE::Config->new;
     $self->wre_config($config);
