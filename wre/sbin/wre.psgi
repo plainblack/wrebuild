@@ -24,7 +24,7 @@ builder {
     if ($wre_config->get('demo/enabled')) {
         use WRE::WebguiDemo;
         my $wre = WRE::WebguiDemo->new();
-        mount $wre_config->get('demo/hostname') => $wre;
+        mount $wre_config->get('demo/hostname') => $wre->to_app;
     }
     my $webgui = Plack::Util::load_psgi($wre_config->getWebguiRoot('app.psgi'));
     mount '/' => $webgui;
