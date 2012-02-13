@@ -71,7 +71,7 @@ sub prompt_demo {
 #-------------------------------------------------------------------
 sub create_demo {
     my $self = shift;
-    my $response = $self->response();
+    my $response = Plack::Response->new();
     my $config = $self->wre_config;
     my $now = time();
     my $demo = $config->get("demo");
