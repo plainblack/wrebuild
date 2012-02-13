@@ -41,7 +41,7 @@ sub call {
         $app->call($env);
     }
     # Extras can be served from nginx
-    elsif ($r->uri->path eq "create") {
+    elsif ($r->uri->path eq "/create") {
         $response = $self->create_demo();
     }
     else {
