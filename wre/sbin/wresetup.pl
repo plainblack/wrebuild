@@ -52,9 +52,21 @@ $file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
     $config->getRoot("/etc/wre.logrotate"),
     { force => 1, processTemplate => 1, });
 
-say "Setting up Spectre config";
-$file->copy($config->getWebguiRoot("/etc/spectre.conf.original"), $config->getWebguiRoot("/etc/spectre.conf"),
-    { force => 1 });
+say "Setting up Spectre configuration";
+eval {
+    open my $in, '<', $config->getWebguiRoot("/etc/spectre.conf.original")
+        or die "Unable to open '" . $config->getWebguiRoot("/etc/spectre.conf.original") . "': $!\n";
+    open my $out, '>', $config->getWebguiRoot("/etc/spectre.conf")
+        or die "Unable to open '" . $config->getWebguiRoot("/etc/spectre.conf") . "': $!\n";
+    while (my $line = <$in>) {
+        $line =~ s{/var/run/spectre\.pid}{ $config->getRoot("/var/run/spectre.pid") }ge;
+        print {$out} $line;
+    }
+    close $out;
+    close $in;
+};
+
+say "Fixing permissions on the WebGUI etc directory";
 $file->changeOwner($config->getWebguiRoot("/etc"));
 
 say "Setting up WebGUI logging";
