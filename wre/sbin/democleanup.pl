@@ -17,7 +17,7 @@ use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
 use WRE::Starman;
-use 5.010.;
+use 5.010;
 
 my ($all, $help, $verbose);
 $|=1;
