@@ -38,7 +38,7 @@ sub call {
         local $ENV{WEBGUI_CONFIG} = $webgui_config;
         my $psgi = WebGUI::Paths->defaultPSGI;
         my $app = Plack::Util::load_psgi($psgi);
-        $app->call($env);
+        return Plack::Util::run_app($app, $env);
     }
     # Extras can be served from nginx
     elsif ($r->uri->path eq "/create") {
