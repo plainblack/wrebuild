@@ -113,7 +113,7 @@ sub start {
     my $cmd = "";
     #start_server --pid-file=/data/wre/var/run/starman.pid --port=8081 --status=/data/wre/var/run/starman.status -- starman  --preload-app /data/WebGUI/app.psgi
     $cmd = $config->getRoot("/prereqs/bin/start_server")
-         . " --pid="     . $config->getRoot("var/run/starman.pid")
+         . " --pid-file="     . $config->getRoot("var/run/starman.pid")
          . " --status="  . $config->getRoot("var/run/starman.status")
          . " --port="    . $config->get("starman/port")
          . " --" #Beginning of the starman specific configurations
