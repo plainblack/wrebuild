@@ -30,7 +30,7 @@ sub call {
     my $config = WRE::Config->new;
     $self->wre_config($config);
     my $r  = Plack::Request->new($env);
-    my ($id) = $r->uri->host =~ m/^\/(demo[0-9\_]+).*$/;
+    my ($id) = $r->uri->path =~ m/^\/(demo[0-9\_]+).*$/;
     my $webgui_config = $config->getWebguiRoot("/etc/".$id.".conf");
     my $response;
     if (-e $webgui_config) {
