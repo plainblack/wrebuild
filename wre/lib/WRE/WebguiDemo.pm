@@ -77,7 +77,6 @@ sub create_demo {
     my $demo = $config->get("demo");
     srand;
     my $demoId = "demo".$now."_".int(rand(999));
-    my $template = Template->new;
     my $params = {};
     my $file = WRE::File->new(wreConfig=>$config);
 
