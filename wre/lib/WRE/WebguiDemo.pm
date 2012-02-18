@@ -38,7 +38,18 @@ sub call {
         local $ENV{WEBGUI_CONFIG} = $webgui_config;
         my $psgi = WebGUI::Paths->defaultPSGI;
         my $app = Plack::Util::load_psgi($psgi);
-        return Plack::Util::run_app($app, $env);
+
+        my $orig_path_info   = my $path = $env->{PATH_INFO};
+        my $orig_script_name = $env->{SCRIPT_NAME};
+
+        $path =~ s/\Q$id\E//;
+
+        $env->{PATH_INFO}    = $path;
+        $env->{SCRIPT_NAME} .= $id;
+        return $self->response_cb($app->($env), sub {
+            $env->{PATH_INFO} = $orig_path_info;
+            $env->{SCRIPT_NAME} = $orig_script_name;
+        });
     }
     # Extras can be served from nginx
     elsif ($r->uri->path eq "/create") {
