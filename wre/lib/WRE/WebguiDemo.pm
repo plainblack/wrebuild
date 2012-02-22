@@ -42,7 +42,7 @@ sub call {
         my $orig_path_info   = my $path = $env->{PATH_INFO};
         my $orig_script_name = $env->{SCRIPT_NAME};
 
-        $path =~ s/\Q$id\E//;
+        $path =~ s/\/\Q$id\E//;
 
         $env->{PATH_INFO}    = $path;
         $env->{SCRIPT_NAME} .= '/'.$id;
