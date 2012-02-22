@@ -45,7 +45,7 @@ sub call {
         $path =~ s/\Q$id\E//;
 
         $env->{PATH_INFO}    = $path;
-        $env->{SCRIPT_NAME} .= $id;
+        $env->{SCRIPT_NAME} .= '/'.$id;
         return $self->response_cb($app->($env), sub {
             $env->{PATH_INFO} = $orig_path_info;
             $env->{SCRIPT_NAME} = $orig_script_name;
