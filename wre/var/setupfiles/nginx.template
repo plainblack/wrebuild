@@ -1,8 +1,10 @@
 ##Force all domain requests, mysite.com, to go to www.mysite.com
+[% IF sitename.match('^www\.')  %]
 server {
     server_name [% domain %];
     rewrite ^ $scheme://[% sitename %]$request_uri redirect;
 }
+[% END %]
 
 server {
     server_name  [% sitename %];
