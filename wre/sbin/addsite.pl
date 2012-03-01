@@ -20,7 +20,7 @@ $| = 1;
 
 my $config = WRE::Config->new();
 my ($var1, $var2, $var3, $var4, $var5, $var6, $var7, $var8, $var9, $var0, $sitename, $adminPassword, 
-    $dbUser, $dbPassword, $dbName, $help) = "";
+    $dbUser, $dbPassword, $dbName, $help, $fromConfig) = "";
 GetOptions(
     "help"                  => \$help,
     "var1=s"                => \$var1,    
@@ -38,11 +38,12 @@ GetOptions(
     "databaseUser=s"        => \$dbUser,
     "databasePassword=s"    => \$dbPassword, 
     "databaseName=s"       => \$dbName,
+    "fromConfig=s"       => \$fromConfig,
     );
 
 my $dbAdminUser = $config->get("mysql/adminUser");
 
-if ($help || $adminPassword eq "" || $sitename eq "") {
+if ($help || $adminPassword eq "" || ($sitename eq "" && $fromConfig eq '')) {
     print <<STOP;
 Usage: $0 --sitename=www.example.com --adminPassword=123qwe
 
@@ -54,12 +55,14 @@ Options:
 
  --databasePassword The password you'd like created to access this site's database.
 
- --databaseName        The name of the database to create in MySQL (defaults to www_site_com for the domain www.site.com).
+ --databaseName     The name of the database to create in MySQL (defaults to www_site_com for the domain www.site.com).
 
  --help             This message.
 
  --sitename         The name of the site you'd like to create. For example: www.example.com 
                     or intranet.example.com
+
+ --fromConfig       Pull the sitename, dbUser and dbPassword from the referenced config file
 
  --var0-9           A series of variables you can use to arbitrary information into the site
                     creation process. These variables will be exposed to all templates used to
@@ -67,6 +70,14 @@ Options:
 
 STOP
     exit;
+}
+
+if ($fromConfig) {
+    use Config::JSON;
+    my $webguiConfig = Config::JSON->new($fromConfig);
+    $sitename     ||= $webguiConfig->get('sitename')->[0];
+    $dbUser       ||= $webguiConfig->get('dbuser');
+    $dbPassword   ||= $webguiConfig->get('dbpass');
 }
 
 
@@ -78,18 +89,18 @@ my $site = WRE::Site->new(
     );
 if (eval {$site->checkCreationSanity}) {
     $site->create({
-        siteDatabaseUser        => $dbUser,
-        siteDatabasePassword    => $dbPassword,
-        var0                    => $var0,
-        var1                    => $var1,
-        var2                    => $var2,
-        var3                    => $var3,
-        var4                    => $var4,
-        var5                    => $var5,
-        var6                    => $var6,
-        var7                    => $var7,
-        var8                    => $var8,
-        var9                    => $var9,
+        databaseUser        => $dbUser,
+        databasePassword    => $dbPassword,
+        var0                => $var0,
+        var1                => $var1,
+        var2                => $var2,
+        var3                => $var3,
+        var4                => $var4,
+        var5                => $var5,
+        var6                => $var6,
+        var7                => $var7,
+        var8                => $var8,
+        var9                => $var9,
         });
     print $site->sitename." was created. Don't forget to restart the web servers and Spectre.\n";
 } 
