@@ -37,8 +37,8 @@ GetOptions(
     "adminPassword=s"       => \$adminPassword,
     "databaseUser=s"        => \$dbUser,
     "databasePassword=s"    => \$dbPassword, 
-    "databaseName=s"       => \$dbName,
-    "fromConfig=s"       => \$fromConfig,
+    "databaseName=s"        => \$dbName,
+    "fromConfig=s"          => \$fromConfig,
     );
 
 my $dbAdminUser = $config->get("mysql/adminUser");
@@ -62,7 +62,9 @@ Options:
  --sitename         The name of the site you'd like to create. For example: www.example.com 
                     or intranet.example.com
 
- --fromConfig       Pull the sitename, dbUser and dbPassword from the referenced config file
+ --fromConfig       Pull the sitename, dbUser and dbPassword from the referenced config file to build a new site.  Then,
+                    it replaces the newly created config file with the old config file.  Handy for moving sites to
+                    new servers.
 
  --var0-9           A series of variables you can use to arbitrary information into the site
                     creation process. These variables will be exposed to all templates used to
@@ -102,6 +104,24 @@ if (eval {$site->checkCreationSanity}) {
         var8                => $var8,
         var9                => $var9,
         });
+    if ($fromConfig) {
+        ##Get the spectre information from the newly created config file.
+        use Config::JSON;
+        my $new_config = Config::JSON->new($config->getWebguiRoot('etc/'.$sitename.".conf"));
+        my $spectreSubnets  = $new_config->get('spectreSubnets');
+        undef $new_config;
+
+        ##Copy the file over
+        printf "copying file from %s to %s\n", $fromConfig, $config->getWebguiRoot('etc/'.$sitename.".conf");
+        use WRE::File;
+        my $file = WRE::File->new(wreConfig=>$config);
+        $file->copy($fromConfig, $config->getWebguiRoot('etc/'.$sitename.".conf"), { force => 1 });
+
+        ##Update the spectre information in the old config
+        print "Setting new spectre information into old config\n";
+        my $orig_config = Config::JSON->new($config->getWebguiRoot('etc/'.$sitename.".conf"));
+        $orig_config->set('spectreSubnets', $spectreSubnets);
+    }
     print $site->sitename." was created. Don't forget to restart the web servers and Spectre.\n";
 } 
 else {
