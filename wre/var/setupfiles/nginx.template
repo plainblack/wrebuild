@@ -45,8 +45,8 @@ server {
 #    server_name  [% sitename %] [%domain %];
 #
 #    ssl  on;
-#    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt
-#    ssl_certificate_key [% domainRoot %]/[% sitename %]/certs/server.key
+#    ssl_certificate [% domainRoot %]/[% sitename %]/certs/server.crt;
+#    ssl_certificate_key [% domainRoot %]/[% sitename %]/certs/server.key;
 #
 #    ssl_session_timeout  5m;
 #
