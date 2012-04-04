@@ -1,0 +1,33 @@
+To build a WRE on Ubuntu Oneiric Ocelot (11.10). Do the following tasks:
+
+1) Install the following packages:
+
+libncurses5-dev build-essential zlib1g-dev libssl-dev libexpat1-dev libglib2.0-dev wget graphviz graphviz-dev rsync 
+
+2) Install MySQL. We recommend the Percona Server version:
+
+Installation is easy via the repository. Add (as root) the key:
+# gpg --keyserver hkp://keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A
+# gpg -a --export CD2EFD2A | sudo apt-key add -
+
+Add the repository to /etc/apt/sources.list:
+deb http://repo.percona.com/apt oneiric main
+deb-src http://repo.percona.com/apt oneiric main
+
+Install client and server and optionally the toolkit and test.
+Note: this wil remove mysql-common.
+# apt-get install percona-server-server percona-server-test-5.5 percona-toolkit percona-server-client
+
+3) Install a my.cnf file. A suggested one is in var/setupfiles/my.cnf. It cannot be used without modification. (Need to look into this.)
+
+You will need to add a system user webgui:
+# useradd -s /sbin/nologin webgui
+
+4) Import the WRE into your environment:
+ . wre/sbin/setenvironment.sh
+
+5) Run:
+ ./getsource.sh
+
+6) Run:
+ ./build.sh --all

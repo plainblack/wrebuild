@@ -1,5 +1,9 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
+0.9.7
+ - Added BUILD.ubuntu with specifics for Ubuntu Oneiric (Arjan Widlak/United Knowledge)
+ - Updated libpng with version 1.5.10 (Arjan Widlak/United Knowledge)
+
 0.9.6
  - Almost a complete rewrite, using starman, nginx, Percona mysql and perl 5.14.2.
  - Includes all perl modules for WebGUI 8.0 beta.

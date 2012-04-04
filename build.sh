@@ -326,7 +326,7 @@ buildImageMagick(){
     buildProgram "giflib-4.1.6" "--enable-shared $CFG_CACHE"
 
     # lib png
-    buildProgram "libpng-1.5.7" "--enable-shared $CFG_CACHE"
+    buildProgram "libpng-1.5.10" "--enable-shared $CFG_CACHE"
 
     # graphviz
     buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"

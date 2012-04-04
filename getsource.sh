@@ -34,8 +34,8 @@ wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.
 tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
-wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.7.tar.gz
-tar xfz libpng-1.5.7.tar.gz
+wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.10.tar.gz
+tar xfz libpng-1.5.10.tar.gz
 
 # libgif image manipulation http://sourceforge.net/projects/giflib/
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/giflib/giflib-4.1.6.tar.bz2
