@@ -52,8 +52,8 @@ wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.ta
 tar zxf expat-2.0.1.tar.gz
 
 # freetype portable font engine http://freetype.sourceforge.net/index2.html
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/freetype/freetype-2.3.11.tar.bz2
-tar jxf freetype-2.3.11.tar.bz2
+wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/freetype/freetype-2.4.8.tar.bz2
+tar jxf freetype-2.4.8.tar.bz2
 
 # gnutls transport layer security http://www.gnu.org/software/gnutls/
 wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.8.5.tar.bz2
@@ -72,9 +72,9 @@ wget -t 4 -nv http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.tar.gz
 tar zxf libiconv-1.13.tar.gz
 
 # libjpeg image manipulation http://www.ijg.org/
-wget -t 4 -nv http://www.ijg.org/files/jpegsrc.v7.tar.gz
-tar zxf jpegsrc.v7.tar.gz
-mv jpeg-7 libjpeg-7
+wget -t 4 -nv http://www.ijg.org/files/jpegsrc.v8c.tar.gz
+tar zxf jpegsrc.v8c.tar.gz
+mv jpeg-8 libjpeg-8
 
 # lcms color management http://www.littlecms.com/
 wget -t 4 -nv http://sourceforge.net/projects/lcms/files/lcms/1.19/lcms-1.19.tar.gz/download
@@ -85,8 +85,8 @@ wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.
 tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/libpng-1.2.35.tar.bz2
-tar jxf libpng-1.2.35.tar.bz2
+wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/libpng-1.5.10.tar.bz2
+tar jxf libpng-1.5.10.tar.bz2
 
 # gnu libtool http://www.gnu.org/software/libtool/
 wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz
@@ -105,8 +105,8 @@ wget -t 4 -nv ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.7.tar.bz2
 tar jxf libgpg-error-1.7.tar.bz2
 
 # libxml2 xml c parser http://www.xmlsoft.org/
-wget -t 4 -nv ftp://xmlsoft.org/libxml2/libxml2-2.7.6.tar.gz
-tar zxf libxml2-2.7.6.tar.gz
+wget -t 4 -nv ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz
+tar zxf libxml2-2.7.7.tar.gz
 
 # modperl apache perl module http://perl.apache.org
 wget -t 4 -nv http://perl.apache.org/dist/mod_perl-2.0-current.tar.gz
@@ -121,23 +121,15 @@ wget -t 4 -nv http://www.openssl.org/source/openssl-0.9.8o.tar.gz
 tar zxf openssl-0.9.8o.tar.gz
 
 # perl programming language http://www.cpan.org/src/README.html
-wget -t 4 -nv http://www.cpan.org/src/perl-5.10.1.tar.gz
-tar zxf perl-5.10.1.tar.gz
+wget -t 4 -nv http://www.cpan.org/src/perl-5.14.2.tar.gz
+tar zxf perl-5.14.2.tar.gz
 
 # perlmodules
 # SEE SEPARATE SCRIPT
 
 # xpdf pdf generator http://www.foolabs.com/xpdf/download.html
-wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02.tar.gz
+wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.03.tar.gz
 tar zxf xpdf-3.02.tar.gz
-wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl1.patch
-patch -p0 <xpdf-3.02pl1.patch
-wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl2.patch
-patch -p0 <xpdf-3.02pl2.patch
-wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl3.patch
-patch -p0 <xpdf-3.02pl3.patch
-wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.02pl4.patch
-patch -p0 <xpdf-3.02pl4.patch
 
 # zlib compression library http://www.zlib.net/
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.tar.bz2
