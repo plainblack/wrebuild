@@ -8,8 +8,8 @@ mkdir source
 cd source
 
 # ncurses http://www.gnu.org/software/ncurses/
-wget -t 4 -nv http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
-tar xfz ncurses-5.7.tar.gz
+wget -t 4 -nv http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.9.tar.gz
+tar xfz ncurses-5.9.tar.gz
 
 # readline http://tiswww.case.edu/php/chet/readline/rltop.html
 wget -t 4 -nv ftp://ftp.cwru.edu/pub/bash/readline-6.1.tar.gz
@@ -27,8 +27,8 @@ tar zxf ImageMagick.tar.gz
 wget -t 4 -nv http://www.imagemagick.org/source/colors.xml
 
 # aspell dictionary http://aspell.net/
-wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.tar.gz
-tar zxf aspell-0.60.6.tar.gz
+wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.1.tar.gz
+tar zxf aspell-0.60.6.1.tar.gz
 
 # aspell-en
 wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-6.0-0.tar.bz2
@@ -56,8 +56,8 @@ wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/freetype/freetype-2.
 tar jxf freetype-2.4.8.tar.bz2
 
 # gnutls transport layer security http://www.gnu.org/software/gnutls/
-wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.8.5.tar.bz2
-tar jxf gnutls-2.8.5.tar.bz2
+wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.12.19.tar.bz2
+tar jxf gnutls-2.12.19.tar.bz2
 
 # httpd apache webserver http://httpd.apache.org/
 wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.20.tar.gz
@@ -89,8 +89,8 @@ wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/libpng-1.5.10
 tar jxf libpng-1.5.10.tar.bz2
 
 # gnu libtool http://www.gnu.org/software/libtool/
-wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz
-tar zxf libtool-2.2.6a.tar.gz
+wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz
+tar zxf libtool-2.4.2.tar.gz
 
 # libgif image manipulation http://sourceforge.net/projects/giflib/
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/giflib/giflib-4.1.6.tar.bz2
