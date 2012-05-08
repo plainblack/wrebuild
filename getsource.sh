@@ -131,19 +131,19 @@ tar zxf perl-5.14.2.tar.gz
 
 # xpdf pdf generator http://www.foolabs.com/xpdf/download.html
 wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.03.tar.gz
-tar zxf xpdf-3.02.tar.gz
+tar zxf xpdf-3.03.tar.gz
 
 # zlib compression library http://www.zlib.net/
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.tar.bz2
-tar jxf zlib-1.2.3.tar.bz2
+wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.6.tar.bz2
+tar jxf zlib-1.2.6.tar.bz2
 
 # git http://git-scm.com/download
-wget -t 4 -nv http://kernel.org/pub/software/scm/git/git-1.7.6.tar.bz2
+wget -t 4 -nv http://git-core.googlecode.com/files/git-1.7.10.1.tar.gz
 tar jxf git-1.7.6.tar.bz2
 
 # http://curl.haxx.se/
-wget -t 4 -nv http://curl.haxx.se/download/curl-7.19.7.tar.bz2
-tar jxf curl-7.19.7.tar.bz2
+wget -t 4 -nv http://curl.haxx.se/download/curl-7.25.0.tar.bz2
+tar jxf curl-7.25.0.tar.bz2
 
 rm -f *.gz *.tgz *.bz2 *.zip
 
