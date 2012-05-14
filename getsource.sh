@@ -34,8 +34,6 @@ tar zxf aspell-0.60.6.1.tar.gz
 wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-6.0-0.tar.bz2
 tar jxf aspell6-en-6.0-0.tar.bz2
 
-http://downloads.sourceforge.net/project/awstats/AWStats/7.0/awstats-7.0.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fawstats%2Ffiles%2FAWStats%2F7.0%2F&ts=1336517955&use_mirror=iweb
-
 # awstats http://awstats.sourceforge.net/
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/awstats/awstats-7.0.tar.gz
 tar zxf awstats-7.0.tar.gz
@@ -66,7 +64,7 @@ wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.4.2.tar.gz
 tar zxf httpd-2.4.2.tar.gz
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
-wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/old/lftp-4.3.6.tar.gz
+wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.3.6.tar.gz
 tar zxf lftp-4.3.6.tar.gz
 
 # libiconv unicode conversion tool http://www.gnu.org/software/libiconv/
@@ -76,12 +74,13 @@ tar zxf libiconv-1.14.tar.gz
 # libjpeg image manipulation http://www.ijg.org/
 wget -t 4 -nv http://www.ijg.org/files/jpegsrc.v8c.tar.gz
 tar zxf jpegsrc.v8c.tar.gz
-mv jpeg-8 libjpeg-8
+mv jpeg-8c libjpeg-8
 
 # lcms color management http://www.littlecms.com/
-wget -t 4 -nv http://sourceforge.net/projects/lcms/files/lcms/2.2.3/lcms-2.2.3.tar.gz/download
+wget -t 4 -nv http://softlayer.dl.sourceforge.net/project/lcms/lcms/2.3/lcms2-2.3.tar.gz
+#http://sourceforge.net/projects/lcms/files/lcms/2.3/lcms2-2.3.tar.gz/download
 tar zxf lcms-2.2.3.tar.gz
-.3
+
 # graphviz graph generator http://www.graphviz.org/
 wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.0.tar.gz
 tar xfz graphviz-2.24.0.tar.gz
@@ -139,7 +138,7 @@ tar jxf zlib-1.2.6.tar.bz2
 
 # git http://git-scm.com/download
 wget -t 4 -nv http://git-core.googlecode.com/files/git-1.7.10.1.tar.gz
-tar jxf git-1.7.6.tar.bz2
+tar jxf git-1.7.10.1.tar.bz2
 
 # http://curl.haxx.se/
 wget -t 4 -nv http://curl.haxx.se/download/curl-7.25.0.tar.bz2
