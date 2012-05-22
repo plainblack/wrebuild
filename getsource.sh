@@ -55,6 +55,14 @@ tar zxf expat-2.1.0.tar.gz
 wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/freetype/freetype-2.4.9.tar.bz2
 tar jxf freetype-2.4.9.tar.bz2
 
+# nettle, crypto library for gnutls
+wget -t 4 -nv ftp://ftp.lysator.liu.se/pub/security/lsh/nettle-2.4.tar.gz
+tar zxf nettle-2.4.tar.gz
+
+# p11-kit, PKCS library for gnutls
+wget -t 4 -nv http://p11-glue.freedesktop.org/releases/p11-kit-0.12.tar.gz
+tar zxf p11-kit-0.12.tar.gz
+
 # gnutls transport layer security http://www.gnu.org/software/gnutls/
 wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.12.19.tar.bz2
 tar jxf gnutls-2.12.19.tar.bz2
@@ -79,7 +87,7 @@ mv jpeg-8c libjpeg-8
 # lcms color management http://www.littlecms.com/
 wget -t 4 -nv http://softlayer.dl.sourceforge.net/project/lcms/lcms/2.3/lcms2-2.3.tar.gz
 #http://sourceforge.net/projects/lcms/files/lcms/2.3/lcms2-2.3.tar.gz/download
-tar zxf lcms-2.2.3.tar.gz
+tar zxf lcms2-2.3.tar.gz
 
 # graphviz graph generator http://www.graphviz.org/
 wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.0.tar.gz
@@ -101,6 +109,9 @@ tar jxf giflib-4.1.6.tar.bz2
 wget -t 4 -nv ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.4.6.tar.bz2
 tar jxf libgcrypt-1.4.6.tar.bz2
 
+wget -t 4 -nv ftp://ftp.gmplib.org/pub/gmp-5.0.5/gmp-5.0.5.tar.bz2
+tar jxf gmp-5.0.5.tar.bz2
+
 # libgpg-error error messages http://www.gnupg.org/download/
 wget -t 4 -nv ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.7.tar.bz2
 tar jxf libgpg-error-1.7.tar.bz2
@@ -114,8 +125,8 @@ wget -t 4 -nv http://perl.apache.org/dist/mod_perl-2.0-current.tar.gz
 tar zxf mod_perl-2.0-current.tar.gz
 
 # mysql database server http://dev.mysql.com/downloads/mysql/5.0.html
-wget -t 4 -nv http://downloads.mysql.com/archives/mysql-5.0/mysql-5.0.89.tar.gz
-tar zxf mysql-5.0.89.tar.gz
+wget -t 4 -nv ftp://mirror.services.wisc.edu/mirrors/mysql/Downloads/MySQL-5.1/mysql-5.1.62.tar.gz
+tar zxf mysql-5.1.62.tar.gz
 
 # openssl ssl toolkit http://www.openssl.org/
 wget -t 4 -nv http://www.openssl.org/source/openssl-1.0.1b.tar.gz
@@ -138,7 +149,7 @@ tar jxf zlib-1.2.6.tar.bz2
 
 # git http://git-scm.com/download
 wget -t 4 -nv http://git-core.googlecode.com/files/git-1.7.10.1.tar.gz
-tar jxf git-1.7.10.1.tar.bz2
+tar zxf git-1.7.10.1.tar.gz
 
 # http://curl.haxx.se/
 wget -t 4 -nv http://curl.haxx.se/download/curl-7.25.0.tar.bz2
