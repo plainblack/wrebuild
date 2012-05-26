@@ -71,6 +71,18 @@ tar jxf gnutls-2.12.19.tar.bz2
 wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.4.2.tar.gz
 tar zxf httpd-2.4.2.tar.gz
 
+# Apache runtime support libraries http://httpd.apache.org/
+wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-1.4.6.tar.bz2
+wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-util-1.4.1.tar.bz2
+wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-iconv-1.2.1.tar.bz2
+
+##Need to be unpacked inside of the httpd build directory, accoring to INSTALL
+cd httpd-2.4.2/srclib
+tar jxf ../../apr-1.4.6.tar.bz2
+tar jxf ../../apr-util-1.4.1.tar.bz2
+tar jxf ../../apr-iconv-1.2.1.tar.bz2
+cd ../../
+
 # lftp sophisticated ftp client http://lftp.yar.ru/
 wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.3.6.tar.gz
 tar zxf lftp-4.3.6.tar.gz
