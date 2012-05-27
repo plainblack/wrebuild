@@ -337,6 +337,9 @@ buildUtils(){
     # readline
     buildProgram "readline-6.2" "$CFG_CACHE"
 
+    # pcre
+    buildProgram "pcre-8.30" "$CFG_CACHE"
+
     # curl
     buildProgram "curl-7.25.0" "$CFG_CACHE --with-ssl=$PREFIX --with-zlib=$PREFIX --with-gnutls=$PREFIX"
 
