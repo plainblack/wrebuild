@@ -67,6 +67,10 @@ tar zxf p11-kit-0.12.tar.gz
 wget -t 4 -nv ftp://ftp.gnu.org/pub/gnu/gnutls/gnutls-2.12.19.tar.bz2
 tar jxf gnutls-2.12.19.tar.bz2
 
+# PCRE
+wget -t 4 -nv ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.30.tar.bz2
+tar jxf pcre-8.30.tar.bz2
+
 # httpd apache webserver http://httpd.apache.org/
 wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.4.2.tar.gz
 tar zxf httpd-2.4.2.tar.gz
@@ -79,8 +83,11 @@ wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-iconv-1.2.1.tar.bz2
 ##Need to be unpacked inside of the httpd build directory, accoring to INSTALL
 cd httpd-2.4.2/srclib
 tar jxf ../../apr-1.4.6.tar.bz2
+mv apr-1.4.6 apr
 tar jxf ../../apr-util-1.4.1.tar.bz2
+mv apr-util-1.4.1 apr-util
 tar jxf ../../apr-iconv-1.2.1.tar.bz2
+mv apr-iconv-1.2.1 apr-iconv
 cd ../../
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
