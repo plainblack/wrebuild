@@ -72,8 +72,8 @@ wget -t 4 -nv ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.30.ta
 tar jxf pcre-8.30.tar.bz2
 
 # httpd apache webserver http://httpd.apache.org/
-wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.4.2.tar.gz
-tar zxf httpd-2.4.2.tar.gz
+wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.22.tar.gz
+tar zxf httpd-2.2.22.tar.gz
 
 # Apache runtime support libraries http://httpd.apache.org/
 wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-1.4.6.tar.bz2
