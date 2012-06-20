@@ -81,7 +81,7 @@ wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-util-1.4.1.tar.bz2
 wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-iconv-1.2.1.tar.bz2
 
 ##Need to be unpacked inside of the httpd build directory, accoring to INSTALL
-cd httpd-2.4.2/srclib
+cd httpd-2.2.22/srclib
 tar jxf ../../apr-1.4.6.tar.bz2
 mv apr-1.4.6 apr
 tar jxf ../../apr-util-1.4.1.tar.bz2
