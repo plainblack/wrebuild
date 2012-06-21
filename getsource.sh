@@ -76,9 +76,9 @@ wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.22.tar.gz
 tar zxf httpd-2.2.22.tar.gz
 
 # Apache runtime support libraries http://httpd.apache.org/
-wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-1.4.6.tar.bz2
-wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-util-1.4.1.tar.bz2
-wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-iconv-1.2.1.tar.bz2
+#wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-1.4.6.tar.bz2
+#wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-util-1.4.1.tar.bz2
+#wget -t 4 -nv http://apache.mirrors.tds.net//apr/apr-iconv-1.2.1.tar.bz2
 
 ##Need to be unpacked inside of the httpd build directory, accoring to INSTALL
 cd httpd-2.2.22/srclib

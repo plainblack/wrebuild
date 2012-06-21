@@ -152,7 +152,7 @@ if [ -d /data ]; then
 
     # --cache-file speeds up configure a lot
     rm /tmp/Configure.cache
-    export CFG_CACHE=""  #"--cache-file=/tmp/Configure.cache"  
+    export CFG_CACHE=""  #"--cache-file=/tmp/Configure.cache"
     if [ "$WRE_IA64" == 1 ]; then
         export CFLAGS="$CFLAGS -fPIC"
         export CXXFLAGS="$CXXFLAGS -fPIC"
@@ -394,13 +394,21 @@ buildApache(){
     cd source
 
     # apache
-    cd httpd-2.4.2
+    cd httpd-2.2.22
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
-        rm -Rf server/exports.c 
-        rm -Rf server/export_files
+        #rm -Rf server/exports.c 
+        #rm -Rf server/export_files
     fi
+    SAVED_CPPFLAGS=$CPPFLAGS
+    CPPFLAGS=""
+    SAVED_CFLAGS=$CFLAGS
+    CFLAGS=""
+    SAVED_LIBS=$LIBS
+    LIBS=""
+    SAVED_LDFLAGS=$LDFLAGS
+    LDFLAGS=""
     ./configure $CFG_CACHE --prefix=$PREFIX --with-included-apr --with-z=$PREFIX \
         --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var \
         --enable-rewrite=shared --enable-deflate=shared --enable-ssl \
@@ -419,14 +427,18 @@ buildApache(){
     rm -f $WRE_ROOT/etc/httpd.conf 
     rm -f $WRE_ROOT/etc/ssl-std.conf
     rm -f $WRE_ROOT/etc/ssl.conf
+    CFLAGS=$SAVED_CFLAGS
+    CPPFLAGS=$SAVED_CPPFLAGS
+    LDFLAGS=$SAVED_LDFLAGS
+    LIBS=$SAVED_LIBS
 
     # modperl
-    cd ../mod_perl-2.0.6
+    cd ../mod_perl-2.0.7
     if [ "$WRE_CLEAN" == 1 ]; then
         $WRE_MAKE distclean
         $WRE_MAKE clean
     fi
-    perl Makefile.PL MP_APXS="$PREFIX/bin/apxs"; checkError $? "mod_perl Configure"
+    perl Makefile.PL MP_APR_CONFIG="$PREFIX/bin/apr-1-config" MP_APU_CONFIG="$PREFIX/bin/apu-1-config" MP_APXS="$PREFIX/bin/apxs"; checkError $? "mod_perl Configure"
     $WRE_MAKE; checkError $? "mod_perl make"
     $WRE_MAKE install; checkError $? "mod_perl make install"
     cd ..
