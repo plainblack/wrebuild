@@ -526,7 +526,7 @@ buildImageMagick(){
     $WRE_MAKE install; checkError $? "Image Magick make install"
 
     cd $WRE_BUILDDIR
-    cp source/colors.xml $PREFIX/lib/ImageMagick/config/
+    cp source/colors.xml $PREFIX/lib/ImageMagick-6.7.6/config/
 
     if [ "$WRE_IA64" == 1 ]; then
         LDFLAGS="$SAVED_LDFLAGS"
