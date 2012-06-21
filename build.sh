@@ -101,11 +101,6 @@ do
         export WRE_BUILD_WRE=1
     ;;
     
-    --wre=revolutionary)
-        gooey
-        exit 0 
-    ;;
-     
     --perlModules | --perlmodules | --pm)
         export WRE_BUILD_PM=1
     ;;
@@ -834,7 +829,7 @@ CFLAGS=$SAVED_CFLAGS
 #awstats
 installAwStats(){
     printHeader "AWStats"
-    cp -RL source/awstats-6.95/* $PREFIX
+    cp -RL source/awstats-7.0/* $PREFIX
 }
 
 #wre utils
