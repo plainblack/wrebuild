@@ -174,6 +174,13 @@ tar zxf git-1.7.10.1.tar.gz
 wget -t 4 -nv http://curl.haxx.se/download/curl-7.25.0.tar.bz2
 tar jxf curl-7.25.0.tar.bz2
 
+# Handler Socket
+wget -t 4 -nv https://github.com/ahiguti/HandlerSocket-Plugin-for-MySQL/zipball/master
+mv master master.zip
+unzip master.zip;
+mv ahiguti-HandlerSocket-Plugin-for-MySQL-??????? HandlerSocket-Plugin-for-MySQL
+
+##Clean up downloaded files
 rm -f *.gz *.tgz *.bz2 *.zip
 
 

@@ -31,6 +31,7 @@ cat <<_WREHELP
   --mysql           compiles and installs mysql
   --imagemagick     compiles and installs image magick
   --perlmodules     installs perl modules from cpan
+  --handlersocket   compiles and installs HandlerSocket plugin and perl modules
   --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
                                
@@ -64,6 +65,7 @@ do
         export WRE_BUILD_AWSTATS=1
         export WRE_BUILD_WRE=1
         export WRE_BUILD_PM=1
+        export WRE_BUILD_HS=1
     ;;
  
     --utils | --utilities)
@@ -105,7 +107,11 @@ do
         export WRE_BUILD_PM=1
     ;;
     
-    --help | -help | -h | -? | ?)
+    --handlersocket | --handlerSocket | --hs)
+        export WRE_BUILD_HS=1
+    ;;
+
+     --help | -help | -h | -? | ?)
       wrehelp
       exit 0
     ;;
@@ -825,6 +831,19 @@ CFLAGS=$SAVED_CFLAGS
     cd $WRE_BUILDDIR
 }
 
+# perl
+buildHandlerSocket(){
+    printHeader "HandlerSocket"
+    cd source/Handlersocket-Plugin-for-MySQL
+    ./autogen.sh
+    ./configure --with-mysql-source=../mysql-5.1.62 \
+                --with-mysql-bindir=$PREFIX/bin \
+                --with-mysql-plugindir=$PREFIX/lib/mysql/plugin
+    $WRE_MAKE; checkError $? "HandlerSocket make"
+    $WRE_MAKE install; checkError $? "HandlerSocket make install"
+    cd $WRE_BUILDDIR
+}
+
 
 #awstats
 installAwStats(){
@@ -880,6 +899,9 @@ if [ "$WRE_BUILD_PM" == 1 ]; then
 fi
 if [ "$WRE_BUILD_AWSTATS" == 1 ]; then
     installAwStats
+fi
+if [ "$WRE_BUILD_HS" == 1 ]; then
+    buildHandlerSocket
 fi
 if [ "$WRE_BUILD_WRE" == 1 ]; then
     installWreUtils
