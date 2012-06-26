@@ -148,7 +148,7 @@ tar zxf xpdf-3.03.tar.gz
 
 # zlib compression library http://www.zlib.net/
 wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/zlib/1.2.7/zlib-1.2.7.tar.gz?user_mirror=autoselect
-tar jxf zlib-1.2.7.tar.bz2
+tar zxf zlib-1.2.7.tar.bz2
 
 # git http://git-scm.com/download
 wget -t 4 -nv http://git-core.googlecode.com/files/git-1.7.10.1.tar.gz
