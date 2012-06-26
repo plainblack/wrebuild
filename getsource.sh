@@ -98,7 +98,7 @@ tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
 wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/libpng15/1.5.11/libpng-1.5.11.tar.gz?user_mirror=autoselect
-tar jxf libpng-1.5.11.tar.bz2
+tar zxf libpng-1.5.11.tar.gz
 
 # gnu libtool http://www.gnu.org/software/libtool/
 wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz
@@ -161,7 +161,7 @@ tar jxf curl-7.25.0.tar.bz2
 # Handler Socket
 wget -t 4 -nv https://github.com/ahiguti/HandlerSocket-Plugin-for-MySQL/zipball/master
 mv master master.zip
-unzip master.zip;
+unzip -q master.zip;
 mv ahiguti-HandlerSocket-Plugin-for-MySQL-??????? HandlerSocket-Plugin-for-MySQL
 
 ##Clean up downloaded files
