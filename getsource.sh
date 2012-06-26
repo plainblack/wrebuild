@@ -35,7 +35,7 @@ wget -t 4 -nv ftp://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-6.0-0.tar.bz2
 tar jxf aspell6-en-6.0-0.tar.bz2
 
 # awstats http://awstats.sourceforge.net/
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/awstats/awstats-7.0.tar.gz
+wget -t 4 -nv http://downloads.sourceforge.net/project/awstats/AWStats/7.0/awstats-7.0.tar.gz?user_mirror=autoselect
 tar zxf awstats-7.0.tar.gz
 cd awstats-7.0/wwwroot
 mv cgi-bin/* ./
@@ -48,11 +48,11 @@ wget -t 4 -nv http://ftp.wagner.pp.ru/pub/catdoc/catdoc-0.94.2.tar.gz
 tar zxf catdoc-0.94.2.tar.gz
 
 # expat xml parser http://expat.sourceforge.net/
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/expat/expat-2.1.0.tar.gz
+wget -t 4 -nv http://downloads.sourceforge.net/project/expat/expat/2.1.0/expat-2.1.0.tar.gz?user_mirror=autoselect
 tar zxf expat-2.1.0.tar.gz
 
 # freetype portable font engine http://freetype.sourceforge.net/index2.html
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/freetype/freetype-2.4.9.tar.bz2
+wget -t 4 -nv http://downloads.sourceforge.net/project/freetype/freetype2/2.4.10/freetype-2.4.10.tar.bz2?user_mirror=autoselect
 tar jxf freetype-2.4.9.tar.bz2
 
 # nettle, crypto library for gnutls
@@ -84,13 +84,12 @@ wget -t 4 -nv http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
 tar zxf libiconv-1.14.tar.gz
 
 # libjpeg image manipulation http://www.ijg.org/
-wget -t 4 -nv http://www.ijg.org/files/jpegsrc.v8c.tar.gz
-tar zxf jpegsrc.v8c.tar.gz
-mv jpeg-8c libjpeg-8
+wget -t 4 -nv http://www.ijg.org/files/jpegsrc.v8d.tar.gz
+tar zxf jpegsrc.v8d.tar.gz
+mv jpeg-8d libjpeg-8
 
 # lcms color management http://www.littlecms.com/
-wget -t 4 -nv http://softlayer.dl.sourceforge.net/project/lcms/lcms/2.3/lcms2-2.3.tar.gz
-#http://sourceforge.net/projects/lcms/files/lcms/2.3/lcms2-2.3.tar.gz/download
+wget -t 4 -nv http://downloads.sourceforge.net/project/lcms/lcms/2.3/lcms2-2.3.tar.gz?user_mirror=autoselect
 tar zxf lcms2-2.3.tar.gz
 
 # graphviz graph generator http://www.graphviz.org/
@@ -98,7 +97,7 @@ wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.
 tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/libpng-1.5.10.tar.bz2
+wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/libpng15/1.5.11/libpng-1.5.11.tar.gz?user_mirror=autoselect
 tar jxf libpng-1.5.10.tar.bz2
 
 # gnu libtool http://www.gnu.org/software/libtool/
@@ -106,8 +105,8 @@ wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz
 tar zxf libtool-2.4.2.tar.gz
 
 # libgif image manipulation http://sourceforge.net/projects/giflib/
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/giflib/giflib-4.1.6.tar.bz2
-tar jxf giflib-4.1.6.tar.bz2
+wget -t 4 -nv http://downloads.sourceforge.net/project/giflib/giflib-5.x/giflib-5.0.0.tar.bz2?user_mirror=autoselect
+tar jxf giflib-5.0.0.tar.bz2
 
 # libgcrypt crypt library http://www.gnupg.org/download/
 wget -t 4 -nv ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.4.6.tar.bz2
@@ -148,8 +147,8 @@ wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.03.tar.gz
 tar zxf xpdf-3.03.tar.gz
 
 # zlib compression library http://www.zlib.net/
-wget -t 4 -nv http://surfnet.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.6.tar.bz2
-tar jxf zlib-1.2.6.tar.bz2
+wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/zlib/1.2.7/zlib-1.2.7.tar.gz?user_mirror=autoselect
+tar jxf zlib-1.2.7.tar.bz2
 
 # git http://git-scm.com/download
 wget -t 4 -nv http://git-core.googlecode.com/files/git-1.7.10.1.tar.gz
