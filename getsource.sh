@@ -53,7 +53,7 @@ tar zxf expat-2.1.0.tar.gz
 
 # freetype portable font engine http://freetype.sourceforge.net/index2.html
 wget -t 4 -nv http://downloads.sourceforge.net/project/freetype/freetype2/2.4.10/freetype-2.4.10.tar.bz2?user_mirror=autoselect
-tar jxf freetype-2.4.9.tar.bz2
+tar jxf freetype-2.4.10.tar.bz2
 
 # nettle, crypto library for gnutls
 wget -t 4 -nv ftp://ftp.lysator.liu.se/pub/security/lsh/nettle-2.4.tar.gz
@@ -98,7 +98,7 @@ tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
 wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/libpng15/1.5.11/libpng-1.5.11.tar.gz?user_mirror=autoselect
-tar jxf libpng-1.5.10.tar.bz2
+tar jxf libpng-1.5.11.tar.bz2
 
 # gnu libtool http://www.gnu.org/software/libtool/
 wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz
