@@ -65,7 +65,6 @@ do
         export WRE_BUILD_AWSTATS=1
         export WRE_BUILD_WRE=1
         export WRE_BUILD_PM=1
-        export WRE_BUILD_HS=1
     ;;
  
     --utils | --utilities)
@@ -831,7 +830,11 @@ CFLAGS=$SAVED_CFLAGS
     cd $WRE_BUILDDIR
 }
 
-# perl
+# handlerSocket
+# Handler socket needs autogen, automake and a raft of other build support.
+# It won't use our compiled libtool, so we should consider testing removing libtool
+# and requiring local installs of those.
+
 buildHandlerSocket(){
     printHeader "HandlerSocket"
     cd source/Handlersocket-Plugin-for-MySQL
