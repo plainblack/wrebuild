@@ -291,7 +291,7 @@ buildUtils(){
     buildProgram "ncurses-5.9" "$CFG_CACHE --with-shared "
 
     # zlib
-    buildProgram "zlib-1.2.6" "--shared"
+    buildProgram "zlib-1.2.7" "--shared"
 
     # openssl
     cd openssl-1.0.1b
@@ -346,7 +346,7 @@ buildUtils(){
     # lftp
     SAVED_CFLAGS=$CFLAGS
     CFLAGS="$CFLAGS -liconv"
-    buildProgram "lftp-4.3.6" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
+    buildProgram "lftp-4.3.7" "--with-libiconv-prefix=$PREFIX --with-openssl=$PREFIX"
     CFLAGS=$SAVED_CFLAGS
     
     # catdoc
@@ -487,16 +487,16 @@ buildImageMagick(){
     cd ..
 
     # freetype
-    buildProgram "freetype-2.4.9" "$CFG_CACHE"
+    buildProgram "freetype-2.4.10" "$CFG_CACHE"
 
     # lib ungif
-    buildProgram "giflib-4.1.6" "$CFG_CACHE"
+    buildProgram "giflib-5.0.0" "$CFG_CACHE"
 
     # tiff 
     buildProgram "tiff-3.9.6" "$CFG_CACHE"
 
     # lib png
-    buildProgram "libpng-1.5.10" "$CFG_CACHE"
+    buildProgram "libpng-1.5.11" "$CFG_CACHE"
 
     # lcms 
     buildProgram "lcms2-2.3" "$CFG_CACHE"
