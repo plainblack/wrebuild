@@ -16,7 +16,9 @@ For more information about the WRE, visit:
 
 - A unix-like system, such as Linux, OS X, Solaris, BSD, etc.
 - gcc 3 or higher
+- make
 - bash
+- xmlto
 
 
 -----------------------------------------------------------------------------
@@ -39,7 +41,7 @@ To build the WRE for your platform follow these simple steps.
 
 4) Run build.sh
 
-	./build.sh
+	./build.sh --all
 
 That's it. This will create a working WRE in the /data/wre folder of your 
 system.

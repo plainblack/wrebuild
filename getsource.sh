@@ -105,8 +105,8 @@ wget -t 4 -nv http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz
 tar zxf libtool-2.4.2.tar.gz
 
 # libgif image manipulation http://sourceforge.net/projects/giflib/
-wget -t 4 -nv http://downloads.sourceforge.net/project/giflib/giflib-5.x/giflib-5.0.0.tar.bz2?user_mirror=autoselect
-tar jxf giflib-5.0.0.tar.bz2
+wget -t 4 -nv http://downloads.sourceforge.net/project/giflib/giflib-4.x/giflib-4.2.0.tar.bz2?user_mirror=autoselect
+tar jxf giflib-4.2.0.tar.bz2
 
 # libgcrypt crypt library http://www.gnupg.org/download/
 wget -t 4 -nv ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.4.6.tar.bz2

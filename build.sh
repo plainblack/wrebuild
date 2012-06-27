@@ -490,7 +490,7 @@ buildImageMagick(){
     buildProgram "freetype-2.4.10" "$CFG_CACHE"
 
     # lib ungif
-    buildProgram "giflib-5.0.0" "$CFG_CACHE"
+    buildProgram "giflib-4.2.0" "$CFG_CACHE"
 
     # tiff 
     buildProgram "tiff-3.9.6" "$CFG_CACHE"
