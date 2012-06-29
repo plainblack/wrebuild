@@ -13,7 +13,6 @@ cat <<_WREHELP
   Example: ./build.sh --perl            # only perl will be built
            ./build.sh --perl --apache   # only perl and apache will build
            ./build.sh --all             # build all (except wdk)
-           ./build.sh --all --with-wdk  # build all including wdk 
 
   Options:
 
@@ -369,6 +368,17 @@ buildUtils(){
 
     # xpdf
     buildProgram "xpdf-3.03" "$CFG_CACHE --without-x"
+
+    # aspell
+    buildProgram "aspell-0.60.6.1" "" "exec_prefix=$PREFIX"
+    cd aspell6-en-6.0-0
+    if [ "$WRE_CLEAN" == 1 ]; then
+        $WRE_MAKE distclean
+        $WRE_MAKE clean
+    fi
+    ./configure --vars ASPELL=$PREFIX/bin/aspell WORD_LIST_COMPRESS=$PREFIX/bin/word-list-compress; checkError $? "aspell-en configure"
+    $WRE_MAKE; checkError $? "aspell-en make"
+    $WRE_MAKE install ; checkError $? "aspell-en make install"
 
     cd $WRE_BUILDDIR
 }
