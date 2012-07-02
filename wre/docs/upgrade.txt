@@ -1,6 +1,18 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   U P G R A D E
 -------------------------------------------------------------------
 
+-- WRE 0.9.4 ------------------------------------------------------
+
+This version of the WRE contains an upgraded mysql 5.1.  5.1 is not
+binary compatible with 5.0.  The best/safest/easiest way to upgrade
+is to dump all databases, install this new WRE over the old one, and
+then import all the databases.
+
+This WRE also includes a newer perl, so you may see additional warnings
+from modules.
+
+-- Earlier WRE's --------------------------------------------------
+
 NOTE: There is no upgrade procedure from versions prior to WRE 0.8.0 to 0.8,
 as WRE 0.8 is a complete rewrite of the system. To upgrade you must remove the
 old WRE and install a completely new one.
