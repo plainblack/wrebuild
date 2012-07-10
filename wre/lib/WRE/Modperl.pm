@@ -43,6 +43,42 @@ sub getName {
 
 #-------------------------------------------------------------------
 
+=head2 graceful ( )
+
+Performs a graceful restart of this service.
+
+Note: The process that runs this command must be either root or the user specified in the WRE config file.
+
+=cut
+
+sub graceful {
+    my $self = shift;
+    my $wreConfig = $self->wreConfig;
+    my $host = WRE::Host->new(wreConfig=>$wreConfig);
+    unless ($wreConfig->get("apache/modperlPort") > 1024 || $host->isPrivilegedUser) {
+        croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
+    }
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net start WREmodperl";
+    }
+    else {
+        $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modperl.conf") 
+            ." -D WRE-modperl -E ".$wreConfig->getRoot("/var/logs/modperl.error.log")." -k graceful";
+    }
+    my $count = 0;
+    my $success = 0;
+    `$cmd`; # catch command line output
+    while ($count < 10 && $success == 0) {
+        sleep(1);
+        eval {$success = $self->ping};
+        $count++;
+    }
+    return $success;
+}
+
+#-------------------------------------------------------------------
+
 =head killRunaways () 
 
 Kills any processes that are larger than the maxMemory setting in the config file. Returns the number of processes

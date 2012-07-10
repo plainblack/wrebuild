@@ -23,7 +23,7 @@ use WRE::Spectre;
 $|=1;   # turn off buffering
 
 my ($quiet, $help, $verbose) = "";
-my (@start, @stop, @restart, @status) = ();
+my (@start, @stop, @restart, @status, @graceful) = ();
 
 GetOptions(
     "help"                      => \$help,
@@ -31,11 +31,12 @@ GetOptions(
     "stop|end|shutdown=s{1,4}"  => \@stop,
     "restart|cycle=s{1,4}"      => \@restart,
     "status|ping=s{1,4}"        => \@status,
+    "graceful|ping=s{1,2}"      => \@graceful,
     "verbose"                   => \$verbose,
     "quiet"                     => \$quiet,
     );
 
-if ($help || !(scalar(@start) || scalar(@stop) || scalar(@restart) || scalar(@status))) {
+if ($help || !(scalar(@start) || scalar(@stop) || scalar(@restart) || scalar(@status) || scalar(@graceful))) {
     print <<STOP;
 Usage: $0 --[action] [service] [service] [service]
 
@@ -63,6 +64,8 @@ Actions:
     --ping          An alias for --status.
 
     --restart       Stops and then starts a service again.
+
+    --graceful      Does a graceful restart, but only for apache based services
 
     --shutdown      An alias for --stop.
 
@@ -148,6 +151,15 @@ if (scalar(@status)) {
     }
     if (grep /^spectre|all$/, @status) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->ping}, "Ping S.P.E.C.T.R.E.");
+    }
+}
+
+if (scalar(@graceful)) {
+    if (grep /^modperl|all|web$/, @status) {
+        printSuccess(sub{WRE::Modperl->new(wreConfig=>$config)->graceful}, "Graceful mod_perl");
+    }
+    if (grep /^modproxy|all|web$/, @status) {
+        printSuccess(sub{WRE::Modproxy->new(wreConfig=>$config)->graceful}, "Graceful mod_proxy");
     }
 }
 
