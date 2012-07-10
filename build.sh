@@ -469,7 +469,7 @@ buildMysql(){
     CFLAGS="$MYSQL_CFLAGS"
     CXXFLAGS="$MYSQL_CXXFLAGS"
     # Can't use $CFG_CACHE because CFLAGS changed
-    ./configure --prefix=$PREFIX --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man; checkError $? "MySQL Configure"
+    ./configure --with-plugins=max-no-ndb --prefix=$PREFIX --sysconfdir=$WRE_ROOT/etc --localstatedir=$WRE_ROOT/var/mysqldata --with-extra-charsets=all --enable-thread-safe-client --enable-local-infile --disable-shared --enable-assembler --with-readline --without-debug --enable-largefile=yes --with-ssl --with-mysqld-user=webgui --with-unix-socket-path=$WRE_ROOT/var/mysqldata/mysql.sock --without-docs --without-man; checkError $? "MySQL Configure"
     $WRE_MAKE; checkError $? "MySQL make"
     $WRE_MAKE install; checkError $? "MySQL make install"
     cd $WRE_BUILDDIR
