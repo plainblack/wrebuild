@@ -41,6 +41,42 @@ sub getName {
 
 #-------------------------------------------------------------------
 
+=head2 graceful ( )
+
+Performs a graceful restart of this service.
+
+Note: The process that runs this command must be either root or the user specified in the WRE config file.
+
+=cut
+
+sub graceful {
+    my $self = shift;
+    my $wreConfig = $self->wreConfig;
+    my $host = WRE::Host->new(wreConfig=>$wreConfig);
+    unless ($wreConfig->get("apache/modproxyPort") > 1024 || $host->isPrivilegedUser) {
+        croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
+    }
+    my $cmd = "";
+    if ($host->getOsName eq "windows") {
+        $cmd = "net start WREmodproxy";
+    }
+    else {
+        $cmd = $wreConfig->getRoot("/prereqs/bin/apachectl")." -f ".$wreConfig->getRoot("/etc/modproxy.conf") 
+            ." -D WRE-modproxy -E ".$wreConfig->getRoot("/var/logs/modproxy.error.log")." -k graceful";
+    }
+    my $count = 0;
+    my $success = 0;
+    `$cmd`; # catch command line output
+    while ($count < 10 && $success == 0) {
+        sleep(1);
+        eval {$success = $self->ping};
+        $count++;
+    }
+    return $success;
+}
+
+#-------------------------------------------------------------------
+
 =head2 ping ( )
 
 Returns a 1 if Modproxy is running, or a 0 if it is not.

@@ -43,6 +43,25 @@ To build the WRE for your platform follow these simple steps.
 
 	./build.sh --all
 
+5) Install Task::WebGUI
+
+   cpan App::cpanminus
+   cpanm Task::WebGUI
+
+Two modules may give you automatic build problems, Net::SSLeay and Text::Aspell. You'll need
+to manually point these modules to the WRE and build them by hand:
+
+For Net::SSLeay:
+
+OPENSSL_PREFIX=/data/wre/prereqs perl Makefile.PL
+
+For Text::Aspell:
+
+perl Makefile.PL PREFIX=/data/wre/prereqs CCFLAGS=-I/data/wre/prereqs/include LIBS="-L/data/wre/prereqs/lib -laspell"
+
+The WRE no longer contains the source for all the perl modules.  Task::WebGUI
+contains all the modules for WebGUI 7.10.24.
+
 That's it. This will create a working WRE in the /data/wre folder of your 
 system.
 
@@ -123,7 +142,7 @@ You'll need to install the following RPMs to before you can compile:
 gcc
 gcc-c++
 
-On RHEL 5 or higher you also need to install:
+On RHEL 5 or higher you may need to install:
 
 libgomp
 

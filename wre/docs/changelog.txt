@@ -2,8 +2,9 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
 
 0.9.4
- - Added missing Apache directives to enable Expires headers and gzip
-   compression.
+ - WRE build installs perl modules via Task::WebGUI instead of by hand.
+ - addsite.pl can now import a site from an existing WebGUI configuration file and duplicate the WebGUI parts on the new site.
+ - Added missing Apache directives to enable Expires headers and gzip compression.
  - Fixed a typo in MySQL build instructions.
  - Made build compatible with SuSE.
  - rfe: WRE mod_expires  (#9618)
@@ -15,72 +16,22 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     See var/setupfiles/modperl.template and var/setupfiles/modproxy.template
  - Changed default location for pidfiles in templates to var/run/ (Koen de Jonge / ProcoliX)
  - Fixed wreconsole crashes  (#11208)
- - Added these packages (Koen de Jonge / ProcoliX):
-    curl 7.19.7
-    git 1.6.5.3
- - Updated these packages (Koen de Jonge / ProcoliX):
-    gnutls 2.8.5
-    libxml 2-2.7.6
-    lftp 4.0.5 (complete new version)
-    perl 5.10.1
-    httpd 2.2.14
-    mysql 5.0.89
+ - Added these packages
+    curl 7.25.0
+ - Updated these packages
+    gnutls 2.12.19
+    libxml 2-2.7.8
+    lftp 4.3.7
+    perl 5.14.2
+    httpd 2.2.22
+    mysql 5.1.62
     libjpeg 7
-    freetype 2.3.11
+    freetype 2.4.10
     graphviz 2.24.0
-    awstats 6.95
-    Image Magick 6.5.8-8
-    xpdf 3.02pl4
-    openssl 0.9.8l
-- Added these perl modules (Koen de Jonge / ProcoliX):
-   Net-CIDR-Lite-0.20
-   Params-Util-1.00
-   Sub-Install-0.925
-   Data-OptList-0.104
-   Sub-Exporter-0.982
-   Devel-GlobalDestruction-0.02
-   MRO-Compat-0.11
-   Sub-Name-0.04
-   Task-Weaken-1.03
-   Try-Tiny-0.02
-   Class-MOP-0.95
-   Moose-0.93
-   Getopt-Long-Descriptive-0.081
-   MooseX-Getopt-0.25
-   WWW-Pastebin-PastebinCom-Create-0.002
-   Class-Data-Accessor-0.04004
-   WWW-Pastebin-RafbNet-Create-0.001
-   Spiffy-0.30
-   Clipboard-0.09
-   Mixin-Linewise-0.002
-   Config-INI-0.014
-   App-Nopaste-0.17
-   Business-PayPal-API-rel-0.69
-- Removed these obsolete perl modules (Koen de Jonge / ProcoliX):
-   Net-Subnets-0.21
-- Updated these perl modules (Koen de Jonge / ProcoliX):
-    libwww-perl-5.834
-    Array-Compare-2.01
-    Config-JSON-1.5000
-    Digest-MD5-2.39
-    Digest-SHA1-2.12
-    Finance-Quote-1.17
-    HTML-Parser-3.64
-    Image-ExifTool-8.00
-    JSON-XS-2.26
-    Locales-0.15
-    Crypt-OpenSSL-RSA-0.26
-    POE-1.280
-    POE-Component-Client-DNS-1.051
-    POE-Component-Client-HTTP-0.893
-    POE-Component-Client-Keepalive-0.262
-    Pod-Simple-3.10
-    Template-Toolkit-2.22
-    Test-Simple-0.94
-    Text-CSV_XS-0.69
-    UNIVERSAL-can-1.15
-    UNIVERSAL-isa-1.03
-    URI-1.51
+    awstats 7.0
+    Image Magick 6.7.7-9
+    xpdf 3.03
+    openssl 1.0.1b
 - Fixed error in build.sh that didn't include the right option for mysql (Koen de Jonge / ProcoliX)
 
 0.9.3

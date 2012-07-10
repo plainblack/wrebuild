@@ -29,7 +29,6 @@ cat <<_WREHELP
   --apache          compiles and installs apache
   --mysql           compiles and installs mysql
   --imagemagick     compiles and installs image magick
-  --perlmodules     installs perl modules from cpan
   --handlersocket   compiles and installs HandlerSocket plugin and perl modules
   --awstats         installs awstats
   --wre             installs WebGUI Runtime Environment scripts and API
@@ -101,10 +100,7 @@ do
         export WRE_BUILD_WRE=1
     ;;
     
-    --perlModules | --perlmodules | --pm)
-        export WRE_BUILD_PM=1
-    ;;
-    
+   
     --handlersocket | --handlerSocket | --hs)
         export WRE_BUILD_HS=1
     ;;
@@ -575,6 +571,8 @@ buildPerlModule() {
     cd ..
 }
 
+## Obsoleted.  Left in here for reference in case people need compilation hints.
+
 installPerlModules () {
     printHeader "Perl Modules"
     cd source/perlmodules
@@ -905,10 +903,6 @@ if [ "$WRE_BUILD_MYSQL" == 1 ]; then
 fi
 if [ "$WRE_BUILD_IMAGEMAGICK" == 1 ]; then
     buildImageMagick
-fi
-if [ "$WRE_BUILD_PM" == 1 ]; then
-    #installPerlModules
-    echo "no perl modules"
 fi
 if [ "$WRE_BUILD_AWSTATS" == 1 ]; then
     installAwStats

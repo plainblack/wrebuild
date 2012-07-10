@@ -140,7 +140,7 @@ wget -t 4 -nv http://www.cpan.org/src/perl-5.14.2.tar.gz
 tar zxf perl-5.14.2.tar.gz
 
 # perlmodules
-# SEE SEPARATE SCRIPT
+# Install instructions.
 
 # xpdf pdf generator http://www.foolabs.com/xpdf/download.html
 wget -t 4 -nv ftp://ftp.foolabs.com/pub/xpdf/xpdf-3.03.tar.gz
