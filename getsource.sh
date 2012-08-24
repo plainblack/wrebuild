@@ -39,7 +39,6 @@ wget -t 4 -nv http://downloads.sourceforge.net/project/awstats/AWStats/7.0/awsta
 tar zxf awstats-7.0.tar.gz
 cd awstats-7.0/wwwroot
 mv cgi-bin/* ./
-perl -ni -e 'print unless /^\s*if . !\$FileConfig/ .. /^\s+}/; print $_.qq/\t\terror("Could not open config file");\n\t}\n/ if /^\s*if . !\$FileConfig/;' awstats.pl
 perl -0777 -pi -e 's!else\s*{\s+\@PossibleConfigDir\s+=\s+.+?\);!else {\n\t\t\@PossibleConfigDir = ("\$DIR", "/data/wre/etc");!ms;' awstats.pl
 cd ../..
 
