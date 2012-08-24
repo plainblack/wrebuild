@@ -128,6 +128,7 @@ sub backupMysql {
         # skip some databases
 		next if ($name =~ /^demo\d/);
 		next if ($name =~ /^test$/);
+		next if (lc $name eq 'information_schema');
 
         # create dump
         $mysql->dump(
