@@ -266,6 +266,7 @@ application/vnd.novadigm.edm
 application/vnd.novadigm.edx
 application/vnd.novadigm.ext
 application/vnd.obn
+application/vnd.openxmlformats  docx pptx xlsx
 application/vnd.osa.netdeploy
 application/vnd.palm
 application/vnd.pg.format
