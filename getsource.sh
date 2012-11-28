@@ -75,7 +75,7 @@ wget -t 4 -nv http://www.apache.org/dist/httpd/httpd-2.2.22.tar.gz
 tar zxf httpd-2.2.22.tar.gz
 
 # lftp sophisticated ftp client http://lftp.yar.ru/
-wget -t 4 -nv http://ftp.yars.free.net/pub/source/lftp/lftp-4.3.7.tar.gz
+wget -t 4 -nv ftp://ftp.yars.free.net/lftp/old/lftp-4.3.7.tar.gz
 tar zxf lftp-4.3.7.tar.gz
 
 # libiconv unicode conversion tool http://www.gnu.org/software/libiconv/
@@ -96,7 +96,7 @@ wget -t 4 -nv http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.24.
 tar xfz graphviz-2.24.0.tar.gz
 
 # libpng image manipulation http://www.libpng.org/pub/png/libpng.html
-wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/libpng15/1.5.11/libpng-1.5.11.tar.gz?user_mirror=autoselect
+wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/libpng15/older-releases/1.5.11/libpng-1.5.11.tar.gz?user_mirror=autoselect
 tar zxf libpng-1.5.11.tar.gz
 
 # gnu libtool http://www.gnu.org/software/libtool/
@@ -147,7 +147,7 @@ tar zxf xpdf-3.03.tar.gz
 
 # zlib compression library http://www.zlib.net/
 wget -t 4 -nv http://downloads.sourceforge.net/project/libpng/zlib/1.2.7/zlib-1.2.7.tar.gz?user_mirror=autoselect
-tar zxf zlib-1.2.7.tar.bz2
+tar zxf zlib-1.2.7.tar.gz
 
 # git http://git-scm.com/download
 wget -t 4 -nv http://git-core.googlecode.com/files/git-1.7.10.1.tar.gz
