@@ -1,6 +1,5 @@
 <VirtualHost *:[% modproxyPort %]>
     ServerName [% sitename %]
-    ServerAlias [% domain %]
     [% IF adminEmail %]
         ServerAdmin [% adminEmail %]
     [% END %]
