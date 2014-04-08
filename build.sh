@@ -10,9 +10,8 @@ cat <<_WREHELP
   Build switches cause only select applications to build.
   They can be combined to build only certain apps.
 
-  Example: ./build.sh --perl            # only perl will be built
-           ./build.sh --perl --nginx    # only perl and nginx will build
-           ./build.sh --all             # build all (except wdk)
+  Example: ./build.sh --nginx           # only nginx will be built
+           ./build.sh --all             # build all
 
   Options:
 
@@ -22,12 +21,10 @@ cat <<_WREHELP
 
   Packages:         (must be built in the order shown below)
 
-  --utilities       compiles and installs shared utilities
-  --perl            compiles and installs perl
-  --nginx           compiles and installs nginx
-  --imagemagick     compiles and installs image magick
   --perlmodules     installs perl modules from cpan
+  --nginx           compiles and installs nginx
   --wre             installs WebGUI Runtime Environment scripts and API
+
 
 _WREHELP
 
@@ -48,28 +45,14 @@ do
 
     --all)
         export WRE_BUILD_UTILS=1
-        export WRE_BUILD_PERL=1
         export WRE_BUILD_NGINX=1
-        export WRE_BUILD_IMAGEMAGICK=1
         export WRE_BUILD_AWSTATS=1
         export WRE_BUILD_WRE=1
         export WRE_BUILD_PM=1
     ;;
 
-    --utils | --utilities)
-        export WRE_BUILD_UTILS=1
-    ;;
-
-    --perl)
-        export WRE_BUILD_PERL=1
-    ;;
-
     --nginx)
         export WRE_BUILD_NGINX=1
-    ;;
-
-    --imageMagick | --imagemagick)
-        export WRE_BUILD_IMAGEMAGICK=1
     ;;
 
     --wre)
@@ -242,49 +225,6 @@ buildProgram() {
     cd ..
 }
 
-# utilities
-buildUtils(){
-    printHeader "Utilities"
-    cd source
-
-    # catdoc
-    cd catdoc-0.94.2
-    if [ "$WRE_CLEAN" == 1 ]; then
-        $WRE_MAKE distclean
-        $WRE_MAKE clean
-    fi
-    CATDOCARGS="--disable-wordview --without-wish --with-input=utf-8 \
-        --with-output=utf-8 --disable-charset-check --disable-langinfo"
-    ./configure $CFG_CACHE --prefix=$PREFIX $CATDOCARGS; checkError $? "catdoc Configure"
-    $WRE_MAKE; checkError $? "catdoc make"
-    cd src
-    $WRE_MAKE install; checkError $? "catdoc make install src"
-    cd ../docs
-    $WRE_MAKE install; checkError $? "catdoc make install docs"
-    cd ../charsets
-    $WRE_MAKE install; checkError $? "catdoc make install charsets"
-    cd ../..
-
-    # xpdf
-    buildProgram "xpdf-3.03" "$CFG_CACHE --without-x"
-
-    cd $WRE_BUILDDIR
-}
-
-# perl
-buildPerl(){
-    printHeader "Perl"
-    cd source/perl-5.14.2
-    if [ "$WRE_CLEAN" == 1 ]; then
-            $WRE_MAKE distclean
-            $WRE_MAKE clean
-    fi
-    ./Configure $PERLCFGOPTS; checkError $? "Perl Configure" 
-    $WRE_MAKE; checkError $? "Perl make"
-    $WRE_MAKE install; checkError $? "Perl make install"
-    cd $WRE_BUILDDIR
-}
-
 # nginx
 buildNginx(){
     printHeader "nginx"
@@ -299,69 +239,9 @@ buildNginx(){
 }
 
 
-# Image Magick
-buildImageMagick(){
-
-    printHeader "Image Magick"
-    cd source
-
-    # lib xml
-    buildProgram "libxml2-2.7.7" "$CFG_CACHE"
-
-    # lib jpeg
-    cd jpeg-8c
-    if [ "$WRE_CLEAN" == 1 ]; then
-        $WRE_MAKE distclean
-        $WRE_MAKE clean
-    fi
-    ./configure $CFG_CACHE --enable-shared --prefix=$PREFIX; checkError $? "libjpeg Configure"
-    $WRE_MAKE; checkError $? "libjpeg make"
-    $WRE_MAKE install; checkError $? "libjpeg make install"
-    cd ..
-
-    # freetype
-    buildProgram "freetype-2.4.8" "-enable-shared $CFG_CACHE"
-
-    # lib ungif
-    buildProgram "giflib-4.1.6" "--enable-shared $CFG_CACHE"
-
-    # lib png
-    buildProgram "libpng-1.5.10" "--enable-shared $CFG_CACHE"
-
-    # graphviz
-    buildProgram "graphviz-2.24.0" "$CFG_CACHE --enable-static --with-libgd=no --with-mylibgd=no --disable-java --disable-swig --disable-perl --disable-python --disable-php --disable-ruby --disable-sharp --disable-python23 --disable-python24 --disable-python25 --disable-r --disable-tcl --disable-guile --disable-io --disable-lua --disable-ocaml"
-    ln -s $PREFIX/bin/dot_static $PREFIX/bin/dot 
-
-    # image magick
-    cd ImageMagick-* # when you update this version number, update the one below as well
-    printHeader "Image Magick"
-    if [ "$WRE_CLEAN" == 1 ]; then
-        $WRE_MAKE distclean
-        $WRE_MAKE clean
-    fi
-    GNUMAKE=$WRE_MAKE ./configure LD=ld --enable-delegate-build LDFLAGS=-L$PREFIX/lib CPPFLAGS=-I$PREFIX/include --enable-shared --prefix=$PREFIX --with-jpeg --with-png --with-perl --without-x --with-xml
-    $WRE_MAKE; checkError $? "Image Magick make"
-    $WRE_MAKE install; checkError $? "Image Magick make install"
-
-}
-
 # most perl modules are installed the same way
 # param1: module directory
 # param2: parameters to pass to Makefile.PL
-installPerlModule() {
-    cd $1
-    printHeader "PM $1 with $2"
-    if [ "$WRE_CLEAN" == 1 ]; then
-        $WRE_MAKE distclean
-        $WRE_MAKE clean
-    fi
-    perl Makefile.PL $2 CCFLAGS="$CFLAGS"; checkError $? "$1 Makefile.PL"
-    $WRE_MAKE; checkError $? "$1 make"
-    #$WRE_MAKE test; checkError $? "$1 make test"
-    $WRE_MAKE install; checkError $? "$1 make install"
-    cd ..
-}
-
 installPerlModules () {
     printHeader "Perl Modules"
     cd source/perlmodules
@@ -378,9 +258,6 @@ installPerlModules () {
 
     cd $WRE_BUILDDIR
 }
-
-
-
 
 #wre utils
 installWreUtils(){
@@ -405,17 +282,8 @@ makeItSmall(){
 
 #
 # build stuff
-if [ "$WRE_BUILD_UTILS" == 1 ]; then
-    buildUtils
-fi
-if [ "$WRE_BUILD_PERL" == 1 ]; then
-    buildPerl
-fi
 if [ "$WRE_BUILD_NGINX" == 1 ]; then
     buildNginx
-fi
-if [ "$WRE_BUILD_IMAGEMAGICK" == 1 ]; then
-    buildImageMagick
 fi
 if [ "$WRE_BUILD_PM" == 1 ]; then
     installPerlModules
