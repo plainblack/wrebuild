@@ -10,6 +10,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
     Linux::Smaps 0.13
     Finance::Quote 1.29
     Data::Serializer 1.60
+    CHI 0.58
 
 0.9.4
  - WRE build installs perl modules via Task::WebGUI instead of by hand.
