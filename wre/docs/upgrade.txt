@@ -1,6 +1,12 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   U P G R A D E
 -------------------------------------------------------------------
 
+-- WRE 0.9.5 ------------------------------------------------------
+
+This version of the WRE contains an upgraded openssl library (1.0.1g)
+and several small bugfixes in the backup and addsite.pl scripts.
+
+
 -- WRE 0.9.4 ------------------------------------------------------
 
 This version of the WRE contains an upgraded mysql 5.1.  5.1 is not
