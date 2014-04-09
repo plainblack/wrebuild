@@ -5,6 +5,11 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
  - Update openssl to 1.0.1g
  - Fix bug in backup script, it no longer tries to access the information_schema table
  - Fix bugs in automatically making aliases of sites based on the domain, as this can clash.
+ - Updated perl modules
+    Text::CSV 1.32
+    Linux::Smaps 0.13
+    Finance::Quote 1.29
+    Data::Serializer 1.60
 
 0.9.4
  - WRE build installs perl modules via Task::WebGUI instead of by hand.
