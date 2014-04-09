@@ -1,7 +1,7 @@
 #!/data/wre/prereqs/bin/perl
 
 #-------------------------------------------------------------------
-# WRE is Copyright 2005-2009 Plain Black Corporation.
+# WRE is Copyright 2005-2014 Plain Black Corporation.
 #-------------------------------------------------------------------
 # Please read the legal notices (docs/legal.txt) and the license
 # (docs/license.txt) that came with this distribution before using
@@ -364,6 +364,6 @@ Shows this documentation, then exits.
 
 =head1 AUTHOR
 
-Copyright 2001-2009 Plain Black Corporation.
+Copyright 2001-2014 Plain Black Corporation.
 
 =cut
