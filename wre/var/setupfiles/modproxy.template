@@ -70,6 +70,8 @@
 #
 #    # enable SSL 
 #    SSLEngine on
+#    SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
+#    SSLProtocol all -SSLv2
 #    SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 #    SSLCertificateFile [% domainRoot %]/[% sitename %]/certs/server.crt
 #    SSLCertificateKeyFile [% domainRoot %]/[% sitename %]/certs/server.key
