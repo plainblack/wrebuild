@@ -7,9 +7,7 @@ can be found in the wre/wre/docs folder of this distribution.
 
 For more information about the WRE, visit:
 
-	http://wiki.webgui.org/
+	http://www.webgui.org/wiki
 
 For build instructions for specific operating systems, look at the BUILD.*
 files in the root directory of this distro.
-
-
