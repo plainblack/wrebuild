@@ -78,9 +78,6 @@ Returns the operating system's name.
 
 sub getOsName {
     my $os = $^O;
-    if ($os =~ /MSWin32/i || $os =~ /^Win/i) {
-        return "windows";
-    }
     return $os;
 }
 
@@ -100,14 +97,8 @@ sub getOsType {
         if ( -f "/etc/redhat-release" ) {
             return "RedHat";
         }
-        elsif ( -f "/etc/fedora-release" ) {
-            return "Fedora";
-        } 
         elsif ( -f "/etc/debian_release" || -f "/etc/debian_version" ) {
             return "Debian";
-        }
-        elsif ( -f "/etc/lsb-release" ) {
-            return "Ubuntu";
         }
     }
     return undef; 
