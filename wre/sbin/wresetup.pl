@@ -34,23 +34,28 @@ my $config = WRE::Config->new;
 my $host   = WRE::Host->new(wreConfig => $config);
 my $file   = WRE::File->new(wreConfig => $config);
 
-say "Setting up nginx main config";
-$file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
-    $config->getRoot("/etc/nginx.conf"),
-    { force => 1, templateVars=>{osName=>$host->getOsName} });
-say "Setting up nginx per-site config";
-$file->copy($config->getRoot("/var/setupfiles/nginx.template"),
-    $config->getRoot("/var/nginx.template"),
-    { force => 1 });
-say "Setting up mime.types file";
-$file->copy($config->getRoot("/var/setupfiles/mime.types"),
-    $config->getRoot("/etc/mime.types"),
+#say "Setting up nginx main config";
+#$file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
+#    $config->getRoot("/etc/nginx.conf"),
+#    { force => 1, templateVars=>{osName=>$host->getOsName} });
+#say "Setting up nginx per-site config";
+#$file->copy($config->getRoot("/var/setupfiles/nginx.template"),
+#    $config->getRoot("/var/nginx.template"),
+#    { force => 1 });
+#say "Setting up mime.types file";
+#$file->copy($config->getRoot("/var/setupfiles/mime.types"),
+#    $config->getRoot("/etc/mime.types"),
+#    { force => 1 });
+
+say "Setting up mod_perl main config for WebGUI";
+$file->copy($config->getRoot("/var/setupfiles/webgui.template"),
+    '/etc/httpd/conf.d/webgui.conf',
     { force => 1 });
 
-say "Setting up logrotate file";
-$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
-    $config->getRoot("/etc/wre.logrotate"),
-    { force => 1, processTemplate => 1, });
+#say "Setting up logrotate file";
+#$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
+#    $config->getRoot("/etc/wre.logrotate"),
+#    { force => 1, processTemplate => 1, });
 
 say "Setting up Spectre configuration";
 eval {

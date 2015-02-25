@@ -17,3 +17,5 @@ gpgcheck=0
 enabled=1
 
 yum install -y nginx
+
+cpanm Apache2::SizeLimit
