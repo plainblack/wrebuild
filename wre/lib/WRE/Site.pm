@@ -119,7 +119,6 @@ sub create {
         );
 
     # create webroot
-	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/logs'));
 	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/public'));
     my $uploads = $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/');
     my $baseUploads = $wreConfig->getWebguiRoot('/www/uploads/');
@@ -127,9 +126,15 @@ sub create {
         $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/'),
         { recursive => 1, force=>1 });
 
+    # create modperl config
+    $file->copy($wreConfig->getRoot("/var/modperl.template"), 
+        ##Prefixed with webgui- to make sure it comes after perl.conf
+        '/etc/httpd/conf.d/webgui-'.$sitename.'.conf',
+        { templateVars => $params, force => 1 });
+
     # create nginx config
     $file->copy($wreConfig->getRoot("/var/nginx.template"), 
-        $wreConfig->getRoot("/etc/".$sitename.".nginx"),
+        "/etc/nginx/conf.d/".$sitename.".nginx",
         { templateVars => $params, force => 1 });
 }
 
