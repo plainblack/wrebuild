@@ -50,7 +50,13 @@ my $file   = WRE::File->new(wreConfig => $config);
 say "Setting up mod_perl main config for WebGUI";
 $file->copy($config->getRoot("/var/setupfiles/webgui.template"),
     '/etc/httpd/conf.d/webgui.conf',
-    { force => 1 });
+    { force => 1,
+      templateVars => {
+          osName => $host->getOsName,
+	  devOnly => 0,
+	  webguiRoot => $config->getWebguiRoot,
+         }
+  });
 
 #say "Setting up logrotate file";
 #$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
