@@ -88,11 +88,6 @@ eval {
     close $in;
 };
 
-
-say "Creating log and run directory";
-$file->makePath($config->getRoot("/var/logs"));
-$file->makePath($config->getRoot("/var/run"));
-
 __END__
 
 =head1 NAME
