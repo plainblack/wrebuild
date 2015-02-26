@@ -22,6 +22,8 @@ cd /data/WebGUI/sbin;
 yum install -y gcc glibc g++
 perl testEnvironment.pl --simpleReport | ack '(\S+):\s+Not Installed' --output='$1' | cpanm
 
+/usr/sbin/useradd webgui -s /sbin/nologin
+
 nginx repo install into /etc/yum.repos.d/nginx.repo
 [nginx]
 name=nginx repo
