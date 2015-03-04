@@ -18,12 +18,13 @@ use WRE::Host;
 use Getopt::Long ();
 use Pod::Usage ();
 
-my $help;
+my ($help, $devOnly);
 
 use 5.010;
 
 Getopt::Long::GetOptions(
-    'help'=>\$help
+    'help'    => \$help,
+    'devOnly' => \$devOnly,
 );
 
 Pod::Usage::pod2usage( verbose => 2 ) if $help;
@@ -50,7 +51,7 @@ my $file   = WRE::File->new(wreConfig => $config);
 say "Setting up mod_perl main config for WebGUI";
 $file->copy($config->getRoot("/var/setupfiles/webgui.conf"),
     '/etc/httpd/conf.d/webgui.conf',
-    { force => 1 });
+    { force => 1, templateVars => { devOnly => $devOnly, osName => $host->getOsNameosName, webguiRoot -> $config->getRoot(), }, });
 
 #say "Setting up logrotate file";
 #$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
