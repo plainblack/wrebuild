@@ -48,7 +48,7 @@ my $file   = WRE::File->new(wreConfig => $config);
 #    { force => 1 });
 
 say "Setting up mod_perl main config for WebGUI";
-$file->copy($config->getRoot("/var/setupfiles/webgui.template"),
+$file->copy($config->getRoot("/var/setupfiles/webgui.conf"),
     '/etc/httpd/conf.d/webgui.conf',
     { force => 1 });
 
