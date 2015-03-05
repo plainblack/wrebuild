@@ -39,10 +39,14 @@ my $file   = WRE::File->new(wreConfig => $config);
 #$file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
 #    $config->getRoot("/etc/nginx.conf"),
 #    { force => 1, templateVars=>{osName=>$host->getOsName} });
-#say "Setting up nginx per-site config";
-#$file->copy($config->getRoot("/var/setupfiles/nginx.template"),
-#    $config->getRoot("/var/nginx.template"),
-#    { force => 1 });
+say "Setting up modperl per-site config";
+$file->copy($config->getRoot("/var/setupfiles/modperl.template"),
+    $config->getRoot("/var/modperl.template"),
+    { force => 1 });
+say "Setting up nginx per-site config";
+$file->copy($config->getRoot("/var/setupfiles/nginx.template"),
+    $config->getRoot("/var/nginx.template"),
+    { force => 1 });
 #say "Setting up mime.types file";
 #$file->copy($config->getRoot("/var/setupfiles/mime.types"),
 #    $config->getRoot("/etc/mime.types"),
@@ -52,6 +56,9 @@ say "Setting up mod_perl main config for WebGUI";
 $file->copy($config->getRoot("/var/setupfiles/webgui.conf"),
     '/etc/httpd/conf.d/webgui.conf',
     { force => 1, templateVars => { devOnly => $devOnly, osName => $host->getOsName, webguiRoot => $config->getRoot(), }, });
+$file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
+    '/etc/httpd/conf.d/modperl.pl',
+    { force => 1, });
 
 #say "Setting up logrotate file";
 #$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
