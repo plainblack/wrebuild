@@ -107,13 +107,13 @@ sub create {
     my $mysql = WRE::Mysql->new(wreConfig=>$wreConfig);
     my $db = $mysql->getDatabaseHandle(password=>$adminPassword{$refId});
     $db->do("grant all privileges on ".$params->{databaseName}.".* to '".$params->{databaseUser}
-        ."'\@'%' identified by '".$params->{databasePassword}."'");
+        ."'\@'localhost' identified by '".$params->{databasePassword}."'");
     $db->do("flush privileges");
     $db->do("create database ".$params->{databaseName});
     $db->disconnect;
     $mysql->load(
         database    => $params->{databaseName},
-        path        => $wreConfig->getWebguiRoot("/share/create.sql"),
+        path        => $wreConfig->getWebguiRoot("/docs/create.sql"),
         username    => $params->{databaseUser},
         password    => $params->{databasePassword},
         );
