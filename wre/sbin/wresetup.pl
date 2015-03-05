@@ -47,10 +47,6 @@ say "Setting up nginx per-site config";
 $file->copy($config->getRoot("/var/setupfiles/nginx.template"),
     $config->getRoot("/var/nginx.template"),
     { force => 1 });
-#say "Setting up mime.types file";
-#$file->copy($config->getRoot("/var/setupfiles/mime.types"),
-#    $config->getRoot("/etc/mime.types"),
-#    { force => 1 });
 
 say "Setting up mod_perl main config for WebGUI";
 $file->copy($config->getRoot("/var/setupfiles/webgui.conf"),
