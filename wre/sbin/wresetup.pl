@@ -1,4 +1,4 @@
-#!/data/wre/prereqs/bin/perl
+#!/usr/bin/perl
 
 #-------------------------------------------------------------------
 # WRE is Copyright 2005-2012 Plain Black Corporation.
@@ -18,12 +18,13 @@ use WRE::Host;
 use Getopt::Long ();
 use Pod::Usage ();
 
-my $help;
+my ($help, $devOnly);
 
 use 5.010;
 
 Getopt::Long::GetOptions(
-    'help'=>\$help
+    'help'    => \$help,
+    'devOnly' => \$devOnly,
 );
 
 Pod::Usage::pod2usage( verbose => 2 ) if $help;
@@ -38,25 +39,22 @@ my $file   = WRE::File->new(wreConfig => $config);
 #$file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
 #    $config->getRoot("/etc/nginx.conf"),
 #    { force => 1, templateVars=>{osName=>$host->getOsName} });
-#say "Setting up nginx per-site config";
-#$file->copy($config->getRoot("/var/setupfiles/nginx.template"),
-#    $config->getRoot("/var/nginx.template"),
-#    { force => 1 });
-#say "Setting up mime.types file";
-#$file->copy($config->getRoot("/var/setupfiles/mime.types"),
-#    $config->getRoot("/etc/mime.types"),
-#    { force => 1 });
+say "Setting up modperl per-site config";
+$file->copy($config->getRoot("/var/setupfiles/modperl.template"),
+    $config->getRoot("/var/modperl.template"),
+    { force => 1 });
+say "Setting up nginx per-site config";
+$file->copy($config->getRoot("/var/setupfiles/nginx.template"),
+    $config->getRoot("/var/nginx.template"),
+    { force => 1 });
 
 say "Setting up mod_perl main config for WebGUI";
-$file->copy($config->getRoot("/var/setupfiles/webgui.template"),
+$file->copy($config->getRoot("/var/setupfiles/webgui.conf"),
     '/etc/httpd/conf.d/webgui.conf',
-    { force => 1,
-      templateVars => {
-          osName => $host->getOsName,
-	  devOnly => 0,
-	  webguiRoot => $config->getWebguiRoot,
-         }
-  });
+    { force => 1, templateVars => { devOnly => $devOnly, osName => $host->getOsName, webguiRoot => $config->getRoot(), }, });
+$file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
+    '/etc/httpd/conf.d/modperl.pl',
+    { force => 1, });
 
 #say "Setting up logrotate file";
 #$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),

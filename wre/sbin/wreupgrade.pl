@@ -1,4 +1,4 @@
-#!/data/wre/prereqs/bin/perl
+#!/usr/bin/perl
 
 #-------------------------------------------------------------------
 # WRE is Copyright 2005-2012 Plain Black Corporation.
