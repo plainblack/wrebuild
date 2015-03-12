@@ -1,9 +1,9 @@
-<VirtualHost *:[% modperlPort %]>
+<VirtualHost *:[% config.get('apache/port') %]>
 	ServerName [% sitename %]
     [% IF adminEmail %]
         ServerAdmin [% adminEmail %]
     [% END %]
-	DocumentRoot [% domainRoot %]/[% sitename %]/public
+	DocumentRoot [% config.getDomainRoot %]/[% sitename %]/public
     SetEnvIf SSLPROXY "1" \
         SSLPROXY
     SetHandler perl-script

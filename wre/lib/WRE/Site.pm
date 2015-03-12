@@ -86,6 +86,7 @@ sub create {
     my $domain = $sitename;
     $domain =~ s/[^.]+\.//;
     $params->{domain} = $domain;
+    $params->{modperlPort} = $wreConfig->get('modperl/port');
 
     # create webgui config
     $file->copy($wreConfig->getWebguiRoot("/etc/WebGUI.conf.original"),
