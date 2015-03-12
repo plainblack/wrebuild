@@ -35,10 +35,6 @@ my $config = WRE::Config->new;
 my $host   = WRE::Host->new(wreConfig => $config);
 my $file   = WRE::File->new(wreConfig => $config);
 
-#say "Setting up nginx main config";
-#$file->copy($config->getRoot("/var/setupfiles/nginx.conf"),
-#    $config->getRoot("/etc/nginx.conf"),
-#    { force => 1, templateVars=>{osName=>$host->getOsName} });
 say "Setting up modperl per-site config";
 $file->copy($config->getRoot("/var/setupfiles/modperl.template"),
     $config->getRoot("/var/modperl.template"),
