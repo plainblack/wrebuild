@@ -128,8 +128,7 @@ sub create {
 
     # create modperl config
     $file->copy($wreConfig->getRoot("/var/modperl.template"), 
-        ##Prefixed with webgui- to make sure it comes after perl.conf
-        '/etc/httpd/conf.d/webgui-'.$sitename.'.conf',
+        '/etc/httpd/conf.d/'.$sitename.'.modperl',
         { templateVars => $params, force => 1 });
 
     # create nginx config
