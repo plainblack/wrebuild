@@ -79,18 +79,11 @@ say "Fixing permissions on the WebGUI etc directory";
 $file->changeOwner($config->getWebguiRoot("/etc"));
 
 say "Setting up WebGUI logging";
-eval {
-    open my $in, '<', $config->getWebguiRoot("/etc/log.conf.original")
-        or die "Unable to open '" . $config->getWebguiRoot("/etc/log.conf.original") . "': $!\n";
-    open my $out, '>', $config->getWebguiRoot("/etc/log.conf")
-        or die "Unable to open '" . $config->getWebguiRoot("/etc/log.conf") . "': $!\n";
-    while (my $line = <$in>) {
-        $line =~ s{/var/log/webgui\.log}{ $config->getRoot("/var/logs/webgui.log") }ge;
-        print {$out} $line;
-    }
-    close $out;
-    close $in;
-};
+$file->copy(
+    $config->getWebguiRoot("/etc/log.conf.original"),
+    $config->getWebguiRoot("/etc/log.conf"),
+    { force => 1, },
+);
 
 __END__
 
