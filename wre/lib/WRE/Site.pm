@@ -120,6 +120,7 @@ sub create {
         );
 
     # create webroot
+	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/logs'));
 	$file->makePath($wreConfig->getDomainRoot('/'.$sitename.'/public'));
     my $uploads = $wreConfig->getDomainRoot('/'.$sitename.'/public/uploads/');
     my $baseUploads = $wreConfig->getWebguiRoot('/www/uploads/');
