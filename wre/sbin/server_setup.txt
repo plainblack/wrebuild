@@ -35,3 +35,5 @@ enabled=1
 yum install -y nginx
 
 cpanm Apache2::SizeLimit
+
+rm /etc/httpd/conf.d/welcome.conf
