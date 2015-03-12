@@ -129,12 +129,12 @@ sub create {
 
     # create modperl config
     $file->copy($wreConfig->getRoot("/var/modperl.template"), 
-        '/etc/httpd/conf.d/'.$sitename.'.modperl',
+        $self->modperlConfig,
         { templateVars => $params, force => 1 });
 
     # create nginx config
     $file->copy($wreConfig->getRoot("/var/nginx.template"), 
-        "/etc/nginx/conf.d/".$sitename.".nginx",
+        $self->nginxConfig,
         { templateVars => $params, force => 1 });
 }
 
@@ -263,7 +263,10 @@ sub delete {
     $file->delete($wreConfig->getDomainRoot("/".$sitename));
 
     # nginx
-    $file->delete($wreConfig->getRoot("/etc/".$sitename.".nginx"));
+    $file->delete($self->nginxConfig);
+
+    # nginx
+    $file->delete($self->modperlConfig);
 
     # webgui
     $file->delete($wreConfig->getWebguiRoot("/etc/".$sitename.".conf"));
@@ -287,6 +290,20 @@ sub makeDatabaseName {
 
 #-------------------------------------------------------------------
 
+=head2 modperlConfig ( )
+
+Returns the absolute location and name of the modperl configuration file for apache/httpd
+
+=cut
+
+sub modperlConfig {
+    my $self = shift;
+    return '/etc/httpd/conf.d/'.$sitename.'.modperl';
+}
+
+
+#-------------------------------------------------------------------
+
 =head2 new ( wreConfig => $config, sitename => $sitename, adminPassword => $pass)
 
 Constructor.
@@ -302,6 +319,22 @@ The full name of a site, like "www.example.com".
 =head3 adminPassword
 
 The password for the WRE database "root" user.
+
+=cut
+
+#-------------------------------------------------------------------
+
+=head2 nginxConfig ( )
+
+Returns the absolute location and name of the nginx configuration file
+
+=cut
+
+sub nginxConfig {
+    my $self = shift;
+    return "/etc/nginx/conf.d/".$self->sitename.".nginx";
+}
+
 
 =cut
 
