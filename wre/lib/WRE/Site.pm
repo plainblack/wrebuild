@@ -335,11 +335,4 @@ sub nginxConfig {
     return "/etc/nginx/conf.d/".$self->sitename.".nginx";
 }
 
-
-=cut
-
-# auto generated
-
-
-
 1;
