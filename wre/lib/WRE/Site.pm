@@ -298,7 +298,7 @@ Returns the absolute location and name of the modperl configuration file for apa
 
 sub modperlConfig {
     my $self = shift;
-    return '/etc/httpd/conf.d/'.$sitename.'.modperl';
+    return '/etc/httpd/conf.d/'.$self->sitename.'.modperl';
 }
 
 
