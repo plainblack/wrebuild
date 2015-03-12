@@ -332,7 +332,7 @@ Returns the absolute location and name of the nginx configuration file
 
 sub nginxConfig {
     my $self = shift;
-    return "/etc/nginx/conf.d/".$self->sitename.".nginx";
+    return "/etc/nginx/conf.d/".$self->sitename.".conf";
 }
 
 1;
