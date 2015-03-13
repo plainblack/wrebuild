@@ -1,28 +1,16 @@
-#Rotate TGC log
+#Rotate WRE/WebGUI logs
 
-##nginx and access logs
-[% config.getRoot %]/var/logs/nginx_error.log /data/domains/*/logs/access.log {
+##webgui
+/var/log/webgui.log {
     notifempty
     daily
     rotate 7
     missingok
     compress
     sharedscripts
+    delaycompress
     postrotate
-        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart nginx
-    endscript
-}
-
-##webgui and starman
-[% config.getRoot %]/var/logs/webgui.log [% config.getRoot %]/var/logs/starman*.log {
-    notifempty
-    daily
-    rotate 7
-    missingok
-    compress
-    sharedscripts
-    postrotate
-        [% config.getRoot %]/prereqs/bin/perl [% config.getRoot %]/sbin/wreservice.pl --restart starman
+        /sbin/service httpd reload
     endscript
 }
 

@@ -81,6 +81,13 @@ $file->copy(
     { force => 1, },
 );
 
+say "Setting up WebGUI logfile rotations";
+$file->copy(
+    $config->getRoot("/var/setupfiles/wre.logrotate"),
+    "/etc/logrotate.d/webgui",
+    { force => 1, },
+);
+
 __END__
 
 =head1 NAME
