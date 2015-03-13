@@ -43,14 +43,14 @@ Service Names:
 
     all             A shortcut that represents all the services.
 
-    starman         The starman service which runs WebGUI.
+    apache          The apache/modperl service which runs WebGUI.
 
     nginx           The nginx service which provides performance and security
                     services for WebGUI.
 
     spectre         WebGUI's workflow governor.
 
-    web             A shortcut that represents both starman and nginx.
+    web             A shortcut that represents both apache and nginx.
 
 Actions:
 
@@ -61,8 +61,6 @@ Actions:
     --ping          An alias for --status.
 
     --restart       Stops and then starts a service again.
-
-    --reload        Makes a service reload its configuration files, only works for Nginx.
 
     --shutdown      An alias for --stop.
 
@@ -98,14 +96,14 @@ if (scalar(@stop)) {
     if (grep /^nginx|modproxy|all|web$/, @stop) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->stop}, "Stop nginx");
     }
-    if (grep /^starman|modperl|all|web$/, @stop) {
-        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->stop}, "Stop starman");
+    if (grep /^apache|modperl|all|web$/, @stop) {
+        printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->stop}, "Stop apache");
     }
 }
 
 if (scalar(@start)) {
-    if (grep /^starman|modperl|all|web$/, @start) {
-        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->start}, "Start starman");
+    if (grep /^apache|modperl|all|web$/, @start) {
+        printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->start}, "Start apache");
     }
     if (grep /^nginx|modproxy|all|web$/, @start) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->start}, "Start nginx");
@@ -116,8 +114,8 @@ if (scalar(@start)) {
 }
 
 if (scalar(@restart)) {
-    if (grep /^starman|modperl|all|web$/, @restart) {
-        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->restart}, "Restart starman");
+    if (grep /^apache|modperl|all|web$/, @restart) {
+        printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->restart}, "Restart apache");
     }
     if (grep /^nginx|modproxy|all|web$/, @restart) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->restart}, "Restart nginx");
@@ -127,15 +125,9 @@ if (scalar(@restart)) {
     }
 }
 
-if (scalar(@reload)) {
-    if (grep /^nginx|modproxy|all|web$/, @reload) {
-        printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->Reload}, "Reload nginx configs");
-    }
-}
-
 if (scalar(@status)) {
-    if (grep /^starman|modperl|all|web$/, @status) {
-        printSuccess(sub{WRE::Starman->new(wreConfig=>$config)->ping}, "Ping starman");
+    if (grep /^apache|modperl|all|web$/, @status) {
+        printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->ping}, "Ping apache");
     }
     if (grep /^nginx|modproxy|all|web$/, @status) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->ping}, "Ping nginx");
