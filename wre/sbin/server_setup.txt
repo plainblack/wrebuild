@@ -10,7 +10,7 @@ yum install -y epel-release
 yum install -y {perl-,}libapreq2
 
 yum install -y perl-Moose perl-Net-DNS perl-Test-Deep perl-Archive-{Tar,Zip,Any} perl-MIME-tools perl-Tie-IxHash perl-DateTime perl-XML-Simple perl-DateTime-Format-{Strptime,Mail,HTTP} perl-Log-Log4perl perl-Time-HiRes perl-LDAP perl-HTML-Template perl-Template-Toolkit
-yum install -y perl-XML-FeedPP perl-JSON{,-Any} perl-Text-CSV_XS perl-Net-CIDR-Lite perl-Finance-Quote perl-POE perl-Text-Aspell perl-Image-ExifTool perl-{Exception,Class}-Path perl-Module-Find perl-Crype-SSLeay perl-Scope-Guard perl-Digest-SHA perl-Readonly perl-Business-PayPal-API
+yum install -y perl-XML-FeedPP perl-JSON{,-Any} perl-Text-CSV_XS perl-Net-CIDR-Lite perl-Finance-Quote perl-POE perl-Text-Aspell perl-Image-ExifTool perl-{Exception,Class}-Path perl-Module-Find perl-Crypt-SSLeay perl-Scope-Guard perl-Digest-SHA perl-Readonly perl-Business-PayPal-API
 yum install -y perl-Cache-FastMmap perl-PerlIO-eol perl-Data-ICal perl-DateTime-Event-ICal
 
 yum install -y perl-Test-{MockObject,LongString,Exception,Differences,Class,MockTime} perl-Pod-Coverage
