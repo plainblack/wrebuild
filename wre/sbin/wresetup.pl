@@ -52,11 +52,6 @@ $file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
     '/etc/httpd/conf.d/modperl.pl',
     { force => 1, });
 
-#say "Setting up logrotate file";
-#$file->copy($config->getRoot("/var/setupfiles/wre.logrotate"),
-#    $config->getRoot("/etc/wre.logrotate"),
-#    { force => 1, processTemplate => 1, });
-
 say "Setting up Spectre configuration";
 eval {
     open my $in, '<', $config->getWebguiRoot("/etc/spectre.conf.original")
