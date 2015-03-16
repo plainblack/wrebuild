@@ -15,7 +15,7 @@
 }
 
 ##wremonitor
-[% config.getRoot %]/var/logs/wremonitor.log {
+/var/log/wremonitor.log {
     notifempty
     daily
     rotate 7
