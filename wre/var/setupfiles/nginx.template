@@ -11,7 +11,7 @@ server {
 
     listen   [% config.get('nginx/port') %]; ## listen for ipv4
 
-    access_log [% config.getDomainRoot %]/[% sitename %]/logs/access.log combined;
+    access_log /var/log/nginx/[% sitename %].log combined;
     root       [% config.getDomainRoot %]/[% sitename %]/public;
     client_max_body_size 20M;
 
@@ -54,7 +54,7 @@ server {
 #    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
 #    ssl_prefer_server_ciphers   on;
 #
-#    access_log [% config.getDomainRoot %]/[% sitename %]/logs/access.log combined
+#    access_log /var/log/nginx/[% sitename %].log combined;
 #    root       [% config.getDomainRoot %]/www.example.com/public;
 #
 #    # proxy webgui to apache/modperl listening on 127.0.0.1
