@@ -26,7 +26,9 @@ my $help;
 my ($local, $remote);
 
 Getopt::Long::GetOptions(
-    'help'=>\$help,
+    'help'     => \$help,
+    'l|local'  => \$local,
+    'r|remote' => \$remote,
 );
 
 Pod::Usage::pod2usage( verbose => 2 ) if $help;
@@ -52,7 +54,7 @@ sub backupMysql {
 
     # disable wremonitor to prevent false positives
     $config->set("wreMonitor/nginxAdministrativelyDown", 1);
-    $config->set("wreMonitor/starmanAdministrativelyDown", 1);
+    $config->set("wreMonitor/apacheAdministrativelyDown", 1);
 
 
     my $mysql       = WRE::Mysql->new(wreConfig=>$config);
@@ -63,12 +65,12 @@ sub backupMysql {
     my $backupDir   = dir($config->get("backup/path"));
 
     # find databases to back up 
-	my $databases = $db->prepare("show databases");
-	$databases->execute;
-	while (my ($name) = $databases->fetchrow_array) {
+    my $databases = $db->prepare("show databases");
+    $databases->execute;
+    while (my ($name) = $databases->fetchrow_array) {
 
         # skip some databases
-		next if $name =~ /^demo\d/;
+        next if $name =~ /^demo\d/;
         next if $name ~~ [qw/test information_schema performance_schema/];
 
         # create dump
@@ -76,11 +78,11 @@ sub backupMysql {
             database    => $name, 
             path        => $backupDir->file($name.".sql")->stringify
             );
-	}
-	$db->disconnect;
+    }
+    $db->disconnect;
 
     # re-enable WRE monitor
-    $config->set("wreMonitor/starmanAdministrativelyDown", 0);
+    $config->set("wreMonitor/apacheAdministrativelyDown", 0);
     $config->set("wreMonitor/nginxAdministrativelyDown", 0);
 }
 
