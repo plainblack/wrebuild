@@ -24,6 +24,7 @@ yum install -y gcc glibc g++
 perl testEnvironment.pl --simpleReport | ack '(\S+):\s+Not Installed' --output='$1' | cpanm
 
 /usr/sbin/useradd webgui -s /sbin/nologin
+mkdir /backup
 
 nginx repo install into /etc/yum.repos.d/nginx.repo
 [nginx]
