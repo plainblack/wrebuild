@@ -23,9 +23,10 @@ use 5.010;
 my $config  = WRE::Config->new;
 my $util    = WRE::File->new(wreConfig => $config);
 my $help;
+my ($local, $remote);
 
 Getopt::Long::GetOptions(
-        'help'=>\$help
+    'help'=>\$help,
 );
 
 Pod::Usage::pod2usage( verbose => 2 ) if $help;
@@ -33,10 +34,14 @@ Pod::Usage::pod2usage( verbose => 2 ) if $help;
 # are backups enabled
 exit unless $config->get("backup/enabled");
 
-backupMysql($config);
-backupFiles($config);
-runExternalScripts($config);
-copyToRemote($config);
+if (! $remote) {
+    backupMysql($config);
+    backupFiles($config);
+    runExternalScripts($config);
+}
+if (! $local) {
+    copyToRemote($config);
+}
 
 #-------------------------------------------------------------------
 sub backupMysql {
