@@ -18,6 +18,7 @@ use WRE::Host;
 use WRE::Starman;
 use WRE::Nginx;
 use WRE::Spectre;
+use WRE::Mysql;
 
 $|=1;   # turn off buffering
 
@@ -81,6 +82,10 @@ Options:
 STOP
 }
 
+for ( @stop, @start, @restart, @status ) {
+    s/[._]//g; $_ = lc($_);
+}
+
 my $config = WRE::Config->new;
 my $host = WRE::Host->new(wreConfig => $config);
 
@@ -99,6 +104,9 @@ if (scalar(@stop)) {
     if (grep /^apache|modperl|all|web$/, @stop) {
         printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->stop}, "Stop apache");
     }
+    if (grep /^mysql|all$/, @stop) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->stop}, "Stop MySQL");
+    }
 }
 
 if (scalar(@start)) {
@@ -107,6 +115,9 @@ if (scalar(@start)) {
     }
     if (grep /^nginx|modproxy|all|web$/, @start) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->start}, "Start nginx");
+    }
+    if (grep /^mysql|all$/, @start) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
     }
     if (grep /^spectre|all$/, @start) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->start}, "Start S.P.E.C.T.R.E.");
@@ -120,6 +131,9 @@ if (scalar(@restart)) {
     if (grep /^nginx|modproxy|all|web$/, @restart) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->restart}, "Restart nginx");
     }
+    if (grep /^mysql|all$/, @restart) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->restart}, "Restart MySQL");
+    }
     if (grep /^spectre|all$/, @restart) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->restart}, "Restart S.P.E.C.T.R.E.");
     }
@@ -131,6 +145,9 @@ if (scalar(@status)) {
     }
     if (grep /^nginx|modproxy|all|web$/, @status) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->ping}, "Ping nginx");
+    }
+    if (grep /^mysql|all$/, @status) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->ping}, "Ping MySQL");
     }
     if (grep /^spectre|all$/, @status) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->ping}, "Ping S.P.E.C.T.R.E.");

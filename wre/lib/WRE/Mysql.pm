@@ -111,6 +111,40 @@ sub getName {
     return "MySQL";
 }
 
+#-------------------------------------------------------------------
+
+=head getService () 
+
+Returns the correct service name
+selects between mysql and mariadb
+caches it in the config file
+
+=cut
+
+sub getService {
+    my $self = shift;
+    my $config = $self->wreConfig;
+    my $serviceName = $config->get('mysql/serviceName');
+#warn $serviceName."\n";
+    return $serviceName || do {
+	my $result = `/bin/systemctl status mysql | grep -i loaded`;
+	if( $result =~ /Loaded: loaded/ ) {
+	    $config->set('mysql/serviceName','mysql');
+#warn "mysql\n";
+	    return 'mysql';
+	} else {
+	    $result = `/bin/systemctl status mariadb | grep -i loaded`;
+	    if( $result =~ /Loaded: loaded/ ) {
+	        $config->set('mysql/serviceName','mariadb');
+#warn "mariadb\n";
+	        return 'mariadb';
+	    } else {
+		die "either no database is installed or it is not installed correctly...\n",
+			"you must have either mysql or mariadb installed.";
+	    }
+	}
+    }
+}
 
 #-------------------------------------------------------------------
 
@@ -174,6 +208,109 @@ sub load {
     system($command);
 }
 
+#-------------------------------------------------------------------
+
+=head2 ping ( )
+
+Returns a 1 if MySQL is running, or a 0 if it is not.
+
+=cut
+
+sub ping {
+    my $self = shift;
+    return 1 if $self->_ping;
+    my $config = $self->wreConfig;
+    my $db;
+    eval {
+        $db = $self->getDatabaseHandle(password=>$config->get("mysql/test/password"),
+	                               username=>$config->get("mysql/test/user"))
+    };
+    if (defined $db) {
+        $db->disconnect;
+        return 1;
+   }
+   return 0;
+}
+
+#-------------------------------------------------------------------
+
+=head2 start ( )
+
+Returns a 1 if the start was successful, or a 0 if it was not.
+
+Note: The process that runs this command must be root.
+
+=cut
+
+sub start {
+    my $self = shift;
+    my $count = 0;
+    my $success = 0;
+    my $config = $self->wreConfig;
+    $config->set("wreMonitor/mysqlAdministrativelyDown", 0);
+    my $host = WRE::Host->new(wreConfig => $config);
+    my $cmd = '/bin/systemctl start ' . $self->getService;
+#warn $cmd."\n";
+    `$cmd`; # catch command line output
+    while ($count < 10 && $success == 0) {
+        sleep(1);
+        eval {$success = $self->_ping };  # _ping is faster than ping...
+        $count++;
+    }
+    $success ||= eval { $self->ping };  # if _ping fails; try ping
+    return $success;
+}
+
+#-------------------------------------------------------------------
+
+=head2 stop ( )
+
+Returns a 1 if the stop was successful, or a 0 if it was not.
+
+Note: The process that runs this command must be root.
+
+=cut
+
+sub stop {
+    my $self = shift;
+    my $count = 0;
+    my $success = 1;
+    my $config = $self->wreConfig;
+    $config->set("wreMonitor/mysqlAdministrativelyDown", 1);
+    my $host = WRE::Host->new(wreConfig => $config);
+    my $cmd = '/bin/systemctl stop ' . $self->getService;
+    `$cmd`; # catch command line output
+    while ($count < 10 && $success == 1) {
+        sleep(1);
+        eval {$success = $self->_ping };
+        $count++;
+    }
+    return !$success;
+}
+
+#--------------------------------
+
+=head2 _ping ()
+
+use systemctl to check for server...
+
+=cut
+
+sub _ping {
+    my $self = shift;
+    my $command = '/bin/systemctl status ' . $self->getService;
+#warn $command."\n";
+    my $result = ` $command | grep Active `;
+#warn $result;
+    chomp $result;
+    if( $result =~ /Active.*active.*running/ ) {
+        return 1;
+    } else {
+	return 0;
+    }
+}
+
 } # end inside out object
 
 1;
+
