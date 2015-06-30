@@ -125,24 +125,17 @@ sub getService {
     my $self = shift;
     my $config = $self->wreConfig;
     my $serviceName = $config->get('mysql/serviceName');
-#warn $serviceName."\n";
     return $serviceName || do {
-	my $result = `/bin/systemctl status mysql | grep -i loaded`;
-	if( $result =~ /Loaded: loaded/ ) {
-	    $config->set('mysql/serviceName','mysql');
-#warn "mysql\n";
-	    return 'mysql';
-	} else {
-	    $result = `/bin/systemctl status mariadb | grep -i loaded`;
+        for $serviceName ( qw/mysql mariadb/ ) {
+	    my $command = "/bin/systemctl status $serviceName | grep -i loaded";
+	    my $result = `$command`;
 	    if( $result =~ /Loaded: loaded/ ) {
-	        $config->set('mysql/serviceName','mariadb');
-#warn "mariadb\n";
-	        return 'mariadb';
-	    } else {
-		die "either no database is installed or it is not installed correctly...\n",
-			"you must have either mysql or mariadb installed.";
+	        $config->set( 'mysql/serviceName',$serviceName );
+	        return $serviceName;
 	    }
-	}
+        }
+	die "either no database is installed or it is not installed correctly...\n",
+			"you must have either mysql or mariadb installed.";
     }
 }
 
