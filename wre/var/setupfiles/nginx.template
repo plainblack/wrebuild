@@ -32,6 +32,21 @@ server {
         add_header Access-Control-Allow-Origin *;
     }
 
+    location /uploads/ {
+	error_page 424 = /;
+        add_header Cache-Control public;
+        expires 24h;
+        root   /data/domains/[% sitename %]/public/;
+        add_header Access-Control-Allow-Origin *;
+	set $dir $uri;
+	if ( $uri ~ ^(.*/) ) {
+	    set $dir $1;
+	}
+	if ( -f $document_root/$dir/.wgaccess ) { 
+	    return 424;
+	}
+    }
+
     location /uploads/filepump { expires max; }
     location = /default.ida    { access_log off; deny all; }
     location /_vti_bin         { access_log off; deny all; }
@@ -72,6 +87,21 @@ server {
 #        expires 24h;
 #        root   /data/WebGUI/www/extras;
 #        add_header Access-Control-Allow-Origin *;
+#    }
+#
+#    location /uploads/ {
+#	error_page 424 = /;
+#        add_header Cache-Control public;
+#        expires 24h;
+#        root   /data/domains/[% sitename %]/public/;
+#        add_header Access-Control-Allow-Origin *;
+#	set $dir $uri;
+#	if ( $uri ~ ^(.*/) ) {
+#	    set $dir $1;
+#	}
+#	if ( -f $document_root/$dir/.wgaccess ) { 
+#	    return 424;
+#	}
 #    }
 #
 #    location /uploads/filepump { expires max; }
