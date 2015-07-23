@@ -137,7 +137,8 @@ sub start {
     my $host = WRE::Host->new(wreConfig => $wreConfig);
     my $cmd = "";
     chdir $wreConfig->getWebguiRoot("/sbin");
-    $cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon";
+    #$cmd = $wreConfig->getRoot("/prereqs/bin/perl")." spectre.pl --daemon";
+    $cmd = "perl spectre.pl --daemon";
     system($cmd);
     while ($count < 10 && $success == 0) {
         sleep(1);
