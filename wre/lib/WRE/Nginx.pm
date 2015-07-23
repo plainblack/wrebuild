@@ -124,7 +124,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub start {
     my $self = shift;
-    my $cmd = $self->base;
+    my $cmd = $self->base . ' start';
     my $count   = 0;
     my $success = 0;
     `$cmd`; # catch command line output
