@@ -16,6 +16,7 @@ use Getopt::Long;
 use WRE::Config;
 use WRE::Host;
 use WRE::Starman;
+use WRE::Apache;
 use WRE::Nginx;
 use WRE::Spectre;
 use WRE::Mysql;
@@ -110,14 +111,14 @@ if (scalar(@stop)) {
 }
 
 if (scalar(@start)) {
+    if (grep /^mysql|all$/, @start) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
+    }
     if (grep /^apache|modperl|all|web$/, @start) {
         printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->start}, "Start apache");
     }
     if (grep /^nginx|modproxy|all|web$/, @start) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->start}, "Start nginx");
-    }
-    if (grep /^mysql|all$/, @start) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->start}, "Start MySQL");
     }
     if (grep /^spectre|all$/, @start) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->start}, "Start S.P.E.C.T.R.E.");
@@ -125,14 +126,14 @@ if (scalar(@start)) {
 }
 
 if (scalar(@restart)) {
+    if (grep /^mysql|all$/, @restart) {
+        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->restart}, "Restart MySQL");
+    }
     if (grep /^apache|modperl|all|web$/, @restart) {
         printSuccess(sub{WRE::Apache->new(wreConfig=>$config)->restart}, "Restart apache");
     }
     if (grep /^nginx|modproxy|all|web$/, @restart) {
         printSuccess(sub{WRE::Nginx->new(wreConfig=>$config)->restart}, "Restart nginx");
-    }
-    if (grep /^mysql|all$/, @restart) {
-        printSuccess(sub{WRE::Mysql->new(wreConfig=>$config)->restart}, "Restart MySQL");
     }
     if (grep /^spectre|all$/, @restart) {
         printSuccess(sub{WRE::Spectre->new(wreConfig=>$config)->restart}, "Restart S.P.E.C.T.R.E.");
