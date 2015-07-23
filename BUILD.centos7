@@ -1,0 +1,33 @@
+To build a WRE on RedHat Enterprise Linux or CentOS. Do the following tasks:
+
+1) Install packages for MySQL, Apache, nginx, and perl.
+
+yum install -y mariadb \
+ httpd-server httpd-devel mod_ssl mod_perl mod_perl-devel \
+ perl gcc cpp glibc cmake aspell-devel aspell-en
+
+
+2) Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
+
+3) Install WebGUI's perl support libraries
+
+yum install perl-App-cpanminus
+cpanm Task::WebGUI
+
+# the following is recommended; if you don't run this you will have to debug these later...
+yum install perl-XML-SAX perl-XML-Parser perl-Server-Starter ImageMagick \
+	ImageMagick-devel ImageMagick-perl perl-prefork cpan 
+
+# these are optional; if you have trouble with these modules; then run these commands
+# cpanm -S String::UnicodeUTF8
+# cpanm -fS Net::Server::SS::PreFork
+
+perl /data/WebGUI/sbin/testEnvironment.pl --simpleReport |
+    grep 'Not Install' |
+    perl -pae ' $_= $F[3];s/:$/ / ' |
+    cpanm -S
+
+4) Import the WRE into your environment:
+ . wre/sbin/setenvironment.sh
+
+
