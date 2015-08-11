@@ -55,7 +55,11 @@ sub dump {
         ." --port=".$config->get("mysql/port")
         ." --result-file=".$path->stringify
         ." --opt" # increased dump and load performance
-        ." ".$options{database};
+        ;
+    if ($config->get('mysql/dump_options')) {
+        $command .= ' '.$config->get('mysql/dump_options');
+    }
+    $command .= " ".$options{database};
     system($command);
 }
 
