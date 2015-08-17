@@ -56,8 +56,8 @@ sub dump {
         ." --result-file=".$path->stringify
         ." --opt" # increased dump and load performance
         ;
-    if ($config->get('mysql/dump_options')) {
-        $command .= ' '.$config->get('mysql/dump_options');
+    if ($config->get('backup/mysql/dump_options')) {
+        $command .= ' '.$config->get('backup/mysql/dump_options');
     }
     $command .= " ".$options{database};
     system($command);
