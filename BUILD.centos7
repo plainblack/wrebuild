@@ -2,21 +2,27 @@ To build a WRE on RedHat Enterprise Linux or CentOS. Do the following tasks:
 
 1) Install packages for MySQL, Apache, nginx, and perl.
 
-yum install -y mariadb \
- httpd-server httpd-devel mod_ssl mod_perl mod_perl-devel \
- perl gcc cpp glibc cmake aspell-devel aspell-en
+yum install -y epel-release
+yum install -y mariadb mariadb-server httpd httpd-server httpd-devel \
+    mod_ssl mod_perl mod_perl-devel perl gcc cpp \
+    glibc cmake aspell-devel aspell-en git nginx mariadb-devel mariadb-libs \
+    perl-App-cpanminus perl-XML-SAX perl-XML-Parser \
+    perl-Server-Starter ImageMagick ImageMagick-devel \
+    ImageMagick-perl perl-prefork cpan perl-DBD-MySQL \
+    perl-Crypt-SSLeay perl-SOAP-Lite libnet {perl-,}libapreq2
 
+3) Configure mariadb
 
-2) Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
+Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
 
-3) Install WebGUI's perl support libraries
+systemctl enable mariadb.service nginx.service httpd.service
+systemctl start mariadb.service
+
+4) Install WebGUI's perl support libraries
 
 yum install perl-App-cpanminus
+cpanm String::UnicodeUTF8  ##Work around for Locales
 cpanm Task::WebGUI
-
-# the following is recommended; if you don't run this you will have to debug these later...
-yum install perl-XML-SAX perl-XML-Parser perl-Server-Starter ImageMagick \
-	ImageMagick-devel ImageMagick-perl perl-prefork cpan 
 
 # these are optional; if you have trouble with these modules; then run these commands
 # cpanm -S String::UnicodeUTF8
@@ -27,7 +33,7 @@ perl /data/WebGUI/sbin/testEnvironment.pl --simpleReport |
     perl -pae ' $_= $F[3];s/:$/ / ' |
     cpanm -S
 
-4) Import the WRE into your environment:
+5) Import the WRE into your environment:
  . wre/sbin/setenvironment.sh
 
 
