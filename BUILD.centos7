@@ -33,7 +33,8 @@ perl /data/WebGUI/sbin/testEnvironment.pl --simpleReport |
     perl -pae ' $_= $F[3];s/:$/ / ' |
     cpanm -S
 
-5) Import the WRE into your environment:
- . wre/sbin/setenvironment.sh
+5) Install the WRE base files and service configs
+perl /data/wre/sbin/wresetup.pl
 
-
+6) Remove default system files
+rm -f /etc/httpd/conf.d/{userdir,autoindex,welcome}.conf
