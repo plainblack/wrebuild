@@ -9,7 +9,8 @@ yum install -y mariadb mariadb-server httpd httpd-server httpd-devel \
     perl-App-cpanminus perl-XML-SAX perl-XML-Parser \
     perl-Server-Starter ImageMagick ImageMagick-devel \
     ImageMagick-perl perl-prefork cpan perl-DBD-MySQL \
-    perl-Crypt-SSLeay perl-SOAP-Lite libnet {perl-,}libapreq2
+    perl-Crypt-SSLeay perl-SOAP-Lite libnet {perl-,}libapreq2 \
+    perl-String-Random
 
 3) Configure mariadb
 
@@ -27,7 +28,7 @@ systemctl enable nginx.service httpd.service
 
 yum install perl-App-cpanminus
 cpanm String::UnicodeUTF8  ##Work around for Locales
-cpanm Task::WebGUI Class::InsideOut
+cpanm Task::WebGUI Class::InsideOut Tie::CPHash
 
 # these are optional; if you have trouble with these modules; then run these commands
 # cpanm -S String::UnicodeUTF8
