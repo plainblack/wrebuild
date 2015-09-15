@@ -15,14 +15,19 @@ yum install -y mariadb mariadb-server httpd httpd-server httpd-devel \
 
 Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
 
-systemctl enable mariadb.service nginx.service httpd.service
+systemctl enable mariadb.service
 systemctl start mariadb.service
+mysql_secure_installation
 
-4) Install WebGUI's perl support libraries
+4) Configure httpd and nginx
+
+systemctl enable nginx.service httpd.service
+
+5) Install WebGUI's perl support libraries
 
 yum install perl-App-cpanminus
 cpanm String::UnicodeUTF8  ##Work around for Locales
-cpanm Task::WebGUI
+cpanm Task::WebGUI Class::InsideOut
 
 # these are optional; if you have trouble with these modules; then run these commands
 # cpanm -S String::UnicodeUTF8
@@ -33,12 +38,9 @@ perl /data/WebGUI/sbin/testEnvironment.pl --simpleReport |
     perl -pae ' $_= $F[3];s/:$/ / ' |
     cpanm -S
 
-5) Install the WRE base files and service configs
+6) Install the WRE base files and service configs
 perl /data/wre/sbin/wresetup.pl
 
-6) Remove default system files
+7) Remove default system files
 rm -f /etc/httpd/conf.d/{userdir,autoindex,welcome}.conf
 rm -f /etc/httpd/conf.modules.d/00-{dav,lua,proxy}.conf
-
-7) Enable critical system services
-systemctl enable mariadb.service httpd.service nginx.service
