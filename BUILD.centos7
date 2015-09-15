@@ -39,3 +39,6 @@ perl /data/wre/sbin/wresetup.pl
 6) Remove default system files
 rm -f /etc/httpd/conf.d/{userdir,autoindex,welcome}.conf
 rm -f /etc/httpd/conf.modules.d/00-{dav,lua,proxy}.conf
+
+7) Enable critical system services
+systemctl enable mariadb.service httpd.service nginx.service
