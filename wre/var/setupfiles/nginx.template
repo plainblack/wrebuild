@@ -41,18 +41,12 @@ server {
 }
 
 #server {
-#    listen   443;
+#    listen   443 ssl;
 #    server_name  [% sitename %] [%domain %];
 #
 #    ssl  on;
 #    ssl_certificate     [% config.getDomainRoot %]/[% sitename %]/certs/server.crt;
 #    ssl_certificate_key [% config.getDomainRoot %]/[% sitename %]/certs/server.key;
-#
-#    ssl_session_timeout  5m;
-#
-#    ssl_protocols  SSLv3 TLSv1;
-#    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
-#    ssl_prefer_server_ciphers   on;
 #
 #    access_log /var/log/nginx/[% sitename %].log combined;
 #    root       [% config.getDomainRoot %]/www.example.com/public;
