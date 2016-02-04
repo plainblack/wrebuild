@@ -10,7 +10,7 @@ yum install -y mariadb mariadb-server httpd httpd-server httpd-devel \
     perl-Server-Starter ImageMagick ImageMagick-devel \
     ImageMagick-perl perl-prefork cpan perl-DBD-MySQL \
     perl-Crypt-SSLeay perl-SOAP-Lite libnet {perl-,}libapreq2 \
-    perl-String-Random perl-Proc-ProcessTable
+    perl-String-Random perl-Proc-ProcessTable lib-png-devel
 
 3) Configure mariadb
 
