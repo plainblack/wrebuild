@@ -64,7 +64,7 @@ server {
 #    location /extras/ {
 #        add_header Cache-Control public;
 #        expires 24h;
-#        root   /data/WebGUI/www/extras;
+#        root   /data/WebGUI/www/;
 #        add_header Access-Control-Allow-Origin *;
 #    }
 #
