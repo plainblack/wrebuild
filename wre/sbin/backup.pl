@@ -74,10 +74,13 @@ sub backupMysql {
         next if $name ~~ [qw/test information_schema performance_schema/];
 
         # create dump
+        my $dump_file = $backupDir->file($name.".sql")->stringify;
+        unlink $dump_file;
         $mysql->dump(
-            database    => $name, 
-            path        => $backupDir->file($name.".sql")->stringify
-            );
+            database    => $name,
+            path        => $dump_file,
+        );
+
     }
     $db->disconnect;
 
