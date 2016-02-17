@@ -17,6 +17,7 @@ use WRE::File;
 use WRE::Host;
 use Getopt::Long ();
 use Pod::Usage ();
+use File::Copy qw();
 
 my ($help, $devOnly);
 
@@ -77,11 +78,10 @@ $file->copy(
 );
 
 say "Setting up WebGUI logfile rotations";
-$file->copy(
+File::Copy::cp
     $config->getRoot("/var/setupfiles/wre.logrotate"),
     "/etc/logrotate.d/webgui",
-    { force => 1, },
-);
+    ;
 
 __END__
 
