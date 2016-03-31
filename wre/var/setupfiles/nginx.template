@@ -17,8 +17,11 @@ server {
 
     # proxy webgui to apache/modperl listening on 127.0.0.1
     location / {
-        # proxy_cache static;
-        # proxy_cache_valid 200 1s;
+        error_page 404 @app;
+        try_files /tmp/x @app;
+    }
+
+    location @app {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header Host $host;
@@ -30,6 +33,17 @@ server {
         expires 24h;
         root   /data/WebGUI/www/;
         add_header Access-Control-Allow-Origin *;
+    }
+
+    location /uploads/ {
+        error_page 459 = @app;
+        set $dir $uri;
+        if ( $uri ~ ^(.*/) ) {
+            set $dir $1;
+        }
+        if ( -f $document_root/$dir/.wgaccess ) { 
+            return 459;
+        }
     }
 
     location /uploads/filepump { expires max; }
