@@ -18,6 +18,7 @@ server {
     # proxy webgui to apache/modperl listening on 127.0.0.1
     location / {
         error_page 404 @app;
+        log_not_found off;
         try_files /tmp/x @app;
     }
 
