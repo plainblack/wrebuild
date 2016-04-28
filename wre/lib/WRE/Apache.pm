@@ -31,23 +31,32 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
-=head base () 
+=head base ([$action]) 
 
 Get's the base command line invocation for this service and make sure that the user has permission
 to start services.
 
-service httpd
+service httpd %s or systemctl %s httpd
+
+=head2 $action
+
+If an action (start, stop, etc) is passed, then the full command will be constructed and returned.
 
 =cut
 
 sub base {
     my $self = shift;
+    my $action = shift;
     my $wreConfig = $self->wreConfig;
     my $host = WRE::Host->new(wreConfig=>$wreConfig);
     unless ($wreConfig->get("apache/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
-    return "service httpd";
+    my $base = $self->systemd ? "systemctl %s httpd" : "service httpd %s";
+    if ($action) {
+        $base = sprintf $base, $action;
+    }
+    return $base;
 }
 
 #-------------------------------------------------------------------
@@ -74,7 +83,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub graceful {
     my $self = shift;
-    my $cmd = $self->base . ' graceful';
+    my $cmd = $self->base( $self->systemd ? 'reload' : 'graceful');
     my $count = 0;
     my $success = 0;
     `$cmd`; # catch command line output
@@ -151,7 +160,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub start {
     my $self = shift;
-    my $cmd = $self->base . ' start';
+    my $cmd = $self->base('start');
     my $count = 0;
     my $success = 0;
     my $config = $self->wreConfig;
@@ -181,7 +190,7 @@ sub stop {
     my $success = 1;
     my $config = $self->wreConfig;
     $config->set("wreMonitor/apacheAdministrativelyDown", 1);
-    my $cmd = $self->base . ' stop';
+    my $cmd = $self->base('stop');
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
         eval { $success = $self->ping };

@@ -109,6 +109,19 @@ sub stop {
     croak "Subclass didn't override as directed.";
 }
 
+#-------------------------------------------------------------------
+
+=head2 systemd ( )
+
+Returns a 1 if the flag in the config file has been set to indicate that this host uses systemd for process management instead of init.
+
+=cut
+
+sub systemd {
+    my $self = shift;
+    return $self->wreConfig->get('systemd') ? 1 : 0;
+}
+
 
 
 } # end inside out object

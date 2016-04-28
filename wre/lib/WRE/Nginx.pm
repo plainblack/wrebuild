@@ -28,23 +28,32 @@ WRE::Service
 
 #-------------------------------------------------------------------
 
-=head base () 
+=head base ([$action]) 
 
 Get's the base command line invocation for this service and make sure that the user has permission
 to start services.
 
-service nginx
+service nginx %s or systemd %s nginx
+
+=head2 $action
+
+If an action (start, stop, etc) is passed, then the full command will be constructed and returned.
 
 =cut
 
 sub base {
     my $self = shift;
+    my $action = shift;
     my $wreConfig = $self->wreConfig;
     my $host = WRE::Host->new(wreConfig=>$wreConfig);
     unless ($wreConfig->get("nginx/port") > 1024 || $host->isPrivilegedUser) {
         croak "You are not an administrator on this machine so you cannot start services with ports 1-1024.";
     }
-    return "service nginx";
+    my $base = $self->systemd ? "systemctl %s nginx" : "service nginx %s";
+    if ($action) {
+        $base = sprintf $base, $action;
+    }
+    return $base;
 }
 
 #-------------------------------------------------------------------
@@ -100,7 +109,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub reload {
     my $self = shift;
-    my $cmd = $self->base . ' reload';
+    my $cmd = $self->base('reload');
     my $count   = 0;
     my $success = 0;
     `$cmd`; # catch command line output
@@ -124,7 +133,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub start {
     my $self = shift;
-    my $cmd = $self->base;
+    my $cmd = $self->base('start');
     my $count   = 0;
     my $success = 0;
     `$cmd`; # catch command line output
@@ -152,7 +161,7 @@ Note: The process that runs this command must be either root or the user specifi
 
 sub stop {
     my $self = shift;
-    my $cmd = $self->base . " stop";
+    my $cmd = $self->base("stop");
     `$cmd`; # catch command line output
     my $count = 0;
     my $success = 0;
@@ -166,25 +175,5 @@ sub stop {
     }
     return $success;
 }
-
-#-------------------------------------------------------------------
-
-=head2 test ( )
-
-Have nginx 
-
-Returns a 1 if the start was successful, or a 0 if it was not.
-
-Note: The process that runs this command must be either root or the user specified in the WRE config file.
-
-=cut
-
-sub reload {
-    my $self = shift;
-    my $cmd = $self->base . ' test';
-    my $out = `$cmd`; # catch command line output
-    return 1;
-}
-
 
 1;
