@@ -1,0 +1,12 @@
+[Unit]
+Description=WebGUI Spectre service
+After=httpd.service
+
+[Service]
+Type=forking
+ExecStart=/data/WebGUI/sbin/spectre.pl --daemon
+ExecStop=/data/WebGUI/sbin/spectre.pl --stop
+PIDFile=/var/run/spectre.pid
+
+[Install]
+WantedBy=multi-user.target

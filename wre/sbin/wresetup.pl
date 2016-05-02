@@ -83,6 +83,15 @@ File::Copy::cp
     "/etc/logrotate.d/webgui",
     ;
 
+if ($config->get('systemd')) {
+    say "Setting up Spectre systemd files";
+    File::Copy::cp
+        $config->getRoot("/var/setupfiles/webgui-spectre.service"),
+        "/etc/systemd/system",
+        ;
+    system("/bin/systemctl enable webgui-spectre.service");
+}
+
 __END__
 
 =head1 NAME
