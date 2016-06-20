@@ -6,15 +6,15 @@ rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.
 
 1) Install packages for MySQL, Apache, nginx, and perl.
 
-yum install -y mariadb mariadb-{devel,libs}  \
-httpd httpd-devel mod_ssl mod_perl mod_perl-devel \
-perl gcc cpp glibc cmake  perl-App-cpanminus
+yum install -y mariadb mariadb-{devel,libs,server}  \
+httpd httpd-devel mod_ssl mod_perl mod_perl-devel libapreq2{,-devel} \
+perl gcc cpp glibc cmake  perl-App-cpanminus perl-CPAN perl-MIME-tools
 
 2) Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
 
-3) Install WebGUI's perl support libraries
+3) Install WebGUI and WRE perl support libraries
 
-cpanm Task::WebGUI
+cpanm Task::WebGUI Tie::CPHash Apache2::Request String::Random
 
 4) Import the WRE into your environment:
  . wre/sbin/setenvironment.sh
