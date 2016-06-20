@@ -15,7 +15,7 @@ use strict;
 use Getopt::Long;
 use WRE::Config;
 use WRE::Host;
-use WRE::Starman;
+use WRE::Apache;
 use WRE::Nginx;
 use WRE::Spectre;
 
