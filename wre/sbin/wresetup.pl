@@ -55,16 +55,10 @@ $file->copy($config->getRoot("/var/setupfiles/modperl.pl"),
 
 say "Setting up Spectre configuration";
 eval {
-    open my $in, '<', $config->getWebguiRoot("/etc/spectre.conf.original")
-        or die "Unable to open '" . $config->getWebguiRoot("/etc/spectre.conf.original") . "': $!\n";
-    open my $out, '>', $config->getWebguiRoot("/etc/spectre.conf")
-        or die "Unable to open '" . $config->getWebguiRoot("/etc/spectre.conf") . "': $!\n";
-    while (my $line = <$in>) {
-        $line =~ s{/var/run/spectre\.pid}{ $config->getRoot("/var/run/spectre.pid") }ge;
-        print {$out} $line;
-    }
-    close $out;
-    close $in;
+    File::Copy::cp
+        $config->getWebguiRoot("etc/spectre.conf.original"),
+        $config->getWebguiRoot("etc/spectre.conf"),
+        ;
 };
 
 say "Fixing permissions on the WebGUI etc directory";
