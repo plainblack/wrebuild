@@ -18,7 +18,3 @@ systemctl enable nginx httpd
 3) Install WebGUI and WRE perl support libraries
 
 cpanm Task::WebGUI Tie::CPHash Apache2::Request String::Random
-
-4) Import the WRE into your environment:
- . wre/sbin/setenvironment.sh
-
