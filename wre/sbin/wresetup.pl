@@ -84,14 +84,6 @@ if ($config->get('systemd')) {
         "/etc/systemd/system",
         ;
     system("/bin/systemctl enable webgui-spectre.service");
-
-    say "Setting up firewalld configuration";
-    File::Copy::cp
-        $config->getRoot("/var/setupfiles/public.xml"),
-        "/etc/firewalld/zones/",
-        ;
-    system("/sbin/firewall-cmd --set-default-zone=public");
-    system("/sbin/firewall-cmd reload");
 }
 
 __END__
