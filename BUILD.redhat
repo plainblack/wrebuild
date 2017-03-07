@@ -9,6 +9,7 @@ rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.
 yum install -y mariadb mariadb-{devel,libs,server}  \
 httpd httpd-devel mod_ssl mod_perl mod_perl-devel libapreq2{,-devel} \
 nginx \
+aspell aspell-devel aspell-en \
 perl gcc cpp glibc cmake  perl-App-cpanminus perl-CPAN perl-MIME-tools
 
 systemctl enable nginx httpd
