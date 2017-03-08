@@ -1,11 +1,11 @@
 To build a WRE on RedHat Enterprise Linux or CentOS version 7. Do the following tasks:
 
-0) Install EPEL repository
+1) Install EPEL repository
 
 yum install -y epel-release
 yum repolist
 
-1) Install packages for MySQL, Apache, nginx, and perl and perl libraries.
+2) Install packages for MySQL, Apache, nginx, and perl and perl libraries.
 
 yum install -y mariadb mariadb-{devel,libs,server}  \
 httpd httpd-devel mod_ssl mod_perl mod_perl-devel libapreq2{,-devel} \
@@ -16,8 +16,8 @@ ImageMagick-perl
 
 systemctl enable nginx httpd
 
-2) Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
+3) Update the default my.cnf file.  A suggested one is in var/setupfiles/my.cnf
 
-3) Install WebGUI and WRE perl support libraries
+4) Install WebGUI and WRE perl support libraries
 
 cpanm Task::WebGUI

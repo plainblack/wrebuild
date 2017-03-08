@@ -5,5 +5,7 @@ WRE Core.............................JT Smith / Plain Black
 
 Contributing Developers..............Koen de Jonge / ProcoliX
                                      Roy Johnson / Plain Black
+                                     Colin Kuskie / Plain Black
+                                     David Delikat / Plain Black
                                      Eric Kennedy / New Era Life Insurance
 

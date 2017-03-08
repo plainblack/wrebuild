@@ -8,9 +8,9 @@ http://wiki.webgui.org/
 
 PRIOR TO INSTALLING
 
-The WRE works best on a Linux-based operating system. We recommend 
-Red Hat Enterprise Linux, but it is not required. You can also use 
-the WRE on Mac OS X, BSD, and Windows based platforms.
+This WRE has only been tested with CentOS 7.  It should work on Red
+Hat Enterprise Linux 7, but has not been tested.  This WRE has not been
+tested on any other platform.
 
 
 INSTALLING
@@ -19,10 +19,13 @@ INSTALLING
 
 	mkdir /data
 	cd /data
-	tar xvfz /path/to/wre-x.x.x-osname.tar.gz
+	tar xvfz /path/to/wre-x.x.x.tar.gz
 
+2. Download a copy of WebGUI from http://update.webgui.org/, and install it.
+    cd /data
+    tar xvfz /path/to/webgui-x.y.z-stable.tar.gz
 
-2. Add a "webgui" user to the system. Note that you can name this 
+3. Add a "webgui" user to the system. Note that you can name this 
 user whatever you want, but we recommend "webgui". On most systems 
 you run a command similar to the following as the root user:
 
@@ -34,64 +37,28 @@ you run a command similar to the following as the root user:
     machine, feel free to just use your own user account rather than 
     creating a new one.
 
+4. Follow the instructions in BUILD.redhat to install packages and modules
+   needed by WebGUI.
 
-3. If you have an existing Apache or MySQL running please shut them
-down now. On most systems you can shut them down hard by running
-commands like this:
+5. Create a MySQL user for backups.
 
-    killall mysqld
-    killall httpd
+6. Create your DNS entries (or add to /etc/hosts) for the sites you will be
+   using, including the AWStats site.
 
-
-4. Install Percona mysql.  See instructions in BUILD.redhat and BUILD.mac
-
-Leave in the test user and database, as they're needed for the WRE to see if
-mysql is up and running.
-
-
-5. If you have a MySQL config file at /etc/my.cnf please remove or
-rename it so that it doesn't interfere with the WRE MySQL.
-
-	cp /data/wre/var/setupfiles//my.cnf /etc/my.cnf.old
-
-
-6. Create a MySQL user for backups.
-
-
-7. Create your DNS entries (or add to /etc/hosts) for the sites you
-will be using, including the AWStats site.
-
-
-8. Use the WRE environment
-
-	cd /data/wre/sbin
-    . setenvironment.sh
-
-    NOTE: You could add the following command to your profile so it
-    executes every time you log in.  However, on CentOS 5 servers
-    this can interfere with yum running:
-
-    . /data/wre/sbin/setenvironment.sh
-
-
-9. Customize the WRE configuration file with database users, paths and other items.
+7. Customize the WRE configuration file with database users, paths and other items.
 
     vim /data/wre/etc/wre.conf
 
-
-10. Run the WRE setup script to create base templates for nginx, logrotate and Spectre
+8. Run the WRE setup script to create base templates for nginx, logrotate and Spectre
 
     /data/wre/sbin/wresetup.pl
     
+9. On the command-line, go to /data/WebGUI/sbin, and as root, run the testEnvironment.pl
+    script to install any new dependencies in WebGUI that may be missing from the WRE.
 
-11. On the command-line, go to /data/WebGUI/sbin, and as root, run the testEnvironment.pl
-script to install any new dependencies in WebGUI that may be missing from the WRE.
+10. Visit your new web site!
 
-
-12. Visit your new web site!
-
-
-13. Add the following cron jobs to your server's cron tab.
+11. Add the following cron jobs to your server's cron tab.
 
 	0 0 * * * /data/wre/sbin/logrotate.pl
 	*/3 * * * * /data/wre/sbin/wremonitor.pl
@@ -100,48 +67,3 @@ script to install any new dependencies in WebGUI that may be missing from the WR
 	If you are using the demo system then add this:
 
 	0 0 * * * /data/wre/sbin/democleanup.pl
-
-
-
-
-PLATFORM SPECIFIC NOTES
------------------------
-
-* Red Hat Linux
-
-This note applies to all linux' that use chkconfig to setup services. These
-include RHEL, Fedora, Mandrake, SuSE, CentOS, and others. You can set up the
-WRE to start automatically at system boot by running the following commands
-after the WRE is installed:
-
-ln -s /data/wre/sbin/services/redhat/webgui /etc/init.d/webgui
-chkconfig --add webgui
-chkconfig webgui on
-
-On RHEL 5 or higher you need to install the libgomp RPM.
-
-Installing Percona via yum:
-
-rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.i386.rpm
-yum install -y Percona-Server-{server,client,shared,devel}-55
-
-
-* SELinux
-
-The WRE contains no policies for configuring SELinux.  If you distribution
-uses SELinux, you will need to disable it, set it into permissive mode,
-or write your own policies for SELinux.
-
-
-* Mac OS X
-
-There is no command line user add script on Mac OSX. Therefore you can either
-use the graphical "Accounts" manager in "System Preferences", or the really
-horrible "netinfo" command line utility. Alternatively, you can also download
-some free user utilities from this site:
-
-http://www.osxgnu.org/software/pkgdetail.html?project_id=231#4095
-
-To get the WRE to start automatically at boot run the following commands:
-
-ln -s /data/wre/sbin/services/osx/org.webgui.wre.plist /Library/LaunchDaemons/

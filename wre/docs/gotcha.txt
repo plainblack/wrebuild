@@ -6,6 +6,16 @@ affect your upgrade from one version of the WRE to another. Before upgrading
 the WRE you should always read this file in the new version you wish to
 upgrade to.
 
+WRE 1.0.0
+
+This is another complete rewrite of the WRE, where all binaries and modules
+have been removed, and should be provided by the hosting OS or by
+installing from CPAN.  This WRE is a set of scripts to automatically create
+configuration files for WebGUI, Apache/mod_perl and nginx.
+
+There is no automated upgrade process to go from an earlier version of the WRE
+to this one.
+
 WRE 0.9.6
 
 This is almost a complete rewrite of the WRE, even to the point of

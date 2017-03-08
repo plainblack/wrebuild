@@ -1,9 +1,8 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   U P G R A D E
 -------------------------------------------------------------------
 
-NOTE: There is no upgrade procedure from versions prior to WRE 0.9.6 for WebGUI 8
-as WRE 0.9.6 is a complete rewrite of the system. To upgrade you must remove the
-old WRE and install a completely new one.
+NOTE: There is no upgrade procedure from earlier version of the WRE to this
+version.  To upgrade you must remove the old WRE and install a completely new one.
 
 To upgrade the WRE follow these simple steps:
 
@@ -23,6 +22,8 @@ To upgrade the WRE follow these simple steps:
 
 8. Translate modproxy configuration files to nginx.
 
-9. Read /data/wre/docs/install.txt and /data/wre/docs/changelog.txt to make sure there aren't any new instructions.
+9. Check modperl configuration files for compatibility with newer Apache's.
 
-10. Start the WRE.
+10. Read /data/wre/docs/install.txt and /data/wre/docs/changelog.txt to make sure there aren't any new instructions.
+
+11. Start the WRE.

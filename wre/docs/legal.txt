@@ -2,10 +2,7 @@ W E B G U I   R U N T I M E   E N V I R O N M E N T   L E G A L   I N F O
 -------------------------------------------------------------------------
 
 WebGUI Runtime Environment (WRE) is Copyright 2005-2009 Plain Black 
-Corporation.  All rights reserved. Apache, mod_perl, Open SSL, Image 
-Magick, MySQL, libtool, libjpeg, libttf, libungif, libpng, awstats, Perl, 
-and many of the Perl modules are developed by and copyright their 
-respective owners.
+Corporation.  All rights reserved.
 
 WebGUI Content Engine, WebGUI Runtime Environment, and Plain Black are 
 all registered trademarks of Plain Black Corporation.

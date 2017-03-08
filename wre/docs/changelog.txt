@@ -1,5 +1,10 @@
 W E B G U I   R U N T I M E   E N V I R O N M E N T   C H A N G E L O G
 -----------------------------------------------------------------------
+1.0.0
+ - Complete rewrite, WRE now only provides scripts for making config files and starting/stopping services.
+ - All binaries and modules are provided by the host OS.
+ - Upgrades to this version are manual.
+
 0.9.7
  - Added BUILD.ubuntu with specifics for Ubuntu Oneiric (Arjan Widlak/United Knowledge)
  - Updated libpng with version 1.5.10 (Arjan Widlak/United Knowledge)
