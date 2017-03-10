@@ -12,7 +12,7 @@ httpd httpd-devel mod_ssl mod_perl mod_perl-devel libapreq2{,-devel} \
 nginx \
 aspell aspell-devel aspell-en \
 perl gcc cpp glibc cmake  perl-App-cpanminus perl-CPAN perl-MIME-tools \
-ImageMagick-perl
+ImageMagick-perl perl-CGI
 
 systemctl enable nginx httpd
 
@@ -21,3 +21,18 @@ systemctl enable nginx httpd
 4) Install WebGUI and WRE perl support libraries
 
 cpanm Task::WebGUI
+
+Sometimes, installing XML::Simple and Business::OnlinePayment::AuthorizeNet will fail during this.  To handle those situations
+you have the following options:
+
+1) We found that trying to install them again manually would often work, which is frustrating but works
+
+cpanm  XML::Simple Business::OnlinePayment::AuthorizeNet
+
+2) There's a module for XML::Simple, you can install it and then use a workaround for the other module:
+
+yum install -y perl-XML-Simple
+
+3) Force install them by hand.
+
+cpanm -f XML::Simple Business::OnlinePayment::AuthorizeNet
