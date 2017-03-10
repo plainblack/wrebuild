@@ -13,8 +13,12 @@ have been removed, and should be provided by the hosting OS or by
 installing from CPAN.  This WRE is a set of scripts to automatically create
 configuration files for WebGUI, Apache/mod_perl and nginx.
 
-There is no automated upgrade process to go from an earlier version of the WRE
+- There is no automated upgrade process to go from an earlier version of the WRE
 to this one.
+
+- The WRE no longer includes awstats.  If you wish to keep track of how many visitors
+come to pages on your site, you should setup an external tracking system like Google
+Analytics.
 
 WRE 0.9.6
 
