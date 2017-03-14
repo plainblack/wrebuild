@@ -57,19 +57,24 @@ server {
 
 #server {
 #    listen   443 ssl;
-#    server_name  [% sitename %] [%domain %];
+#    server_name  [% sitename %] [% domain %];
 #
 #    ssl  on;
 #    ssl_certificate     [% config.getDomainRoot %]/[% sitename %]/certs/server.crt;
 #    ssl_certificate_key [% config.getDomainRoot %]/[% sitename %]/certs/server.key;
 #
 #    access_log /var/log/nginx/[% sitename %].log combined;
-#    root       [% config.getDomainRoot %]/www.example.com/public;
+#    root       [% config.getDomainRoot %]/[% sitename %]/public;
+#    client_max_body_size 20M;
 #
 #    # proxy webgui to apache/modperl listening on 127.0.0.1
 #    location / {
-#        # proxy_cache static;
-#        # proxy_cache_valid 200 1s;
+#        error_page 404 @ssl_app;
+#        log_not_found off;
+#        try_files /tmp/x @ssl_app;
+#    }
+#
+#    location @ssl_app {
 #        proxy_set_header X-Real-IP $remote_addr;
 #        proxy_set_header X-Forwarded-For $remote_addr;
 #        proxy_set_header Host $host;
@@ -83,12 +88,23 @@ server {
 #        add_header Access-Control-Allow-Origin *;
 #    }
 #
+#    location /uploads/ {
+#        error_page 459 = @ssl_app;
+#        set $dir $uri;
+#        if ( $uri ~ ^(.*/) ) {
+#            set $dir $1;
+#        }
+#        if ( -f $document_root/$dir/.wgaccess ) { 
+#            return 459;
+#        }
+#    }
+#
 #    location /uploads/filepump { expires max; }
 #    location = /default.ida    { access_log off; deny all; }
-#    location /_vti_bin     { access_log off; deny all; }
-#    location /_mem_bin     { access_log off; deny all; }
+#    location /_vti_bin         { access_log off; deny all; }
+#    location /_mem_bin         { access_log off; deny all; }
 #    location ~ /\.(ht|wg)      { access_log off; deny all; }
-#    location = /alive      { access_log off; }
+#    location = /alive          { access_log off; }
 #}
 
 
