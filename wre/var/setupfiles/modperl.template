@@ -4,6 +4,9 @@
         ServerAdmin [% adminEmail %]
     [% END %]
 	DocumentRoot [% config.getDomainRoot %]/[% sitename %]/public
+    <Location />
+        Require all granted
+    </Location>
     SetEnvIf SSLPROXY "1" \
         SSLPROXY
     SetHandler perl-script
