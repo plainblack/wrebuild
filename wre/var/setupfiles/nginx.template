@@ -17,6 +17,12 @@ server {
 
     # proxy webgui to apache/modperl listening on 127.0.0.1
     location / {
+        error_page 404 @app;
+        log_not_found off;
+        try_files /tmp/x @app;
+    }
+
+    location @app {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header Host $host;
@@ -31,11 +37,7 @@ server {
     }
 
     location /uploads/ {
-        error_page 459 = /;
-        add_header Cache-Control public;
-        expires 24h;
-        root   /data/domains/www.iccbba.org/public/;
-        add_header Access-Control-Allow-Origin *;
+        error_page 459 = @app;
         set $dir $uri;
         if ( $uri ~ ^(.*/) ) {
             set $dir $1;
@@ -67,6 +69,12 @@ server {
 #
 #    # proxy webgui to apache/modperl listening on 127.0.0.1
 #    location / {
+#        error_page 404 @ssl_app;
+#        log_not_found off;
+#        try_files /tmp/x @ssl_app;
+#    }
+#
+#    location @ssl_app {
 #        proxy_set_header X-Real-IP $remote_addr;
 #        proxy_set_header X-Forwarded-For $remote_addr;
 #        proxy_set_header Host $host;
@@ -81,11 +89,7 @@ server {
 #    }
 #
 #    location /uploads/ {
-#        error_page 459 = /;
-#        add_header Cache-Control public;
-#        expires 24h;
-#        root   /data/domains/www.iccbba.org/public/;
-#        add_header Access-Control-Allow-Origin *;
+#        error_page 459 = @ssl_app;
 #        set $dir $uri;
 #        if ( $uri ~ ^(.*/) ) {
 #            set $dir $1;
