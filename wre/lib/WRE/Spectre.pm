@@ -95,7 +95,7 @@ Returns a 1 if spectre is running, or a 0 if it is not.
 sub ping {
     my $self = shift;
     my $spectreConfig = $self->spectreConfig;
-    my $remote = create_ikc_client(
+    my $remote = POE::Component::IKC::ClientLite->spawn(
         port    => $spectreConfig->get("port"),
         ip      => $spectreConfig->get("ip"),
         name    => rand(100000),
@@ -138,8 +138,11 @@ sub start {
     if ($self->systemd) {
         $cmd = 'systemctl start webgui-spectre.service';
     }
+    elsif ($self->chkconfig) {
+        $cmd = 'service wre-spectre start';
+    }
     else {
-        $cmd = 'perl' . $wreConfig->getWebguiRoot("/sbin") .'spectre.pl --daemon';
+        $cmd = 'perl ' . $wreConfig->getWebguiRoot("/sbin") .'/spectre.pl --daemon';
     }
     system($cmd);
     while ($count < 10 && $success == 0) {
@@ -169,8 +172,11 @@ sub stop {
     if ($self->systemd) {
         $cmd = 'systemctl start webgui-spectre.service';
     }
+    elsif ($self->chkconfig) {
+        $cmd = 'service wre-spectre stop';
+    }
     else {
-        $cmd = 'perl' . $wreConfig->getWebguiRoot("/sbin") .'spectre.pl --daemon';
+        $cmd = 'perl ' . $wreConfig->getWebguiRoot("/sbin") .'/spectre.pl --stop';
     }
     `$cmd`; # catch command line output
     while ($count < 10 && $success == 1) {
@@ -196,7 +202,7 @@ sub getStatusReport {
     my $spectreConfig = $self->spectreConfig;
 
     # connect to spectre
-    my $remote = create_ikc_client(
+    my $remote = POE::Component::IKC::ClientLite->spawn(
         port=>$spectreConfig->get("port"),
         ip=>$spectreConfig->get("ip"),
         name=>rand(100000),

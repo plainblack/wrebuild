@@ -122,6 +122,19 @@ sub systemd {
     return $self->wreConfig->get('systemd') ? 1 : 0;
 }
 
+#-------------------------------------------------------------------
+
+=head2 chkconfig ( )
+
+Returns a 1 if the flag in the config file has been set to indicate that this host uses chkconfig for process management instead of init.
+
+=cut
+
+sub chkconfig {
+    my $self = shift;
+    return $self->wreConfig->get('chkconfig') ? 1 : 0;
+}
+
 
 
 } # end inside out object
