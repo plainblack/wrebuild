@@ -138,9 +138,6 @@ sub start {
     if ($self->systemd) {
         $cmd = 'systemctl start webgui-spectre.service';
     }
-    elsif ($self->chkconfig) {
-        $cmd = 'service wre-spectre start';
-    }
     else {
         $cmd = 'perl ' . $wreConfig->getWebguiRoot("/sbin") .'/spectre.pl --daemon';
     }
@@ -171,9 +168,6 @@ sub stop {
     my $cmd = "";
     if ($self->systemd) {
         $cmd = 'systemctl start webgui-spectre.service';
-    }
-    elsif ($self->chkconfig) {
-        $cmd = 'service wre-spectre stop';
     }
     else {
         $cmd = 'perl ' . $wreConfig->getWebguiRoot("/sbin") .'/spectre.pl --stop';
