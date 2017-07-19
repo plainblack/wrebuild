@@ -1,4 +1,4 @@
-To build a WRE on RedHat Enterprise Linux or CentOS version 7. Do the following tasks:
+To build a WRE on RedHat Enterprise Linux or CentOS version 6. Do the following tasks:
 
 1) Install EPEL repository
 
