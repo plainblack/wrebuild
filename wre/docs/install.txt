@@ -60,7 +60,6 @@ you run a command similar to the following as the root user:
 
 11. Add the following cron jobs to your server's cron tab.
 
-	0 0 * * * /data/wre/sbin/logrotate.pl
 	*/3 * * * * /data/wre/sbin/wremonitor.pl
 	0 2 * * * /data/wre/sbin/backup.pl
 
