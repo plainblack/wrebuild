@@ -8,8 +8,8 @@ http://wiki.webgui.org/
 
 PRIOR TO INSTALLING
 
-This WRE has only been tested with CentOS 7.  It should work on Red
-Hat Enterprise Linux 7, but has not been tested.  This WRE has not been
+This WRE has only been tested with CentOS 6.  It should work on Red
+Hat Enterprise Linux 6, but has not been tested.  This WRE has not been
 tested on any other platform.
 
 
