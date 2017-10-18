@@ -25,14 +25,22 @@ cpanm Task::WebGUI
 Sometimes, installing XML::Simple and Business::OnlinePayment::AuthorizeNet will fail during this.  To handle those situations
 you have the following options:
 
-1) We found that trying to install them again manually would often work, which is frustrating but works
+a) We found that trying to install them again manually would often work, which is frustrating but works
 
 cpanm  XML::Simple Business::OnlinePayment::AuthorizeNet
 
-2) There's a module for XML::Simple, you can install it and then use a workaround for the other module:
+b) There's a module for XML::Simple, you can install it and then use a workaround for the other module:
 
 yum install -y perl-XML-Simple
 
-3) Force install them by hand.
+c) Force install them by hand.
 
 cpanm -f XML::Simple Business::OnlinePayment::AuthorizeNet
+
+5) Server user account permissions
+
+When nginx packages are updated, the nginx cache directory is changed to be the nginx user, regardless of the setting in the
+nginx configuration file.  However, unless the nginx user has similar permissions to the httpd user, then nginx won't be able
+to serve files from the uploads directory.  The best workaround is to put the nginx user into the webgui group:
+
+usermod -a G webgui nginx
