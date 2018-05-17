@@ -43,4 +43,4 @@ When nginx packages are updated, the nginx cache directory is changed to be the 
 nginx configuration file.  However, unless the nginx user has similar permissions to the httpd user, then nginx won't be able
 to serve files from the uploads directory.  The best workaround is to put the nginx user into the webgui group:
 
-usermod -a G webgui nginx
+usermod -a -G webgui nginx
