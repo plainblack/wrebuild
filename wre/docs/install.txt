@@ -42,6 +42,8 @@ you run a command similar to the following as the root user:
 
 5. Create a MySQL user for backups.
 
+grant select, lock tables, show databases on *.* to backup\@'localhost' identified by 'XXXXXXXXXX';
+
 6. Create your DNS entries (or add to /etc/hosts) for the sites you will be
    using, including the AWStats site.
 
