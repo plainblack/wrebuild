@@ -50,8 +50,8 @@ sub dump {
     my $path = file($options{path});
     my $command = "mysqldump"
         ." --user=".$config->get("backup/mysql/user")
-        ." --password=".$config->get("backup/mysql/password")
-        ." --host=".$config->get("mysql/hostname")
+        ." --password='".$config->get("backup/mysql/password")
+        ."' --host=".$config->get("mysql/hostname")
         ." --port=".$config->get("mysql/port")
         ." --result-file=".$path->stringify
         ." --opt" # increased dump and load performance
