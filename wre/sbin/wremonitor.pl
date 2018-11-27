@@ -19,7 +19,7 @@ use List::Util qw/sum/;
 use Net::SMTP;
 use WRE::Config;
 use WRE::File;
-use WRE::Starman;
+use WRE::Apache;
 use WRE::Nginx;
 use WRE::Spectre;
 
@@ -32,12 +32,12 @@ unless (flock(DATA, LOCK_EX|LOCK_NB)) {
 
 my $config = WRE::Config->new;
 
-if ($config->get("wreMonitor/items/starman") && !$config->get("wreMonitor/starmanAdministrativelyDown")) {
-    my $starman = WRE::Starman->new(wreConfig=>$config);
-    monitor($starman);
+if ($config->get("wreMonitor/items/apache") && !$config->get("wreMonitor/apacheAdministrativelyDown")) {
+    my $apache = WRE::Modperl->new(wreConfig=>$config);
+    monitor($apache);
     if ($config->get("wreMonitor/items/runaway")) {
-        my $killed = $starman->killRunaways;
-        logEntry("Killed $killed ".$starman->getName." processes that were using too much memory.");
+        my $killed = $apache->killRunaways;
+        logEntry("Killed $killed ".$apache->getName." processes that were using too much memory.");
     }
 }
 

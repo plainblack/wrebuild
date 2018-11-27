@@ -16,7 +16,7 @@ use Getopt::Long;
 use WRE::Config;
 use WRE::File;
 use WRE::Mysql;
-use WRE::Starman;
+use WRE::Apache;
 use 5.010;
 
 my ($all, $help, $verbose);
@@ -107,8 +107,8 @@ foreach my $demo (@demos) {
 		say "Skipping Site: ".$demoId if ($verbose);
 	}
 }
-say "Restarting Starman" if $verbose;
-if (eval { WRE::Starman->new(wreConfig=>$config)->restart; }) {
+say "Restarting Apache" if $verbose;
+if (eval { WRE::Apache->new(wreConfig=>$config)->restart; }) {
     say "OK" if $verbose;
 }
 else {
