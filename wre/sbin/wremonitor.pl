@@ -33,7 +33,7 @@ unless (flock(DATA, LOCK_EX|LOCK_NB)) {
 my $config = WRE::Config->new;
 
 if ($config->get("wreMonitor/items/apache") && !$config->get("wreMonitor/apacheAdministrativelyDown")) {
-    my $apache = WRE::Modperl->new(wreConfig=>$config);
+    my $apache = WRE::Apache->new(wreConfig=>$config);
     monitor($apache);
     if ($config->get("wreMonitor/items/runaway")) {
         my $killed = $apache->killRunaways;
@@ -128,7 +128,7 @@ sub monitorSpectre {
 sub logEntry {
 	my $message = shift;
     $message = localtime()." - ".$message."\n";
-    WRE::File->new(wreConfig=>$config)->spit($config->getRoot("/var/logs/wremonitor.log"), \$message, { append => 1});
+    WRE::File->new(wreConfig=>$config)->spit("/var/log/wremonitor.log", \$message, { append => 1});
 }
 
 #-------------------------------------------------------------------
