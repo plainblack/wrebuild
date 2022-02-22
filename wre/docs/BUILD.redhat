@@ -33,9 +33,10 @@ a) We found that trying to install them again manually would often work, which i
 
 cpanm  XML::Simple Business::OnlinePayment::AuthorizeNet
 
-b) There's a module for XML::Simple, you can install it and then use a workaround for the other module:
+b) There's are packages for XML::Simple and POE, you can install them and then use a workaround for the other modules:
 
 yum install -y perl-XML-Simple
+yum install -y perl-POE perl-POE-Component-Client-DNS perl-POE-Component-Client-HTTP perl-POE-Component-Client-Keepalive
 
 c) Force install them by hand.
 
