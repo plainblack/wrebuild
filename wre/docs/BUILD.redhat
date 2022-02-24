@@ -49,3 +49,10 @@ nginx configuration file.  However, unless the nginx user has similar permission
 to serve files from the uploads directory.  The best workaround is to put the nginx user into the webgui group:
 
 usermod -a -G webgui nginx
+
+5) Logging permissions
+
+On AWS Linux, their nginx setup has problems with non-root children reopening logfiles unless the log directory permissions
+allow the children to write that dir.
+
+chown nginx:root /var/log/nginx
